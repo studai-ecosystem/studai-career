@@ -61,28 +61,30 @@ Route::middleware('auth')->group(function () {
         ->name('logout');
 });
 
-// Two-Factor Authentication Routes
+// Two-Factor Authentication Routes (custom UI pages)
+// Note: Fortify registers its own 2FA API routes under user/* prefix.
+// These custom routes provide the UI and must use unique names.
 Route::middleware(['auth', 'password.confirm'])->group(function () {
     Route::get('/two-factor-authentication', [TwoFactorController::class, 'show'])
         ->name('two-factor.show');
     
     Route::post('/two-factor-authentication/enable', [TwoFactorController::class, 'enable'])
-        ->name('two-factor.enable');
+        ->name('two-factor.custom-enable');
     
     Route::get('/two-factor-authentication/confirm', [TwoFactorController::class, 'confirm'])
-        ->name('two-factor.confirm');
+        ->name('two-factor.custom-confirm');
     
     Route::post('/two-factor-authentication/verify', [TwoFactorController::class, 'verify'])
         ->name('two-factor.verify');
     
     Route::delete('/two-factor-authentication', [TwoFactorController::class, 'disable'])
-        ->name('two-factor.disable');
+        ->name('two-factor.custom-disable');
     
     Route::get('/two-factor-recovery-codes', [TwoFactorController::class, 'recoveryCodes'])
-        ->name('two-factor.recovery-codes');
+        ->name('two-factor.custom-recovery-codes');
     
     Route::post('/two-factor-recovery-codes', [TwoFactorController::class, 'regenerateRecoveryCodes'])
-        ->name('two-factor.recovery-codes.regenerate');
+        ->name('two-factor.custom-recovery-codes.regenerate');
 });
 
 // Social Authentication Routes

@@ -40,7 +40,7 @@
                                     <p class="text-sm text-gray-600 mb-4">
                                         Store these codes in a safe place. They can be used to access your account if you lose your authenticator device.
                                     </p>
-                                    <a href="{{ route('two-factor.recovery-codes') }}" class="text-sm font-medium text-pink-600 hover:text-pink-500">
+                                    <a href="{{ route('two-factor.custom-recovery-codes') }}" class="text-sm font-medium text-pink-600 hover:text-pink-500">
                                         View Recovery Codes →
                                     </a>
                                 </div>
@@ -51,7 +51,7 @@
                                     <p class="text-sm text-gray-600 mb-4">
                                         This will reduce your account security. You'll only need your password to log in.
                                     </p>
-                                    <form method="POST" action="{{ route('two-factor.disable') }}">
+                                    <form method="POST" action="{{ route('two-factor.custom-disable') }}">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-500" onclick="return confirm('Are you sure you want to disable two-factor authentication?')">
@@ -76,7 +76,7 @@
                                 Add an extra layer of security to your account. In addition to your password, you'll need to enter a code from your authenticator app.
                             </p>
                             
-                            <form method="POST" action="{{ route('two-factor.enable') }}">
+                            <form method="POST" action="{{ route('two-factor.custom-enable') }}">
                                 @csrf
                                 <button type="submit" class="inline-flex items-center px-4 py-2 bg-pink-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-pink-700 active:bg-pink-900 focus:outline-none focus:border-pink-900 focus:ring ring-pink-300 disabled:opacity-25 transition ease-in-out duration-150">
                                     Enable Two-Factor Authentication
