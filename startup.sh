@@ -11,8 +11,17 @@ echo "========================================"
 mkdir -p /home/site/ssl
 if [ ! -f /home/site/ssl/DigiCertGlobalRootCA.crt.pem ]; then
   echo "Downloading MySQL SSL certificate..."
-  curl -sL https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem \
-    -o /home/site/ssl/DigiCertGlobalRootCA.crt.pem
+  curl -sfL https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem \
+    -o /home/site/ssl/DigiCertGlobalRootCA.crt.pem \
+    || echo "WARNING: Failed to download MySQL SSL certificate"
+fi
+
+# Verify cert exists and is non-empty
+if [ -s /home/site/ssl/DigiCertGlobalRootCA.crt.pem ]; then
+  echo "MySQL SSL certificate ready ($(wc -c < /home/site/ssl/DigiCertGlobalRootCA.crt.pem) bytes)"
+  export MYSQL_ATTR_SSL_CA=/home/site/ssl/DigiCertGlobalRootCA.crt.pem
+else
+  echo "WARNING: MySQL SSL certificate missing or empty"
 fi
 
 # ---- 2. Set Document Root and Symlinks ----
