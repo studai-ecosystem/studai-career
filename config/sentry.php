@@ -129,33 +129,10 @@ return [
     | Before Send Callback
     |--------------------------------------------------------------------------
     |
-    | This callback is invoked before sending the event to Sentry.
-    | You can modify the event or return null to discard it.
+    | Closures are not serializable and break config:cache.
+    | The before_send callback is registered in AppServiceProvider instead.
     |
     */
-
-    'before_send' => function (\Sentry\Event $event, ?\Sentry\EventHint $hint): ?\Sentry\Event {
-        // Add correlation ID to all events
-        $correlationId = \App\Http\Middleware\CorrelationIdMiddleware::getCorrelationId();
-
-        if ($correlationId) {
-            $event->setTag('correlation_id', $correlationId);
-        }
-
-        // Add user context if authenticated
-        if (auth()->check()) {
-            $user = auth()->user();
-            \Sentry\configureScope(function (\Sentry\State\Scope $scope) use ($user): void {
-                $scope->setUser([
-                    'id' => $user->id,
-                    'email' => $user->email,
-                    'username' => $user->name,
-                ]);
-            });
-        }
-
-        return $event;
-    },
 
     /*
     |--------------------------------------------------------------------------

@@ -577,13 +577,15 @@ class AIService
     /**
      * Stream AI response for real-time display
      */
-    protected function streamAI(string $prompt, callable $callback, ?string $systemPrompt = null): void
+    protected function streamAI(string $prompt, ?string $systemPrompt = null, ?callable $callback = null): void
     {
         // Note: OpenAI Laravel package doesn't support streaming yet
         // This is a placeholder for future implementation
         
         $response = $this->callAI($prompt, $systemPrompt, ['skip_cache' => true]);
-        $callback($response);
+        if ($callback) {
+            $callback($response);
+        }
     }
 
     /* -----------------------------------------------------------------

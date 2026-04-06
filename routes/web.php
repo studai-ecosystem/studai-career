@@ -376,8 +376,8 @@ Route::middleware('auth')->group(function () {
 
 // Employer Dashboard & Features (Authenticated Employers)
 Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->group(function () {
-    // Dashboard & Analytics
-    Route::get('/', [EmployerDashboardController::class, 'index'])->name('dashboard');
+    // Dashboard & Analytics (canonical employer.dashboard is in routes/employer.php)
+    Route::get('/', [EmployerDashboardController::class, 'index'])->name('home');
     Route::get('/analytics', [EmployerDashboardController::class, 'analytics'])->name('analytics');
     
     // Job Posting Management
