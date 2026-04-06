@@ -79,21 +79,44 @@ if [ "$APP_ENV" = "production" ]; then
   echo "  DB_DATABASE=${DB_DATABASE:-not set}"
   echo "  DB_USERNAME=${DB_USERNAME:-not set}"
   echo "  MYSQL_ATTR_SSL_CA=${MYSQL_ATTR_SSL_CA:-not set}"
+  CA_FILE="${MYSQL_ATTR_SSL_CA:-/home/site/ssl/azure-mysql-ca-bundle.pem}"
+  if [ -f "$CA_FILE" ]; then
+    echo "  CA file exists: $(wc -c < "$CA_FILE") bytes"
+    echo "  CA file head: $(head -1 "$CA_FILE")"
+  else
+    echo "  CA file NOT FOUND: $CA_FILE"
+  fi
+  echo "  PHP version: $(php -r 'echo PHP_VERSION;')"
+  echo "  mysqlnd: $(php -r 'echo extension_loaded("mysqlnd") ? "YES" : "NO";')"
+  echo "  openssl: $(php -r 'echo extension_loaded("openssl") ? OPENSSL_VERSION_TEXT : "NOT LOADED";')"
   php -r "
+    \$ca = getenv('MYSQL_ATTR_SSL_CA') ?: '/home/site/ssl/azure-mysql-ca-bundle.pem';
+    \$dsn = 'mysql:host=' . getenv('DB_HOST') . ';port=' . (getenv('DB_PORT') ?: '3306') . ';dbname=' . getenv('DB_DATABASE');
+    // Attempt 1: SSL with cert + skip verify
     try {
-      \$opts = [PDO::MYSQL_ATTR_SSL_CA => getenv('MYSQL_ATTR_SSL_CA') ?: '/home/site/ssl/azure-mysql-ca-bundle.pem'];
-      \$dsn = 'mysql:host=' . getenv('DB_HOST') . ';port=' . (getenv('DB_PORT') ?: '3306') . ';dbname=' . getenv('DB_DATABASE');
+      \$opts = [
+        PDO::MYSQL_ATTR_SSL_CA => \$ca,
+        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+      ];
       \$pdo = new PDO(\$dsn, getenv('DB_USERNAME'), getenv('DB_PASSWORD'), \$opts);
-      echo 'DB connection OK (SSL)' . PHP_EOL;
+      echo 'DB connection OK (SSL + skip verify)' . PHP_EOL;
     } catch (Exception \$e) {
-      echo 'DB connection FAILED: ' . \$e->getMessage() . PHP_EOL;
-      // Try without SSL
-      try {
-        \$pdo2 = new PDO(\$dsn, getenv('DB_USERNAME'), getenv('DB_PASSWORD'));
-        echo 'DB connection OK (no SSL) - SSL cert may be wrong' . PHP_EOL;
-      } catch (Exception \$e2) {
-        echo 'DB connection FAILED (no SSL too): ' . \$e2->getMessage() . PHP_EOL;
-      }
+      echo 'DB FAILED (SSL + skip verify): ' . \$e->getMessage() . PHP_EOL;
+    }
+    // Attempt 2: SSL with just skip verify (no CA file)
+    try {
+      \$opts2 = [PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false];
+      \$pdo2 = new PDO(\$dsn, getenv('DB_USERNAME'), getenv('DB_PASSWORD'), \$opts2);
+      echo 'DB connection OK (SSL no CA + skip verify)' . PHP_EOL;
+    } catch (Exception \$e2) {
+      echo 'DB FAILED (SSL no CA + skip verify): ' . \$e2->getMessage() . PHP_EOL;
+    }
+    // Attempt 3: No SSL at all
+    try {
+      \$pdo3 = new PDO(\$dsn, getenv('DB_USERNAME'), getenv('DB_PASSWORD'));
+      echo 'DB connection OK (no SSL)' . PHP_EOL;
+    } catch (Exception \$e3) {
+      echo 'DB FAILED (no SSL): ' . \$e3->getMessage() . PHP_EOL;
     }
   " 2>&1 || echo "WARNING: DB diagnostic failed"
 

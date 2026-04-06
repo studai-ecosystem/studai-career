@@ -66,6 +66,7 @@ return [
                             ? '/home/site/ssl/DigiCertGlobalRootCA.crt.pem'
                             : null)
                 ),
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
             ]) : [],
         ],
 
