@@ -25,7 +25,7 @@ class SubscriptionController extends Controller
     {
         $plans = SubscriptionPlan::active()
             ->orderBy('sort_order')
-            ->orderBy('price_monthly')
+            ->orderBy('price')
             ->get();
         
         $userPlan = null;

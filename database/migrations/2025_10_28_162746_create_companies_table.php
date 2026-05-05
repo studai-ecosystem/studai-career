@@ -31,7 +31,7 @@ return new class extends Migration
             $table->timestamps();
             
             $table->index(['slug', 'is_verified']);
-            $table->fullText(['name', 'description']);
+// $table->fullText(['name', 'description']);
         });
     }
 

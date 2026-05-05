@@ -116,10 +116,17 @@
                                    class="flex-1 py-3 px-6 text-center border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition">
                                     Cancel
                                 </a>
+                                @if($plan->price_monthly > 0)
+                                <button type="button" onclick="payNow({{ $plan->price_monthly }})"
+                                        class="flex-1 py-3 px-6 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">
+                                    Pay ₹{{ number_format($plan->price_monthly) }}
+                                </button>
+                                @else
                                 <button type="submit" 
                                         class="flex-1 py-3 px-6 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">
-                                    Proceed to Payment
+                                    Activate Free Plan
                                 </button>
+                                @endif
                             </div>
                         </form>
                     </div>
@@ -133,4 +140,77 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+    function payNow(amount) {
+        fetch("{{ route('razorpay.create-order') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                amount: amount
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            var options = {
+                "key": "{{ config('services.razorpay.key') }}",
+                "amount": amount * 100,
+                "currency": "INR",
+                "name": "StudAI",
+                "description": "Subscription Payment",
+                "order_id": data.order_id,
+                "handler": function (response) {
+                    fetch("{{ route('razorpay.verify-payment') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            amount: amount
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            window.location.href = data.redirect_url;
+                        } else {
+                            alert('Payment verification failed.');
+                            window.location.href = data.redirect_url;
+                        }
+                    });
+                },
+                "prefill": {
+                    "name": "{{ auth()->user()->name }}",
+                    "email": "{{ auth()->user()->email }}"
+                },
+                "theme": {
+                    "color": "#4F46E5"
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while creating the order.');
+        });
+    }
+    </script>
+    @endpush
 </x-app-layout>

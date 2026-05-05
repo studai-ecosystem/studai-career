@@ -49,17 +49,17 @@
     <script>
         const orderData = @json($orderData);
         const returnUrl = "{{ route('subscriptions.index') }}";
-        const callbackUrl = "{{ route('api.payment.razorpay.callback') }}";
+        const callbackUrl = "{{ route('razorpay.verify-payment') }}";
 
         document.getElementById('rzp-button').onclick = function(e) {
             e.preventDefault();
 
             var options = {
-                "key": orderData.key_id,
+                "key": orderData.key_id || "{{ config('services.razorpay.key') }}",
                 "amount": orderData.amount,
-                "currency": orderData.currency,
-                "name": "{{ config('app.name') }}",
-                "description": "{{ $plan->name }} Subscription",
+                "currency": orderData.currency || "INR",
+                "name": "{{ config('app.name', 'StudAI') }}",
+                "description": "{{ $plan->name ?? 'Subscription' }} Payment",
                 "order_id": orderData.order_id,
                 "handler": function (response) {
                     document.getElementById('payment-section').classList.add('hidden');
@@ -77,15 +77,16 @@
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature,
+                            amount: orderData.amount / 100 // sending original amount
                         })
                     })
                     .then(res => res.json())
                     .then(data => {
-                        if (data.success) {
-                            window.location.href = returnUrl + '?payment=success';
+                        if (data.status === 'success') {
+                            window.location.href = data.redirect_url;
                         } else {
                             alert('Payment verification failed. Please contact support.');
-                            window.location.href = returnUrl + '?payment=failed';
+                            window.location.href = data.redirect_url || returnUrl;
                         }
                     })
                     .catch(error => {
@@ -104,7 +105,6 @@
                 },
                 "modal": {
                     "ondismiss": function() {
-                        // User closed the payment modal
                         console.log('Payment cancelled by user');
                     }
                 }
@@ -113,7 +113,6 @@
             var rzp = new Razorpay(options);
             rzp.on('payment.failed', function (response) {
                 alert('Payment failed: ' + response.error.description);
-                window.location.href = returnUrl + '?payment=failed';
             });
             rzp.open();
         };
