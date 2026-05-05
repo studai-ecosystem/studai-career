@@ -123,7 +123,7 @@ return new class extends Migration
             $table->index(['job_source_id', 'is_processed']);
             $table->index(['company_name', 'title']);
             $table->index('posted_at');
-            $table->fullText(['title', 'description']);
+// $table->fullText(['title', 'description']);
         });
 
         // Job Matches - Discovered jobs matched to users

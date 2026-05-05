@@ -55,6 +55,11 @@ Route::post('/payment/failure', [PaymentController::class, 'payuFailure'])->name
 // Payment Gateway Callbacks (Stripe)
 Route::get('/payment/stripe/success', [\App\Http\Controllers\StripeWebhookController::class, 'checkoutSuccess'])->name('payment.stripe.success');
 
+// Payment Gateway - Razorpay
+use App\Http\Controllers\RazorpayController;
+Route::post('/create-order', [RazorpayController::class, 'createOrder'])->name('razorpay.create-order');
+Route::post('/verify-payment', [RazorpayController::class, 'verifyPayment'])->name('razorpay.verify-payment');
+
 // Dashboard (Authenticated)
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 

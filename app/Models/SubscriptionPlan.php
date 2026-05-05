@@ -9,6 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class SubscriptionPlan extends Model
 {
     use HasFactory;
+    
+    /**
+     * Scope a query to only include active plans.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 
     protected $fillable = [
         'name',
@@ -59,6 +67,21 @@ class SubscriptionPlan extends Model
     public function getBillingCycleAttribute()
     {
         return $this->billing_period;
+    }
+
+    public function isFree(): bool
+    {
+        return $this->price <= 0;
+    }
+
+    public function getPriceMonthlyAttribute()
+    {
+        return $this->billing_period === 'monthly' ? (float)$this->price : (float)($this->price / 12);
+    }
+
+    public function getPriceYearlyAttribute()
+    {
+        return $this->billing_period === 'yearly' ? (float)$this->price : (float)($this->price * 12);
     }
 
     public function userSubscriptions(): HasMany

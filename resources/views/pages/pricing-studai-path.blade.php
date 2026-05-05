@@ -72,9 +72,15 @@
                             <span class="text-4xl font-extrabold text-ink-primary">₹0</span>
                             <span class="text-ink-tertiary">/forever</span>
                         </div>
-                        <a href="{{ route('register') }}" class="studai-btn studai-btn-outline w-full mb-8">
-                            Get Started Free
-                        </a>
+                        @auth
+                            <a href="{{ route('subscriptions.pricing') }}" class="studai-btn studai-btn-outline w-full mb-8">
+                                Get Started Free
+                            </a>
+                        @else
+                            <a href="{{ route('register') }}" class="studai-btn studai-btn-outline w-full mb-8">
+                                Get Started Free
+                            </a>
+                        @endauth
                         <ul class="space-y-3">
                             @foreach(['Unlimited job search', 'Basic resume builder', '5 AI interview sessions/month', 'Application tracking', 'Basic salary insights'] as $feature)
                             <li class="flex items-start gap-3 text-sm text-ink-secondary">
@@ -100,9 +106,15 @@
                             <span class="text-4xl font-extrabold text-ink-primary">₹499</span>
                             <span class="text-ink-tertiary">/month</span>
                         </div>
-                        <a href="{{ route('register') }}" class="studai-btn studai-btn-primary w-full mb-8">
-                            Start Pro Trial
-                        </a>
+                        @auth
+                            <a href="{{ route('subscriptions.pricing') }}" class="studai-btn studai-btn-primary w-full mb-8">
+                                Start Pro Trial
+                            </a>
+                        @else
+                            <a href="{{ route('register') }}" class="studai-btn studai-btn-primary w-full mb-8">
+                                Start Pro Trial
+                            </a>
+                        @endauth
                         <ul class="space-y-3">
                             @foreach(['Everything in Free', 'Autonomous Agent (50 apps/day)', 'Unlimited AI interviews', 'Premium resume templates', 'Salary negotiation coach', 'Priority support'] as $feature)
                             <li class="flex items-start gap-3 text-sm text-ink-secondary">
@@ -125,9 +137,15 @@
                             <span class="text-4xl font-extrabold text-ink-primary">₹1,999</span>
                             <span class="text-ink-tertiary">/month</span>
                         </div>
-                        <a href="{{ route('register') }}" class="studai-btn studai-btn-outline w-full mb-8">
-                            Go Executive
-                        </a>
+                        @auth
+                            <a href="{{ route('subscriptions.pricing') }}" class="studai-btn studai-btn-outline w-full mb-8">
+                                Go Executive
+                            </a>
+                        @else
+                            <a href="{{ route('register') }}" class="studai-btn studai-btn-outline w-full mb-8">
+                                Go Executive
+                            </a>
+                        @endauth
                         <ul class="space-y-3">
                             @foreach(['Everything in Pro', 'Unlimited agent applications', 'Executive resume service', '1:1 career coaching sessions', 'LinkedIn profile optimization', 'Dedicated success manager'] as $feature)
                             <li class="flex items-start gap-3 text-sm text-ink-secondary">
@@ -157,9 +175,15 @@
                             <span class="text-4xl font-extrabold text-ink-primary">₹0</span>
                             <span class="text-ink-tertiary">/forever</span>
                         </div>
-                        <a href="{{ route('register') }}" class="studai-btn studai-btn-outline w-full mb-8">
-                            Start Hiring Free
-                        </a>
+                        @auth
+                            <a href="{{ route('dashboard') }}" class="studai-btn studai-btn-outline w-full mb-8">
+                                Start Hiring Free
+                            </a>
+                        @else
+                            <a href="{{ route('register') }}" class="studai-btn studai-btn-outline w-full mb-8">
+                                Start Hiring Free
+                            </a>
+                        @endauth
                         <ul class="space-y-3">
                             @foreach(['3 active job posts', 'Basic candidate management', 'Email notifications', 'Standard job board distribution'] as $feature)
                             <li class="flex items-start gap-3 text-sm text-ink-secondary">
@@ -185,9 +209,15 @@
                             <span class="text-4xl font-extrabold text-ink-primary">₹4,999</span>
                             <span class="text-ink-tertiary">/month</span>
                         </div>
-                        <a href="{{ route('register') }}" class="studai-btn studai-btn-primary w-full mb-8">
-                            Start Growth Trial
-                        </a>
+                        @auth
+                            <a href="{{ route('dashboard') }}" class="studai-btn studai-btn-primary w-full mb-8">
+                                Start Growth Trial
+                            </a>
+                        @else
+                            <a href="{{ route('register') }}" class="studai-btn studai-btn-primary w-full mb-8">
+                                Start Growth Trial
+                            </a>
+                        @endauth
                         <ul class="space-y-3">
                             @foreach(['Unlimited job posts', 'S.C.O.U.T. AI screening', 'Team collaboration tools', '50+ job board distribution', 'Interview scheduling', 'Basic analytics'] as $feature)
                             <li class="flex items-start gap-3 text-sm text-ink-secondary">

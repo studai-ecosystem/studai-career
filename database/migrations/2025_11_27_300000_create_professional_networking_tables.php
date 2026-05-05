@@ -122,7 +122,7 @@ return new class extends Migration
                 $table->index('industry');
                 $table->index('is_private');
                 $table->index('is_featured');
-                $table->fullText(['name', 'description']);
+// $table->fullText(['name', 'description']);
             });
         }
 

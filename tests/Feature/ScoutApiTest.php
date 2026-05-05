@@ -227,7 +227,7 @@ class ScoutApiTest extends TestCase
             ->getJson('/api/scout/candidate-match/999');
 
         // Missing company_id should return 422 or fail validation
-        $this->assertContains($response->status(), [422, 400, 500]);
+        $this->assertTrue(in_array($response->status(), [422, 400, 500]));
     }
 
     // ==================================================================
@@ -348,7 +348,7 @@ class ScoutApiTest extends TestCase
 
         // Either 200/202 accepted, or may return 500 if service binding is
         // incomplete in test context — verify we didn't get auth failures.
-        $this->assertNotContains($response->status(), [401, 403]);
+        $this->assertFalse(in_array($response->status(), [401, 403]));
     }
 
     // ==================================================================
@@ -366,7 +366,7 @@ class ScoutApiTest extends TestCase
             ->getJson("/api/scout/assessment/progress/{$application->id}/{$this->job->id}");
 
         // Expect JSON with a status key (not_started / in_progress / completed)
-        $this->assertNotContains($response->status(), [401, 403]);
+        $this->assertFalse(in_array($response->status(), [401, 403]));
     }
 
     // ==================================================================
@@ -379,7 +379,7 @@ class ScoutApiTest extends TestCase
             ->postJson('/api/scout/assessment/9999/submit', []);
 
         // Assessment not found or validation fail
-        $this->assertContains($response->status(), [404, 422, 500]);
+        $this->assertTrue(in_array($response->status(), [404, 422, 500]));
     }
 
     // ==================================================================
@@ -392,29 +392,12 @@ class ScoutApiTest extends TestCase
             ->getJson('/api/scout/assessment/9999/results');
 
         // Non-existent ID should return 404 or 500
-        $this->assertContains($response->status(), [404, 500]);
+        $this->assertTrue(in_array($response->status(), [404, 500]));
     }
 
     // ==================================================================
     // Helpers
     // ==================================================================
 
-    /**
-     * Assert $value is in $array — mirrors assertContains for primitives.
-     */
-    protected function assertContains(mixed $needle, array $haystack, string $message = ''): void
-    {
-        $this->assertTrue(
-            in_array($needle, $haystack, true),
-            $message ?: "Expected {$needle} to be one of [" . implode(', ', $haystack) . "]"
-        );
-    }
 
-    protected function assertNotContains(mixed $needle, array $haystack, string $message = ''): void
-    {
-        $this->assertFalse(
-            in_array($needle, $haystack, true),
-            $message ?: "Did not expect {$needle} to be one of [" . implode(', ', $haystack) . "]"
-        );
-    }
 }

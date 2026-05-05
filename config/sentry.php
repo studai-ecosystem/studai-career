@@ -206,18 +206,5 @@ return [
         'server' => gethostname(),
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Context
-    |--------------------------------------------------------------------------
-    |
-    | Default context to add to all events. Context provides additional
-    | information but is not indexed.
-    |
-    */
-
-    'context' => [
-        // Add any default context here
-    ],
-
 ];
+
