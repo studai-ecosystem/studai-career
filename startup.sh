@@ -7,12 +7,30 @@ echo "StudAI Career - App Service Startup"
 echo "$(date '+%Y-%m-%d %H:%M:%S')"
 echo "========================================"
 
-# ---- 1. Download Azure MySQL SSL Certificate ----
+# ---- 1. Download Azure MySQL SSL Certificates ----
 mkdir -p /home/site/ssl
-if [ ! -f /home/site/ssl/DigiCertGlobalRootCA.crt.pem ]; then
-  echo "Downloading MySQL SSL certificate..."
-  curl -sL https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem \
-    -o /home/site/ssl/DigiCertGlobalRootCA.crt.pem
+SSL_DIR=/home/site/ssl
+CA_BUNDLE="$SSL_DIR/azure-mysql-ca-bundle.pem"
+
+# Download both DigiCert root CAs (Azure MySQL uses one or both depending on region)
+if [ ! -f "$CA_BUNDLE" ]; then
+  echo "Downloading MySQL SSL certificates..."
+  curl -sfL https://dl.cacerts.digicert.com/DigiCertGlobalRootCA.crt.pem \
+    -o "$SSL_DIR/DigiCertGlobalRootCA.crt.pem" \
+    || echo "WARNING: Failed to download DigiCertGlobalRootCA"
+  curl -sfL https://dl.cacerts.digicert.com/DigiCertGlobalRootG2.crt.pem \
+    -o "$SSL_DIR/DigiCertGlobalRootG2.crt.pem" \
+    || echo "WARNING: Failed to download DigiCertGlobalRootG2"
+  # Create combined CA bundle
+  cat "$SSL_DIR/DigiCertGlobalRootCA.crt.pem" "$SSL_DIR/DigiCertGlobalRootG2.crt.pem" > "$CA_BUNDLE" 2>/dev/null || true
+fi
+
+# Verify cert bundle exists and is non-empty
+if [ -s "$CA_BUNDLE" ]; then
+  echo "MySQL SSL CA bundle ready ($(wc -c < "$CA_BUNDLE") bytes)"
+  export MYSQL_ATTR_SSL_CA="$CA_BUNDLE"
+else
+  echo "WARNING: MySQL SSL CA bundle missing or empty"
 fi
 
 # ---- 2. Set Document Root and Symlinks ----
@@ -53,6 +71,54 @@ if [ "$APP_ENV" = "production" ]; then
   php artisan route:cache || echo "WARNING: route:cache failed"
   php artisan view:cache || echo "WARNING: view:cache failed"
   php artisan event:cache || echo "WARNING: event:cache failed"
+
+  # ---- DB Connection Diagnostic ----
+  echo "Testing database connection..."
+  echo "  DB_HOST=${DB_HOST:-not set}"
+  echo "  DB_PORT=${DB_PORT:-3306}"
+  echo "  DB_DATABASE=${DB_DATABASE:-not set}"
+  echo "  DB_USERNAME=${DB_USERNAME:-not set}"
+  echo "  MYSQL_ATTR_SSL_CA=${MYSQL_ATTR_SSL_CA:-not set}"
+  CA_FILE="${MYSQL_ATTR_SSL_CA:-/home/site/ssl/azure-mysql-ca-bundle.pem}"
+  if [ -f "$CA_FILE" ]; then
+    echo "  CA file exists: $(wc -c < "$CA_FILE") bytes"
+    echo "  CA file head: $(head -1 "$CA_FILE")"
+  else
+    echo "  CA file NOT FOUND: $CA_FILE"
+  fi
+  echo "  PHP version: $(php -r 'echo PHP_VERSION;')"
+  echo "  mysqlnd: $(php -r 'echo extension_loaded("mysqlnd") ? "YES" : "NO";')"
+  echo "  openssl: $(php -r 'echo extension_loaded("openssl") ? OPENSSL_VERSION_TEXT : "NOT LOADED";')"
+  php -r "
+    \$ca = getenv('MYSQL_ATTR_SSL_CA') ?: '/home/site/ssl/azure-mysql-ca-bundle.pem';
+    \$dsn = 'mysql:host=' . getenv('DB_HOST') . ';port=' . (getenv('DB_PORT') ?: '3306') . ';dbname=' . getenv('DB_DATABASE');
+    // Attempt 1: SSL with cert + skip verify
+    try {
+      \$opts = [
+        PDO::MYSQL_ATTR_SSL_CA => \$ca,
+        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+      ];
+      \$pdo = new PDO(\$dsn, getenv('DB_USERNAME'), getenv('DB_PASSWORD'), \$opts);
+      echo 'DB connection OK (SSL + skip verify)' . PHP_EOL;
+    } catch (Exception \$e) {
+      echo 'DB FAILED (SSL + skip verify): ' . \$e->getMessage() . PHP_EOL;
+    }
+    // Attempt 2: SSL with just skip verify (no CA file)
+    try {
+      \$opts2 = [PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false];
+      \$pdo2 = new PDO(\$dsn, getenv('DB_USERNAME'), getenv('DB_PASSWORD'), \$opts2);
+      echo 'DB connection OK (SSL no CA + skip verify)' . PHP_EOL;
+    } catch (Exception \$e2) {
+      echo 'DB FAILED (SSL no CA + skip verify): ' . \$e2->getMessage() . PHP_EOL;
+    }
+    // Attempt 3: No SSL at all
+    try {
+      \$pdo3 = new PDO(\$dsn, getenv('DB_USERNAME'), getenv('DB_PASSWORD'));
+      echo 'DB connection OK (no SSL)' . PHP_EOL;
+    } catch (Exception \$e3) {
+      echo 'DB FAILED (no SSL): ' . \$e3->getMessage() . PHP_EOL;
+    }
+  " 2>&1 || echo "WARNING: DB diagnostic failed"
 
   echo "Running migrations..."
   php artisan migrate --force --no-interaction || echo "WARNING: migrations failed"

@@ -20,7 +20,7 @@ class TwoFactorController extends Controller
         $user = $request->user();
 
         if (!$user->two_factor_secret) {
-            return redirect()->route('two-factor.enable');
+            return redirect()->route('two-factor.custom-enable');
         }
 
         return view('auth.two-factor.show', [
@@ -49,7 +49,7 @@ class TwoFactorController extends Controller
             })->all())),
         ])->save();
 
-        return redirect()->route('two-factor.confirm');
+        return redirect()->route('two-factor.custom-confirm');
     }
 
     /**
@@ -139,7 +139,7 @@ class TwoFactorController extends Controller
         $user = $request->user();
 
         if (!$user->two_factor_secret) {
-            return redirect()->route('two-factor.enable');
+            return redirect()->route('two-factor.custom-enable');
         }
 
         return view('auth.two-factor.recovery-codes', [
