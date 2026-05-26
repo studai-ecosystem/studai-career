@@ -27,18 +27,26 @@ class GamificationEventSubscriber implements ShouldQueue
      */
     public function handleUserLogin(Login $event): void
     {
-        $user = $event->user;
-        
-        // Check if this is the first login today
-        $hasLoginToday = \App\Models\GamificationActivity::forUser($user->id)
-            ->byAction('daily_login')
-            ->today()
-            ->exists();
+        try {
+            $user = $event->user;
+            
+            // Check if this is the first login today
+            $hasLoginToday = \App\Models\GamificationActivity::forUser($user->id)
+                ->byAction('daily_login')
+                ->today()
+                ->exists();
 
-        if (!$hasLoginToday) {
-            $this->gamificationService->trackActivity($user, 'daily_login');
-        } else {
-            $this->gamificationService->trackActivity($user, 'login');
+            if (!$hasLoginToday) {
+                $this->gamificationService->trackActivity($user, 'daily_login');
+            } else {
+                $this->gamificationService->trackActivity($user, 'login');
+            }
+        } catch (\Exception $e) {
+            \Log::error('Gamification login tracking failed', [
+                'error' => $e->getMessage(),
+                'user_id' => $event->user?->id ?? null,
+            ]);
+            // Don't break login flow if gamification tracking fails
         }
     }
 
