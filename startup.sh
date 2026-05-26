@@ -70,6 +70,9 @@ if [ "$APP_ENV" = "production" ]; then
   php artisan optimize:clear || true
   rm -f bootstrap/cache/config.php bootstrap/cache/routes*.php bootstrap/cache/events.php
 
+  # Set APP_URL to HTTPS if not already set by Azure App Settings
+  export APP_URL="${APP_URL:-https://studai-app-prod.azurewebsites.net}"
+
   echo "Running production optimizations..."
   php artisan config:cache || echo "WARNING: config:cache failed"
   php artisan route:cache || echo "WARNING: route:cache failed"

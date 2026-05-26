@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,10 +23,24 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // ── Force HTTPS on Azure App Service (HTTPS terminated at load balancer) ──────
+        if (app()->isProduction()) {
+            URL::forceScheme('https');
+        }
+
+        // ── Strict mode in local/testing: catches N+1, lazy loading, mass assignment ──
+        Model::shouldBeStrict(! app()->isProduction());
+
+        // ── Enforce strong passwords globally ─────────────────────────────────────────
+        Password::defaults(fn () => app()->isProduction()
+            ? Password::min(8)->letters()->mixedCase()->numbers()->uncompromised()
+            : Password::min(8)
+        );
+
+        // ── Sentry user context ───────────────────────────────────────────────────────
         if (app()->bound('sentry')) {
             \Sentry\configureScope(function (\Sentry\State\Scope $scope): void {
                 $scope->addEventProcessor(function (\Sentry\Event $event, ?\Sentry\EventHint $hint): ?\Sentry\Event {
-                    // Add correlation ID to all events
                     if (class_exists(\App\Http\Middleware\CorrelationIdMiddleware::class)) {
                         $correlationId = \App\Http\Middleware\CorrelationIdMiddleware::getCorrelationId();
                         if ($correlationId) {
@@ -30,7 +48,6 @@ class AppServiceProvider extends ServiceProvider
                         }
                     }
 
-                    // Add user context if authenticated
                     if (auth()->check()) {
                         $user = auth()->user();
                         if ($user) {
