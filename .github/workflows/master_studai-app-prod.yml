@@ -25,7 +25,7 @@ jobs:
           extensions: mbstring, pdo_mysql, redis, gd, zip, bcmath, intl, xml, curl
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+        run: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-reqs
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
