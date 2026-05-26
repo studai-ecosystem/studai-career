@@ -9,13 +9,11 @@ on:
       - master
   workflow_dispatch:
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +25,7 @@ jobs:
           extensions: mbstring, pdo_mysql, redis, gd, zip, bcmath, intl, xml, curl
 
       - name: Install Composer dependencies
-        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+        run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -47,6 +45,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: Download artifact from build job
@@ -58,11 +59,12 @@ jobs:
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_29D98806D3104D628057C2EAE9054352 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4C1C0BFBE5FE4CA5B720B09861EDF062 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4C1C0BFBE5FE4CA5B720B09861EDF023 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DD7C6727C7DB4E3F96EBCCC9731625B5 }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
         with:
           app-name: 'studai-app-prod'
           slot-name: 'Production'
