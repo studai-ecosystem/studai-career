@@ -825,7 +825,7 @@ Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->
                 }
             }
             return view('scout.dna-dashboard', compact('dnaProfileData'));
-        });
+        })->name('dashboard');
         Route::get('/dna', fn() => redirect()->route('scout.dashboard'))->name('dna');
         Route::get('/analyze-culture', fn() => view('scout.analyze-culture'))->name('analyze-culture');
         Route::get('/hiring-insights', fn() => view('scout.hiring-insights'))->name('hiring-insights');
@@ -1098,7 +1098,7 @@ Route::middleware(['auth', 'verified'])->prefix('negotiation')->name('negotiatio
             'strategies',
             'totalValueGained'
         ));
-    });
+    })->name('index');
     
     // Strategy Detail - Comprehensive strategy analysis with visualizations
     Route::get('/strategy/{id}', function($id) {
@@ -1539,7 +1539,7 @@ Route::middleware(['auth', 'verified'])->prefix('network')->name('network.')->gr
 // Calendar Integration Routes (Job Seekers & Employers)
 Route::middleware(['auth', 'verified'])->prefix('calendar')->name('calendar.')->group(function () {
     // Calendar Dashboard
-    Route::get('/', [\App\Http\Controllers\CalendarController::class, 'index']);
+    Route::get('/', [\App\Http\Controllers\CalendarController::class, 'index'])->name('index');
     
     // Calendar Connections
     Route::get('/connect/{provider}', [\App\Http\Controllers\CalendarController::class, 'connect'])->name('connect')
@@ -1753,7 +1753,7 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
     Route::middleware('auth')->group(function () {
         // Freelancer Dashboard & Profile
         Route::prefix('freelancer')->name('freelancer.')->group(function () {
-            Route::get('/dashboard', [FreelancerController::class, 'dashboard']);
+            Route::get('/dashboard', [FreelancerController::class, 'dashboard'])->name('index');
             Route::get('/profile', [FreelancerController::class, 'profile'])->name('profile');
             Route::post('/profile', [FreelancerController::class, 'updateProfile'])->name('profile.update');
             Route::get('/proposals', [FreelancerController::class, 'proposals'])->name('proposals');
@@ -1772,7 +1772,7 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
 
         // Employer Dashboard & Project Management
         Route::prefix('employer')->name('employer.')->group(function () {
-            Route::get('/dashboard', [MarketplaceEmployerController::class, 'dashboard']);
+            Route::get('/dashboard', [MarketplaceEmployerController::class, 'dashboard'])->name('index');
             Route::get('/projects', [MarketplaceEmployerController::class, 'projects'])->name('projects');
             Route::get('/projects/create', [MarketplaceEmployerController::class, 'createProject'])->name('create-project');
             Route::post('/projects', [MarketplaceEmployerController::class, 'storeProject'])->name('store-project');
@@ -1856,7 +1856,7 @@ use App\Http\Controllers\GamificationController;
 
 Route::middleware(['auth', 'verified'])->prefix('gamification')->name('gamification.')->group(function () {
     // Main Dashboard
-    Route::get('/', [GamificationController::class, 'dashboard']);
+    Route::get('/', [GamificationController::class, 'dashboard'])->name('index');
     
     // Achievements
     Route::get('/achievements', [GamificationController::class, 'achievements'])->name('achievements');
