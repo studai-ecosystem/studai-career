@@ -35,7 +35,7 @@ class ObserverServiceProvider extends ServiceProvider
         Company::observe(CompanyObserver::class);
         Interview::observe(InterviewObserver::class);
         Job::observe(JobObserver::class);
-        // User::observe(UserObserver::class);
+        User::observe(UserObserver::class);
 
         // Prevent lazy loading in development (helps catch N+1 queries)
         Model::preventLazyLoading(app()->environment('local'));

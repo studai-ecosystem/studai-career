@@ -6,12 +6,14 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Http\Responses\LoginResponse;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
+use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -21,7 +23,8 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Bind custom login response that handles role-based redirects
+        $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
     }
 
     /**
@@ -70,37 +73,11 @@ class FortifyServiceProvider extends ServiceProvider
 
         // Custom authentication logic with account type check
         Fortify::authenticateUsing(function (Request $request) {
-            $user = \App\Models\User::where('email', $request->email)
-                ->where('is_active', true)
-                ->first();
+            $user = \App\Models\User::where('email', $request->email)->first();
 
-            if ($user && \Hash::check($request->password, $user->password)) {
+            if ($user && (bool) $user->is_active && \Hash::check($request->password, $user->password)) {
                 return $user;
             }
-        });
-
-        // Redirect after login based on account type
-        Fortify::redirects('login', function () {
-            $user = auth()->user();
-            
-            if ($user->isAdmin()) {
-                if (\Route::has('filament.studai.pages.dashboard')) {
-                    return route('filament.studai.pages.dashboard');
-                }
-                return route('dashboard');
-            } elseif ($user->isEmployer()) {
-                if (\Route::has('employer.dashboard')) {
-                    return route('employer.dashboard');
-                }
-                return route('dashboard');
-            } else {
-                return route('dashboard');
-            }
-        });
-
-        // Redirect after registration
-        Fortify::redirects('register', function () {
-            return route('profile.complete');
         });
 
         RateLimiter::for('login', function (Request $request) {
