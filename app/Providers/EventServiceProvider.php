@@ -138,35 +138,19 @@ class EventServiceProvider extends ServiceProvider
      * @var array<int, class-string>
      */
     protected $subscribe = [
-        // Original gamification subscriber
+        // Original gamification subscriber (now fixed with try-catch)
         GamificationEventSubscriber::class,
 
-        // New comprehensive gamification points
-        AwardGamificationPoints::class,
-
-        // Payment activity logging
-        LogPaymentActivity::class,
-
-        // Subscription notifications
-        NotifyOnSubscriptionChange::class,
-
-        // Search index updates
-        UpdateSearchIndex::class,
-
-        // Agent activity logging
-        LogAgentActivity::class,
-
-        // Career milestone notifications (interview, negotiation, resume analysis)
-        NotifyOnCareerMilestone::class,
-
-        // S.C.O.U.T. activity logging (predictions, bias audits, shortlisting)
-        LogScoutActivity::class,
-
-        // Learning progress tracking (skill gaps, assessments, learning paths)
-        HandleLearningProgress::class,
-
-        // Messaging & referral notifications
-        NotifyOnMessagingAndReferral::class,
+        // Temporarily disabling others to identify login crash root cause
+        // AwardGamificationPoints::class,
+        // LogPaymentActivity::class,
+        // NotifyOnSubscriptionChange::class,
+        // UpdateSearchIndex::class,
+        // LogAgentActivity::class,
+        // NotifyOnCareerMilestone::class,
+        // LogScoutActivity::class,
+        // HandleLearningProgress::class,
+        // NotifyOnMessagingAndReferral::class,
     ];
 
     /**
