@@ -490,8 +490,8 @@
             {{-- Sidebar Footer --}}
             <div class="p-3 border-t flex-shrink-0" style="border-color:var(--border)">
                 @php
-                    $userName = auth()->user()->name ?? 'User';
-                    $userEmail = auth()->user()->email ?? '';
+                    $userName = auth()->user()?->name ?? 'User';
+                    $userEmail = auth()->user()?->email ?? '';
                     $userInitial = strtoupper(substr($userName, 0, 1));
                 @endphp
                 <div class="flex items-center gap-3 px-1 mb-2" :class="!sidebarOpen && 'justify-center'">
@@ -743,7 +743,7 @@
                     <div x-data="{ open: false }" class="relative">
                         <button @click="open = !open" class="flex items-center gap-2 p-1.5 rounded-xl transition-colors hover:bg-gray-100">
                             <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#6366f1,#a855f7)">
-                                @php echo strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)); @endphp
+                                @php echo strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)); @endphp
                             </div>
                             <svg class="w-3.5 h-3.5" style="color:var(--text-muted)" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
@@ -760,8 +760,8 @@
                             class="absolute right-0 mt-2 w-56 rounded-2xl shadow-xl py-2 z-50"
                             style="background:var(--surface); border:1px solid var(--border)">
                             <div class="px-4 py-3 border-b" style="border-color:var(--border)">
-                                <div class="text-sm font-semibold" style="color:var(--text)">{{ auth()->user()->name ?? 'Guest' }}</div>
-                                <div class="text-xs mt-0.5" style="color:var(--text-muted)">{{ auth()->user()->email ?? '' }}</div>
+                                <div class="text-sm font-semibold" style="color:var(--text)">{{ auth()->user()?->name ?? 'Guest' }}</div>
+                                <div class="text-xs mt-0.5" style="color:var(--text-muted)">{{ auth()->user()?->email ?? '' }}</div>
                             </div>
                             <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors hover:bg-gray-50" style="color:var(--text)">
                                 <svg class="w-4 h-4" style="color:var(--text-muted)" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
