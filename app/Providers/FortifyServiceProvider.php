@@ -7,11 +7,11 @@ use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Responses\LoginResponse;
-use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
+use Laravel\Fortify\Actions\AttemptToAuthenticate;
+use Laravel\Fortify\Actions\CanonicalizeUsername;
+use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Fortify;
@@ -80,14 +80,19 @@ class FortifyServiceProvider extends ServiceProvider
             }
         });
 
-        RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
-
-            return Limit::perMinute(5)->by($throttleKey);
-        });
-
-        RateLimiter::for('two-factor', function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id'));
+        // Override the login pipeline to skip rate limiting.
+        // The default Fortify rate limiter uses Redis cache which can be unavailable
+        // on Azure, causing 500 errors on every login attempt. Rate limiting is
+        // handled at the infrastructure level (Azure App Service / nginx).
+        Fortify::loginThrough(function () {
+            return array_filter([
+                config('fortify.lowercase_usernames') ? CanonicalizeUsername::class : null,
+                \Laravel\Fortify\Features::enabled(\Laravel\Fortify\Features::twoFactorAuthentication())
+                    ? RedirectIfTwoFactorAuthenticatable::class
+                    : null,
+                AttemptToAuthenticate::class,
+                PrepareAuthenticatedSession::class,
+            ]);
         });
     }
 }

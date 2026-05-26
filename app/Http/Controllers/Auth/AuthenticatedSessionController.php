@@ -28,7 +28,21 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+
+        // Role-based redirect after login
+        if ($user && $user->isAdmin()) {
+            if (\Illuminate\Support\Facades\Route::has('filament.studai.pages.dashboard')) {
+                return redirect()->intended(route('filament.studai.pages.dashboard'));
+            }
+            return redirect()->intended(route('dashboard'));
+        }
+
+        if ($user && $user->isEmployer()) {
+            return redirect()->intended(route('employer.home'));
+        }
+
+        return redirect()->intended(route('dashboard'));
     }
 
     /**

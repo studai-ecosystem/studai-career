@@ -42,14 +42,24 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+            try {
+                RateLimiter::hit($this->throttleKey());
+            } catch (\Exception $e) {
+                // Rate limiter cache unavailable — non-critical, continue
+                \Illuminate\Support\Facades\Log::warning('Login RateLimiter::hit failed', ['error' => $e->getMessage()]);
+            }
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
         }
 
-        RateLimiter::clear($this->throttleKey());
+        try {
+            RateLimiter::clear($this->throttleKey());
+        } catch (\Exception $e) {
+            // Rate limiter cache unavailable — non-critical, continue
+            \Illuminate\Support\Facades\Log::warning('Login RateLimiter::clear failed', ['error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -59,20 +69,27 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
+        try {
+            if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+                return;
+            }
+
+            event(new Lockout($this));
+
+            $seconds = RateLimiter::availableIn($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.throttle', [
+                    'seconds' => $seconds,
+                    'minutes' => ceil($seconds / 60),
+                ]),
+            ]);
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            // Redis/cache unavailable — skip rate limiting, let the request through
+            \Illuminate\Support\Facades\Log::warning('Login rate limiter unavailable, skipping', ['error' => $e->getMessage()]);
         }
-
-        event(new Lockout($this));
-
-        $seconds = RateLimiter::availableIn($this->throttleKey());
-
-        throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
     }
 
     /**
