@@ -235,17 +235,17 @@ class CacheService
      */
     public function clearPattern(string $pattern): void
     {
-        if (config('cache.default') === 'redis') {
-            $redis = Redis::connection();
-            $keys = $redis->keys(config('cache.prefix') . ':' . $pattern);
-            
-            if (!empty($keys)) {
-                $redis->del($keys);
+        try {
+            if (config('cache.default') === 'redis') {
+                $redis = Redis::connection();
+                $keys = $redis->keys(config('cache.prefix') . ':' . $pattern);
+
+                if (!empty($keys)) {
+                    $redis->del($keys);
+                }
             }
-        } else {
-            // For non-Redis drivers, we can't pattern match
-            // So we just flush the entire cache (use with caution)
-            // Cache::flush();
+        } catch (\Exception $e) {
+            \Log::warning('CacheService::clearPattern failed', ['pattern' => $pattern, 'error' => $e->getMessage()]);
         }
     }
 

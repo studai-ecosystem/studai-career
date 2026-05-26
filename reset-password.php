@@ -15,9 +15,10 @@ $accounts = [
 foreach ($accounts as $account) {
     $user = \App\Models\User::where('email', $account['email'])->first();
     if ($user) {
-        $user->password     = \Hash::make($account['password']);
-        $user->is_active    = true;
-        $user->account_type = $account['account_type']; // ensure correct type
+        $user->password          = \Hash::make($account['password']);
+        $user->is_active         = true;
+        $user->account_type      = $account['account_type']; // ensure correct type
+        $user->email_verified_at = $user->email_verified_at ?? now(); // ensure verified
         $user->save();
         echo "Updated {$account['email']}: is_active=true, password='{$account['password']}', type={$user->account_type}\n";
     } else {
