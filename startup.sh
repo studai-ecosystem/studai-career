@@ -96,6 +96,21 @@ fi
 timeout 60 php artisan filament:cache-components 2>/dev/null || true
 timeout 60 php artisan icons:cache 2>/dev/null || true
 
+# ---- 6. PHP-FPM Opcache Pre-warming ----
+# Send HTTP requests to warm up PHP-FPM opcache so first user requests are fast
+# This avoids the 5-8 second cold start on first requests after deployment
+if [ "$APP_ENV" = "production" ]; then
+  echo "Pre-warming PHP-FPM opcache (avoids cold-start timeouts for users)..."
+  # Wait for PHP-FPM/nginx to be fully ready
+  sleep 5
+  # Make multiple requests to warm different PHP-FPM workers
+  for i in 1 2 3; do
+    timeout 30 curl -sf http://127.0.0.1:8080/ > /dev/null 2>&1 && echo "Warmup request $i done" || echo "Warmup request $i skipped (non-critical)"
+    sleep 1
+  done
+  echo "Opcache pre-warming complete"
+fi
+
 echo "========================================"
 echo "Startup complete!"
 echo "========================================"
