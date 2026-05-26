@@ -174,7 +174,7 @@ Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
 Route::middleware('auth')->group(function () {
     // Skill Gap Analyzer Routes
     Route::prefix('skills')->name('skills.')->group(function () {
-        Route::get('/dashboard', [SkillAnalyzerWebController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard', [SkillAnalyzerWebController::class, 'dashboard'])->name('analyzer');
         Route::get('/learning-paths', [SkillAnalyzerWebController::class, 'learningPaths'])->name('learning-paths');
         Route::get('/learning-path/{id}', [SkillAnalyzerWebController::class, 'showLearningPath'])->name('learning-path.show');
         Route::get('/validation', [SkillAnalyzerWebController::class, 'validation'])->name('validation');
@@ -272,7 +272,7 @@ Route::middleware('auth')->group(function () {
     // Enhanced Analytics Dashboard Routes
     Route::prefix('analytics')->name('analytics.')->group(function () {
         // Main dashboard
-        Route::get('/', [EnhancedAnalyticsController::class, 'dashboard'])->name('dashboard');
+        Route::get('/', [EnhancedAnalyticsController::class, 'dashboard'])->name('analytics');
         
         // Job Market Heatmap
         Route::get('/heatmap', [EnhancedAnalyticsController::class, 'heatmapView'])->name('heatmap');
@@ -547,7 +547,7 @@ Route::middleware('auth')->group(function () {
             }
             
             return view('agent.dashboard', compact('configured', 'config', 'stats', 'recentApplications', 'upcomingTasks', 'internalMatches', 'internalStats', 'statistics', 'limits'));
-        })->name('dashboard');
+        });
         
         Route::get('/configure', function() {
             $user = Auth::user();
