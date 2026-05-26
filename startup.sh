@@ -80,7 +80,7 @@ if [ "$APP_ENV" = "production" ]; then
   timeout 60 php artisan event:cache  || echo "WARNING: event:cache failed/timed-out"
 
   echo "Running migrations..."
-  timeout 120 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
+  timeout 300 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
 
   echo "Syncing Meilisearch indices..."
   timeout 30 php artisan scout:sync-index-settings 2>/dev/null || true
