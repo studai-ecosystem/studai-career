@@ -1,10 +1,19 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Candidate Matching - S.C.O.U.T.')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Back Button -->
+        <div class="mb-4">
+            <a href="{{ route('employer.scout.dashboard') }}"
+                class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg px-4 py-2 shadow-sm hover:shadow transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Back to Dashboard
+            </a>
+        </div>
         
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900">AI-Powered Candidate Matching</h1>
@@ -144,17 +153,70 @@
 lucide.createIcons();
 const companyId = {{ auth()->user()->company_id ?? 'null' }};
 
+// Allow pressing Enter in search box
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('candidate-search');
+    if (input) {
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') searchCandidates();
+        });
+    }
+});
+
 async function searchCandidates() {
-    const query = document.getElementById('candidate-search').value;
-    // Implement candidate search API call
-    alert('Candidate search feature - integrate with your user search API');
+    const query = document.getElementById('candidate-search').value.trim();
+    if (!query) return;
+
+    const listEl = document.getElementById('candidates-list');
+    listEl.innerHTML = '<p class="text-sm text-gray-500 py-2">Searching...</p>';
+
+    try {
+        const response = await fetch(`/employer/scout/search-candidates?q=${encodeURIComponent(query)}`, {
+            credentials: 'same-origin',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json',
+            }
+        });
+        const result = await response.json();
+        const candidates = result.data || [];
+
+        if (!candidates.length) {
+            listEl.innerHTML = '<p class="text-sm text-gray-500 py-2">No candidates found.</p>';
+            return;
+        }
+
+        listEl.innerHTML = candidates.map(c => `
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-purple-50 cursor-pointer border border-transparent hover:border-purple-200 transition"
+                 onclick="analyzeCandidate(${c.id})">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
+                        ${c.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-900 text-sm">${c.name}</p>
+                        <p class="text-xs text-gray-500">${c.email}</p>
+                    </div>
+                </div>
+                <span class="text-xs text-purple-600 font-medium bg-purple-100 px-2 py-1 rounded-full">Analyze &rarr;</span>
+            </div>
+        `).join('');
+    } catch (error) {
+        listEl.innerHTML = '<p class="text-sm text-red-500 py-2">Search failed. Please try again.</p>';
+        console.error('Search failed:', error);
+    }
 }
 
 async function analyzeCandidate(candidateId) {
+    document.getElementById('match-results').classList.add('hidden');
+    const listEl = document.getElementById('candidates-list');
+    listEl.innerHTML = '<p class="text-sm text-purple-600 font-medium py-2">Running AI analysis...</p>';
+
     try {
         const response = await fetch(`/api/scout/candidate-match/${candidateId}?company_id=${companyId}`, {
+            credentials: 'same-origin',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('api_token')}`,
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Accept': 'application/json',
             }
         });
@@ -162,8 +224,12 @@ async function analyzeCandidate(candidateId) {
         const result = await response.json();
         if (result.success) {
             renderMatchResults(result.data);
+            listEl.innerHTML = '';
+        } else {
+            listEl.innerHTML = `<p class="text-sm text-red-500 py-2">${result.message || 'Analysis failed.'}</p>`;
         }
     } catch (error) {
+        listEl.innerHTML = '<p class="text-sm text-red-500 py-2">Analysis failed. Please try again.</p>';
         console.error('Match analysis failed:', error);
     }
 }
@@ -171,6 +237,17 @@ async function analyzeCandidate(candidateId) {
 function renderMatchResults(data) {
     const prediction = data.success_prediction;
     document.getElementById('match-results').classList.remove('hidden');
+
+    // Low-confidence banner
+    const existingBanner = document.getElementById('low-confidence-banner');
+    if (existingBanner) existingBanner.remove();
+    if (prediction.low_confidence) {
+        const banner = document.createElement('div');
+        banner.id = 'low-confidence-banner';
+        banner.style.cssText = 'background:#fffbeb;border:1px solid #f59e0b;border-radius:.75rem;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:.84rem;color:#92400e;display:flex;align-items:center;gap:.5rem';
+        banner.innerHTML = '<svg style="width:16px;height:16px;flex-shrink:0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg><span><strong>Low confidence:</strong> Your DNA profile completeness is below 60%. Run DNA Analysis to improve accuracy of these predictions.</span>';
+        document.getElementById('match-results').prepend(banner);
+    }
 
     // Overall score
     const score = prediction.overall_success_score;

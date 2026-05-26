@@ -49,6 +49,7 @@ use App\Models\Job;
 use App\Jobs\GenerateAssessmentJob;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
@@ -129,6 +130,10 @@ class ScoutController extends Controller
             }
 
             // Perform DNA analysis
+            // Clear stale cache when force-refreshing so the service doesn't return a cached failure
+            if ($request->input('force_refresh', false)) {
+                Cache::forget("company_dna_analysis_{$companyId}");
+            }
             $analysis = $this->dnaDecoder->analyzeCompanyDNA($companyId);
 
             if (!$analysis['success']) {
@@ -422,6 +427,14 @@ class ScoutController extends Controller
             // Get comprehensive match analysis
             $prediction = $this->successPredictor->predictCandidateSuccess($companyId, $candidateProfile);
             
+            // Propagate prediction-level failure as an HTTP error
+            if (isset($prediction['success']) && $prediction['success'] === false) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $prediction['message'] ?? 'Prediction failed.',
+                ], 422);
+            }
+
             // Get team fit if team dynamics available
             $teamFit = $this->teamAnalyzer->assessCandidateTeamFit($companyId, $candidateProfile);
 
@@ -2234,6 +2247,45 @@ class ScoutController extends Controller
     }
 
     /**
+     * Get applications belonging to the authenticated employer's company
+     * GET /api/scout/predictive/applications
+     */
+    public function getCompanyApplications(Request $request): JsonResponse
+    {
+        try {
+            $companyId = auth()->user()->company_id;
+
+            $applications = Application::with(['job', 'user'])
+                ->whereHas('job', function ($q) use ($companyId) {
+                    $q->where('company_id', $companyId);
+                })
+                ->orderByDesc('created_at')
+                ->get()
+                ->map(function ($app) {
+                    $candidateName = $app->user
+                        ? ($app->user->name ?? $app->guest_name ?? 'Unknown')
+                        : ($app->guest_name ?? 'Guest');
+                    $jobTitle = $app->job ? $app->job->title : 'Unknown Job';
+                    return [
+                        'id'        => $app->id,
+                        'label'     => "#{$app->id} — {$candidateName} ({$jobTitle})",
+                        'candidate' => $candidateName,
+                        'job_title' => $jobTitle,
+                        'status'    => $app->status,
+                    ];
+                });
+
+            return response()->json([
+                'success'      => true,
+                'applications' => $applications,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to fetch company applications', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Failed to load applications.'], 500);
+        }
+    }
+
+    /**
      * Predict success probability for a candidate
      * POST /api/scout/predictive/success
      */
@@ -2340,41 +2392,46 @@ class ScoutController extends Controller
 
             $forecast = $this->predictiveAnalytics->forecastTenure($application);
 
-            // Store forecast
-            $storedForecast = TenureForecast::updateOrCreate(
+            // Store forecast using actual DB column names
+            TenureForecast::updateOrCreate(
                 [
                     'application_id' => $application->id,
                     'company_id' => $companyId,
                 ],
                 [
                     'user_id' => $application->user_id,
-                    'predicted_tenure_months' => $forecast['predicted_tenure_months'],
+                    'job_id' => $application->job_id,
+                    'expected_tenure_months' => (int) $forecast['predicted_tenure_months'],
                     'tenure_range_min' => $forecast['tenure_range']['min'],
                     'tenure_range_max' => $forecast['tenure_range']['max'],
-                    'confidence_level' => $forecast['confidence_level'],
-                    'flight_risk_score' => $forecast['flight_risk_score'],
-                    'risk_category' => $forecast['risk_category'],
-                    'retention_factors' => $forecast['retention_factors'],
-                    'risk_indicators' => $forecast['risk_indicators'],
-                    'ai_insights' => $forecast['ai_insights'],
-                    'recommendation' => $forecast['recommendation'],
-                    'forecast_date' => now(),
+                    'confidence_score' => $forecast['confidence_score'],
+                    'player_type' => $forecast['player_type'],
+                    'tenure_factors' => json_encode(array_merge(
+                        $forecast['retention_factors'] ?? [],
+                        $forecast['risk_indicators'] ?? []
+                    )),
+                    'ai_insights' => json_encode($forecast['ai_insights'] ?? []),
+                    'forecasted_at' => now(),
                 ]
             );
+
+            $riskScore = round(($forecast['flight_risk_score'] ?? 0) * 100, 1);
+            $tenureRange = ($forecast['tenure_range']['min'] ?? 0) . '–' . ($forecast['tenure_range']['max'] ?? 0) . ' months';
+            $riskLevelMap = ['low' => 'Low', 'medium' => 'Medium', 'high' => 'High', 'critical' => 'Critical'];
+            $riskLevel = $riskLevelMap[$forecast['risk_category'] ?? 'low'] ?? 'Low';
 
             return response()->json([
                 'success' => true,
                 'message' => 'Tenure forecast generated',
                 'data' => [
-                    'forecast_id' => $storedForecast->id,
-                    'predicted_tenure_months' => $storedForecast->predicted_tenure_months,
-                    'predicted_tenure_years' => $storedForecast->tenure_years,
-                    'tenure_range' => $storedForecast->tenure_range_display,
-                    'tenure_category' => $storedForecast->tenure_category,
-                    'flight_risk_score' => $storedForecast->flight_risk_percentage,
-                    'risk_level' => $storedForecast->risk_level,
-                    'is_flight_risk' => $storedForecast->is_flight_risk,
-                    'confidence' => $storedForecast->confidence_display,
+                    'predicted_tenure_months' => $forecast['predicted_tenure_months'],
+                    'predicted_tenure_years' => $forecast['predicted_tenure_years'],
+                    'tenure_range' => $tenureRange,
+                    'tenure_category' => $forecast['player_type_display'] ?? $forecast['player_type'],
+                    'flight_risk_score' => $riskScore,
+                    'risk_level' => $riskLevel,
+                    'is_flight_risk' => $forecast['is_flight_risk'],
+                    'confidence' => round(($forecast['confidence_score'] ?? 0) * 100, 1) . '%',
                     'retention_factors' => $forecast['retention_factors'],
                     'risk_indicators' => $forecast['risk_indicators'],
                     'recommendation' => $forecast['recommendation'],
@@ -2422,8 +2479,8 @@ class ScoutController extends Controller
 
             $estimate = $this->predictiveAnalytics->estimateTimeToProductivity($application, $application->job);
 
-            // Store estimate
-            $storedEstimate = ProductivityEstimate::updateOrCreate(
+            // Store estimate using actual DB column names
+            ProductivityEstimate::updateOrCreate(
                 [
                     'application_id' => $application->id,
                     'job_id' => $application->job_id,
@@ -2431,31 +2488,35 @@ class ScoutController extends Controller
                 ],
                 [
                     'user_id' => $application->user_id,
-                    'estimated_weeks_to_productivity' => $estimate['estimated_weeks'],
-                    'productivity_category' => $estimate['productivity_category'],
-                    'productivity_milestones' => $estimate['productivity_milestones'],
-                    'learning_curve_factors' => $estimate['learning_curve_factors'],
-                    'experience_gap_analysis' => $estimate['experience_gap_analysis'],
-                    'support_requirements' => $estimate['support_requirements'],
-                    'ai_insights' => $estimate['ai_insights'],
-                    'recommendation' => $estimate['recommendation'],
+                    'time_to_basic_productivity_days' => (int) (($estimate['estimated_weeks'] ?? 4) * 5),
+                    'time_to_full_productivity_days' => (int) (($estimate['estimated_weeks'] ?? 7) * 7),
+                    'time_to_high_productivity_days' => (int) (($estimate['estimated_weeks'] ?? 10) * 7 + 20),
+                    'confidence_score' => 0.7,
+                    'productivity_factors' => json_encode($estimate['learning_curve_factors'] ?? []),
+                    'productivity_timeline' => json_encode($estimate['productivity_milestones'] ?? []),
+                    'onboarding_recommendations' => json_encode([$estimate['recommendation'] ?? '']),
                     'estimated_at' => now(),
                 ]
             );
+
+            $estimatedMonths = round(($estimate['estimated_weeks'] ?? 7) / 4.33, 1);
+            $supportNeeded = $estimate['support_requirements']['level'] ?? 'standard';
+            $milestones = $estimate['productivity_milestones'] ?? [];
+            $currentMilestone = !empty($milestones) ? ['milestone' => $milestones[0]] : null;
 
             return response()->json([
                 'success' => true,
                 'message' => 'Productivity estimate generated',
                 'data' => [
-                    'estimate_id' => $storedEstimate->id,
-                    'estimated_weeks' => $storedEstimate->estimated_weeks_to_productivity,
-                    'estimated_months' => $storedEstimate->months_to_productivity,
-                    'weeks_category' => $storedEstimate->weeks_category,
-                    'productivity_category' => $storedEstimate->productivity_category_display,
-                    'productivity_milestones' => $estimate['productivity_milestones'],
-                    'learning_curve' => $storedEstimate->learning_curve_display,
-                    'experience_gaps' => $storedEstimate->experience_gap_summary,
-                    'support_needed' => $storedEstimate->support_requirements_summary,
+                    'estimated_weeks' => $estimate['estimated_weeks'],
+                    'estimated_months' => $estimatedMonths,
+                    'productivity_category' => ucfirst(str_replace('_', ' ', $estimate['productivity_category'] ?? 'average_ramp')),
+                    'productivity_milestones' => $milestones,
+                    'learning_curve' => $estimate['learning_curve_factors'],
+                    'experience_gaps' => $estimate['experience_gap_analysis'],
+                    'support_needed' => ucfirst($supportNeeded),
+                    'support_actions' => $estimate['support_requirements']['types'] ?? [],
+                    'current_milestone' => $currentMilestone,
                     'recommendation' => $estimate['recommendation'],
                 ]
             ], 200);

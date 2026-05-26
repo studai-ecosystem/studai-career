@@ -13,7 +13,7 @@ use OpenAI\Laravel\Facades\OpenAI;
 class SuccessPredictorService
 {
     private const CACHE_TTL = 3600; // 1 hour
-    private const MODEL = 'gpt-5.1'; // Azure OpenAI GPT-5.1
+    private const MODEL = 'gpt-5.4'; // Azure OpenAI deployment // Azure OpenAI GPT-5.1
 
     public function predictCandidateSuccess(int $companyId, array $candidateProfile): array
     {
@@ -23,12 +23,15 @@ class SuccessPredictorService
                 ->where('company_id', $companyId)
                 ->first();
 
-            if (!$dnaProfile || !$dnaProfile->canGenerateJobRequirements()) {
+            if (!$dnaProfile) {
                 return [
                     'success' => false,
-                    'message' => 'Company DNA profile incomplete or insufficient confidence',
+                    'message' => 'No DNA profile found for this company. Run DNA Analysis first.',
                 ];
             }
+
+            // Proceed with whatever DNA data exists; flag low-confidence results
+            $lowConfidence = !$dnaProfile->canGenerateJobRequirements();
 
             // Calculate multi-dimensional fit scores
             $culturalFit = $this->calculateCulturalFit($dnaProfile, $candidateProfile);
@@ -54,6 +57,7 @@ class SuccessPredictorService
 
             return [
                 'success' => true,
+                'low_confidence' => $lowConfidence,
                 'overall_success_score' => $overallScore,
                 'recommendation' => $this->getRecommendation($overallScore),
                 'cultural_fit' => $culturalFit,
@@ -359,7 +363,7 @@ PROMPT;
                 ['role' => 'user', 'content' => $prompt],
             ],
             'temperature' => 0.3,
-            'max_tokens' => 1000,
+            'max_completion_tokens' => 1000,
         ]);
 
         return json_decode($response->choices[0]->message->content, true) ?? [];
