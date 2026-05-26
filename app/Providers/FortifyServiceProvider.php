@@ -84,9 +84,15 @@ class FortifyServiceProvider extends ServiceProvider
             $user = auth()->user();
             
             if ($user->isAdmin()) {
-                return route('admin.dashboard');
+                if (\Route::has('filament.studai.pages.dashboard')) {
+                    return route('filament.studai.pages.dashboard');
+                }
+                return route('dashboard');
             } elseif ($user->isEmployer()) {
-                return route('employer.dashboard');
+                if (\Route::has('employer.dashboard')) {
+                    return route('employer.dashboard');
+                }
+                return route('dashboard');
             } else {
                 return route('dashboard');
             }
