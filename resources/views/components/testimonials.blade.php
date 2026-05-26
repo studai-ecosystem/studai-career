@@ -83,7 +83,7 @@
                     @endfor
                 </div>
                 <blockquote class="text-gray-700 mb-6 leading-relaxed">
-                    "StudAI Career transformed my job search! The AI-powered matching found me perfect opportunities I wouldn't have discovered otherwise. Landed my dream job in just 3 weeks!"
+                    "StudAI Hire transformed my job search! The AI-powered matching found me perfect opportunities I wouldn't have discovered otherwise. Landed my dream job in just 3 weeks!"
                 </blockquote>
                 <div class="flex items-center">
                     <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 flex items-center justify-center text-white font-bold text-lg mr-4">
@@ -139,7 +139,7 @@
                     @endfor
                 </div>
                 <blockquote class="text-gray-700 mb-6 leading-relaxed">
-                    "As a recruiter, I've never seen candidates so well-prepared. StudAI Career users always stand out with optimized resumes and impressive interview skills."
+                    "As a recruiter, I've never seen candidates so well-prepared. StudAI Hire users always stand out with optimized resumes and impressive interview skills."
                 </blockquote>
                 <div class="flex items-center">
                     <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-teal-400 flex items-center justify-center text-white font-bold text-lg mr-4">

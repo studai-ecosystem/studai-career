@@ -225,7 +225,7 @@ class TaleoService extends BaseAtsProvider
             'submission' => [
                 'candidate' => ['id' => $candidateId],
                 'requisition' => ['id' => $jobId],
-                'source' => $data['source'] ?? 'StudAI Career',
+                'source' => $data['source'] ?? 'StudAI Hire',
             ],
         ]);
     }
@@ -294,7 +294,7 @@ class TaleoService extends BaseAtsProvider
             'city' => $localData['city'] ?? null,
             'state' => $localData['state'] ?? null,
             'country' => $localData['country'] ?? null,
-            'source' => $localData['source'] ?? 'StudAI Career',
+            'source' => $localData['source'] ?? 'StudAI Hire',
         ];
     }
 

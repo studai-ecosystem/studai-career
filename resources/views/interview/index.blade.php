@@ -1,256 +1,231 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Interview Practice')
-@section('page-title', 'Interview Practice')
+@section('title', 'Interview Lab')
+@section('page-title', 'Interview Lab')
 @section('page-description', 'AI-powered mock interviews & coaching')
 
 @section('content')
 <div class="space-y-6">
-    {{-- Hero Stats --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <x-studai.stat-card 
-            title="Practice Sessions" 
-            value="{{ $sessions->count() ?? 0 }}" 
-            change="3 this week"
-            icon="heroicon-o-video-camera"
-            iconColor="blue"
-        />
-        <x-studai.stat-card 
-            title="Avg. Score" 
-            value="82" 
-            suffix="%" 
-            change="+8% improvement"
-            icon="heroicon-o-chart-bar"
-            iconColor="green"
-        />
-        <x-studai.stat-card 
-            title="Questions Practiced" 
-            value="47" 
-            change="12 behavioral"
-            icon="heroicon-o-question-mark-circle"
-            iconColor="purple"
-        />
-        <x-studai.stat-card 
-            title="Interview Ready" 
-            value="94" 
-            suffix="%" 
-            change="High confidence"
-            icon="heroicon-o-check-circle"
-            iconColor="green"
-        />
+
+    {{-- HERO --}}
+    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:linear-gradient(135deg,#4c1d95 0%,#6d28d9 35%,#7c3aed 65%,#8b5cf6 100%);">
+        <div class="absolute inset-0" style="background-image:radial-gradient(circle at 80% 50%,rgba(167,139,250,.3) 0%,transparent 60%);"></div>
+        <div class="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:rgba(255,255,255,.2);color:#fff;">PRACTICE MODE</span>
+                <h1 class="text-2xl font-bold mt-2" style="color:#fff;">Interview Lab</h1>
+                <p class="text-sm mt-1" style="color:rgba(255,255,255,.85);">AI-powered mock interviews with real-time coaching &amp; feedback.</p>
+            </div>
+            <a href="{{ route('interview.create') }}" class="inline-flex items-center gap-2 px-5 py-2.5 font-semibold rounded-xl transition-all shadow-sm text-sm flex-shrink-0" style="background:#fff;color:#6d28d9;">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Start Practice Session
+            </a>
+        </div>
     </div>
 
-    {{-- Quick Actions Grid --}}
+    {{-- STAT CARDS --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#ede9fe;">
+                <svg class="w-5 h-5" style="color:#7c3aed;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            </div>
+            <div class="text-3xl font-bold text-gray-900">{{ $sessions->count() ?? 0 }}</div>
+            <div class="text-sm text-gray-600 mt-1">Practice Sessions</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#ede9fe;">
+                <svg class="w-5 h-5" style="color:#8b5cf6;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            </div>
+            <div class="text-3xl font-bold text-gray-900">82<span class="text-lg font-semibold text-gray-500">%</span></div>
+            <div class="text-sm text-gray-600 mt-1">Avg. Score</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#f5f3ff;">
+                <svg class="w-5 h-5" style="color:#6d28d9;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="text-3xl font-bold text-gray-900">47</div>
+            <div class="text-sm text-gray-600 mt-1">Questions Practiced</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#ede9fe;">
+                <svg class="w-5 h-5" style="color:#7c3aed;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="text-3xl font-bold text-gray-900">94<span class="text-lg font-semibold text-gray-500">%</span></div>
+            <div class="text-sm text-gray-600 mt-1">Interview Ready</div>
+        </div>
+    </div>
+
+    {{-- QUICK ACTION TILES --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {{-- Start New Session --}}
-        <x-studai.card variant="interactive" class="group text-center">
-            <div class="w-16 h-16 bg-gradient-to-br from-studai-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
+        {{-- Mock Interview --}}
+        <div class="bg-white rounded-2xl p-6 text-center group transition-all" style="border:1.5px solid #ddd6fe;" onmouseover="this.style.background='#f5f3ff'" onmouseout="this.style.background='#fff'">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg transition-transform group-hover:scale-110" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);">
+                <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Start Practice Session</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">AI-powered mock interview with real-time feedback</p>
-            <x-studai.button href="{{ route('interview.create') }}" variant="primary" class="w-full">
-                Start Now
-            </x-studai.button>
-        </x-studai.card>
-
-        {{-- Common Questions --}}
-        <x-studai.card variant="interactive" class="group text-center">
-            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-                </svg>
-            </div>
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Question Bank</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Browse 500+ common interview questions</p>
-            <x-studai.button href="{{ route('interview.common-questions') }}" variant="secondary" class="w-full">
-                Browse Questions
-            </x-studai.button>
-        </x-studai.card>
-
-        {{-- Interview Tips --}}
-        <x-studai.card variant="interactive" class="group text-center">
-            <div class="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-                </svg>
-            </div>
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Pro Tips & Guides</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Master interview techniques & strategies</p>
-            <x-studai.button href="{{ route('interview.tips') }}" variant="secondary" class="w-full">
-                View Tips
-            </x-studai.button>
-        </x-studai.card>
-    </div>
-
-    {{-- Main Content --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {{-- Recent Sessions (2 columns) --}}
-        <div class="lg:col-span-2">
-            <x-studai.card>
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Sessions</h2>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Your practice history</p>
-                    </div>
-                    <a href="#" class="text-sm font-medium text-studai-blue-600 hover:text-studai-blue-700">View all →</a>
-                </div>
-
-                @if(isset($sessions) && $sessions->count() > 0)
-                    <div class="space-y-3">
-                        @foreach($sessions->take(5) as $session)
-                            <div class="group flex items-center gap-4 p-4 rounded-xl border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                <div class="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center
-                                    @if($session->completed_at) bg-green-100 dark:bg-green-900/30 @else bg-amber-100 dark:bg-amber-900/30 @endif">
-                                    @if($session->completed_at)
-                                        <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                    @else
-                                        <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                    @endif
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center gap-2">
-                                        <h4 class="font-medium text-gray-900 dark:text-white truncate">
-                                            {{ $session->job_title ?? 'General Interview' }}
-                                        </h4>
-                                        @if($session->completed_at)
-                                            <x-studai.badge color="green" size="sm">Completed</x-studai.badge>
-                                        @else
-                                            <x-studai.badge color="amber" size="sm">In Progress</x-studai.badge>
-                                        @endif
-                                    </div>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                                        {{ $session->questions_count ?? 0 }} questions • {{ $session->created_at->diffForHumans() }}
-                                    </p>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    @if($session->overall_score)
-                                        <x-studai.ai-score :score="$session->overall_score" size="sm" />
-                                    @endif
-                                    @if($session->completed_at)
-                                        <x-studai.button href="{{ route('interview.complete', $session) }}" variant="ghost" size="sm">
-                                            View Report
-                                        </x-studai.button>
-                                    @else
-                                        <x-studai.button href="{{ route('interview.session', $session) }}" variant="primary" size="sm">
-                                            Continue
-                                        </x-studai.button>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @else
-                    <div class="text-center py-12">
-                        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                        </div>
-                        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">No sessions yet</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Start your first practice session to track progress</p>
-                        <x-studai.button href="{{ route('interview.create') }}" variant="primary">
-                            Start Practice
-                        </x-studai.button>
-                    </div>
-                @endif
-            </x-studai.card>
+            <h3 class="font-semibold text-gray-900 mb-1">Mock Interview</h3>
+            <p class="text-xs text-gray-500 mb-4">AI-powered with real-time feedback</p>
+            <a href="{{ route('interview.create') }}" class="inline-flex items-center justify-center w-full px-4 py-2 text-white text-sm font-semibold rounded-xl transition-colors" style="background:#7c3aed;" onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='#7c3aed'">Start Now</a>
         </div>
 
-        {{-- Right Sidebar --}}
-        <div class="space-y-6">
+        {{-- Question Bank --}}
+        <div class="bg-white rounded-2xl p-6 text-center group transition-all" style="border:1.5px solid #ddd6fe;" onmouseover="this.style.background='#f5f3ff'" onmouseout="this.style.background='#fff'">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg transition-transform group-hover:scale-110" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">
+                <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+            </div>
+            <h3 class="font-semibold text-gray-900 mb-1">Question Bank</h3>
+            <p class="text-xs text-gray-500 mb-4">500+ curated interview questions</p>
+            <a href="{{ route('interview.common-questions') }}" class="inline-flex items-center justify-center w-full px-4 py-2 text-white text-sm font-semibold rounded-xl transition-colors" style="background:#8b5cf6;" onmouseover="this.style.background='#7c3aed'" onmouseout="this.style.background='#8b5cf6'">Browse Questions</a>
+        </div>
+
+        {{-- Pro Tips --}}
+        <div class="bg-white rounded-2xl p-6 text-center group transition-all" style="border:1.5px solid #ddd6fe;" onmouseover="this.style.background='#f5f3ff'" onmouseout="this.style.background='#fff'">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg transition-transform group-hover:scale-110" style="background:linear-gradient(135deg,#a78bfa,#7c3aed);">
+                <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            </div>
+            <h3 class="font-semibold text-gray-900 mb-1">Pro Tips &amp; Guides</h3>
+            <p class="text-xs text-gray-500 mb-4">Master interview techniques &amp; strategies</p>
+            <a href="{{ route('interview.tips') }}" class="inline-flex items-center justify-center w-full px-4 py-2 text-white text-sm font-semibold rounded-xl transition-colors" style="background:#6d28d9;" onmouseover="this.style.background='#4c1d95'" onmouseout="this.style.background='#6d28d9'">View Tips</a>
+        </div>
+    </div>
+
+    {{-- SESSIONS + SIDEBAR --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {{-- Recent Sessions --}}
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-sm">
+            <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-gray-100">
+                <h2 class="text-base font-semibold text-gray-900">Recent Sessions</h2>
+                <a href="#" class="text-sm font-medium hover:underline" style="color:#7c3aed;">View all ?</a>
+            </div>
+
+            @if(isset($sessions) && $sessions->count() > 0)
+            <div class="divide-y divide-gray-100">
+                @foreach($sessions->take(5) as $session)
+                <div class="flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center"
+                         style="background:{{ $session->completed_at ? '#ede9fe' : '#f5f3ff' }};">
+                        @if($session->completed_at)
+                            <svg class="w-5 h-5" style="color:#7c3aed;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        @else
+                            <svg class="w-5 h-5" style="color:#8b5cf6;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        @endif
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-sm font-semibold text-gray-900 truncate">{{ $session->job_title ?? $session->role_title ?? 'General Interview' }}</span>
+                            <span class="px-2 py-0.5 text-xs font-medium rounded-full"
+                                  style="{{ $session->completed_at ? 'background:#ede9fe;color:#6d28d9;' : 'background:#f5f3ff;color:#7c3aed;' }}">
+                                {{ $session->completed_at ? 'Completed' : 'In Progress' }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-500">{{ $session->questions_answered ?? 0 }} questions &middot; {{ $session->created_at->diffForHumans() }}</p>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        @if($session->overall_score)
+                        <div class="relative w-10 h-10">
+                            <svg class="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="{{ $session->overall_score >= 90 ? '#7c3aed' : ($session->overall_score >= 75 ? '#8b5cf6' : '#a78bfa') }}" stroke-width="3" stroke-dasharray="{{ $session->overall_score }},100"/>
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-gray-900" style="font-size:10px;font-weight:700;">{{ $session->overall_score }}</span>
+                        </div>
+                        @endif
+                        @if($session->completed_at)
+                            <a href="{{ route('interview.complete', $session->cache_key) }}" class="text-xs font-semibold hover:underline" style="color:#7c3aed;">Report ➟</a>
+                        @else
+                            <a href="{{ route('interview.session', $session) }}" class="px-3 py-1.5 text-white text-xs font-semibold rounded-lg transition-colors" style="background:#7c3aed;">Continue</a>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @else
+            <div class="py-14 text-center">
+                <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3" style="background:#ede9fe;">
+                    <svg class="w-7 h-7" style="color:#a78bfa;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                </div>
+                <p class="text-sm font-semibold text-gray-900">No sessions yet</p>
+                <p class="text-xs text-gray-500 mt-1 mb-4">Start your first mock interview to track your progress</p>
+                <a href="{{ route('interview.create') }}" class="inline-flex items-center gap-2 px-4 py-2 text-white text-sm font-semibold rounded-xl transition-colors" style="background:#7c3aed;">Start Practice</a>
+            </div>
+            @endif
+        </div>
+
+        {{-- Right sidebar --}}
+        <div class="space-y-5">
             {{-- AI Coach Insights --}}
-            <x-studai.card>
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-                        </svg>
+            <div class="rounded-2xl p-5 text-white" style="background:linear-gradient(135deg,#4c1d95,#7c3aed);">
+                <div class="flex items-center gap-2.5 mb-4">
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:rgba(255,255,255,.2);">
+                        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
                     </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 dark:text-white">AI Coach</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Personalized tips</p>
-                    </div>
+                    <div class="text-sm font-semibold text-white">AI Coach Insights</div>
                 </div>
-                <div class="space-y-3">
-                    <div class="p-3 bg-studai-blue-50 dark:bg-studai-blue-900/20 rounded-xl">
-                        <p class="text-sm text-gray-700 dark:text-gray-300">
-                            💡 <span class="font-medium">Focus on STAR method</span> — Your behavioral answers could be more structured.
-                        </p>
-                    </div>
-                    <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                        <p class="text-sm text-gray-700 dark:text-gray-300">
-                            ⭐ <span class="font-medium">Strong technical skills</span> — Your coding explanations are clear and concise.
-                        </p>
-                    </div>
+                <div class="space-y-2.5">
+                    <div class="rounded-xl p-3 text-sm text-white" style="background:rgba(255,255,255,.15);">&#x1F4A1; <span class="font-medium">Use STAR method</span> � Structure behavioral answers for clarity.</div>
+                    <div class="rounded-xl p-3 text-sm text-white" style="background:rgba(255,255,255,.15);">&#x2B50; <span class="font-medium">Strong technical</span> � Your code explanations are clear.</div>
                 </div>
-            </x-studai.card>
+            </div>
 
-            {{-- Resources --}}
-            <x-studai.card>
-                <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Learning Resources</h3>
-                <div class="space-y-3">
-                    <a href="{{ route('interview.star-guide') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors group">
-                        <div class="w-9 h-9 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-                            </svg>
-                        </div>
+            {{-- Learning Resources --}}
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+                <h3 class="text-sm font-semibold text-gray-900 mb-3">Learning Resources</h3>
+                <div class="space-y-1.5">
+                    <a href="{{ route('interview.star-guide') }}" class="flex items-center gap-3 p-3 rounded-xl transition-colors group" onmouseover="this.style.background='#f5f3ff'" onmouseout="this.style.background='transparent'">
+                        <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0" style="background:#ede9fe;">&#x2B50;</span>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">STAR Method Guide</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Master behavioral interviews</p>
+                            <div class="text-sm font-semibold text-gray-900">STAR Method Guide</div>
+                            <div class="text-xs text-gray-500">Master behavioral interviews</div>
                         </div>
                     </a>
-                    <a href="{{ route('interview.salary-negotiation') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors group">
-                        <div class="w-9 h-9 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
+                    <a href="{{ route('interview.salary-negotiation') }}" class="flex items-center gap-3 p-3 rounded-xl transition-colors group" onmouseover="this.style.background='#f5f3ff'" onmouseout="this.style.background='transparent'">
+                        <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0" style="background:#ede9fe;">&#x1F4B0;</span>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Salary Negotiation</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Get the compensation you deserve</p>
+                            <div class="text-sm font-semibold text-gray-900">Salary Negotiation</div>
+                            <div class="text-xs text-gray-500">Get the compensation you deserve</div>
                         </div>
                     </a>
+                    @if(isset($sessions) && $sessions->where('vantage_score', '>', 0)->isNotEmpty())
+                    <a href="{{ route('interview.skill-map', $sessions->where('vantage_score', '>', 0)->sortByDesc('created_at')->first()) }}" class="flex items-center gap-3 p-3 rounded-xl transition-colors group" style="border:1px solid #ddd6fe;" onmouseover="this.style.background='#f5f3ff'" onmouseout="this.style.background='transparent'">
+                        <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0" style="background:#ede9fe;">&#x1F9E0;</span>
+                        <div>
+                            <div class="text-sm font-semibold" style="color:#6d28d9;">Vantage Skill Map</div>
+                            <div class="text-xs text-gray-500">Future-ready competency radar</div>
+                        </div>
+                    </a>
+                    @endif
                 </div>
-            </x-studai.card>
+            </div>
 
-            {{-- Upcoming Interviews --}}
-            <x-studai.card>
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-semibold text-gray-900 dark:text-white">Upcoming</h3>
-                    <x-studai.badge color="blue">2 scheduled</x-studai.badge>
+            {{-- Upcoming --}}
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-semibold text-gray-900">Upcoming Interviews</h3>
+                    <span class="text-xs px-2 py-0.5 rounded-full font-medium" style="background:#ede9fe;color:#6d28d9;">2 this week</span>
                 </div>
                 <div class="space-y-3">
                     <div class="flex items-center gap-3">
-                        <div class="flex-shrink-0 w-10 h-10 bg-studai-blue-100 dark:bg-studai-blue-900/30 rounded-lg flex flex-col items-center justify-center">
-                            <span class="text-[10px] font-bold text-studai-blue-600 dark:text-studai-blue-400">DEC</span>
-                            <span class="text-sm font-bold text-studai-blue-600 dark:text-studai-blue-400">2</span>
+                        <div class="w-9 h-9 rounded-lg flex flex-col items-center justify-center flex-shrink-0" style="background:#ede9fe;">
+                            <span class="font-bold" style="font-size:9px;color:#6d28d9;">DEC</span>
+                            <span class="text-sm font-bold leading-none" style="color:#6d28d9;">2</span>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Google - Technical</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">10:00 AM PST</p>
+                            <div class="text-sm font-semibold text-gray-900">Google � Technical</div>
+                            <div class="text-xs text-gray-500">10:00 AM PST</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="flex-shrink-0 w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex flex-col items-center justify-center">
-                            <span class="text-[10px] font-bold text-green-600 dark:text-green-400">DEC</span>
-                            <span class="text-sm font-bold text-green-600 dark:text-green-400">5</span>
+                        <div class="w-9 h-9 rounded-lg flex flex-col items-center justify-center flex-shrink-0" style="background:#f5f3ff;">
+                            <span class="font-bold" style="font-size:9px;color:#7c3aed;">DEC</span>
+                            <span class="text-sm font-bold leading-none" style="color:#7c3aed;">5</span>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">Spotify - Culture Fit</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">2:30 PM PST</p>
+                            <div class="text-sm font-semibold text-gray-900">Spotify � Culture Fit</div>
+                            <div class="text-xs text-gray-500">2:30 PM PST</div>
                         </div>
                     </div>
                 </div>
-            </x-studai.card>
+            </div>
         </div>
     </div>
 </div>

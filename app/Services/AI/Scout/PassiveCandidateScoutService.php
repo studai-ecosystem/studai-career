@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\AI\Scout;
 
 use App\Models\CandidateInteraction;
@@ -7,6 +9,7 @@ use App\Models\Company;
 use App\Models\PassiveCandidateProfile;
 use App\Models\TalentPipeline;
 use App\Models\User;
+use App\Services\VantageBadgeService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -16,10 +19,13 @@ use OpenAI\Laravel\Facades\OpenAI;
 
 class PassiveCandidateScoutService
 {
-    /**
-     * OpenAI model for discovery analysis
-     */
-    protected string $model = 'gpt-5-mini';
+    protected string $model;
+
+    public function __construct(
+        private readonly VantageBadgeService $vantageBadgeService,
+    ) {
+        $this->model = config('ai.azure.models.chat_mini', 'gpt-4o-mini');
+    }
 
     /**
      * Create passive candidate profile
@@ -344,7 +350,7 @@ class PassiveCandidateScoutService
                         ],
                     ],
                     'temperature' => 0.7,
-                    'max_tokens' => 500,
+                    'max_completion_tokens' => 500,
                 ]);
 
                 $strategy = $response->choices[0]->message->content;
@@ -634,13 +640,18 @@ PROMPT;
             ->get();
 
         // Score and filter candidates
-        $scoredCandidates = $candidates->map(function($candidate) use ($pipeline) {
-            $score = $this->scoreCandidateForPipeline($candidate, $pipeline);
-            
+        $scoredCandidates = $candidates->map(function ($candidate) use ($pipeline) {
+            $score      = $this->scoreCandidateForPipeline($candidate, $pipeline);
+            $dnaMatch   = $this->calculateCompanyDnaMatch($pipeline->company, $candidate);
+            $vantageScore = (float) ($candidate->vantage_score ?? 0.0);
+            $topTiers   = $this->vantageBadgeService->getUserTopTiers($candidate);
+
             return [
-                'user' => $candidate,
-                'score' => $score,
-                'dna_match' => $this->calculateCompanyDnaMatch($pipeline->company, $candidate),
+                'user'           => $candidate,
+                'score'          => $score,
+                'dna_match'      => $dnaMatch,
+                'vantage_score'  => $vantageScore,
+                'vantage_badges' => $topTiers,
             ];
         })
         ->filter(fn($item) => $item['score'] >= 60) // Only good matches
@@ -686,7 +697,13 @@ PROMPT;
             }
         }
 
-        return count($scores) > 0 ? array_sum($scores) / count($scores) : 0;
+        // Vantage Intelligence — future-ready skill signal (up to 20 bonus points)
+        $vantageScore = (float) ($candidate->vantage_score ?? 0.0);
+        if ($vantageScore > 0) {
+            $scores['vantage'] = min(100.0, ($vantageScore / 5.0) * 100.0);
+        }
+
+        return count($scores) > 0 ? array_sum($scores) / count($scores) : 0.0;
     }
 
     /**

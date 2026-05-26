@@ -1,14 +1,14 @@
 {{--
-    StudAI Path — Refund Policy
+    StudAI Hire — Refund Policy
     Money-Back Guarantee & Cancellation Terms
 --}}
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'Refund Policy — StudAI Path | Fair & Transparent')
+@section('title', 'Refund Policy — StudAI Hire | Fair & Transparent')
 
 @section('meta')
-<meta name="description" content="StudAI Path refund policy: 7-day money-back guarantee, pro-rated refunds for annual plans, and transparent cancellation process.">
-<meta property="og:title" content="Refund Policy — StudAI Path">
+<meta name="description" content="StudAI Hire refund policy: 7-day money-back guarantee, pro-rated refunds for annual plans, and transparent cancellation process.">
+<meta property="og:title" content="Refund Policy — StudAI Hire">
 <meta property="og:description" content="We believe in fair refunds. See our transparent policy.">
 <link rel="canonical" href="{{ route('refund-policy') }}">
 @endsection
@@ -78,7 +78,7 @@
             {{-- Introduction --}}
             <div class="bg-surface-50 rounded-2xl border border-surface-200 p-6 mb-12 not-prose">
                 <p class="text-ink-secondary">
-                    At StudAI Path, we're confident in the value we provide. This Refund Policy outlines when and how you can request refunds for our subscription services.
+                    At StudAI Hire, we're confident in the value we provide. This Refund Policy outlines when and how you can request refunds for our subscription services.
                 </p>
             </div>
 
@@ -88,7 +88,7 @@
                 <div class="bg-google-green-50 border border-google-green-200 rounded-xl p-6 mt-4 not-prose">
                     <h4 class="font-semibold text-google-green-800 mb-2">✅ New Subscribers</h4>
                     <p class="text-ink-secondary text-sm">
-                        If this is your first paid subscription to StudAI Path and you're not satisfied, request a full refund within <strong>7 days</strong> of your initial payment. No questions asked.
+                        If this is your first paid subscription to StudAI Hire and you're not satisfied, request a full refund within <strong>7 days</strong> of your initial payment. No questions asked.
                     </p>
                 </div>
                 <p class="text-ink-secondary mt-4">

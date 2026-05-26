@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('content')
 <div class="py-12">
@@ -109,8 +109,8 @@
                         <label for="currency" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Currency *</label>
                         <select name="currency" id="currency" required class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <option value="USD" selected>USD ($)</option>
-                            <option value="EUR">EUR (€)</option>
-                            <option value="GBP">GBP (£)</option>
+                            <option value="EUR">EUR (â‚¬)</option>
+                            <option value="GBP">GBP (Â£)</option>
                             <option value="CAD">CAD ($)</option>
                             <option value="AUD">AUD ($)</option>
                         </select>

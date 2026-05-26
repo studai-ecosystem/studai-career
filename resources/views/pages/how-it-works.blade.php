@@ -1,12 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'How StudAI Career Works | Intelligent Job Matching & Hiring Workflows')
+@section('title', 'How StudAI Hire Works | Intelligent Job Matching & Hiring Workflows')
 
 @section('meta')
-<meta name="description" content="See how StudAI Career guides job seekers and employers through AI-powered job matching, resume optimization, and hiring workflows in five simple steps.">
+<meta name="description" content="See how StudAI Hire guides job seekers and employers through AI-powered job matching, resume optimization, and hiring workflows in five simple steps.">
 <meta name="keywords" content="how it works, AI job search, applicant tracking, hiring automation, job seeker workflow, employer workflow">
-<meta property="og:title" content="How StudAI Career Works">
-<meta property="og:description" content="Discover the AI-driven journey for job seekers and employers on StudAI Career—from profile setup to successful hires.">
+<meta property="og:title" content="How StudAI Hire Works">
+<meta property="og:description" content="Discover the AI-driven journey for job seekers and employers on StudAI Hire—from profile setup to successful hires.">
 <link rel="canonical" href="{{ route('how-it-works') }}">
 @endsection
 
@@ -22,7 +22,7 @@
             <span class="mx-auto inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1 text-sm font-semibold uppercase tracking-widest">How It Works</span>
             <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl">Your AI Co-Pilot For Every Career Move</h1>
             <p class="mx-auto max-w-3xl text-lg text-slate-200 sm:text-xl">
-                StudAI Career combines intelligent profiling, semantic job matching, and automated workflows to deliver measurable outcomes for job seekers and employers.
+                StudAI Hire combines intelligent profiling, semantic job matching, and automated workflows to deliver measurable outcomes for job seekers and employers.
                 Here9s the five-step journey that keeps both sides aligned and hiring velocity at peak.
             </p>
             <div class="mx-auto mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -181,7 +181,7 @@ Faster</h2>
             <div class="space-y-6">
                 <span class="inline-flex items-center rounded-full bg-pink-500/10 px-4 py-1 text-sm font-semibold uppercase tracking-wider text-pink-300">Outcomes</span>
                 <h2 class="text-3xl font-bold text-white sm:text-4xl">Proof That The Workflow Works</h2>
-                <p class="text-lg text-slate-300">Every rollout is measured. Here9s what teams achieve within the first 90 days on StudAI Career.</p>
+                <p class="text-lg text-slate-300">Every rollout is measured. Here9s what teams achieve within the first 90 days on StudAI Hire.</p>
                 <div class="grid gap-6 sm:grid-cols-2">
                     <div class="rounded-3xl border border-pink-500/30 bg-pink-500/10 p-6">
                         <div class="text-4xl font-bold text-white">62%</div>
@@ -275,8 +275,8 @@ Faster</h2>
 {!! json_encode([
     '@context' => 'https://schema.org',
     '@type' => 'HowTo',
-    'name' => 'How StudAI Career Works',
-    'description' => 'Learn how StudAI Career guides job seekers from profile creation to accepted offer using AI-powered workflows.',
+    'name' => 'How StudAI Hire Works',
+    'description' => 'Learn how StudAI Hire guides job seekers from profile creation to accepted offer using AI-powered workflows.',
     'totalTime' => 'PT2H',
     'step' => array_map(fn ($step) => [
         '@type' => 'HowToStep',
@@ -288,7 +288,7 @@ Faster</h2>
         ],
     ], $jobSeekerSteps),
     'tool' => [
-        ['@type' => 'HowToTool', 'name' => 'StudAI Career Profile Builder'],
+        ['@type' => 'HowToTool', 'name' => 'StudAI Hire Profile Builder'],
         ['@type' => 'HowToTool', 'name' => 'Semantic Job Match Engine'],
         ['@type' => 'HowToTool', 'name' => 'Interview & Negotiation Coach'],
     ],

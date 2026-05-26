@@ -70,11 +70,8 @@ class SubscriptionController extends Controller
             ],
             'assessments' => [
                 'used' => $subscription->assessments_taken_this_month ?? 0,
-                'limit' => $subscription->subscriptionPlan->assessment_limit,
-                'percentage' => $this->calculatePercentage(
-                    $subscription->assessments_taken_this_month ?? 0,
-                    $subscription->subscriptionPlan->assessment_limit
-                ),
+                'limit' => null, // Not tracked per plan
+                'percentage' => 0,
             ],
         ];
         

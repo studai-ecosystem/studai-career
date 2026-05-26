@@ -302,11 +302,20 @@ class MarketplaceService extends AIService
      */
     public function submitProposal(MarketplaceProject $project, array $data): MarketplaceProposal
     {
-        $profile = $this->getFreelancerProfile();
-        
-        if (!$profile) {
-            throw new \Exception('You must complete your freelancer profile before submitting proposals.');
-        }
+        // Auto-create a minimal profile if one doesn't exist yet
+        $profile = $this->getFreelancerProfile()
+            ?? FreelancerProfile::create([
+                'user_id'            => $this->user->id,
+                'professional_title' => $this->user->name . ' (Freelancer)',
+                'bio'                => '',
+                'experience_level'   => 'intermediate',
+                'availability'       => 'full_time',
+                'currency'           => 'INR',
+                'skills'             => [],
+                'languages'          => [],
+                'portfolio'          => [],
+                'certifications'     => [],
+            ]);
 
         if (!$project->canReceiveProposals()) {
             throw new \Exception('This project is no longer accepting proposals.');
@@ -317,18 +326,20 @@ class MarketplaceService extends AIService
         }
 
         return MarketplaceProposal::create([
-            'project_id' => $project->id,
-            'freelancer_id' => $this->user->id,
-            'cover_letter' => $data['cover_letter'],
-            'proposed_amount' => $data['proposed_amount'],
-            'hourly_rate' => $data['hourly_rate'] ?? null,
-            'currency' => $project->currency,
-            'estimated_duration_days' => $data['estimated_duration_days'] ?? null,
-            'milestones' => $data['milestones'] ?? null,
-            'relevant_experience' => $data['relevant_experience'] ?? null,
-            'attachments' => $data['attachments'] ?? null,
-            'status' => 'pending',
+            'project_id'               => $project->id,
+            'freelancer_id'            => $this->user->id,
+            'cover_letter'             => $data['cover_letter'],
+            'proposed_amount'          => $data['proposed_amount'],
+            'hourly_rate'              => $data['hourly_rate'] ?? null,
+            'currency'                 => $project->currency,
+            'estimated_duration_days'  => $data['estimated_duration_days'] ?? null,
+            'milestones'               => $data['milestones'] ?? null,
+            'relevant_experience'      => $data['relevant_experience'] ?? null,
+            'attachments'              => $data['attachments'] ?? null,
+            'status'                   => 'pending',
         ]);
+
+        \App\Jobs\Marketplace\ScoreProposalJob::dispatch($proposal)->afterCommit();
     }
 
     /**
@@ -349,7 +360,7 @@ class MarketplaceService extends AIService
     public function getMyProposals(string $status = null): Collection
     {
         $query = MarketplaceProposal::where('freelancer_id', $this->user->id)
-            ->with(['project.employer', 'project.company']);
+            ->with(['project.employer', 'project.company', 'contract']);
 
         if ($status) {
             $query->where('status', $status);
@@ -1156,14 +1167,21 @@ PROMPT;
      */
     public function getMarketplaceStats(): array
     {
-        return [
-            'total_projects' => MarketplaceProject::open()->count(),
-            'total_freelancers' => FreelancerProfile::available()->count(),
-            'verified_freelancers' => FreelancerProfile::verified()->count(),
-            'total_contracts' => MarketplaceContract::count(),
-            'completed_contracts' => MarketplaceContract::completed()->count(),
-            'total_value' => MarketplaceContract::completed()->sum('total_amount'),
-        ];
+        return \Illuminate\Support\Facades\Cache::remember('marketplace_stats', 900, function (): array {
+            $contractStats = MarketplaceContract::selectRaw(
+                'COUNT(*) as total, SUM(CASE WHEN status = \'completed\' THEN 1 ELSE 0 END) as completed_count, ' .
+                'SUM(CASE WHEN status = \'completed\' THEN total_amount ELSE 0 END) as completed_value'
+            )->first();
+
+            return [
+                'total_projects'       => MarketplaceProject::open()->count(),
+                'total_freelancers'    => FreelancerProfile::available()->count(),
+                'verified_freelancers' => FreelancerProfile::verified()->count(),
+                'total_contracts'      => (int) ($contractStats->total ?? 0),
+                'completed_contracts'  => (int) ($contractStats->completed_count ?? 0),
+                'total_value'          => (float) ($contractStats->completed_value ?? 0),
+            ];
+        });
     }
 
     /**

@@ -13,7 +13,7 @@ class TalentPoolController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:employer');
+        $this->middleware(['auth', 'employer']);
     }
     
     /**
@@ -21,7 +21,7 @@ class TalentPoolController extends Controller
      */
     public function index(Request $request)
     {
-        $user = auth('employer')->user();
+        $user = auth()->user();
         $company = $user->company;
         
         $tags = $request->input('tags', []);
@@ -97,7 +97,7 @@ class TalentPoolController extends Controller
      */
     public function addCandidate(Request $request, User $user)
     {
-        $employer = auth('employer')->user();
+        $employer = auth()->user();
         $company = $employer->company;
         
         $validated = $request->validate([
@@ -148,7 +148,7 @@ class TalentPoolController extends Controller
      */
     public function removeCandidate(User $user)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         $candidate = TalentPoolCandidate::where('company_id', $company->id)
             ->where('user_id', $user->id)
@@ -174,7 +174,7 @@ class TalentPoolController extends Controller
             'action' => 'required|in:add,remove,replace',
         ]);
         
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         TalentPoolCandidate::whereIn('id', $validated['candidate_ids'])
             ->where('company_id', $company->id)
@@ -208,7 +208,7 @@ class TalentPoolController extends Controller
      */
     public function search(Request $request)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         $validated = $request->validate([
             'skills' => 'nullable|array',
@@ -275,8 +275,8 @@ class TalentPoolController extends Controller
             'message' => 'required_without:template_id|string',
         ]);
         
-        $company = auth('employer')->user()->company;
-        $employer = auth('employer')->user();
+        $company = auth()->user()->company;
+        $employer = auth()->user();
         
         $candidates = TalentPoolCandidate::whereIn('id', $validated['candidate_ids'])
             ->where('company_id', $company->id)
@@ -334,7 +334,7 @@ class TalentPoolController extends Controller
      */
     public function updateCandidate(Request $request, TalentPoolCandidate $candidate)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         if ($candidate->company_id !== $company->id) {
             abort(403);
@@ -364,7 +364,7 @@ class TalentPoolController extends Controller
             'min_score' => 'nullable|integer|min:0|max:100',
         ]);
         
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         $job = \App\Models\Job::where('company_id', $company->id)
             ->findOrFail($validated['job_id']);
         

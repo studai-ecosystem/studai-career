@@ -1,57 +1,35 @@
-@extends('layouts.dashboard')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Profile Settings')
 
 @section('page-title', 'Profile Settings')
 
 @section('content')
-<div class="max-w-5xl mx-auto" x-data="{ activeTab: 'profile' }">
-    <!-- Profile Header Card -->
-    <div class="bg-white rounded-2xl shadow-xs border border-gray-100 p-6 mb-6">
-        <div class="flex items-center gap-6">
-            <!-- Avatar -->
-            <div class="relative">
-                <div class="w-24 h-24 rounded-full bg-gradient-to-br from-studai-blue-400 to-studai-blue-600 flex items-center justify-center text-white text-3xl font-semibold">
-                    {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
-                </div>
-                <button class="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full shadow-md border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
-                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                </button>
-            </div>
-            
-            <!-- User Info -->
-            <div class="flex-1">
-                <h1 class="text-2xl font-semibold text-gray-900">{{ auth()->user()->name ?? 'User' }}</h1>
-                <p class="text-gray-500">{{ auth()->user()->email ?? 'email@example.com' }}</p>
-                <div class="flex items-center gap-4 mt-3">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-green-50 text-green-700">
-                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                        Profile Complete
-                    </span>
-                    <span class="text-sm text-gray-500">Member since {{ auth()->user()->created_at?->format('M Y') ?? 'N/A' }}</span>
-                </div>
-            </div>
-            
-            <!-- Quick Actions -->
-            <div class="flex items-center gap-3">
-                <a href="{{ route('features') }}#resume-studio" class="btn-secondary text-sm">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    View Resume
-                </a>
-            </div>
+{{-- HERO --}}
+<div class="relative overflow-hidden rounded-2xl p-6 mb-6 text-white" style="background:linear-gradient(135deg,#7c3aed 0%,#9333ea 40%,#a855f7 70%,#c026d3 100%)">
+    <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 80% 50%,rgba(255,255,255,.4) 0%,transparent 60%);"></div>
+    <div class="relative flex items-center gap-4">
+        <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-3xl font-bold flex-shrink-0 border-2 border-white/30">
+            {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
         </div>
+        <div class="flex-1">
+            <h1 class="text-xl font-bold">{{ auth()->user()->name ?? 'My Profile' }}</h1>
+            <p class="text-purple-100 text-sm">{{ auth()->user()->email ?? '' }}</p>
+            <p class="text-purple-200 text-xs mt-0.5">Member since {{ auth()->user()->created_at?->format('M Y') ?? 'N/A' }}</p>
+        </div>
+        <a href="{{ route('resume.index') }}" class="flex-shrink-0 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-semibold transition-colors border border-white/20">
+            View Resume →
+        </a>
     </div>
+</div>
+
+<div class="max-w-5xl mx-auto" x-data="{ activeTab: 'profile' }">
 
     <!-- Tab Navigation -->
     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 mb-6">
         <div class="flex border-b border-gray-100">
             <button @click="activeTab = 'profile'" 
-                    :class="activeTab === 'profile' ? 'border-studai-blue-500 text-studai-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    :class="activeTab === 'profile' ? 'border-module-coach-500 text-module-coach-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
                     class="flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -59,7 +37,7 @@
                 Profile Information
             </button>
             <button @click="activeTab = 'security'" 
-                    :class="activeTab === 'security' ? 'border-studai-blue-500 text-studai-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    :class="activeTab === 'security' ? 'border-module-coach-500 text-module-coach-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
                     class="flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -67,7 +45,7 @@
                 Security
             </button>
             <button @click="activeTab = 'notifications'" 
-                    :class="activeTab === 'notifications' ? 'border-studai-blue-500 text-studai-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    :class="activeTab === 'notifications' ? 'border-module-coach-500 text-module-coach-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
                     class="flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
@@ -75,7 +53,7 @@
                 Notifications
             </button>
             <button @click="activeTab = 'preferences'" 
-                    :class="activeTab === 'preferences' ? 'border-studai-blue-500 text-studai-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    :class="activeTab === 'preferences' ? 'border-module-coach-500 text-module-coach-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
                     class="flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -143,6 +121,22 @@
                     <textarea id="bio" name="bio" rows="4" class="input-google w-full" 
                               placeholder="Tell employers about your professional background...">{{ old('bio', $user->bio ?? '') }}</textarea>
                 </div>
+
+                @if(auth()->user()->isEmployer() && auth()->user()->company)
+                <div class="pt-4 border-t border-gray-100">
+                    <h3 class="text-sm font-semibold text-gray-800 mb-1">Company Hiring Email</h3>
+                    <p class="text-xs text-gray-400 mb-3">Application notifications and candidate emails are sent from this address.</p>
+                    <div>
+                        <label for="hr_email" class="block text-sm font-medium text-gray-700 mb-2">HR / Hiring Email</label>
+                        <input type="email" id="hr_email" name="hr_email"
+                               value="{{ old('hr_email', auth()->user()->company->hr_email ?? '') }}"
+                               class="input-google w-full" placeholder="hr@yourcompany.com">
+                        @error('hr_email')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+                @endif
 
                 <div class="flex items-center justify-end gap-4 pt-4 border-t border-gray-100">
                     @if (session('status') === 'profile-updated')
@@ -250,28 +244,28 @@
                                 <p class="font-medium text-gray-900">Job Recommendations</p>
                                 <p class="text-sm text-gray-500">Get personalized job matches based on your profile</p>
                             </div>
-                            <input type="checkbox" checked class="w-5 h-5 text-studai-blue-600 rounded focus:ring-studai-blue-500">
+                            <input type="checkbox" checked class="w-5 h-5 text-module-coach-600 rounded focus:ring-module-coach-500">
                         </label>
                         <label class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                             <div>
                                 <p class="font-medium text-gray-900">Application Updates</p>
                                 <p class="text-sm text-gray-500">Status changes on your job applications</p>
                             </div>
-                            <input type="checkbox" checked class="w-5 h-5 text-studai-blue-600 rounded focus:ring-studai-blue-500">
+                            <input type="checkbox" checked class="w-5 h-5 text-module-coach-600 rounded focus:ring-module-coach-500">
                         </label>
                         <label class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                             <div>
                                 <p class="font-medium text-gray-900">Interview Reminders</p>
                                 <p class="text-sm text-gray-500">Reminders before scheduled interviews</p>
                             </div>
-                            <input type="checkbox" checked class="w-5 h-5 text-studai-blue-600 rounded focus:ring-studai-blue-500">
+                            <input type="checkbox" checked class="w-5 h-5 text-module-coach-600 rounded focus:ring-module-coach-500">
                         </label>
                         <label class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                             <div>
                                 <p class="font-medium text-gray-900">Weekly Digest</p>
                                 <p class="text-sm text-gray-500">Summary of your job search activity</p>
                             </div>
-                            <input type="checkbox" class="w-5 h-5 text-studai-blue-600 rounded focus:ring-studai-blue-500">
+                            <input type="checkbox" class="w-5 h-5 text-module-coach-600 rounded focus:ring-module-coach-500">
                         </label>
                     </div>
                 </div>
@@ -285,14 +279,14 @@
                                 <p class="font-medium text-gray-900">Real-time Alerts</p>
                                 <p class="text-sm text-gray-500">Instant notifications for important updates</p>
                             </div>
-                            <input type="checkbox" checked class="w-5 h-5 text-studai-blue-600 rounded focus:ring-studai-blue-500">
+                            <input type="checkbox" checked class="w-5 h-5 text-module-coach-600 rounded focus:ring-module-coach-500">
                         </label>
                         <label class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                             <div>
                                 <p class="font-medium text-gray-900">Messages</p>
                                 <p class="text-sm text-gray-500">When employers send you a message</p>
                             </div>
-                            <input type="checkbox" checked class="w-5 h-5 text-studai-blue-600 rounded focus:ring-studai-blue-500">
+                            <input type="checkbox" checked class="w-5 h-5 text-module-coach-600 rounded focus:ring-module-coach-500">
                         </label>
                     </div>
                 </div>
@@ -355,21 +349,21 @@
                         <p class="font-medium text-gray-900">Profile Visibility</p>
                         <p class="text-sm text-gray-500">Allow employers to find your profile in search</p>
                     </div>
-                    <input type="checkbox" checked class="w-5 h-5 text-studai-blue-600 rounded focus:ring-studai-blue-500">
+                    <input type="checkbox" checked class="w-5 h-5 text-module-coach-600 rounded focus:ring-module-coach-500">
                 </label>
                 <label class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                     <div>
                         <p class="font-medium text-gray-900">Show Salary Expectations</p>
                         <p class="text-sm text-gray-500">Display your salary expectations to employers</p>
                     </div>
-                    <input type="checkbox" class="w-5 h-5 text-studai-blue-600 rounded focus:ring-studai-blue-500">
+                    <input type="checkbox" class="w-5 h-5 text-module-coach-600 rounded focus:ring-module-coach-500">
                 </label>
                 <label class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                     <div>
                         <p class="font-medium text-gray-900">Open to Opportunities</p>
                         <p class="text-sm text-gray-500">Let recruiters know you're actively looking</p>
                     </div>
-                    <input type="checkbox" checked class="w-5 h-5 text-studai-blue-600 rounded focus:ring-studai-blue-500">
+                    <input type="checkbox" checked class="w-5 h-5 text-module-coach-600 rounded focus:ring-module-coach-500">
                 </label>
             </div>
         </div>

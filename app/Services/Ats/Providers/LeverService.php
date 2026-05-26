@@ -187,7 +187,7 @@ class LeverService extends BaseAtsProvider
             'emails' => isset($localData['email']) ? [$localData['email']] : [],
             'phones' => isset($localData['phone']) ? [['value' => $localData['phone']]] : [],
             'links' => isset($localData['linkedin_url']) ? [$localData['linkedin_url']] : [],
-            'sources' => isset($localData['source']) ? [$localData['source']] : ['StudAI Career'],
+            'sources' => isset($localData['source']) ? [$localData['source']] : ['StudAI Hire'],
         ];
     }
 

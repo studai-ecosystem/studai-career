@@ -15,7 +15,7 @@ class JobWizardController extends Controller
     
     public function __construct(AIService $aiService)
     {
-        $this->middleware('auth:employer');
+        $this->middleware(['auth', 'employer']);
         $this->aiService = $aiService;
     }
     
@@ -24,7 +24,7 @@ class JobWizardController extends Controller
      */
     public function start()
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         // Get available templates
         $publicTemplates = JobTemplate::where('is_public', true)->get();
@@ -63,7 +63,7 @@ class JobWizardController extends Controller
             'company_description' => 'nullable|string',
         ]);
         
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         try {
             $prompt = $this->buildJobDescriptionPrompt($validated, $company);
@@ -105,7 +105,7 @@ class JobWizardController extends Controller
      */
     public function templates(Request $request)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         $category = $request->input('category');
         
         $query = JobTemplate::where(function ($q) use ($company) {
@@ -145,7 +145,7 @@ class JobWizardController extends Controller
             'benefits' => 'nullable|array',
         ]);
         
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         // Create preview data
         $preview = [
@@ -201,7 +201,7 @@ class JobWizardController extends Controller
             'template_name' => 'nullable|required_if:save_as_template,true|string',
         ]);
         
-        $employer = auth('employer')->user();
+        $employer = auth()->user();
         $company = $employer->company;
         
         // Check subscription limits

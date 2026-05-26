@@ -65,40 +65,54 @@ class CareerProfileController extends Controller
         try {
             $user = auth()->user();
             
-            // Store the resume file
+            // Store the resume file (private disk now defined in filesystems.php)
             $file = $request->file('resume');
             $path = $file->store('resumes/' . $user->id, 'private');
             $fullPath = Storage::disk('private')->path($path);
-            
-            // Analyze resume with AI
-            $analysisData = $this->resumeAnalyzer
-                ->forUser($user)
-                ->analyzeResume($fullPath);
-            
-            // Get AI feedback
-            $resumeText = $this->resumeAnalyzer->extractTextFromFile($fullPath);
-            $feedback = $this->resumeAnalyzer->getResumeFeedback(
-                $resumeText,
-                $request->input('target_role', 'General')
-            );
+
+            // Save path to profile immediately so upload is never lost
+            $profile = $user->profile()->firstOrCreate(['user_id' => $user->id]);
+            $profile->resume_path = $path;
+            $profile->save();
+
+            $analysisData = null;
+            $feedback     = null;
+
+            // Attempt AI analysis — non-fatal
+            try {
+                $analysisData = $this->resumeAnalyzer
+                    ->forUser($user)
+                    ->analyzeResume($fullPath);
+
+                $resumeText = $this->resumeAnalyzer->extractTextFromFile($fullPath);
+                $feedback   = $this->resumeAnalyzer->getResumeFeedback(
+                    $resumeText,
+                    $request->input('target_role', 'General')
+                );
+            } catch (\Exception $aiErr) {
+                \Log::warning('Resume AI analysis skipped', [
+                    'error'   => $aiErr->getMessage(),
+                    'user_id' => $user->id,
+                ]);
+            }
             
             return response()->json([
-                'success' => true,
-                'message' => 'Resume analyzed successfully',
-                'data' => $analysisData,
-                'feedback' => $feedback,
+                'success'     => true,
+                'message'     => $analysisData ? 'Resume analyzed successfully' : 'Resume uploaded successfully (AI analysis unavailable)',
+                'data'        => $analysisData,
+                'feedback'    => $feedback,
                 'resume_path' => $path,
             ]);
             
         } catch (\Exception $e) {
             \Log::error('Resume upload failed', [
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
                 'user_id' => auth()->id(),
             ]);
             
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to analyze resume: ' . $e->getMessage(),
+                'message' => 'Failed to upload resume. Please try again.',
             ], 500);
         }
     }

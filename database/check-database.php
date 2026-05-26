@@ -31,7 +31,7 @@ try {
         echo "Options:\n";
         echo "1. Drop all tables and start fresh: php artisan migrate:fresh\n";
         echo "2. Keep existing data and work with it\n";
-        echo "3. Use a different database for StudAI Career\n\n";
+        echo "3. Use a different database for StudAI Hire\n\n";
     } else {
         echo "✓ Database is empty, ready for migrations!\n";
     }

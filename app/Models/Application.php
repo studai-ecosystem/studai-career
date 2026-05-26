@@ -15,27 +15,79 @@ class Application extends Model
     protected $fillable = [
         'user_id',
         'job_id',
-        'status',
-        'custom_resume',
-        'custom_cover_letter',
+        'application_number',
+        'cover_letter',
+        'resume_file',
         'answers',
+        'status',
+        'status_updated_at',
+        'rejection_reason',
+        'ai_reason',
+        'status_history',
+        'match_analysis',
+        'timeline',
         'notes',
-        'applied_at',
+        'submitted_at',
         'viewed_at',
-        'responded_at',
-        'interview_at',
-        'offer_at',
-        'decision_at',
+        'is_archived',
+        'source',
+        // Orin™ evaluation fields
+        'evaluation_status',
+        'evaluation_score',
+        'skill_match_score',
+        'resume_quality_score',
+        'behavioural_fit_score',
+        'final_rank_score',
+        'rank_position',
+        'evaluation_started_at',
+        'evaluation_completed_at',
+        'application_email_sent',
+        'evaluation_invite_sent',
+        'result_email_sent',
+        'result_notified_at',
+        'portfolio_url',
+        'github_url',
+        'work_sample_url',
+        'screening_answers',
+        'access_token',
+        'is_guest_applicant',
+        'guest_name',
+        'guest_email',
+        'guest_phone',
+        // Hiring pipeline
+        'hiring_stage',
+        'pipeline_stage_date',
+        'pipeline_stage_notes',
+        'confirmation_email_sent',
+        'test_link_token',
     ];
 
     protected $casts = [
         'answers' => 'array',
-        'applied_at' => 'datetime',
+        'match_analysis' => 'array',
+        'status_history' => 'array',
+        'timeline' => 'array',
+        'submitted_at' => 'datetime',
         'viewed_at' => 'datetime',
-        'responded_at' => 'datetime',
-        'interview_at' => 'datetime',
-        'offer_at' => 'datetime',
-        'decision_at' => 'datetime',
+        'status_updated_at' => 'datetime',
+        'is_archived' => 'boolean',
+        // Orin™ evaluation casts
+        'evaluation_score'          => 'decimal:2',
+        'skill_match_score'         => 'decimal:2',
+        'resume_quality_score'      => 'decimal:2',
+        'behavioural_fit_score'     => 'decimal:2',
+        'final_rank_score'          => 'decimal:2',
+        'rank_position'             => 'integer',
+        'evaluation_started_at'     => 'datetime',
+        'evaluation_completed_at'   => 'datetime',
+        'result_notified_at'        => 'datetime',
+        'application_email_sent'    => 'boolean',
+        'evaluation_invite_sent'    => 'boolean',
+        'result_email_sent'         => 'boolean',
+        'is_guest_applicant'        => 'boolean',
+        'screening_answers'         => 'array',
+        'confirmation_email_sent'   => 'boolean',
+        'pipeline_stage_date'       => 'date',
     ];
 
     /**
@@ -77,6 +129,16 @@ class Application extends Model
     public function notes(): HasMany
     {
         return $this->hasMany(ApplicationNote::class);
+    }
+
+    public function evaluationSession(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(EvaluationSession::class);
+    }
+
+    public function evaluationSessions(): HasMany
+    {
+        return $this->hasMany(EvaluationSession::class);
     }
 
     /**

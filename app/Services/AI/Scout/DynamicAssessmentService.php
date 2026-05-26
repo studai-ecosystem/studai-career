@@ -335,7 +335,7 @@ class DynamicAssessmentService
         try {
             // No caching for assessments - each must be unique
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'messages' => [
                     [
                         'role' => 'system',
@@ -347,7 +347,7 @@ class DynamicAssessmentService
                     ]
                 ],
                 'temperature' => 0.9, // Higher temperature for variety
-                'max_tokens' => 3000,
+                'max_completion_tokens' => 3000,
                 'response_format' => ['type' => 'json_object']
             ]);
 
@@ -498,7 +498,7 @@ class DynamicAssessmentService
             $evaluationPrompt = $this->buildEvaluationPrompt($question, $answer);
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'messages' => [
                     [
                         'role' => 'system',
@@ -510,7 +510,7 @@ class DynamicAssessmentService
                     ]
                 ],
                 'temperature' => 0.3,
-                'max_tokens' => 1000,
+                'max_completion_tokens' => 1000,
                 'response_format' => ['type' => 'json_object']
             ]);
 

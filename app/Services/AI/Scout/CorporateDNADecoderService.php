@@ -7,14 +7,14 @@ use App\Models\CompanyDNAProfile;
 use App\Models\CultureAnalysis;
 use App\Models\SuccessIndicator;
 use App\Models\User;
+use App\Services\AI\AIService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
 
-class CorporateDNADecoderService
+class CorporateDNADecoderService extends AIService
 {
     private const CACHE_TTL = 86400; // 24 hours
-    private const MODEL = 'gpt-5.1'; // Azure OpenAI GPT-5.1
+    private const MODEL = 'gpt-5.4'; // Azure OpenAI deployment // Azure OpenAI GPT-5.1
 
     public function analyzeCompanyDNA(int $companyId): array
     {
@@ -26,15 +26,6 @@ class CorporateDNADecoderService
             // Gather organizational data
             $organizationalData = $this->gatherOrganizationalData($company);
             
-            // Skip if insufficient data
-            if ($organizationalData['employee_count'] < 5) {
-                return [
-                    'success' => false,
-                    'message' => 'Insufficient data: Minimum 5 employees required for DNA analysis',
-                    'data_completeness' => 0,
-                ];
-            }
-
             try {
                 // Analyze with GPT-4
                 $dnaAnalysis = $this->performDNAAnalysis($organizationalData);
@@ -75,7 +66,7 @@ class CorporateDNADecoderService
 
     private function gatherOrganizationalData(Company $company): array
     {
-        $employees = $company->users()->where('account_type', 'job_seeker')->get();
+        $employees = $company->users()->where('account_type', 'employer')->get();
         $topPerformers = SuccessIndicator::where('company_id', $company->id)
             ->where('employee_type', 'top_performer')
             ->get();
@@ -88,7 +79,7 @@ class CorporateDNADecoderService
             'industry' => $company->industry ?? 'Unknown',
             'company_size' => $company->company_size ?? 'Unknown',
             'employee_count' => $employees->count(),
-            'hire_count' => $company->applications()->where('status', 'hired')->count(),
+            'hire_count' => $company->applications()->where('applications.status', 'accepted')->count(),
             'top_performer_count' => $topPerformers->count(),
             'avg_tenure' => $this->calculateAverageTenure($employees),
             'retention_rate' => $this->calculateRetentionRate($company),
@@ -101,18 +92,10 @@ class CorporateDNADecoderService
     private function performDNAAnalysis(array $orgData): array
     {
         $prompt = $this->buildDNAAnalysisPrompt($orgData);
+        $system = 'You are an expert organizational psychologist and HR analytics specialist. Analyze company data to decode organizational DNA, cultural patterns, and success factors. Return only valid JSON.';
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are an expert organizational psychologist and HR analytics specialist. Analyze company data to decode organizational DNA, cultural patterns, and success factors.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.3,
-            'max_tokens' => 2000,
-        ]);
-
-        $analysis = json_decode($response->choices[0]->message->content, true);
+        $raw = $this->generateText($prompt, $system, ['max_tokens' => 2000, 'temperature' => 0.3]);
+        $analysis = json_decode($raw, true) ?? [];
 
         return [
             'work_style_preferences' => $analysis['work_style_preferences'] ?? [],
@@ -176,17 +159,9 @@ Return JSON array of cultural DNA traits with scores 0-100:
 ]
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are a cultural anthropologist specializing in organizational culture.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.4,
-            'max_tokens' => 800,
-        ]);
+        $raw = $this->generateText($prompt, 'You are a cultural anthropologist specializing in organizational culture. Return only valid JSON arrays.', ['max_tokens' => 800, 'temperature' => 0.4]);
 
-        return json_decode($response->choices[0]->message->content, true) ?? [];
+        return json_decode($raw, true) ?? [];
     }
 
     private function identifySuccessTraits(array $orgData): array
@@ -214,17 +189,9 @@ Return JSON array of 5-10 success traits ranked by importance:
 ]
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are a talent analytics expert specializing in success pattern identification.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.3,
-            'max_tokens' => 1000,
-        ]);
+        $raw = $this->generateText($prompt, 'You are a talent analytics expert specializing in success pattern identification. Return only valid JSON arrays.', ['max_tokens' => 1000, 'temperature' => 0.3]);
 
-        return json_decode($response->choices[0]->message->content, true) ?? [];
+        return json_decode($raw, true) ?? [];
     }
 
     private function calculateCompletionScore(array $orgData): int
@@ -293,10 +260,10 @@ PROMPT;
 
     private function calculateRetentionRate(Company $company): float
     {
-        $totalHires = $company->applications()->where('status', 'hired')->count();
+        $totalHires = $company->applications()->where('applications.status', 'accepted')->count();
         if ($totalHires === 0) return 0;
 
-        $activeEmployees = $company->users()->where('account_type', 'job_seeker')->count();
+        $activeEmployees = $company->users()->where('account_type', 'employer')->count();
         
         return round(($activeEmployees / max(1, $totalHires)) * 100, 2);
     }

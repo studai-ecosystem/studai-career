@@ -26,6 +26,11 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
+        // Redirect employers to their own dashboard
+        if ($user->isEmployer()) {
+            return redirect()->route('employer.home');
+        }
+
         // Get or create user subscription
         $freePlan = SubscriptionPlan::firstOrCreate(
             ['slug' => 'free'],
@@ -56,14 +61,26 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Get application statistics
-        $applicationStats = [
-            'total' => Application::where('user_id', $user->id)->count(),
-            'pending' => Application::where('user_id', $user->id)->where('status', 'pending')->count(),
-            'reviewing' => Application::where('user_id', $user->id)->where('status', 'reviewing')->count(),
-            'shortlisted' => Application::where('user_id', $user->id)->where('status', 'shortlisted')->count(),
-            'rejected' => Application::where('user_id', $user->id)->where('status', 'rejected')->count(),
-        ];
+        // Get application statistics — single aggregated query with caching (2 min TTL)
+        $applicationStats = Cache::remember("app_stats_{$user->id}", 120, function () use ($user) {
+            $counts = Application::where('user_id', $user->id)
+                ->selectRaw("
+                    COUNT(*) as total,
+                    SUM(CASE WHEN status IN ('submitted','pending') THEN 1 ELSE 0 END) as pending,
+                    SUM(CASE WHEN status IN ('viewed','reviewing') THEN 1 ELSE 0 END) as reviewing,
+                    SUM(CASE WHEN status = 'shortlisted' THEN 1 ELSE 0 END) as shortlisted,
+                    SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected
+                ")
+                ->first();
+
+            return [
+                'total'       => (int) ($counts->total ?? 0),
+                'pending'     => (int) ($counts->pending ?? 0),
+                'reviewing'   => (int) ($counts->reviewing ?? 0),
+                'shortlisted' => (int) ($counts->shortlisted ?? 0),
+                'rejected'    => (int) ($counts->rejected ?? 0),
+            ];
+        });
 
         // Get profile completion percentage
         $profileCompletion = $this->calculateProfileCompletion($user);
@@ -91,12 +108,28 @@ class DashboardController extends Controller
         $savedJobsCount = $user->savedJobs()->count();
 
         // Get subscription usage stats
+        $remainingApps = $user->getRemainingApplications();
+        $remainingCredits = $user->getRemainingAICredits();
+        $plan = $subscription->subscriptionPlan ?? null;
+        $appsLimit = $plan?->applications_limit ?? 0;
+        $creditsLimit = ($plan?->ai_credits === -1 || $plan?->ai_credits === null) ? null : ($plan?->ai_credits ?? 0);
+        $appsUsed = $subscription?->applications_used_this_month ?? 0;
+        $creditsUsed = $subscription?->ai_credits_used_this_month ?? 0;
+
         $subscriptionStats = [
-            'applications_remaining' => $user->getRemainingApplications(),
-            'ai_credits_remaining' => $user->getRemainingAICredits(),
-            'plan_name' => $subscription->subscriptionPlan->name ?? 'Free',
-            'billing_period' => $subscription->subscriptionPlan->billing_period ?? 'monthly',
-            'next_billing_date' => $subscription->next_billing_date,
+            'applications_remaining' => $remainingApps === -1 ? '∞' : $remainingApps,
+            'applications_remaining_raw' => $remainingApps,
+            'applications_limit' => $appsLimit,
+            'applications_used' => $appsUsed,
+            'ai_credits_remaining' => $remainingCredits === -1 ? '∞' : $remainingCredits,
+            'ai_credits_remaining_raw' => $remainingCredits,
+            'ai_credits_limit' => $creditsLimit,
+            'ai_credits_used' => $creditsUsed,
+            'is_free_plan' => ($plan?->price ?? 0) == 0,
+            'is_unlimited' => $remainingApps === -1,
+            'plan_name' => $plan?->name ?? 'Free',
+            'billing_period' => $plan?->billing_period ?? 'monthly',
+            'next_billing_date' => $subscription?->next_billing_date,
         ];
 
         return view('dashboard.index', compact(
@@ -137,6 +170,47 @@ class DashboardController extends Controller
     }
 
     /**
+     * Display AI Credits history page
+     */
+    public function aiCredits(Request $request)
+    {
+        $user = $request->user();
+
+        $logs = \App\Models\AICreditLog::where('user_id', $user->id)
+            ->latest()
+            ->paginate(20);
+
+        // Single aggregated query instead of two separate SUM calls
+        $aggRow = \App\Models\AICreditLog::where('user_id', $user->id)
+            ->selectRaw("
+                SUM(credits_used) as total_used,
+                SUM(CASE WHEN strftime('%m', created_at) = ? AND strftime('%Y', created_at) = ? THEN credits_used ELSE 0 END) as this_month
+            ", [str_pad(now()->month, 2, '0', STR_PAD_LEFT), (string) now()->year])
+            ->first();
+
+        $totalUsed = (int) ($aggRow->total_used ?? 0);
+        $thisMonth = (int) ($aggRow->this_month ?? 0);
+
+        $byAction = \App\Models\AICreditLog::where('user_id', $user->id)
+            ->selectRaw('action, SUM(credits_used) as total, COUNT(*) as count')
+            ->groupBy('action')
+            ->orderByDesc('total')
+            ->get();
+
+        // Subscription stats for the header
+        $subscription = $user->subscription;
+        $plan = $subscription?->subscriptionPlan;
+        $creditsLimit = $plan?->ai_credits ?? 0;
+        $creditsUsed  = $subscription?->ai_credits_used_this_month ?? 0;
+        $creditsLeft  = $user->getRemainingAICredits();
+
+        return view('dashboard.ai-credits', compact(
+            'logs', 'totalUsed', 'thisMonth', 'byAction',
+            'creditsLimit', 'creditsUsed', 'creditsLeft', 'plan'
+        ));
+    }
+
+    /**
      * Display application tracking page
      */
     public function applications(Request $request)
@@ -160,20 +234,34 @@ class DashboardController extends Controller
         if ($search) {
             $query->whereHas('job', function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('company_name', 'like', "%{$search}%");
+                  ->orWhereHas('company', function ($cq) use ($search) {
+                      $cq->where('name', 'like', "%{$search}%");
+                  });
             });
         }
 
         // Paginate results
         $applications = $query->latest()->paginate(20);
 
-        // Get status counts for filter badges
+        // Get status counts for filter badges — single aggregated query
+        $rawCounts = Application::where('user_id', $user->id)
+            ->selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN status IN ('submitted','pending') THEN 1 ELSE 0 END) as pending,
+                SUM(CASE WHEN status IN ('viewed','reviewing') THEN 1 ELSE 0 END) as reviewing,
+                SUM(CASE WHEN status = 'shortlisted' THEN 1 ELSE 0 END) as shortlisted,
+                SUM(CASE WHEN status = 'hired' THEN 1 ELSE 0 END) as hired,
+                SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected
+            ")
+            ->first();
+
         $statusCounts = [
-            'all' => Application::where('user_id', $user->id)->count(),
-            'pending' => Application::where('user_id', $user->id)->where('status', 'pending')->count(),
-            'reviewing' => Application::where('user_id', $user->id)->where('status', 'reviewing')->count(),
-            'shortlisted' => Application::where('user_id', $user->id)->where('status', 'shortlisted')->count(),
-            'rejected' => Application::where('user_id', $user->id)->where('status', 'rejected')->count(),
+            'all'         => (int) ($rawCounts->total ?? 0),
+            'pending'     => (int) ($rawCounts->pending ?? 0),
+            'reviewing'   => (int) ($rawCounts->reviewing ?? 0),
+            'shortlisted' => (int) ($rawCounts->shortlisted ?? 0),
+            'hired'       => (int) ($rawCounts->hired ?? 0),
+            'rejected'    => (int) ($rawCounts->rejected ?? 0),
         ];
 
         return view('dashboard.applications', compact('applications', 'statusCounts', 'status', 'search'));

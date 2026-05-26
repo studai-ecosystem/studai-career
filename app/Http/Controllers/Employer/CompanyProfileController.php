@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Employer;
 
 use App\Http\Controllers\Controller;
+use App\Models\Application;
+use App\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -17,7 +19,18 @@ class CompanyProfileController extends Controller
     public function show()
     {
         $company = auth()->user()->company;
-        return view('employer.profile.show', compact('company'));
+
+        $totalJobs = Job::where('company_id', $company->id)->count();
+        $activeJobs = Job::where('company_id', $company->id)
+            ->where('status', 'published')
+            ->where('expires_at', '>', now())
+            ->count();
+        $totalApplications = Application::whereHas('job', fn($q) => $q->where('company_id', $company->id))->count();
+        $totalHired = Application::whereHas('job', fn($q) => $q->where('company_id', $company->id))
+            ->where('status', 'hired')
+            ->count();
+
+        return view('employer.profile.show', compact('company', 'totalJobs', 'activeJobs', 'totalApplications', 'totalHired'));
     }
 
     public function edit()
@@ -43,6 +56,9 @@ class CompanyProfileController extends Controller
             'benefits.*' => ['string', 'max:255'],
             'culture' => ['nullable', 'string', 'max:1000'],
             'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'company_email' => ['nullable', 'email', 'max:255'],
+            'hr_email' => ['nullable', 'email', 'max:255'],
+            'contact_phone' => ['nullable', 'string', 'max:50'],
         ]);
 
         // Handle logo upload

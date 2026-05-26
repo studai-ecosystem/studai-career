@@ -55,17 +55,22 @@ class CriticalModelDriftNotification extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
+        $driftPercent = round($this->avgDrift * 100, 1);
+        $testCount    = count($this->driftResults);
+
         return [
-            'type' => 'critical_model_drift',
-            'avg_drift' => $this->avgDrift,
-            'test_count' => count($this->driftResults),
+            'type'         => 'critical_model_drift',
+            'avg_drift'    => $this->avgDrift,
+            'test_count'   => $testCount,
             'drift_results' => array_map(fn (array $result) => [
-                'test_name' => $result['test_name'] ?? 'Unknown',
+                'test_name'  => $result['test_name'] ?? 'Unknown',
                 'similarity' => $result['similarity'] ?? 0,
-                'drift' => $result['drift'] ?? 0,
+                'drift'      => $result['drift'] ?? 0,
             ], $this->driftResults),
-            'severity' => $this->avgDrift > 0.3 ? 'critical' : 'warning',
+            'severity'    => $this->avgDrift > 0.3 ? 'critical' : 'warning',
             'detected_at' => now()->toIso8601String(),
+            'message'     => "[CRITICAL] AI model drift at {$driftPercent}% across {$testCount} tests — immediate review required",
+            'url'         => '/admin/ai-golden-tests',
         ];
     }
 

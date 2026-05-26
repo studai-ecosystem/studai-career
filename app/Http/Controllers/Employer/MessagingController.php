@@ -13,7 +13,7 @@ class MessagingController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:employer');
+        $this->middleware(['auth', 'employer']);
     }
     
     /**
@@ -21,7 +21,7 @@ class MessagingController extends Controller
      */
     public function index(Request $request)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         $status = $request->input('status', 'active');
         $search = $request->input('search');
         
@@ -60,7 +60,7 @@ class MessagingController extends Controller
      */
     public function show(Conversation $conversation)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         if ($conversation->company_id !== $company->id) {
             abort(403);
@@ -102,7 +102,7 @@ class MessagingController extends Controller
             'attachments.*' => 'file|max:10240', // 10MB max per file
         ]);
         
-        $employer = auth('employer')->user();
+        $employer = auth()->user();
         $company = $employer->company;
         
         // Get or create conversation
@@ -160,7 +160,7 @@ class MessagingController extends Controller
      */
     public function templates(Request $request)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         $category = $request->input('category');
         
         $query = MessageTemplate::where('company_id', $company->id)
@@ -191,7 +191,7 @@ class MessagingController extends Controller
             'variables' => 'nullable|array',
         ]);
         
-        $employer = auth('employer')->user();
+        $employer = auth()->user();
         
         $template = MessageTemplate::create([
             'company_id' => $employer->company->id,
@@ -215,7 +215,7 @@ class MessagingController extends Controller
      */
     public function archive(Conversation $conversation)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         if ($conversation->company_id !== $company->id) {
             abort(403);
@@ -234,7 +234,7 @@ class MessagingController extends Controller
      */
     public function markAsSpam(Conversation $conversation)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         if ($conversation->company_id !== $company->id) {
             abort(403);
@@ -253,7 +253,7 @@ class MessagingController extends Controller
      */
     public function unarchive(Conversation $conversation)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         if ($conversation->company_id !== $company->id) {
             abort(403);

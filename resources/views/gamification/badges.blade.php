@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Badges')
 
@@ -12,7 +12,7 @@
                 <p class="text-gray-600 mt-1">Collect badges to showcase your achievements and skills</p>
             </div>
             <a href="{{ route('gamification.dashboard') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">
-                ← Back to Dashboard
+                â† Back to Dashboard
             </a>
         </div>
 
@@ -79,7 +79,7 @@
             </div>
             @else
             <div class="bg-white rounded-2xl shadow-lg p-12 text-center">
-                <div class="text-6xl mb-4">🏅</div>
+                <div class="text-6xl mb-4">…</div>
                 <h3 class="text-xl font-bold text-gray-900 mb-2">No badges yet</h3>
                 <p class="text-gray-500 mb-6">Complete achievements and activities to earn badges!</p>
                 <a href="{{ route('gamification.achievements') }}" 

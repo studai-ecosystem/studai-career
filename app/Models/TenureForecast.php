@@ -11,34 +11,31 @@ class TenureForecast extends Model
 
     protected $fillable = [
         'application_id',
+        'job_id',
         'company_id',
         'user_id',
-        'predicted_tenure_months',
+        'expected_tenure_months',
         'tenure_range_min',
         'tenure_range_max',
-        'confidence_level',
-        'flight_risk_score',
-        'risk_category',
-        'retention_factors',
-        'risk_indicators',
+        'confidence_score',
+        'player_type',
+        'tenure_factors',
         'ai_insights',
-        'recommendation',
-        'forecast_date',
+        'forecasted_at',
+        'actual_departure_date',
         'actual_tenure_months',
-        'departure_date',
-        'departure_reason',
     ];
 
     protected $casts = [
-        'predicted_tenure_months' => 'integer',
+        'expected_tenure_months' => 'integer',
         'tenure_range_min' => 'integer',
         'tenure_range_max' => 'integer',
-        'flight_risk_score' => 'decimal:4',
-        'retention_factors' => 'array',
-        'risk_indicators' => 'array',
+        'confidence_score' => 'decimal:4',
+        'tenure_factors' => 'array',
         'ai_insights' => 'array',
-        'forecast_date' => 'datetime',
-        'departure_date' => 'datetime',
+        'forecasted_at' => 'datetime',
+        'actual_departure_date' => 'datetime',
+        'actual_tenure_months' => 'integer',
     ];
 
     /**

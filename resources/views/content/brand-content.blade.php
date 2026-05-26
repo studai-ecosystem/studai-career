@@ -1,6 +1,6 @@
 {{--
 ================================================================================
-STUDAI PATH — COMPLETE BRAND CONTENT SYSTEM
+StudAI Hire — COMPLETE BRAND CONTENT SYSTEM
 ================================================================================
 India's First Autonomous Career OS
 Version: 1.0
@@ -16,7 +16,7 @@ SECTION 1: HOMEPAGE CONTENT
 $homepage = [
     'hero' => [
         'headline' => 'Your Career. On Autopilot.',
-        'subheadline' => 'StudAI Path is India\'s first Autonomous Career OS. It finds jobs, applies for you, preps interviews, negotiates salaries, and builds your entire career path — powered by AI.',
+        'subheadline' => 'StudAI Hire is India\'s first Autonomous Career OS. It finds jobs, applies for you, preps interviews, negotiates salaries, and builds your entire career path — powered by AI.',
         'cta_primary' => 'Start Free — No Credit Card',
         'cta_secondary' => 'Watch Demo',
         'trust_badge' => 'Trusted by 50,000+ professionals across India',
@@ -74,7 +74,7 @@ $homepage = [
     ],
     
     'value_props' => [
-        'title' => 'Why 50,000+ Professionals Choose StudAI Path',
+        'title' => 'Why 50,000+ Professionals Choose StudAI Hire',
         'items' => [
             [
                 'title' => 'Zero Manual Applications',
@@ -97,7 +97,7 @@ $homepage = [
     
     'testimonials' => [
         [
-            'quote' => 'StudAI Path got me 3 offers in 2 weeks. The autonomous agent is like having a full-time job search assistant.',
+            'quote' => 'StudAI Hire got me 3 offers in 2 weeks. The autonomous agent is like having a full-time job search assistant.',
             'name' => 'Priya Sharma',
             'role' => 'Senior Software Engineer',
             'company' => 'Google',
@@ -122,7 +122,7 @@ $homepage = [
     'faqs' => [
         [
             'question' => 'What is an Autonomous Career OS?',
-            'answer' => 'StudAI Path is a unified system that manages your entire career lifecycle — from job discovery to salary negotiation — using AI agents that work 24/7 on your behalf.',
+            'answer' => 'StudAI Hire is a unified system that manages your entire career lifecycle — from job discovery to salary negotiation — using AI agents that work 24/7 on your behalf.',
         ],
         [
             'question' => 'Is the autonomous job application really automatic?',
@@ -130,7 +130,7 @@ $homepage = [
         ],
         [
             'question' => 'How is this different from LinkedIn or Naukri?',
-            'answer' => 'Job boards show listings. StudAI Path actively works for you — finding jobs, applying, prepping interviews, and negotiating offers. It\'s the difference between a library and a personal assistant.',
+            'answer' => 'Job boards show listings. StudAI Hire actively works for you — finding jobs, applying, prepping interviews, and negotiating offers. It\'s the difference between a library and a personal assistant.',
         ],
         [
             'question' => 'What is S.C.O.U.T.?',
@@ -145,7 +145,7 @@ $homepage = [
 
 $footer = [
     'tagline' => 'Your Career. Autonomous.',
-    'description' => 'StudAI Path is building the future of career management. One AI-powered decision at a time.',
+    'description' => 'StudAI Hire is building the future of career management. One AI-powered decision at a time.',
     
     'columns' => [
         'Product' => [
@@ -206,10 +206,10 @@ $products = [
     'overview' => [
         'hero' => [
             'title' => 'One OS. Your Entire Career.',
-            'subtitle' => 'StudAI Path unifies every aspect of career growth into one intelligent, autonomous system.',
+            'subtitle' => 'StudAI Hire unifies every aspect of career growth into one intelligent, autonomous system.',
             'cta' => 'Explore the Platform',
         ],
-        'intro' => 'StudAI Path isn\'t just another job portal. It\'s a Career Operating System — a unified platform where AI agents manage your job search, applications, interviews, and career growth. Automatically.',
+        'intro' => 'StudAI Hire isn\'t just another job portal. It\'s a Career Operating System — a unified platform where AI agents manage your job search, applications, interviews, and career growth. Automatically.',
         
         'who_its_for' => [
             [
@@ -857,7 +857,7 @@ $support = [
             ],
             [
                 'title' => 'Enterprise Sales',
-                'description' => 'Looking to implement StudAI Path for your organization?',
+                'description' => 'Looking to implement StudAI Hire for your organization?',
                 'cta' => 'Contact Sales',
                 'availability' => 'Dedicated account team',
             ],
@@ -872,7 +872,7 @@ $support = [
     ],
     
     'onboarding_job_seeker' => [
-        'title' => 'Welcome to StudAI Path',
+        'title' => 'Welcome to StudAI Hire',
         'subtitle' => 'Let\'s set up your Career OS in 5 minutes.',
         'steps' => [
             [
@@ -1010,7 +1010,7 @@ $microcopy = [
     ],
     
     'onboarding_steps' => [
-        'welcome' => 'Welcome to StudAI Path! Let\'s get you set up.',
+        'welcome' => 'Welcome to StudAI Hire! Let\'s get you set up.',
         'profile_start' => 'First, let\'s learn about you.',
         'profile_complete' => 'Great! Your profile is looking good.',
         'preferences_start' => 'Now, tell us about your ideal job.',
@@ -1165,57 +1165,57 @@ SECTION 7: SEO CONTENT
 @php
 $seo = [
     'homepage' => [
-        'title' => 'StudAI Path — India\'s First Autonomous Career OS | AI Job Search & Hiring',
-        'description' => 'StudAI Path is an AI-powered Career OS that finds jobs, applies automatically, preps interviews, and negotiates salaries. For job seekers, freelancers & employers.',
-        'keywords' => 'AI job search, autonomous job applications, career OS, AI resume builder, interview preparation, S.C.O.U.T. ATS, StudAI Path',
-        'og_title' => 'Your Career. On Autopilot. | StudAI Path',
+        'title' => 'StudAI Hire — India\'s First Autonomous Career OS | AI Job Search & Hiring',
+        'description' => 'StudAI Hire is an AI-powered Career OS that finds jobs, applies automatically, preps interviews, and negotiates salaries. For job seekers, freelancers & employers.',
+        'keywords' => 'AI job search, autonomous job applications, career OS, AI resume builder, interview preparation, S.C.O.U.T. ATS, StudAI Hire',
+        'og_title' => 'Your Career. On Autopilot. | StudAI Hire',
         'og_description' => 'India\'s first Autonomous Career OS. AI finds jobs, applies for you, preps interviews, and negotiates salaries.',
     ],
     
     'job_search' => [
-        'title' => 'AI Job Search — Find Your Perfect Role | StudAI Path',
+        'title' => 'AI Job Search — Find Your Perfect Role | StudAI Hire',
         'description' => 'AI-powered job matching that goes beyond keywords. Find roles that fit your skills, goals, and culture preferences. Apply in one click.',
         'keywords' => 'AI job search, job matching, find jobs, career opportunities, remote jobs India',
     ],
     
     'autonomous_agent' => [
-        'title' => 'Autonomous Job Application Agent — Apply While You Sleep | StudAI Path',
+        'title' => 'Autonomous Job Application Agent — Apply While You Sleep | StudAI Hire',
         'description' => 'Set your preferences and let AI apply to 100+ matching jobs daily. The first truly autonomous job application system.',
         'keywords' => 'autonomous job applications, AI agent, auto apply jobs, job automation',
     ],
     
     'resume_builder' => [
-        'title' => 'AI Resume Builder — ATS-Optimized Resumes in 5 Minutes | StudAI Path',
+        'title' => 'AI Resume Builder — ATS-Optimized Resumes in 5 Minutes | StudAI Hire',
         'description' => 'Create professional, ATS-optimized resumes with AI. 50+ templates, instant optimization, and guaranteed callbacks.',
         'keywords' => 'AI resume builder, ATS resume, resume templates, CV maker',
     ],
     
     'interview_ai' => [
-        'title' => 'AI Interview Practice — Mock Interviews with Real-Time Feedback | StudAI Path',
+        'title' => 'AI Interview Practice — Mock Interviews with Real-Time Feedback | StudAI Hire',
         'description' => 'Practice interviews with AI. Get instant feedback on answers, body language, and delivery. Walk in confident.',
         'keywords' => 'AI interview practice, mock interviews, interview preparation, interview coaching',
     ],
     
     'employer_scout' => [
-        'title' => 'S.C.O.U.T. AI — Bias-Free Hiring & ATS for Modern Companies | StudAI Path',
+        'title' => 'S.C.O.U.T. AI — Bias-Free Hiring & ATS for Modern Companies | StudAI Hire',
         'description' => 'S.C.O.U.T. AI removes hiring bias, automates screening, and helps you find top talent 60% faster. The future of fair hiring.',
         'keywords' => 'ATS software, applicant tracking system, bias-free hiring, AI recruiting, S.C.O.U.T.',
     ],
     
     'marketplace' => [
-        'title' => 'Freelancer Marketplace — Find Projects & Talent | StudAI Path',
+        'title' => 'Freelancer Marketplace — Find Projects & Talent | StudAI Hire',
         'description' => 'Connect with verified freelancers or find curated projects. Secure escrow payments. AI-matched talent.',
         'keywords' => 'freelancer marketplace, hire freelancers, freelance jobs, gig economy',
     ],
     
     'pricing' => [
-        'title' => 'Pricing — Simple Plans for Job Seekers & Employers | StudAI Path',
+        'title' => 'Pricing — Simple Plans for Job Seekers & Employers | StudAI Hire',
         'description' => 'Start free. Upgrade as you grow. Transparent pricing for job seekers and employers. No hidden fees.',
-        'keywords' => 'StudAI Path pricing, career OS pricing, ATS pricing',
+        'keywords' => 'StudAI Hire pricing, career OS pricing, ATS pricing',
     ],
     
     'keyword_clusters' => [
-        'primary' => ['AI job search', 'career OS', 'autonomous career', 'StudAI Path'],
+        'primary' => ['AI job search', 'career OS', 'autonomous career', 'StudAI Hire'],
         'job_seekers' => ['AI job applications', 'auto apply jobs', 'AI resume builder', 'interview AI'],
         'employers' => ['ATS software India', 'bias-free hiring', 'AI recruiting', 'S.C.O.U.T.'],
         'freelancers' => ['freelancer marketplace India', 'find projects', 'hire freelancers'],
@@ -1247,12 +1247,12 @@ $brand = [
     ],
     
     'why_we_exist' => [
-        'title' => 'Why StudAI Path Exists',
+        'title' => 'Why StudAI Hire Exists',
         'paragraphs' => [
             'The job market is broken. Talented people spend months sending applications into the void. Employers wade through unqualified candidates because algorithms optimize for keywords, not potential. Hiring is slow, expensive, and riddled with unconscious bias.',
             'We believe there\'s a better way. AI is powerful enough now to match people with opportunities intelligently, apply autonomously, and remove bias from hiring. But no one had built a unified system to do it all.',
             'Until now.',
-            'StudAI Path is India\'s first Autonomous Career OS — a single platform where your entire career journey is managed by intelligent agents that work 24/7 on your behalf.',
+            'StudAI Hire is India\'s first Autonomous Career OS — a single platform where your entire career journey is managed by intelligent agents that work 24/7 on your behalf.',
         ],
     ],
     
@@ -1263,7 +1263,7 @@ $brand = [
         'content' => [
             'I grew up in Tamil Nadu, watching brilliant friends struggle to find opportunities because they didn\'t have the "right" connections or couldn\'t afford coaching. The playing field wasn\'t level.',
             'When I started building StudAI, I had one question: What if AI could be the great equalizer? What if we could build technology that gives everyone access to the same career intelligence that privileged candidates get?',
-            'StudAI Path is my answer. It\'s a Career Operating System where AI agents find jobs, apply on your behalf, prepare you for interviews, and help you negotiate. It\'s hiring software that evaluates candidates on merit, not demographics.',
+            'StudAI Hire is my answer. It\'s a Career Operating System where AI agents find jobs, apply on your behalf, prepare you for interviews, and help you negotiate. It\'s hiring software that evaluates candidates on merit, not demographics.',
             'We\'re not just building a product. We\'re building the future of how India — and the world — thinks about careers.',
             'Welcome to the movement.',
         ],
@@ -1272,7 +1272,7 @@ $brand = [
     
     'movement' => [
         'title' => 'The Movement to Reshape India\'s Technological Narrative',
-        'content' => 'India produces 1.5 million engineers every year. We have the talent. What we\'ve lacked is infrastructure that connects potential with opportunity at scale. StudAI Path is building that infrastructure — using AI to unlock human potential across the country.',
+        'content' => 'India produces 1.5 million engineers every year. We have the talent. What we\'ve lacked is infrastructure that connects potential with opportunity at scale. StudAI Hire is building that infrastructure — using AI to unlock human potential across the country.',
         'stats' => [
             ['value' => '1.5M', 'label' => 'Engineers graduate yearly'],
             ['value' => '60%', 'label' => 'Struggle to find relevant roles'],

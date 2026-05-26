@@ -14,7 +14,7 @@ class ATSOptimizerService
 {
     use LogsAiUsage;
 
-    protected const MODEL = 'gpt-5.1'; // Azure OpenAI GPT-5.1 (was gpt-5-mini)
+    protected const MODEL = 'gpt-5.4'; // Azure OpenAI deployment // Azure OpenAI GPT-5.1 (was gpt-5-mini)
     protected const CACHE_TTL = 10800; // 3 hours
 
     /**
@@ -54,7 +54,7 @@ class ATSOptimizerService
                     ['role' => 'user', 'content' => $prompt],
                 ],
                 'temperature' => 0.25,
-                'max_tokens' => 2200,
+                'max_completion_tokens' => 2200,
             ]);
 
             $usage = $response->usage ?? null;

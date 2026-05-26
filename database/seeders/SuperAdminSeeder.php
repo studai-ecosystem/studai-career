@@ -66,7 +66,7 @@ class SuperAdminSeeder extends Seeder
                 'experience' => [
                     [
                         'title' => 'Chief Technology Officer',
-                        'company' => 'StudAI Path',
+                        'company' => 'StudAI Hire',
                         'start_date' => '2020-01-01',
                         'current' => true,
                         'description' => 'Leading technical vision and development of the AI-powered career platform.',

@@ -1,8 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Edit Company Profile') }}
-        </h2>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('employer.profile.show') }}"
+                class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Company Profile
+            </a>
+            <span class="text-gray-300">/</span>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Edit Company Profile') }}
+            </h2>
+        </div>
     </x-slot>
 
     <div class="py-12">
@@ -103,6 +111,43 @@
                             </div>
                         </div>
 
+                        <!-- Contact Information -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label for="company_email" class="block text-sm font-medium text-gray-700">Company Email</label>
+                                    <input type="email" name="company_email" id="company_email"
+                                        value="{{ old('company_email', $company->company_email) }}"
+                                        placeholder="info@yourcompany.com"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    @error('company_email')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="hr_email" class="block text-sm font-medium text-gray-700">HR Email</label>
+                                    <input type="email" name="hr_email" id="hr_email"
+                                        value="{{ old('hr_email', $company->hr_email) }}"
+                                        placeholder="hr@yourcompany.com"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    @error('hr_email')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="contact_phone" class="block text-sm font-medium text-gray-700">Contact Phone</label>
+                                    <input type="tel" name="contact_phone" id="contact_phone"
+                                        value="{{ old('contact_phone', $company->contact_phone) }}"
+                                        placeholder="+91 9876543210"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    @error('contact_phone')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Company Logo -->
                         <div class="mb-8">
                             <h3 class="text-lg font-semibold text-gray-900 mb-4">Company Logo</h3>
@@ -196,11 +241,11 @@
                                     <!-- Hidden inputs for existing benefits -->
                                     @if(old('benefits'))
                                         @foreach(old('benefits') as $benefit)
-                                            <input type="hidden" name="benefits[]" value="{{ $benefit }}">
+                                            <input type="hidden" name="benefits[]" value="{{ is_string($benefit) ? $benefit : '' }}">
                                         @endforeach
                                     @elseif($company->benefits)
                                         @foreach($company->benefits as $benefit)
-                                            <input type="hidden" name="benefits[]" value="{{ $benefit }}">
+                                            <input type="hidden" name="benefits[]" value="{{ is_string($benefit) ? $benefit : '' }}">
                                         @endforeach
                                     @endif
                                 </div>

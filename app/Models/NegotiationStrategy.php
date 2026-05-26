@@ -45,6 +45,8 @@ class NegotiationStrategy extends Model
         'ai_rationale',
         'ai_warnings',
         'status',
+        'actual_outcome',
+        'actual_outcome_date',
         'generated_at',
     ];
 
@@ -69,6 +71,8 @@ class NegotiationStrategy extends Model
         'total_comp_optimization' => 'array',
         'company_culture_analysis' => 'array',
         'ai_warnings' => 'array',
+        'actual_outcome' => 'decimal:2',
+        'actual_outcome_date' => 'datetime',
         'generated_at' => 'datetime',
     ];
 
@@ -167,6 +171,32 @@ class NegotiationStrategy extends Model
             'below_market' => 'Below Market',
             default => 'Unknown',
         };
+    }
+
+    /**
+     * Alias accessor — the view uses position_title but the DB column is role.
+     */
+    public function getPositionTitleAttribute(): ?string
+    {
+        return $this->attributes['role'] ?? null;
+    }
+
+    /**
+     * Alias accessor — the view uses current_offer but the DB column is offered_salary.
+     */
+    public function getCurrentOfferAttribute(): ?string
+    {
+        $val = $this->attributes['offered_salary'] ?? null;
+        return $val !== null ? '$' . number_format((float) $val) : null;
+    }
+
+    /**
+     * Alias accessor — the view uses target_salary but the DB column is optimal_ask.
+     */
+    public function getTargetSalaryAttribute(): ?string
+    {
+        $val = $this->attributes['optimal_ask'] ?? null;
+        return $val !== null ? '$' . number_format((float) $val) : null;
     }
 
     public function getConfidenceLevelAttribute(): string

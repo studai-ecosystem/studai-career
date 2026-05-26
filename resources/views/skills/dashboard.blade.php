@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Skill Gap Dashboard')
 
@@ -120,7 +120,7 @@
                                     </div>
                                     @if($gap->is_emerging_skill)
                                     <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
-                                        🚀 Emerging
+                                        € Emerging
                                     </span>
                                     @endif
                                 </div>
@@ -168,7 +168,7 @@
                                     <p class="text-lg font-medium text-gray-900">Great job! No skill gaps detected.</p>
                                     <p class="text-sm text-gray-500 mt-1">Your skills align well with your career goals.</p>
                                     <a href="{{ route('skills.validation') }}" class="mt-4 inline-block text-indigo-600 hover:text-indigo-700 font-medium">
-                                        Validate Your Skills →
+                                        Validate Your Skills â†’
                                     </a>
                                 </div>
                             </td>
@@ -181,7 +181,7 @@
             @if($gaps->count() > 10)
             <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
                 <a href="{{ route('skills.dashboard') }}#skill-gaps" class="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
-                    View All {{ $gaps->count() }} Skill Gaps →
+                    View All {{ $gaps->count() }} Skill Gaps â†’
                 </a>
             </div>
             @endif

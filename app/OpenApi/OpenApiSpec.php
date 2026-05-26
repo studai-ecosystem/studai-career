@@ -6,9 +6,9 @@ namespace App\OpenApi;
 
 /**
  * @OA\Info(
- *     title="StudAI Career API",
+ *     title="StudAI Hire API",
  *     version="2.0.0",
- *     description="StudAI Career — AI-Powered Career Development & Negotiation Platform API.
+ *     description="StudAI Hire — AI-Powered Career Development & Negotiation Platform API.
  *
  * Provides endpoints for resume analysis, job matching, interview preparation,
  * salary negotiation, autonomous agent operations, SCOUT employer features,
@@ -16,7 +16,7 @@ namespace App\OpenApi;
  *
  * Authentication: Bearer token via Laravel Sanctum.",
  *     @OA\Contact(
- *         name="StudAI Career Support",
+ *         name="StudAI Hire Support",
  *         email="support@studai.career"
  *     ),
  *     @OA\License(

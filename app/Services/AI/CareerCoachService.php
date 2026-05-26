@@ -109,7 +109,7 @@ class CareerCoachService extends AIService
         try {
             $content = $this->callAzureOpenAI($messages, [
                 'temperature' => 0.7,
-                'max_tokens' => 2048,
+                'max_completion_tokens' => 450,
             ]);
 
             return [
@@ -145,7 +145,7 @@ class CareerCoachService extends AIService
         $coachingStyle = $this->preferences?->getSystemPromptStyle() ?? '';
 
         $basePrompt = <<<PROMPT
-You are an expert AI Career Coach for the StudAI Career platform. Your role is to provide personalized, actionable career guidance.
+You are an expert AI Career Coach for the StudAI Hire platform. Your role is to provide personalized, actionable career guidance.
 
 USER PROFILE:
 - Name: {$this->user->name}
@@ -160,17 +160,24 @@ ACTIVE GOALS:
 COACHING STYLE:
 {$coachingStyle}
 
-GUIDELINES:
-1. Be conversational and empathetic
-2. Provide specific, actionable advice
-3. Reference the user's profile and goals when relevant
-4. Ask clarifying questions when needed
-5. Celebrate progress and achievements
-6. When discussing salary or compensation, use Indian Rupees (₹)
-7. Break down complex topics into digestible steps
-8. Suggest resources and next steps when appropriate
-9. Track progress on discussed topics across the conversation
-10. Be encouraging but realistic about timelines and expectations
+RESPONSE FORMAT — FOLLOW STRICTLY EVERY SINGLE REPLY:
+1. Be concise: maximum 2–3 sentences OR 3 bullet points. Never write a wall of text.
+2. Every sentence must add value — no filler, no repetition of what the user said.
+3. End EVERY response with exactly ONE focused question to guide the conversation forward.
+4. After your question, ALWAYS include an "**Options:**" block with 3–4 short reply suggestions the user can tap. Each option must be under 8 words.
+5. Use this exact structure every time:
+
+[Concise insight — 2–3 sentences max]
+
+[Your one question?]
+
+**Options:**
+- [short option 1]
+- [short option 2]
+- [short option 3]
+
+6. Use Indian Rupees (₹) for any salary/compensation figures.
+7. Be warm, direct, and encouraging — like a smart friend who happens to be a career expert.
 PROMPT;
 
         // Add session-type specific instructions
@@ -235,15 +242,32 @@ PROMPT;
         $timeOfDay = $this->getTimeOfDay();
 
         $greetings = match ($type) {
-            CareerCoachSession::TYPE_WEEKLY_CHECKIN => "Good {$timeOfDay}, {$userName}! 👋 It's time for our weekly check-in. How has your week been? Let's review your progress and set you up for success in the coming week.",
-            CareerCoachSession::TYPE_GOAL_REVIEW => "Hi {$userName}! 🎯 I'm excited to review your career goals with you today. Let's see how you're progressing and make any adjustments needed.",
-            CareerCoachSession::TYPE_CAREER_PLANNING => "Hello {$userName}! 🚀 I'm here to help you map out your career journey. What aspects of your career path would you like to explore today?",
-            CareerCoachSession::TYPE_SKILL_DEVELOPMENT => "Hi {$userName}! 📚 Ready to level up your skills? Tell me what you're looking to learn or improve, and I'll help you create a learning plan.",
-            CareerCoachSession::TYPE_JOB_SEARCH => "Hello {$userName}! 💼 Let's work on your job search strategy. Are you looking for new opportunities, or do you need help with your current applications?",
-            CareerCoachSession::TYPE_INTERVIEW_PREP => "Hi {$userName}! 🎤 Interview preparation mode activated! Do you have an upcoming interview you'd like to prepare for, or would you like to practice general interview skills?",
-            CareerCoachSession::TYPE_SALARY_NEGOTIATION => "Hello {$userName}! 💰 Let's work on your negotiation strategy. Are you preparing for a new offer, or looking to negotiate a raise?",
-            CareerCoachSession::TYPE_CAREER_TRANSITION => "Hi {$userName}! 🔄 Career transitions can be exciting! Tell me about the change you're considering, and I'll help you plan the transition.",
-            default => "Good {$timeOfDay}, {$userName}! 👋 I'm your AI Career Coach, here to help you achieve your professional goals. What would you like to discuss today?",
+            CareerCoachSession::TYPE_WEEKLY_CHECKIN =>
+                "Good {$timeOfDay}, {$userName}! 👋 Time for our weekly check-in. What would you like to focus on?\n\n**Options:**\n- How was my week overall?\n- Review my goals and progress\n- What should I prioritize next week?\n- I hit a challenge — need help",
+
+            CareerCoachSession::TYPE_GOAL_REVIEW =>
+                "Hi {$userName}! 🎯 Let's review your career goals. Where would you like to start?\n\n**Options:**\n- Review all my current goals\n- I achieved a goal — what's next?\n- I'm stuck on a goal — need help\n- Set a brand new goal",
+
+            CareerCoachSession::TYPE_CAREER_PLANNING =>
+                "Hello {$userName}! 🚀 I'm here to help you map your career path. What would you like to explore?\n\n**Options:**\n- Where should I be in 1–2 years?\n- Help me choose between two paths\n- What skills do I need for a promotion?\n- I feel stuck — help me get clarity",
+
+            CareerCoachSession::TYPE_SKILL_DEVELOPMENT =>
+                "Hi {$userName}! 📚 Ready to level up? What would you like to work on?\n\n**Options:**\n- Recommend skills for my role\n- Help me build a learning plan\n- I want to learn a specific skill\n- How do I get better at leadership?",
+
+            CareerCoachSession::TYPE_JOB_SEARCH =>
+                "Hello {$userName}! 💼 Let's sharpen your job search. What do you need help with?\n\n**Options:**\n- Review my resume or LinkedIn\n- Help me find the right roles\n- I have an offer — what do I do?\n- How do I get more interviews?",
+
+            CareerCoachSession::TYPE_INTERVIEW_PREP =>
+                "Hi {$userName}! 🎤 Let's get you interview-ready. What would you like to do?\n\n**Options:**\n- Practice common interview questions\n- I have an interview tomorrow — prep me\n- Help me answer behavioural questions\n- How do I negotiate after an offer?",
+
+            CareerCoachSession::TYPE_SALARY_NEGOTIATION =>
+                "Hello {$userName}! 💰 Let's build your negotiation strategy. What's your situation?\n\n**Options:**\n- I got a new offer — help me negotiate\n- I want to ask for a raise\n- They said the budget is fixed — now what?\n- What is the market rate for my role?",
+
+            CareerCoachSession::TYPE_CAREER_TRANSITION =>
+                "Hi {$userName}! 🔄 Career transitions can be exciting. Where are you right now?\n\n**Options:**\n- I want to switch industries\n- I'm going from IC to management\n- Help me explain my career gap\n- Is this the right time to make a move?",
+
+            default =>
+                "Good {$timeOfDay}, {$userName}! 👋 I'm your AI Career Coach. What would you like to work on today?\n\n**Options:**\n- Help me with my career path\n- I have an interview coming up\n- I want to negotiate my salary\n- I need to develop a new skill",
         };
 
         return $greetings;
@@ -662,7 +686,7 @@ PROMPT;
         try {
             $response = $this->callAzureOpenAI($messages, array_merge([
                 'temperature' => 0.3,
-                'max_tokens' => 2048,
+                'max_completion_tokens' => 2048,
             ], $options));
 
             // Extract JSON from response

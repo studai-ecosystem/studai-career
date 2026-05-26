@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PWA Icon Generator for StudAI Career
+ * PWA Icon Generator for StudAI Hire
  *
  * Generates all required PWA icons as simple branded PNG files.
  * Run: php generate-icons.php

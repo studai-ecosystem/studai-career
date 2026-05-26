@@ -110,19 +110,25 @@ class AgentApprovalRequestNotification extends Notification implements ShouldQue
      */
     public function toArray(object $notifiable): array
     {
+        $jobTitle    = $this->job?->title ?? 'a position';
+        $companyName = $this->job?->company?->name ?? 'a company';
+        $matchScore  = round($this->jobMatch->overall_match_score ?? 0);
+
         return [
-            'type' => 'agent_approval_request',
+            'type'         => 'agent_approval_request',
             'job_match_id' => $this->jobMatch->id,
-            'job_id' => $this->job?->id,
-            'job_title' => $this->job?->title,
-            'company_name' => $this->job?->company?->name,
-            'match_score' => $this->jobMatch->overall_match_score,
-            'context' => $this->context,
-            'expires_at' => now()->addHours(24)->toIso8601String(),
-            'actions' => [
-                'review' => "/agent/approvals/{$this->jobMatch->id}",
+            'job_id'       => $this->job?->id,
+            'job_title'    => $jobTitle,
+            'company_name' => $companyName,
+            'match_score'  => $this->jobMatch->overall_match_score,
+            'context'      => $this->context,
+            'expires_at'   => now()->addHours(24)->toIso8601String(),
+            'message'      => "Agent approval needed: {$jobTitle} at {$companyName} ({$matchScore}% match)",
+            'url'          => "/agent/approvals/{$this->jobMatch->id}",
+            'actions'      => [
+                'review'  => "/agent/approvals/{$this->jobMatch->id}",
                 'approve' => "/api/agent/approvals/{$this->jobMatch->id}/approve",
-                'reject' => "/api/agent/approvals/{$this->jobMatch->id}/reject",
+                'reject'  => "/api/agent/approvals/{$this->jobMatch->id}/reject",
             ],
         ];
     }

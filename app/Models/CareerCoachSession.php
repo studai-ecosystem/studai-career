@@ -24,6 +24,7 @@ class CareerCoachSession extends Model
     public const TYPE_CAREER_TRANSITION = 'career_transition';
     public const TYPE_GOAL_REVIEW = 'goal_review';
     public const TYPE_WEEKLY_CHECKIN = 'weekly_checkin';
+    public const TYPE_SKILLS_PRACTICE = 'skills_practice'; // Vantage Intelligence Layer
 
     // Session Statuses
     public const STATUS_ACTIVE = 'active';
@@ -106,6 +107,7 @@ class CareerCoachSession extends Model
             self::TYPE_CAREER_TRANSITION => 'Career Transition',
             self::TYPE_GOAL_REVIEW => 'Goal Review',
             self::TYPE_WEEKLY_CHECKIN => 'Weekly Check-in',
+            self::TYPE_SKILLS_PRACTICE => 'Skills Practice', // Vantage Intelligence Layer
         ];
     }
 

@@ -15,7 +15,7 @@ class ResumeCustomizationService
 {
     use LogsAiUsage;
 
-    protected const MODEL = 'gpt-5.1'; // Azure OpenAI GPT-5.1
+    protected const MODEL = 'gpt-5.4'; // Azure OpenAI deployment // Azure OpenAI GPT-5.1
     protected const CACHE_TTL = 21600; // 6 hours
 
     /**
@@ -67,7 +67,7 @@ class ResumeCustomizationService
                     ['role' => 'user', 'content' => $prompt],
                 ],
                 'temperature' => 0.35,
-                'max_tokens' => 3500,
+                'max_completion_tokens' => 3500,
             ]);
 
             $usage = $response->usage ?? null;

@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
-@section('title', $company->name . ' Interview Questions | StudAI Career')
+@section('title', $company->name . ' Interview Questions | StudAI Hire')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -158,17 +158,17 @@
                                     @switch($interview->experience)
                                         @case('positive')
                                             <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm font-medium">
-                                                üëç Positive
+                                                ?ç Positive
                                             </span>
                                             @break
                                         @case('neutral')
                                             <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
-                                                üòê Neutral
+                                                ê Neutral
                                             </span>
                                             @break
                                         @case('negative')
                                             <span class="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full text-sm font-medium">
-                                                üëé Negative
+                                                ?é Negative
                                             </span>
                                             @break
                                     @endswitch
@@ -177,7 +177,7 @@
                                     @switch($interview->outcome)
                                         @case('got_offer')
                                             <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm font-medium">
-                                                ‚úì Got Offer{{ $interview->accepted_offer ? ' - Accepted' : '' }}
+                                                ? Got Offer{{ $interview->accepted_offer ? ' - Accepted' : '' }}
                                             </span>
                                             @break
                                         @case('declined_offer')

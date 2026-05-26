@@ -7,11 +7,13 @@ use App\Models\ResumeTemplate;
 use App\Models\Job;
 use App\Services\AI\ResumeAIService;
 use App\Services\ResumeExportService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ResumeController extends Controller
 {
+    use AuthorizesRequests;
     public function __construct(
         private ResumeAIService $aiService,
         private ResumeExportService $exportService
@@ -35,9 +37,7 @@ class ResumeController extends Controller
      */
     public function create(Request $request)
     {
-        $templates = ResumeTemplate::active()
-            ->get()
-            ->filter(fn($template) => $template->canBeAccessedBy(auth()->user()));
+        $templates = ResumeTemplate::active()->get();
 
         $targetJob = null;
         if ($request->has('job_id')) {
@@ -69,7 +69,7 @@ class ResumeController extends Controller
         $resume = $createResumeAction->execute($request->user(), $validated);
 
         return redirect()->route('resume.edit', $resume)
-            ->with('success', 'Resume created successfully!');
+            ->with('success', 'Resume created! Fill in your details, then generate your AI cover letter from the sidebar.');
     }
 
     /**
@@ -93,27 +93,69 @@ class ResumeController extends Controller
         $this->authorize('update', $resume);
 
         $validated = $request->validate([
-            'title' => 'string|max:255',
-            'template_id' => 'exists:resume_templates,id',
-            'full_name' => 'string|max:255',
-            'email' => 'email',
-            'phone' => 'nullable|string|max:20',
-            'location' => 'nullable|string|max:255',
-            'linkedin_url' => 'nullable|url',
-            'github_url' => 'nullable|url',
-            'portfolio_url' => 'nullable|url',
+            'title'                => 'string|max:255',
+            'template_id'          => 'exists:resume_templates,id',
+            'full_name'            => 'string|max:255',
+            'email'                => 'email',
+            'phone'                => 'nullable|string|max:20',
+            'location'             => 'nullable|string|max:255',
+            'linkedin_url'         => 'nullable|url',
+            'github_url'           => 'nullable|url',
+            'portfolio_url'        => 'nullable|url',
             'professional_summary' => 'nullable|string',
-            'experience' => 'nullable|array',
-            'education' => 'nullable|array',
-            'skills' => 'nullable|array',
-            'certifications' => 'nullable|array',
-            'projects' => 'nullable|array',
-            'achievements' => 'nullable|array',
-            'languages' => 'nullable|array',
-            'volunteer_work' => 'nullable|array',
-            'section_order' => 'nullable|array',
-            'visibility_settings' => 'nullable|array',
+            'experience'           => 'nullable|array',
+            'education'            => 'nullable|array',
+            'certifications'       => 'nullable|array',
+            'projects'             => 'nullable|array',
+            'achievements'         => 'nullable|array',
+            'languages'            => 'nullable|array',
+            'volunteer_work'       => 'nullable|array',
+            'section_order'        => 'nullable|array',
+            'visibility_settings'  => 'nullable|array',
+            // Skill category inputs (joined below)
+            'skills_technical'     => 'nullable|string',
+            'skills_tools'         => 'nullable|string',
+            'skills_soft'          => 'nullable|string',
+            'skills_other'         => 'nullable|string',
         ]);
+
+        // Merge skill categories into a flat skills array
+        $skillParts = array_filter([
+            $validated['skills_technical'] ?? '',
+            $validated['skills_tools']     ?? '',
+            $validated['skills_soft']      ?? '',
+            $validated['skills_other']     ?? '',
+        ]);
+        $allSkillsRaw = implode(', ', $skillParts);
+        $existingSkills = array_values(array_filter(
+            array_map('trim', explode(',', $allSkillsRaw))
+        ));
+
+        // Merge AI-suggested skills selected by the user
+        $aiSkills = [];
+        if ($request->filled('ai_skills')) {
+            $decoded = json_decode($request->input('ai_skills'), true);
+            if (is_array($decoded)) {
+                $aiSkills = array_map('trim', $decoded);
+            }
+        }
+        $validated['skills'] = array_values(array_unique(array_merge($existingSkills, $aiSkills)));
+        $validated['skills'] = array_filter($validated['skills']);
+
+        unset($validated['skills_technical'], $validated['skills_tools'],
+              $validated['skills_soft'], $validated['skills_other']);
+
+        // Convert experience achievements from multiline string to array
+        if (!empty($validated['experience'])) {
+            foreach ($validated['experience'] as &$exp) {
+                if (isset($exp['achievements']) && is_string($exp['achievements'])) {
+                    $exp['achievements'] = array_values(array_filter(
+                        array_map('trim', explode("\n", str_replace("\r", '', $exp['achievements'])))
+                    ));
+                }
+            }
+            unset($exp);
+        }
 
         // Create version before updating
         if ($request->boolean('save_version')) {
@@ -153,8 +195,11 @@ class ResumeController extends Controller
     {
         $this->authorize('update', $resume);
 
+        $user = auth()->user();
         $targetJob = $resume->target_job_id ? Job::find($resume->target_job_id) : null;
+        $this->aiService->setAIUser($user);
         $summary = $this->aiService->generateProfessionalSummary($resume, $targetJob);
+        $user->deductAICredits(1, 'resume_summary', 'AI Professional Summary generated');
 
         $resume->update([
             'professional_summary' => $summary,
@@ -174,7 +219,10 @@ class ResumeController extends Controller
     {
         $this->authorize('update', $resume);
 
+        $user = auth()->user();
+        $this->aiService->setAIUser($user);
         $skills = $this->aiService->extractSkills($resume);
+        $user->deductAICredits(1, 'resume_skills', 'AI Skills Extraction');
 
         // Merge with existing skills
         $existingSkills = $resume->skills ?? [];
@@ -200,7 +248,10 @@ class ResumeController extends Controller
         ]);
 
         $job = Job::findOrFail($validated['job_id']);
+        $user = auth()->user();
+        $this->aiService->setAIUser($user);
         $suggestions = $this->aiService->customizeForJob($resume, $job);
+        $user->deductAICredits(1, 'resume_optimize', 'AI Resume Optimize for Job: ' . $job->title);
 
         $resume->update([
             'target_job_id' => $job->id,
@@ -221,17 +272,30 @@ class ResumeController extends Controller
     {
         $this->authorize('view', $resume);
 
-        $analysis = $this->aiService->analyzeATSCompatibility($resume);
+        try {
+            $user = auth()->user();
+            $this->aiService->setAIUser($user);
+            $analysis = $this->aiService->analyzeATSCompatibility($resume);
+            $user->deductAICredits(1, 'resume_ats', 'AI ATS Compatibility Analysis');
 
-        $resume->update([
-            'ats_score' => $this->scoreToLevel($analysis['score']),
-            'ats_analysis' => $analysis,
-        ]);
+            $numericScore = (int) ($analysis['score'] ?? 0);
+            $resume->update([
+                'ats_score' => $this->scoreToLevel($numericScore),
+                'ats_analysis' => $analysis,
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'analysis' => $analysis,
-        ]);
+            return response()->json([
+                'success' => true,
+                'analysis' => $analysis,
+            ]);
+        } catch (\Throwable $e) {
+            \Log::error('ATS analysis failed', ['resume' => $resume->id, 'error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'ATS analysis failed: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

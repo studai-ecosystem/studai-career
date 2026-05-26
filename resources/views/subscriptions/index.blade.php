@@ -47,7 +47,7 @@
                                     </span>
                                 </p>
                                 <p class="text-gray-600">
-                                    <strong>Started:</strong> {{ $subscription->started_at->format('M d, Y') }}
+                                    <strong>Started:</strong> {{ $subscription->starts_at?->format('M d, Y') ?? 'N/A' }}
                                 </p>
                                 @if($subscription->ends_at)
                                 <p class="text-gray-600">

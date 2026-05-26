@@ -1,20 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
-use App\Models\Job;
+use App\Jobs\CheckAndAwardSkillBadges;
 use App\Models\Company;
+use App\Models\InterviewSession;
+use App\Models\Job;
 use App\Services\AI\AIService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class MockInterviewService
 {
-    protected $aiService;
-    
-    public function __construct(AIService $aiService)
-    {
+    protected AIService $aiService;
+    private VantageEvaluatorService $evaluator;
+    private VantageExecutiveService $executive;
+
+    public function __construct(
+        AIService $aiService,
+        VantageEvaluatorService $evaluator,
+        VantageExecutiveService $executive,
+    ) {
         $this->aiService = $aiService;
+        $this->evaluator = $evaluator;
+        $this->executive = $executive;
     }
     
     /**
@@ -22,47 +33,82 @@ class MockInterviewService
      */
     public function generateQuestions($jobTitle, $level, ?Company $company = null, $count = 10)
     {
-        $cacheKey = "interview_questions_" . md5($jobTitle . $level . ($company?->id ?? ''));
-        
-        return Cache::remember($cacheKey, 86400, function () use ($jobTitle, $level, $company, $count) {
-            $prompt = "Generate {$count} realistic interview questions for a {$level} level {$jobTitle} position";
-            
-            if ($company) {
-                $prompt .= " at {$company->name}";
-                if ($company->industry) {
-                    $prompt .= " in the {$company->industry} industry";
+        $cacheKey = "interview_questions_v5_" . md5($jobTitle . $level . ($company?->id ?? '') . $count);
+
+        // Serve valid cached AI results (skip cache by setting env INTERVIEW_SKIP_CACHE=true)
+        if (!config('app.debug') || !env('INTERVIEW_SKIP_CACHE', false)) {
+            $cached = Cache::get($cacheKey);
+            if (
+                is_array($cached) &&
+                (count($cached['behavioral'] ?? []) + count($cached['technical'] ?? []) + count($cached['situational'] ?? [])) > 0
+            ) {
+                return $cached;
+            }
+        }
+
+        $companyContext = '';
+        if ($company) {
+            $companyContext = " at {$company->name}";
+            if ($company->industry) {
+                $companyContext .= " in the {$company->industry} industry";
+            }
+        }
+
+        $behavioral  = (int) ceil($count * 0.4);
+        $technical   = (int) ceil($count * 0.35);
+        $situational = max(1, $count - $behavioral - $technical);
+
+        // Concise prompt → faster response, fewer tokens, less chance of timeout
+        $prompt = <<<PROMPT
+Generate {$count} 2025 interview questions for a {$level} {$jobTitle}{$companyContext}.
+Include {$behavioral} behavioral, {$technical} technical, {$situational} situational.
+Return ONLY raw JSON (no markdown, no explanation):
+{"behavioral":[{"question":"...","category":"leadership|teamwork|problem-solving|growth|communication","difficulty":"easy|medium|hard"}],"technical":[{"question":"...","topic":"...","difficulty":"easy|medium|hard"}],"situational":[{"question":"...","scenario":"...","difficulty":"easy|medium|hard"}]}
+PROMPT;
+
+        $systemPrompt = 'You are a senior recruiter. Return ONLY valid JSON. No markdown. No extra text.';
+
+        try {
+            $response = $this->aiService->generateText(
+                $prompt,
+                $systemPrompt,
+                ['skip_cache' => true, 'timeout' => 25, 'max_tokens' => 2000]
+            );
+
+            // Strip markdown code fences if the model added them
+            $json = preg_replace('/```(?:json)?\s*([\s\S]*?)\s*```/i', '$1', $response);
+            $json = trim($json);
+
+            // Extract the JSON object even if there is surrounding text
+            if (preg_match('/(\{[\s\S]*\})/m', $json, $matches)) {
+                $json = $matches[1];
+            }
+
+            $questions = json_decode($json, true);
+
+            if (is_array($questions)) {
+                $questions['behavioral']  = array_values($questions['behavioral']  ?? []);
+                $questions['technical']   = array_values($questions['technical']   ?? []);
+                $questions['situational'] = array_values($questions['situational'] ?? []);
+
+                $total = count($questions['behavioral']) + count($questions['technical']) + count($questions['situational']);
+                if ($total > 0) {
+                    Cache::put($cacheKey, $questions, 7200); // cache 2h
+                    return $questions;
                 }
             }
-            
-            $prompt .= ".\n\nReturn as JSON with this structure:
-{
-    \"behavioral\": [
-        {\"question\": \"...\", \"category\": \"leadership/teamwork/problem-solving\", \"difficulty\": \"easy/medium/hard\"}
-    ],
-    \"technical\": [
-        {\"question\": \"...\", \"topic\": \"...\", \"difficulty\": \"easy/medium/hard\"}
-    ],
-    \"situational\": [
-        {\"question\": \"...\", \"scenario\": \"...\", \"difficulty\": \"easy/medium/hard\"}
-    ]
-}";
-            
-            $systemPrompt = "You are an expert interview coach specializing in technical and behavioral interviews. Generate realistic, relevant questions that test both hard and soft skills.";
-            
-            try {
-                $response = $this->aiService->generateText($prompt, $systemPrompt);
-                $questions = json_decode($response, true);
-                
-                if (!$questions) {
-                    return $this->getFallbackQuestions($jobTitle, $level);
-                }
-                
-                return $questions;
-            } catch (\Exception $e) {
-                Log::error('Failed to generate interview questions: ' . $e->getMessage());
-                return $this->getFallbackQuestions($jobTitle, $level);
-            }
-        });
+
+            Log::warning('MockInterviewService: unparseable AI JSON, using fallback', [
+                'job_title' => $jobTitle,
+                'snippet'   => substr($response, 0, 300),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('MockInterviewService: generateQuestions failed: ' . $e->getMessage(), [
+                'job_title' => $jobTitle,
+            ]);
+        }
+
+        return $this->getFallbackQuestions($jobTitle, $level);
     }
     
     /**
@@ -89,10 +135,10 @@ class MockInterviewService
     \"areas_for_improvement\": [\"point1\", \"point2\"],
     \"suggestions\": [\"tip1\", \"tip2\"],
     \"star_method_usage\": {\"situation\": true/false, \"task\": true/false, \"action\": true/false, \"result\": true/false},
-    \"overall_feedback\": \"detailed feedback paragraph\"
+    \"overall_feedback\": \"2 sentences max: one strength, one improvement\"
 }";
         
-        $systemPrompt = "You are an experienced interview coach. Evaluate answers constructively, focusing on clarity, relevance, use of STAR method for behavioral questions, and concrete examples.";
+        $systemPrompt = "You are an experienced interview coach. Evaluate answers constructively. Keep overall_feedback to 2 sentences maximum — one sentence on what was good, one on the key improvement needed. Be direct and specific.";
         
         try {
             $response = $this->aiService->generateText($prompt, $systemPrompt);
@@ -248,17 +294,22 @@ class MockInterviewService
     {
         return [
             'behavioral' => [
-                ['question' => 'Tell me about yourself', 'category' => 'general', 'difficulty' => 'easy'],
-                ['question' => 'Describe a challenging project you worked on', 'category' => 'problem-solving', 'difficulty' => 'medium'],
-                ['question' => 'How do you handle conflicts with team members?', 'category' => 'teamwork', 'difficulty' => 'medium'],
+                ['question' => 'Tell me about yourself and your background as a ' . $jobTitle . '.', 'category' => 'general', 'difficulty' => 'easy'],
+                ['question' => 'Describe the most challenging project you have worked on. What was your role and what did you learn?', 'category' => 'problem-solving', 'difficulty' => 'medium'],
+                ['question' => 'How do you handle conflicts with team members? Give a specific example.', 'category' => 'teamwork', 'difficulty' => 'medium'],
+                ['question' => 'Tell me about a time you had to learn a new technology or tool quickly. How did you approach it?', 'category' => 'growth', 'difficulty' => 'medium'],
+                ['question' => 'Describe a situation where you had to influence a decision without having direct authority.', 'category' => 'leadership', 'difficulty' => 'hard'],
             ],
             'technical' => [
-                ['question' => "What are your key strengths as a {$jobTitle}?", 'topic' => 'skills', 'difficulty' => 'easy'],
-                ['question' => 'Explain a technical challenge you solved recently', 'topic' => 'problem-solving', 'difficulty' => 'medium'],
+                ['question' => 'What are the key technical skills you bring to a ' . $jobTitle . ' role, and how do you stay updated with industry changes?', 'topic' => 'skills', 'difficulty' => 'easy'],
+                ['question' => 'Describe a technical challenge you faced recently and walk me through how you solved it.', 'topic' => 'problem-solving', 'difficulty' => 'medium'],
+                ['question' => 'How are you incorporating AI tools into your workflow as a ' . $jobTitle . '?', 'topic' => 'AI & modern tools', 'difficulty' => 'medium'],
+                ['question' => 'How do you approach code/work quality, testing, and documentation in your projects?', 'topic' => 'quality', 'difficulty' => 'medium'],
             ],
             'situational' => [
-                ['question' => 'How would you handle a tight deadline?', 'scenario' => 'time management', 'difficulty' => 'medium'],
-                ['question' => 'What would you do if you disagreed with your manager?', 'scenario' => 'conflict', 'difficulty' => 'hard'],
+                ['question' => 'You are given a project with an extremely tight deadline and limited resources. How do you prioritize and deliver?', 'scenario' => 'time management', 'difficulty' => 'medium'],
+                ['question' => 'Your manager asks you to implement a solution you believe is not the best approach. What do you do?', 'scenario' => 'conflict', 'difficulty' => 'hard'],
+                ['question' => 'A key team member suddenly leaves mid-project. How do you ensure delivery without compromising quality?', 'scenario' => 'team disruption', 'difficulty' => 'hard'],
             ],
         ];
     }
@@ -328,5 +379,88 @@ class MockInterviewService
                 'Be prepared to walk away if needed',
             ],
         ];
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // VANTAGE INTELLIGENCE LAYER
+    // ─────────────────────────────────────────────────────────────
+
+    /**
+     * Build session context for the Executive steering layer.
+     */
+    public function buildSessionContext(InterviewSession $session): array
+    {
+        return [
+            'role'        => $session->role_title ?? 'Professional',
+            'company'     => $session->company_name ?? '',
+            'focus_skill' => $session->focus_skill ?? '',
+            'experience'  => $session->user?->profile?->years_experience ?? null,
+        ];
+    }
+
+    /**
+     * Get a turn-level Executive steering prompt for the interviewer AI persona.
+     *
+     * @param  InterviewSession $session
+     * @param  int              $turn           1-based turn index
+     * @param  array            $evidenceSoFar  Map of skill => count captured so far
+     * @return string
+     */
+    public function getExecutivePrompt(InterviewSession $session, int $turn, array $evidenceSoFar): string
+    {
+        $context = $this->buildSessionContext($session);
+        return $this->executive->buildSteeringPrompt($turn, $evidenceSoFar, $context);
+    }
+
+    /**
+     * Get the full combined system prompt (base persona + Executive steering).
+     *
+     * @param  string $basePersona
+     * @param  InterviewSession $session
+     * @param  int    $turn
+     * @param  array  $evidenceSoFar
+     * @return string
+     */
+    public function getFullSystemPrompt(string $basePersona, InterviewSession $session, int $turn, array $evidenceSoFar): string
+    {
+        $context = $this->buildSessionContext($session);
+        return $this->executive->buildFullSystemPrompt($basePersona, $turn, $evidenceSoFar, $context);
+    }
+
+    /**
+     * Run the Vantage Evaluator after a session ends and dispatch badge check.
+     * Should be called when interview_session.status transitions to 'completed'.
+     *
+     * @return array  The skill map
+     */
+    public function runVantageEvaluator(InterviewSession $session): array
+    {
+        try {
+            $skillMap = $this->evaluator->evaluateInterviewSession($session);
+
+            // Dispatch badge check asynchronously
+            CheckAndAwardSkillBadges::dispatch(
+                $session->user,
+                'interview_session',
+                $session->id,
+                $skillMap
+            );
+
+            return $skillMap;
+        } catch (\Exception $e) {
+            Log::error('MockInterviewService: Vantage evaluator failed', [
+                'session_id' => $session->id,
+                'error'      => $e->getMessage(),
+            ]);
+            return [];
+        }
+    }
+
+    /**
+     * Parse a raw JSON string from the LLM into a normalised skill map.
+     */
+    public function parseSkillMap(string $rawJson): array
+    {
+        return $this->evaluator->parseSkillMap($rawJson);
     }
 }

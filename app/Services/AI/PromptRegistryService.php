@@ -92,14 +92,14 @@ class PromptRegistryService
         if (!$prompt) {
             return [
                 'model' => null,
-                'max_tokens' => null,
+                'max_completion_tokens' => null,
                 'temperature' => null,
             ];
         }
 
         return [
             'model' => $prompt->model_hint,
-            'max_tokens' => $prompt->max_tokens,
+            'max_completion_tokens' => $prompt->max_tokens,
             'temperature' => $prompt->temperature,
         ];
     }
@@ -122,7 +122,7 @@ class PromptRegistryService
             'variables' => $data['variables'] ?? null,
             'metadata' => $data['metadata'] ?? null,
             'model_hint' => $data['model_hint'] ?? null,
-            'max_tokens' => $data['max_tokens'] ?? null,
+            'max_completion_tokens' => $data['max_tokens'] ?? null,
             'temperature' => $data['temperature'] ?? null,
             'created_by' => auth()->id(),
             'updated_by' => auth()->id(),
@@ -318,8 +318,8 @@ Please provide:
 Format your response as JSON.
 PROMPT,
                 'variables' => ['resume_content', 'target_job_title'],
-                'model_hint' => 'gpt-5.1',
-                'max_tokens' => 2000,
+                'model_hint' => config('ai.azure.models.chat'),
+                'max_completion_tokens' => 2000,
                 'temperature' => 0.3,
             ],
             [
@@ -345,8 +345,8 @@ The cover letter should:
 - End with a clear call to action
 PROMPT,
                 'variables' => ['candidate_name', 'job_title', 'company_name', 'background_summary', 'key_skills', 'tone', 'length'],
-                'model_hint' => 'gpt-5.1',
-                'max_tokens' => 1500,
+                'model_hint' => config('ai.azure.models.chat'),
+                'max_completion_tokens' => 1500,
                 'temperature' => 0.7,
             ],
             [
@@ -374,8 +374,8 @@ For each question, also provide:
 - Sample strong answer points
 PROMPT,
                 'variables' => ['question_count', 'job_title', 'company_name', 'required_skills', 'experience_level', 'interview_type'],
-                'model_hint' => 'gpt-5.1',
-                'max_tokens' => 3000,
+                'model_hint' => config('ai.azure.models.chat'),
+                'max_completion_tokens' => 3000,
                 'temperature' => 0.6,
             ],
             [
@@ -401,8 +401,8 @@ Provide:
 6. Resource suggestions (courses, certifications)
 PROMPT,
                 'variables' => ['current_skills', 'target_role', 'industry', 'experience_years', 'career_goals'],
-                'model_hint' => 'gpt-5.1',
-                'max_tokens' => 2500,
+                'model_hint' => config('ai.azure.models.chat'),
+                'max_completion_tokens' => 2500,
                 'temperature' => 0.4,
             ],
             [
@@ -434,8 +434,8 @@ Provide:
 - Recommendation (Strong Match / Good Match / Partial Match / Not Recommended)
 PROMPT,
                 'variables' => ['candidate_profile', 'job_requirements'],
-                'model_hint' => 'gpt-5.1',
-                'max_tokens' => 1500,
+                'model_hint' => config('ai.azure.models.chat'),
+                'max_completion_tokens' => 1500,
                 'temperature' => 0.2,
             ],
         ];

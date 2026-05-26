@@ -140,7 +140,7 @@
     {{-- AI Generation Notice --}}
     <div class="ai-notice">
         This cover letter was automatically generated and customized for {{ $jobTitle }} at {{ $companyName }}.
-        <br>Generated on {{ date('F j, Y') }} by StudAI Career Autonomous Agent
+        <br>Generated on {{ date('F j, Y') }} by StudAI Hire Autonomous Agent
     </div>
 </body>
 </html>

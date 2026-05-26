@@ -26,7 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/resumes/{resume}/ai/summary', [ResumeController::class, 'generateSummary'])->name('resume.ai.summary');
     Route::post('/resumes/{resume}/ai/skills', [ResumeController::class, 'extractSkills'])->name('resume.ai.skills');
     Route::post('/resumes/{resume}/ai/optimize', [ResumeController::class, 'optimizeForJob'])->name('resume.ai.optimize');
-    Route::get('/resumes/{resume}/ai/analyze-ats', [ResumeController::class, 'analyzeATS'])->name('resume.ai.analyze-ats');
+    Route::post('/resumes/{resume}/ai/analyze-ats', [ResumeController::class, 'analyzeATS'])->name('resume.ai.analyze-ats');
     
     // Resume Suggestions
     Route::post('/resumes/{resume}/suggestions/{suggestion}/accept', [ResumeController::class, 'acceptSuggestion'])->name('resume.suggestion.accept');

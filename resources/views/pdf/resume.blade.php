@@ -261,7 +261,7 @@
     {{-- AI Customization Notice --}}
     <div class="ai-notice">
         This resume was automatically customized for {{ $jobTitle }} at {{ $companyName }} using AI-powered optimization.
-        <br>Generated on {{ date('F j, Y') }} by StudAI Career Autonomous Agent
+        <br>Generated on {{ date('F j, Y') }} by StudAI Hire Autonomous Agent
     </div>
 </body>
 </html>

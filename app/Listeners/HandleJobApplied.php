@@ -9,6 +9,7 @@ use App\Notifications\NotifyEmployer;
 use App\Notifications\SendApplicationConfirmation;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
 class HandleJobApplied implements ShouldQueue
 {
@@ -16,28 +17,35 @@ class HandleJobApplied implements ShouldQueue
 
     public string $queue = 'default';
 
-    /**
-     * Handle the event.
-     */
     public function handle(JobApplied $event): void
     {
         $application = $event->application;
-        $user = $event->user;
-        $job = $event->job;
+        $user        = $event->user;
+        $job         = $event->job;
 
-        // Notify the applicant with confirmation
+        // ── Notify applicant (confirmation email with Reply-To = hr_email) ──
         $user->notify(new SendApplicationConfirmation($application));
 
-        // Notify the employer about the new application
-        $employer = $job->company?->owner;
-        if ($employer) {
+        // ── Notify HR about new application ───────────────────────────────
+        // If company has a dedicated HR email, notify it directly.
+        // Otherwise fall back to the company owner's account.
+        $company  = $job->company;
+        $hrEmail  = $company?->hr_email ?? null;
+        $employer = $company?->owner ?? null;
+
+        if ($hrEmail) {
+            // Send a plain notification email to the HR inbox
+            Mail::to($hrEmail)->send(
+                new \App\Mail\NewApplicationMail(
+                    application: $application,
+                    hrName:      $company->name . ' HR',
+                )
+            );
+        } elseif ($employer) {
             $employer->notify(new NotifyEmployer($application));
         }
     }
 
-    /**
-     * Determine whether the listener should be queued.
-     */
     public function shouldQueue(JobApplied $event): bool
     {
         return true;

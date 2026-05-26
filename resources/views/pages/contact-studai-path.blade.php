@@ -1,43 +1,57 @@
 {{--
-    StudAI Path — Contact Page
+    StudAI Hire — Contact Page
     Support, Sales & Partnership Inquiries
 --}}
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'Contact Us — StudAI Path | Support, Sales & Partnership Inquiries')
+@section('title', 'Contact Us — StudAI Hire | Support, Sales & Partnership Inquiries')
 
 @section('meta')
-<meta name="description" content="Get in touch with StudAI Path for support, sales inquiries, partnerships, or general questions. We're here to help automate your career.">
-<meta property="og:title" content="Contact Us — StudAI Path">
+<meta name="description" content="Get in touch with StudAI Hire for support, sales inquiries, partnerships, or general questions. We're here to help automate your career.">
+<meta property="og:title" content="Contact Us — StudAI Hire">
 <meta property="og:description" content="Reach out to our team for support or explore how we can automate your career journey.">
 <link rel="canonical" href="{{ route('contact') }}">
 @endsection
 
+@push('styles')
+<style>
+@keyframes orbA { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-25px) scale(1.06)} 66%{transform:translate(-20px,18px) scale(.96)} }
+@keyframes orbB { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-28px,22px) scale(1.04)} 66%{transform:translate(22px,-18px) scale(.98)} }
+@keyframes orbC { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(18px,28px) scale(1.07)} }
+@keyframes orbD { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-22px,-12px) scale(1.09)} }
+.contact-card { transition: transform .3s ease, box-shadow .3s ease; }
+.contact-card:hover { transform: translateY(-8px); }
+</style>
+@endpush
+
 @section('content')
 {{-- Hero Section --}}
-<section class="relative overflow-hidden bg-gradient-to-br from-ink-primary via-slate-900 to-ink-primary text-white">
-    <div class="absolute inset-0 opacity-20">
-        <div class="absolute -top-40 -left-12 h-96 w-96 rounded-full bg-google-blue-500/30 blur-3xl"></div>
-        <div class="absolute top-20 right-0 h-[28rem] w-[28rem] rounded-full bg-purple-500/20 blur-3xl"></div>
+<section class="relative overflow-hidden" style="background:linear-gradient(135deg,#eef1ff 0%,#f5f0ff 30%,#eefff7 65%,#fff8ee 100%);">
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute" style="width:600px;height:600px;top:-150px;right:-100px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.28),transparent 70%);filter:blur(70px);animation:orbA 14s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:480px;height:480px;bottom:-80px;left:-80px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.22),transparent 70%);filter:blur(60px);animation:orbB 12s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:320px;height:320px;top:30%;left:35%;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.18),transparent 70%);filter:blur(50px);animation:orbC 16s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:220px;height:220px;top:10%;left:15%;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.2),transparent 70%);filter:blur(40px);animation:orbD 10s ease-in-out infinite;"></div>
+        <div class="absolute inset-0" style="background-image:radial-gradient(circle,rgba(99,102,241,.14) 1px,transparent 1px);background-size:36px 36px;"></div>
     </div>
     <div class="relative mx-auto max-w-6xl px-6 py-24 lg:py-32 text-center">
-        <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2 text-sm font-semibold uppercase tracking-widest mb-6">
-            <svg class="w-4 h-4 text-google-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <span class="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-widest mb-6" style="background:rgba(16,185,129,.12);color:#059669;border:1px solid rgba(16,185,129,.25);backdrop-filter:blur(8px);">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
             </svg>
             24/7 Support Available
         </span>
-        <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl max-w-4xl mx-auto">
-            We're Here to Help Your Career Take Off
+        <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl max-w-4xl mx-auto" style="color:#1a1a2e;line-height:1.15;">
+            We're Here to Help Your Career <span style="background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Take Off</span>
         </h1>
-        <p class="mt-6 text-lg text-slate-200 max-w-2xl mx-auto">
+        <p class="mt-6 text-lg max-w-2xl mx-auto" style="color:#4b5563;">
             Whether you need support, have questions, or want to explore partnerships — our team is ready to assist.
         </p>
     </div>
 </section>
 
 {{-- Quick Contact Methods --}}
-<section class="py-16 bg-white">
+<section class="py-16" style="background:linear-gradient(180deg,#f4f6ff 0%,#fff 100%);">
     <div class="mx-auto max-w-7xl px-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach ([
@@ -46,39 +60,55 @@
                     'title' => 'Live Chat',
                     'description' => 'Instant help, 24/7',
                     'action' => 'Start Chatting',
-                    'color' => 'google-green',
+                    'bg' => 'linear-gradient(135deg,#f0fdf4,#dcfce7)',
+                    'iconbg' => 'linear-gradient(135deg,#bbf7d0,#a7f3d0)',
+                    'iconcolor' => '#059669',
+                    'shadow' => '0 8px 32px rgba(16,185,129,.18)',
+                    'linkcolor' => '#059669',
                 ],
                 [
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>',
                     'title' => 'Email Us',
                     'description' => 'hello@studaipath.com',
                     'action' => 'Send Email',
-                    'color' => 'google-blue',
+                    'bg' => 'linear-gradient(135deg,#eff6ff,#dbeafe)',
+                    'iconbg' => 'linear-gradient(135deg,#bfdbfe,#93c5fd)',
+                    'iconcolor' => '#2563eb',
+                    'shadow' => '0 8px 32px rgba(59,130,246,.18)',
+                    'linkcolor' => '#2563eb',
                 ],
                 [
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>',
                     'title' => 'Call Us',
                     'description' => '+91-80-4567-8900',
                     'action' => 'Call Now',
-                    'color' => 'purple',
+                    'bg' => 'linear-gradient(135deg,#f5f3ff,#ede9fe)',
+                    'iconbg' => 'linear-gradient(135deg,#ddd6fe,#c4b5fd)',
+                    'iconcolor' => '#7c3aed',
+                    'shadow' => '0 8px 32px rgba(139,92,246,.18)',
+                    'linkcolor' => '#7c3aed',
                 ],
                 [
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
                     'title' => 'Help Center',
                     'description' => '500+ articles',
                     'action' => 'Browse FAQ',
-                    'color' => 'google-yellow',
+                    'bg' => 'linear-gradient(135deg,#fffbeb,#fef9c3)',
+                    'iconbg' => 'linear-gradient(135deg,#fde68a,#fcd34d)',
+                    'iconcolor' => '#b45309',
+                    'shadow' => '0 8px 32px rgba(245,158,11,.18)',
+                    'linkcolor' => '#b45309',
                 ],
             ] as $method)
-                <div class="group rounded-2xl border border-surface-200 bg-surface-50 p-6 text-center hover:shadow-card transition-all duration-300">
-                    <div class="w-14 h-14 rounded-xl bg-{{ $method['color'] }}-100 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                        <svg class="w-7 h-7 text-{{ $method['color'] }}-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <div class="contact-card rounded-2xl p-6 text-center" style="background:{{ $method['bg'] }};box-shadow:{{ $method['shadow'] }};border:1px solid rgba(0,0,0,.06);">
+                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:{{ $method['iconbg'] }};box-shadow:0 4px 12px rgba(0,0,0,.1);">
+                        <svg class="w-7 h-7" style="color:{{ $method['iconcolor'] }};" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             {!! $method['icon'] !!}
                         </svg>
                     </div>
-                    <h3 class="text-lg font-semibold text-ink-primary mb-1">{{ $method['title'] }}</h3>
-                    <p class="text-sm text-ink-secondary mb-4">{{ $method['description'] }}</p>
-                    <button class="inline-flex items-center gap-1 text-google-blue-600 font-semibold text-sm hover:underline">
+                    <h3 class="text-lg font-semibold mb-1" style="color:#1a1a2e;">{{ $method['title'] }}</h3>
+                    <p class="text-sm mb-4" style="color:#6b7280;">{{ $method['description'] }}</p>
+                    <button class="inline-flex items-center gap-1 font-semibold text-sm" style="color:{{ $method['linkcolor'] }};">
                         {{ $method['action'] }}
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -315,12 +345,12 @@
 {!! json_encode([
     '@context' => 'https://schema.org',
     '@type' => 'ContactPage',
-    'name' => 'Contact StudAI Path',
-    'description' => 'Get in touch with StudAI Path for support, sales, or partnership inquiries',
+    'name' => 'Contact StudAI Hire',
+    'description' => 'Get in touch with StudAI Hire for support, sales, or partnership inquiries',
     'url' => route('contact'),
     'mainEntity' => [
         '@type' => 'Organization',
-        'name' => 'StudAI Path',
+        'name' => 'StudAI Hire',
         'contactPoint' => [
             [
                 '@type' => 'ContactPoint',

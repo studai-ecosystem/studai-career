@@ -9,7 +9,7 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="mobile-web-app-capable" content="yes">
 
-        <title>{{ config('app.name', 'StudAI Career') }}</title>
+        <title>{{ config('app.name', 'StudAI Hire') }}</title>
 
         <!-- PWA Manifest -->
         <link rel="manifest" href="/manifest.json">
@@ -138,9 +138,9 @@
              class="pwa-install-banner fixed bottom-20 inset-x-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl p-4 shadow-2xl z-50 hidden">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <img src="/icons/icon-72x72.png" alt="StudAI Career" class="w-12 h-12 rounded-xl">
+                    <img src="/icons/icon-72x72.png" alt="StudAI Hire" class="w-12 h-12 rounded-xl">
                     <div>
-                        <h3 class="text-white font-semibold">Install StudAI Career</h3>
+                        <h3 class="text-white font-semibold">Install StudAI Hire</h3>
                         <p class="text-white/80 text-sm">Get the full app experience</p>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 @props([
     'title' => 'Ready to Find Your Dream Job?',
-    'subtitle' => 'Join thousands of successful job seekers using StudAI Career',
+    'subtitle' => 'Join thousands of successful job seekers using StudAI Hire',
     'buttonText' => 'Get Started Free',
     'buttonUrl' => '/register',
     'secondaryButtonText' => null,

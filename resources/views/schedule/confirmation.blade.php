@@ -146,7 +146,7 @@
 
         <!-- Powered By -->
         <p class="text-center text-gray-400 text-sm mt-8">
-            Powered by <a href="/" class="text-blue-600 hover:underline">StudAI Career</a>
+            Powered by <a href="/" class="text-blue-600 hover:underline">StudAI Hire</a>
         </p>
     </div>
 </body>

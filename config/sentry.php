@@ -179,7 +179,7 @@ return [
     */
 
     'tags' => [
-        'app_name' => env('APP_NAME', 'StudAI Career'),
+        'app_name' => env('APP_NAME', 'StudAI Hire'),
         'server' => gethostname(),
     ],
 

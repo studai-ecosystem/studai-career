@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Preferences - AI Career Coach')
 
@@ -14,7 +14,7 @@
                     <li class="text-gray-900 dark:text-white font-medium">Preferences</li>
                 </ol>
             </nav>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">⚙️ Coach Preferences</h1>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">âš™ï¸ Coach Preferences</h1>
             <p class="mt-1 text-gray-600 dark:text-gray-400">Customize your AI coaching experience</p>
         </div>
 

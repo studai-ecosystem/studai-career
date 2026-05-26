@@ -1,6 +1,6 @@
 {
-  "name": "StudAI Career - AI-Powered Job Marketplace",
-  "short_name": "StudAI Career",
+  "name": "StudAI Hire - AI-Powered Job Marketplace",
+  "short_name": "StudAI Hire",
   "description": "Find your dream job with AI-powered matching, autonomous agent, and smart application tracking",
   "start_url": "/",
   "display": "standalone",

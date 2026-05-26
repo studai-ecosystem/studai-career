@@ -45,6 +45,16 @@ class BackgroundCheckService
     }
 
     /**
+     * Return a pre-configured HTTP client with standard timeout and automatic retry.
+     * All external provider calls MUST use this method to avoid indefinite hangs.
+     */
+    protected function http(): \Illuminate\Http\Client\PendingRequest
+    {
+        return Http::timeout(30)
+            ->retry(2, 500, fn (\Throwable $e): bool => !($e instanceof \Illuminate\Http\Client\ConnectionException));
+    }
+
+    /**
      * Create a new background check request
      */
     public function createBackgroundCheck(
@@ -209,7 +219,7 @@ class BackgroundCheckService
         $candidate = $backgroundCheck->candidate;
 
         // First, create or get candidate in Checkr
-        $candidateResponse = Http::withBasicAuth($config['api_key'], '')
+        $candidateResponse = $this->http()->withBasicAuth($config['api_key'], '')
             ->post("{$config['base_url']}/candidates", [
                 'first_name' => $candidate->first_name ?? explode(' ', $candidate->name)[0],
                 'last_name' => $candidate->last_name ?? explode(' ', $candidate->name)[1] ?? '',
@@ -231,7 +241,7 @@ class BackgroundCheckService
         $package = $this->mapChecksToCheckrPackage($backgroundCheck->checks_requested);
 
         // Create the report (background check)
-        $reportResponse = Http::withBasicAuth($config['api_key'], '')
+        $reportResponse = $this->http()->withBasicAuth($config['api_key'], '')
             ->post("{$config['base_url']}/reports", [
                 'candidate_id' => $checkrCandidateId,
                 'package' => $package,
@@ -256,7 +266,7 @@ class BackgroundCheckService
         $config = $this->providerConfigs['sterling'];
         $candidate = $backgroundCheck->candidate;
 
-        $response = Http::withHeaders([
+        $response = $this->http()->withHeaders([
             'Authorization' => 'Bearer ' . $config['api_key'],
             'X-Client-Id' => $config['client_id'],
         ])->post("{$config['base_url']}/screenings", [
@@ -290,7 +300,7 @@ class BackgroundCheckService
         $config = $this->providerConfigs['goodhire'];
         $candidate = $backgroundCheck->candidate;
 
-        $response = Http::withHeaders([
+        $response = $this->http()->withHeaders([
             'Authorization' => 'Bearer ' . $config['api_key'],
         ])->post("{$config['base_url']}/reports", [
             'candidate' => [
@@ -813,7 +823,7 @@ class BackgroundCheckService
     {
         $config = $this->providerConfigs['checkr'];
         
-        $response = Http::withBasicAuth($config['api_key'], '')
+        $response = $this->http()->withBasicAuth($config['api_key'], '')
             ->get("{$config['base_url']}/reports/{$backgroundCheck->provider_check_id}/pdf");
 
         return $response->successful() ? $response->body() : null;
@@ -826,7 +836,7 @@ class BackgroundCheckService
     {
         $config = $this->providerConfigs['sterling'];
         
-        $response = Http::withHeaders([
+        $response = $this->http()->withHeaders([
             'Authorization' => 'Bearer ' . $config['api_key'],
             'X-Client-Id' => $config['client_id'],
         ])->get("{$config['base_url']}/screenings/{$backgroundCheck->provider_check_id}/report");
@@ -841,7 +851,7 @@ class BackgroundCheckService
     {
         $config = $this->providerConfigs['goodhire'];
         
-        $response = Http::withHeaders([
+        $response = $this->http()->withHeaders([
             'Authorization' => 'Bearer ' . $config['api_key'],
         ])->get("{$config['base_url']}/reports/{$backgroundCheck->provider_check_id}/pdf");
 
@@ -853,24 +863,32 @@ class BackgroundCheckService
      */
     public function getCompanyStatistics(int $companyId): array
     {
-        $checks = BackgroundCheck::where('company_id', $companyId);
+        // Single aggregated query instead of 6 separate COUNT calls
+        $stats = BackgroundCheck::where('company_id', $companyId)
+            ->selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,
+                SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed,
+                SUM(CASE WHEN result = 'clear' THEN 1 ELSE 0 END) as clear_count,
+                SUM(CASE WHEN result IN ('consider','suspended') THEN 1 ELSE 0 END) as requires_review,
+                AVG(CASE WHEN status = 'completed' AND started_at IS NOT NULL AND completed_at IS NOT NULL
+                    THEN DATEDIFF(completed_at, started_at) ELSE NULL END) as avg_days
+            ")
+            ->first();
+
+        $byProvider = BackgroundCheck::where('company_id', $companyId)
+            ->selectRaw('provider, COUNT(*) as count')
+            ->groupBy('provider')
+            ->pluck('count', 'provider');
 
         return [
-            'total' => $checks->count(),
-            'pending' => (clone $checks)->pending()->count(),
-            'completed' => (clone $checks)->completed()->count(),
-            'clear' => (clone $checks)->where('result', 'clear')->count(),
-            'requires_review' => (clone $checks)->requiresReview()->count(),
-            'average_completion_days' => (clone $checks)
-                ->completed()
-                ->whereNotNull('started_at')
-                ->whereNotNull('completed_at')
-                ->selectRaw('AVG(DATEDIFF(completed_at, started_at)) as avg_days')
-                ->value('avg_days') ?? 0,
-            'by_provider' => (clone $checks)
-                ->selectRaw('provider, COUNT(*) as count')
-                ->groupBy('provider')
-                ->pluck('count', 'provider'),
+            'total'                  => (int) ($stats->total ?? 0),
+            'pending'                => (int) ($stats->pending ?? 0),
+            'completed'              => (int) ($stats->completed ?? 0),
+            'clear'                  => (int) ($stats->clear_count ?? 0),
+            'requires_review'        => (int) ($stats->requires_review ?? 0),
+            'average_completion_days' => round((float) ($stats->avg_days ?? 0), 1),
+            'by_provider'            => $byProvider,
         ];
     }
 }

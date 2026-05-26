@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Dynamic Adaptive Assessment - S.C.O.U.T.')
 
@@ -93,6 +93,15 @@
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-8">
     <div class="container mx-auto px-4">
+
+        <!-- Back Button -->
+        <div class="mb-4">
+            <a href="{{ route('employer.scout.dashboard') }}"
+                class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg px-4 py-2 shadow-sm hover:shadow transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Back to Dashboard
+            </a>
+        </div>
         
         <!-- Header -->
         <div class="mb-8">
@@ -467,7 +476,7 @@
         
         <div class="space-y-4 text-gray-700">
             <div>
-                <h3 class="font-bold text-lg mb-2">🎯 Adaptive Difficulty System</h3>
+                <h3 class="font-bold text-lg mb-2">¯ Adaptive Difficulty System</h3>
                 <p>Questions automatically adjust based on your performance:</p>
                 <ul class="list-disc ml-6 mt-2 space-y-1">
                     <li><strong>80%+ accuracy:</strong> Questions get harder</li>
@@ -477,7 +486,7 @@
             </div>
             
             <div>
-                <h3 class="font-bold text-lg mb-2">📊 Difficulty Levels</h3>
+                <h3 class="font-bold text-lg mb-2">�Š Difficulty Levels</h3>
                 <div class="space-y-2">
                     <div class="difficulty-easy px-3 py-2 rounded">
                         <strong>Easy:</strong> Basic concepts (80%+ pass rate)
@@ -495,7 +504,7 @@
             </div>
             
             <div>
-                <h3 class="font-bold text-lg mb-2">🎯 Question Types</h3>
+                <h3 class="font-bold text-lg mb-2">¯ Question Types</h3>
                 <ul class="list-disc ml-6 space-y-1">
                     <li><strong>Multiple Choice:</strong> Select the best answer</li>
                     <li><strong>Coding:</strong> Write code to solve problems</li>
@@ -505,18 +514,18 @@
             </div>
             
             <div>
-                <h3 class="font-bold text-lg mb-2">⭐ Weighted Scoring</h3>
+                <h3 class="font-bold text-lg mb-2">â­ Weighted Scoring</h3>
                 <p>Harder questions are worth more points:</p>
                 <ul class="list-disc ml-6 mt-2 space-y-1">
-                    <li>Easy: 1.0× multiplier</li>
-                    <li>Medium: 1.5× multiplier</li>
-                    <li>Hard: 2.0× multiplier</li>
-                    <li>Expert: 2.5× multiplier</li>
+                    <li>Easy: 1.0&times; multiplier</li>
+                    <li>Medium: 1.5&times; multiplier</li>
+                    <li>Hard: 2.0&times; multiplier</li>
+                    <li>Expert: 2.5&times; multiplier</li>
                 </ul>
             </div>
             
             <div>
-                <h3 class="font-bold text-lg mb-2">🎓 Proficiency Levels</h3>
+                <h3 class="font-bold text-lg mb-2">“ Proficiency Levels</h3>
                 <ul class="list-disc ml-6 space-y-1">
                     <li><strong>Expert:</strong> 90+ score</li>
                     <li><strong>Advanced:</strong> 75-89 score</li>
@@ -527,7 +536,7 @@
             </div>
             
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                <p class="font-semibold text-blue-900">💡 Pro Tip:</p>
+                <p class="font-semibold text-blue-900">�¡ Pro Tip:</p>
                 <p class="text-blue-800">No two candidates receive identical assessments. Questions are AI-generated based on the candidate's resume, experience, and the specific job requirements.</p>
             </div>
         </div>
@@ -713,7 +722,7 @@ function startAssessment() {
     // Set candidate info
     const candidateName = document.getElementById('applicationSelect').selectedOptions[0].textContent.split(' - ')[0];
     const jobTitle = document.getElementById('jobSelect').selectedOptions[0].textContent.split(' (')[0];
-    document.getElementById('candidateInfo').textContent = `${candidateName} • ${jobTitle}`;
+    document.getElementById('candidateInfo').textContent = `${candidateName} â€¢ ${jobTitle}`;
     
     // Initialize timers
     startAssessmentTimer(currentAssessment.time_limit_minutes * 60);
@@ -939,8 +948,8 @@ async function submitAnswer() {
 // Show answer feedback
 function showAnswerFeedback(evaluation) {
     const message = evaluation.is_correct 
-        ? `✅ Correct! Score: ${evaluation.score}/${evaluation.max_score}`
-        : `❌ Incorrect. Score: ${evaluation.score}/${evaluation.max_score}`;
+        ? `� Correct! Score: ${evaluation.score}/${evaluation.max_score}`
+        : `âŒ Incorrect. Score: ${evaluation.score}/${evaluation.max_score}`;
     
     const feedbackDiv = document.createElement('div');
     feedbackDiv.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg ${evaluation.is_correct ? 'bg-green-500' : 'bg-orange-500'} text-white font-semibold z-50`;

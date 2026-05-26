@@ -3,8 +3,6 @@
 namespace App\Services\AI;
 
 use App\Models\NegotiationStrategy;
-use App\Models\SalaryTrend;
-use App\Models\SkillTrend;
 use App\Models\User;
 use App\Traits\InteractsWithAI;
 use Illuminate\Support\Facades\Cache;
@@ -31,6 +29,9 @@ class NegotiationStrategistService
             $marketData,
             $offerData['current_salary'] ?? null
         );
+
+        // Persist the calculated percentile back into marketData for DB storage
+        $marketData['offered_percentile'] = $negotiationRange['offered_percentile'];
 
         // Analyze user's strongest negotiation points
         $strengthAnalysis = $this->analyzeNegotiationStrength($user, $offerData);
@@ -63,45 +64,59 @@ class NegotiationStrategistService
             'offered_salary' => $offerData['offered_salary'],
             'current_salary' => $offerData['current_salary'] ?? null,
             'years_experience' => $offerData['years_experience'],
-            
-            // Market data
-            'market_median' => $marketData['median'],
-            'market_percentile_25' => $marketData['percentile_25'],
-            'market_percentile_75' => $marketData['percentile_75'],
-            'market_percentile_90' => $marketData['percentile_90'],
-            'offered_salary_percentile' => $marketData['offered_percentile'],
-            'company_salary_data' => $marketData['company_data'] ?? null,
-            
-            // Negotiation range
-            'optimal_ask' => $negotiationRange['optimal'],
+
+            // Market data — AI-powered, role-specific
+            'market_median'            => $marketData['median'],
+            'market_percentile_25'     => $marketData['percentile_25'],
+            'market_percentile_75'     => $marketData['percentile_75'],
+            'market_percentile_90'     => $marketData['percentile_90'],
+            'offered_salary_percentile'=> $negotiationRange['offered_percentile'],
+            'company_salary_data'      => [
+                'percentile_10'  => $marketData['percentile_10'] ?? null,
+                'trend'          => $marketData['trend'] ?? 'stable',
+                'yoy_change'     => $marketData['yoy_change'] ?? 0,
+                'demand'         => $marketData['demand'] ?? 'medium',
+                'ai_rationale'   => $marketData['ai_rationale'] ?? '',
+                'source'         => $marketData['source'] ?? 'estimate',
+                // 3-tier ranges with probabilities
+                'conservative'      => $negotiationRange['conservative'],
+                'competitive'       => $negotiationRange['competitive'],
+                'aggressive'        => $negotiationRange['aggressive'],
+                'prob_conservative' => $negotiationRange['prob_conservative'],
+                'prob_competitive'  => $negotiationRange['prob_competitive'],
+                'prob_aggressive'   => $negotiationRange['prob_aggressive'],
+            ],
+
+            // Negotiation range (primary — competitive tier)
+            'optimal_ask'        => $negotiationRange['optimal'],
             'minimum_acceptable' => $negotiationRange['minimum'],
-            'stretch_goal' => $negotiationRange['stretch'],
-            'confidence_score' => $negotiationRange['confidence'],
-            
+            'stretch_goal'       => $negotiationRange['stretch'],
+            'confidence_score'   => $negotiationRange['confidence'],
+
             // Strength analysis
-            'strongest_points' => $strengthAnalysis['strengths'],
+            'strongest_points'   => $strengthAnalysis['strengths'],
             'value_propositions' => $strengthAnalysis['value_props'],
-            'risk_factors' => $strengthAnalysis['risks'],
-            
+            'risk_factors'       => $strengthAnalysis['risks'],
+
             // Tactical recommendations
-            'recommended_timing' => $tacticalRecommendations['timing'],
-            'timing_rationale' => $tacticalRecommendations['timing_rationale'],
-            'recommended_tone' => $tacticalRecommendations['tone'],
-            'recommended_tactics' => $tacticalRecommendations['tactics'],
-            'benefits_to_negotiate' => $tacticalRecommendations['alternative_benefits'],
-            'total_comp_optimization' => $tacticalRecommendations['total_comp'],
-            
+            'recommended_timing'           => $tacticalRecommendations['timing'],
+            'timing_rationale'             => $tacticalRecommendations['timing_rationale'],
+            'recommended_tone'             => $tacticalRecommendations['tone'],
+            'recommended_tactics'          => $tacticalRecommendations['tactics'],
+            'benefits_to_negotiate'        => $tacticalRecommendations['alternative_benefits'],
+            'total_comp_optimization'      => $tacticalRecommendations['total_comp'],
+
             // Company intelligence
-            'company_culture_analysis' => $companyIntelligence['culture'],
-            'hiring_manager_perspective' => $companyIntelligence['manager_perspective'],
+            'company_culture_analysis'        => $companyIntelligence['culture'],
+            'hiring_manager_perspective'      => $companyIntelligence['manager_perspective'],
             'company_negotiation_flexibility' => $companyIntelligence['flexibility'],
-            
+
             // AI insights
-            'ai_summary' => $aiInsights['summary'],
+            'ai_summary'   => $aiInsights['summary'],
             'ai_rationale' => $aiInsights['rationale'],
-            'ai_warnings' => $aiInsights['warnings'],
-            
-            'status' => 'active',
+            'ai_warnings'  => $aiInsights['warnings'],
+
+            'status'       => 'active',
             'generated_at' => now(),
         ]);
 
@@ -109,104 +124,168 @@ class NegotiationStrategistService
     }
 
     /**
-     * Gather comprehensive market research
+     * Gather AI-powered, role-specific market research with realistic salary distribution.
      */
     protected function gatherMarketResearch(string $role, string $location, int $years_experience): array
     {
-        $cacheKey = "market_research_{$role}_{$location}_" . md5($years_experience);
+        $cacheKey = 'market_research_v3_' . md5("{$role}_{$location}_{$years_experience}");
 
-        return Cache::remember($cacheKey, 3600, function () use ($role, $location, $years_experience) {
-            // Determine experience level
-            $experienceLevel = $this->mapExperienceLevel($years_experience);
+        return Cache::remember($cacheKey, 86400, function () use ($role, $location, $years_experience) {
+            $level = $this->mapExperienceLevel($years_experience);
 
-            // Get salary trends for role/location
-            $salaryTrend = SalaryTrend::where('role', 'LIKE', "%{$role}%")
-                ->where('location', 'LIKE', "%{$location}%")
-                ->where('experience_level', $experienceLevel)
-                ->orderBy('data_date', 'desc')
-                ->first();
+            try {
+                $prompt = "You are a compensation intelligence analyst with deep knowledge of the Indian job market (2024-2025).\n\n"
+                    . "Role: {$role}\nLocation: {$location}\nExperience: {$years_experience} years ({$level} level)\n\n"
+                    . "Provide realistic salary benchmark data in LPA (Lakhs Per Annum) for this SPECIFIC role and city.\n"
+                    . "Consider: role seniority, specialization, city cost-of-living, industry demand, and supply.\n"
+                    . "Do NOT use generic fixed ratios — use realistic market knowledge.\n\n"
+                    . "Return ONLY valid JSON:\n"
+                    . '{"p10":NUMBER,"p25":NUMBER,"median":NUMBER,"p75":NUMBER,"p90":NUMBER,'
+                    . '"trend":"growing|stable|declining","yoy_change":NUMBER,"demand":"high|medium|low",'
+                    . '"rationale":"1 sentence explaining the range based on market reality"}';
 
-            if ($salaryTrend) {
+                $data = $this->aiJSON($prompt, 'Return only valid JSON. All salary values in LPA (Indian Lakhs Per Annum). Be precise and realistic per the specific role.');
+
+                $median = (float) ($data['median'] ?? 0);
+                if ($median < 2 || $median > 500) {
+                    throw new \RuntimeException('AI returned implausible median: ' . $median);
+                }
+
                 return [
-                    'median' => (float) $salaryTrend->median_salary,
-                    'percentile_25' => (float) $salaryTrend->percentile_25,
-                    'percentile_75' => (float) $salaryTrend->percentile_75,
-                    'percentile_90' => (float) $salaryTrend->percentile_90,
-                    'sample_size' => $salaryTrend->sample_size,
-                    'offered_percentile' => 0, // Will be calculated later
-                    'trend' => $salaryTrend->trend_direction,
-                    'mom_change' => (float) $salaryTrend->mom_change,
-                    'yoy_change' => (float) $salaryTrend->yoy_change,
+                    'median'            => round($median, 2),
+                    'percentile_10'     => round((float) ($data['p10'] ?? $median * 0.75), 2),
+                    'percentile_25'     => round((float) ($data['p25'] ?? $median * 0.87), 2),
+                    'percentile_75'     => round((float) ($data['p75'] ?? $median * 1.18), 2),
+                    'percentile_90'     => round((float) ($data['p90'] ?? $median * 1.38), 2),
+                    'offered_percentile'=> 0,
+                    'trend'             => $data['trend'] ?? 'stable',
+                    'yoy_change'        => (float) ($data['yoy_change'] ?? 0),
+                    'demand'            => $data['demand'] ?? 'medium',
+                    'ai_rationale'      => $data['rationale'] ?? '',
+                    'source'            => 'ai_intelligence',
                 ];
+            } catch (\Exception $e) {
+                Log::warning('AI market research failed, using calibrated fallback', ['error' => $e->getMessage()]);
+                return $this->calibratedFallback($role, $location, $years_experience);
             }
-
-            // Fallback estimates if no data
-            $baseEstimate = $this->estimateBaseSalary($role, $location);
-            
-            return [
-                'median' => $baseEstimate,
-                'percentile_25' => $baseEstimate * 0.85,
-                'percentile_75' => $baseEstimate * 1.15,
-                'percentile_90' => $baseEstimate * 1.30,
-                'sample_size' => 0,
-                'offered_percentile' => 0,
-                'trend' => 'stable',
-                'mom_change' => 0,
-                'yoy_change' => 0,
-            ];
         });
+    }
+
+    /**
+     * Calibrated fallback with role-specific, experience-adjusted estimates.
+     * Produces varied, realistic distributions (not fixed ratios).
+     */
+    protected function calibratedFallback(string $role, string $location, int $years): array
+    {
+        $base = $this->estimateBaseSalary($role, $location);
+
+        // Experience multiplier — entry vs senior has different spread
+        $expMultiplier = match (true) {
+            $years <= 1  => 0.75,
+            $years <= 3  => 0.90,
+            $years <= 6  => 1.00,
+            $years <= 10 => 1.18,
+            default      => 1.35,
+        };
+        $median = round($base * $expMultiplier, 2);
+
+        // Role-type affects spread width (niche roles have wider spreads)
+        $roleLower = strtolower($role);
+        $isNiche = str_contains($roleLower, 'ai') || str_contains($roleLower, 'ml') ||
+                   str_contains($roleLower, 'architect') || str_contains($roleLower, 'principal') ||
+                   str_contains($roleLower, 'data scientist');
+        $spreadLow  = $isNiche ? 0.78 : 0.83;
+        $spreadHigh = $isNiche ? 1.32 : 1.20;
+        $spreadTop  = $isNiche ? 1.55 : 1.38;
+
+        return [
+            'median'            => $median,
+            'percentile_10'     => round($median * 0.68, 2),
+            'percentile_25'     => round($median * $spreadLow, 2),
+            'percentile_75'     => round($median * $spreadHigh, 2),
+            'percentile_90'     => round($median * $spreadTop, 2),
+            'offered_percentile'=> 0,
+            'trend'             => 'stable',
+            'yoy_change'        => 0,
+            'demand'            => 'medium',
+            'ai_rationale'      => '',
+            'source'            => 'calibrated_estimate',
+        ];
     }
 
     /**
      * Calculate optimal negotiation range
      */
+    /**
+     * Calculate 3-tier negotiation range (conservative / competitive / aggressive)
+     * with realistic success probabilities.
+     */
     protected function calculateOptimalRange(float $offeredSalary, array $marketData, ?float $currentSalary): array
     {
+        $p25   = $marketData['percentile_25'];
         $median = $marketData['median'];
-        $p75 = $marketData['percentile_75'];
-        $p90 = $marketData['percentile_90'];
+        $p75   = $marketData['percentile_75'];
+        $p90   = $marketData['percentile_90'];
 
-        // Calculate where the offer stands
         $offeredPercentile = $this->calculatePercentile($offeredSalary, $marketData);
-        $marketData['offered_percentile'] = $offeredPercentile;
 
-        // Determine optimal ask based on offer position
-        if ($offeredPercentile < 50) {
-            // Offer below market median - aim for 60-70th percentile
-            $optimal = $median * 1.10;
-            $minimum = max($median, $offeredSalary * 1.05);
-            $stretch = $p75;
-            $confidence = 85; // High confidence when offer is below market
+        // --- 3-Tier Strategy ---
+        // Conservative: achievable with low risk (~80%+ probability)
+        // Competitive:  the real target (~60% probability)
+        // Aggressive:   stretch, requires strong leverage (~35% probability)
+
+        if ($offeredPercentile < 25) {
+            $conservative  = round($median * 0.95, 2);           // just under median
+            $competitive   = round($p75, 2);                      // 75th pct
+            $aggressive    = round($p90, 2);                      // 90th pct
+            $probCons      = 88; $probComp = 68; $probAgg = 42;
+            $confidence    = 90;
+        } elseif ($offeredPercentile < 50) {
+            $conservative  = round(max($median, $offeredSalary * 1.07), 2);
+            $competitive   = round($p75, 2);
+            $aggressive    = round($p90, 2);
+            $probCons      = 82; $probComp = 62; $probAgg = 38;
+            $confidence    = 82;
         } elseif ($offeredPercentile < 75) {
-            // Offer at median - aim for 75-80th percentile
-            $optimal = ($median + $p75) / 2;
-            $minimum = max($median, $offeredSalary * 1.03);
-            $stretch = $p90;
-            $confidence = 70; // Good confidence
+            $conservative  = round($offeredSalary * 1.05, 2);
+            $competitive   = round(max($p75, $offeredSalary * 1.12), 2);
+            $aggressive    = round($p90, 2);
+            $probCons      = 78; $probComp = 58; $probAgg = 32;
+            $confidence    = 74;
         } else {
-            // Offer already strong - modest increase possible
-            $optimal = $offeredSalary * 1.05;
-            $minimum = $offeredSalary * 1.02;
-            $stretch = $p90;
-            $confidence = 50; // Lower confidence when offer is already high
+            $conservative  = round($offeredSalary * 1.03, 2);
+            $competitive   = round($offeredSalary * 1.08, 2);
+            $aggressive    = round(max($p90, $offeredSalary * 1.15), 2);
+            $probCons      = 72; $probComp = 50; $probAgg = 28;
+            $confidence    = 60;
         }
 
-        // Adjust based on current salary (if provided)
+        // Adjust upward if switching jobs (current salary floor)
         if ($currentSalary && $currentSalary > 0) {
-            $minAcceptableIncrease = $currentSalary * 1.10; // 10% minimum increase
-            $minimum = max($minimum, $minAcceptableIncrease);
-            $optimal = max($optimal, $currentSalary * 1.15); // 15% target increase
+            $floor        = $currentSalary * 1.10;
+            $conservative = max($conservative, $floor);
+            $competitive  = max($competitive, $currentSalary * 1.18);
+            $aggressive   = max($aggressive,  $currentSalary * 1.30);
         }
 
-        // Ensure logical order
-        $minimum = min($minimum, $optimal);
-        $stretch = max($stretch, $optimal);
+        // Ensure ordering
+        $conservative = min($conservative, $competitive);
+        $competitive  = min($competitive, $aggressive);
+        $minimum      = round($conservative * 0.97, 2); // absolute walkaway
 
         return [
-            'optimal' => round($optimal, 2),
-            'minimum' => round($minimum, 2),
-            'stretch' => round($stretch, 2),
-            'confidence' => $confidence,
+            'optimal'            => $competitive,           // kept for DB compatibility
+            'minimum'            => $minimum,
+            'stretch'            => $aggressive,
+            'confidence'         => $confidence,
+            'offered_percentile' => round($offeredPercentile, 2),
+            // 3-tier
+            'conservative'       => $conservative,
+            'competitive'        => $competitive,
+            'aggressive'         => $aggressive,
+            'prob_conservative'  => $probCons,
+            'prob_competitive'   => $probComp,
+            'prob_aggressive'    => $probAgg,
         ];
     }
 
@@ -448,36 +527,54 @@ class NegotiationStrategistService
      */
     protected function generateAiInsights(User $user, array $offerData, array $marketData, array $strengthAnalysis, array $tacticalRecommendations): array
     {
-        $cacheKey = "ai_insights_" . md5(json_encode($offerData));
+        // Use instant computed insights to avoid AI timeout on strategy creation.
+        // Rich AI insights can be fetched on-demand from the strategy detail page.
+        return $this->buildComputedInsights($offerData, $marketData, $strengthAnalysis, $tacticalRecommendations);
+    }
 
-        return Cache::remember($cacheKey, 3600, function () use ($user, $offerData, $marketData, $strengthAnalysis, $tacticalRecommendations) {
-            try {
-                $prompt = $this->buildInsightsPrompt($user, $offerData, $marketData, $strengthAnalysis);
+    /**
+     * Build deterministic insights from computed data — no AI call, instant response.
+     */
+    protected function buildComputedInsights(array $offerData, array $marketData, array $strengthAnalysis, array $tacticalRecommendations): array
+    {
+        $percentile = round($marketData['offered_percentile']);
+        $offered    = number_format($offerData['offered_salary']);
+        $median     = number_format($marketData['median']);
+        $role       = $offerData['role'];
+        $company    = $offerData['company_name'];
 
-                $fullResponse = $this->ai(
-                    $prompt,
-                    'You are an expert salary negotiation strategist with 20+ years of experience. Provide strategic, actionable advice.',
-                    ['temperature' => 0.7]
-                );
+        if ($percentile < 40) {
+            $summary   = "The offer of ₹{$offered} LPA for {$role} at {$company} is below the market median (₹{$median} LPA, {$percentile}th percentile). You have strong leverage to negotiate upward.";
+            $rationale = "At the {$percentile}th percentile, this offer leaves significant room for negotiation. Market data supports requesting a salary closer to the 50th–75th percentile range.";
+            $warnings  = ['Accepting below-median salary can set a lower baseline for future raises.'];
+        } elseif ($percentile < 65) {
+            $summary   = "The offer of ₹{$offered} LPA is near the market median for {$role} (₹{$median} LPA, {$percentile}th percentile). Negotiation is viable — aim for the 65th–80th percentile.";
+            $rationale = "A competitive but not exceptional offer. Highlighting your experience and unique skills can justify a 5–15% increase without risking the offer.";
+            $warnings  = [];
+        } else {
+            $summary   = "The offer of ₹{$offered} LPA is above market median for {$role} (₹{$median} LPA, {$percentile}th percentile). Focus negotiation on non-salary benefits and growth opportunities.";
+            $rationale = "This is a strong offer. Negotiating total compensation — remote flexibility, equity, learning budget, or early performance reviews — may yield more value than pushing salary.";
+            $warnings  = ['Aggressive salary pushback on an above-market offer may signal misalignment.'];
+        }
 
-                // Parse response into summary and rationale
-                $parts = explode("\n\n", $fullResponse, 2);
-                $summary = $parts[0] ?? $fullResponse;
-                $rationale = $parts[1] ?? '';
-
-                // Extract warnings
-                $warnings = $this->extractWarnings($fullResponse);
-
-                return [
-                    'summary' => $summary,
-                    'rationale' => $rationale,
-                    'warnings' => $warnings,
-                ];
-            } catch (\Exception $e) {
-                Log::error('AI insights generation failed', ['error' => $e->getMessage()]);
-                return $this->getFallbackInsights($offerData, $marketData);
+        // Add strength-based context
+        if (!empty($strengthAnalysis['strengths'])) {
+            $topStrength = $strengthAnalysis['strengths'][0]['point'] ?? null;
+            if ($topStrength) {
+                $rationale .= " Key leverage point: {$topStrength}.";
             }
-        });
+        }
+
+        // Timing advice
+        if (!empty($tacticalRecommendations['timing'])) {
+            $rationale .= " Recommended timing: {$tacticalRecommendations['timing']}.";
+        }
+
+        return [
+            'summary'  => $summary,
+            'rationale' => $rationale,
+            'warnings' => $warnings,
+        ];
     }
 
     /**
@@ -527,31 +624,52 @@ class NegotiationStrategistService
      */
     protected function estimateBaseSalary(string $role, string $location): float
     {
-        // Simplified estimation logic
+        // Indian market salary estimates in LPA (Lakhs Per Annum)
         $baseEstimates = [
-            'engineer' => 100000,
-            'developer' => 95000,
-            'designer' => 85000,
-            'manager' => 110000,
-            'analyst' => 75000,
+            'senior engineer'   => 35,
+            'senior developer'  => 33,
+            'lead engineer'     => 40,
+            'lead developer'    => 38,
+            'principal'         => 50,
+            'staff engineer'    => 48,
+            'engineering manager' => 55,
+            'manager'           => 40,
+            'engineer'          => 22,
+            'developer'         => 20,
+            'designer'          => 18,
+            'analyst'           => 16,
+            'data scientist'    => 25,
+            'data engineer'     => 22,
+            'devops'            => 22,
+            'architect'         => 45,
+            'product manager'   => 30,
+            'scrum master'      => 18,
+            'qa'                => 14,
+            'tester'            => 12,
         ];
 
-        $estimate = 80000; // default
+        $estimate = 18; // default LPA
+        $roleLower = strtolower($role);
         foreach ($baseEstimates as $keyword => $value) {
-            if (stripos($role, $keyword) !== false) {
+            if (stripos($roleLower, $keyword) !== false) {
                 $estimate = $value;
                 break;
             }
         }
 
-        // Adjust for location (simplified)
-        if (stripos($location, 'San Francisco') !== false || stripos($location, 'New York') !== false) {
-            $estimate *= 1.3;
-        } elseif (stripos($location, 'Seattle') !== false || stripos($location, 'Boston') !== false) {
-            $estimate *= 1.2;
+        // Indian city adjustments
+        $locationLower = strtolower($location);
+        if (str_contains($locationLower, 'bengaluru') || str_contains($locationLower, 'bangalore')) {
+            $estimate *= 1.15;
+        } elseif (str_contains($locationLower, 'mumbai') || str_contains($locationLower, 'pune')) {
+            $estimate *= 1.10;
+        } elseif (str_contains($locationLower, 'hyderabad') || str_contains($locationLower, 'chennai')) {
+            $estimate *= 1.05;
+        } elseif (str_contains($locationLower, 'delhi') || str_contains($locationLower, 'gurgaon') || str_contains($locationLower, 'noida')) {
+            $estimate *= 1.08;
         }
 
-        return $estimate;
+        return round($estimate, 2);
     }
 
     /**
@@ -564,10 +682,8 @@ class NegotiationStrategistService
         foreach ($skills as $skill) {
             $skillName = is_array($skill) ? ($skill['name'] ?? $skill) : $skill;
             
-            $trend = SkillTrend::where('skill_name', 'LIKE', "%{$skillName}%")
-                ->whereIn('trend_status', ['hot', 'emerging'])
-                ->orderBy('growth_rate', 'desc')
-                ->first();
+            // SkillTrend data no longer available
+            $trend = null;
 
             if ($trend) {
                 $hotSkills[] = [

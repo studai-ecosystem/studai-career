@@ -4,7 +4,7 @@
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">How It Works</h2>
                 <p class="mt-4 text-lg leading-6 text-gray-500">
-                    Discover how StudAI Career can help you land your dream job.
+                    Discover how StudAI Hire can help you land your dream job.
                 </p>
             </div>
             <div class="mt-12 prose prose-pink mx-auto">

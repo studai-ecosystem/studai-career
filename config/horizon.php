@@ -183,7 +183,7 @@ return [
     | in all environments. These supervisors and settings handle all your
     | queued jobs and will be provisioned by Horizon during deployment.
     |
-    | StudAI Career Queue Priority Structure:
+    | StudAI Hire Queue Priority Structure:
     | - high: Payments, auth, critical notifications (immediate)
     | - default: Standard user operations
     | - low: Background analytics, reports

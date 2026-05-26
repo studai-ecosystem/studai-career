@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', $profile->professional_title . ' - ' . $profile->user->name)
 
@@ -56,7 +56,7 @@
                                     <p class="text-lg text-indigo-600 font-medium mt-1">{{ $profile->professional_title }}</p>
                                 </div>
                                 <div class="hidden md:block">
-                                    <div class="text-2xl font-bold text-gray-900">₹{{ number_format($profile->hourly_rate) }}/hr</div>
+                                    <div class="text-2xl font-bold text-gray-900">&#8377;{{ number_format($profile->hourly_rate) }}/hr</div>
                                 </div>
                             </div>
                             
@@ -83,7 +83,7 @@
                             </div>
 
                             <div class="md:hidden mt-4">
-                                <div class="text-2xl font-bold text-gray-900">₹{{ number_format($profile->hourly_rate) }}/hr</div>
+                                <div class="text-2xl font-bold text-gray-900">&#8377;{{ number_format($profile->hourly_rate) }}/hr</div>
                             </div>
 
                             <!-- Badges -->
@@ -91,7 +91,7 @@
                                 <div class="flex flex-wrap gap-2 mt-4">
                                     @foreach($profile->badges as $userBadge)
                                         <span class="inline-flex items-center px-3 py-1 bg-indigo-100 text-indigo-700 text-sm font-medium rounded-full">
-                                            {{ $userBadge->badge->icon ?? '🏆' }} {{ $userBadge->badge->name }}
+                                            {{ $userBadge->badge->icon ?? '†' }} {{ $userBadge->badge->name }}
                                         </span>
                                     @endforeach
                                 </div>
@@ -140,7 +140,7 @@
                                         <p class="text-gray-600 text-sm mt-1">{{ $item['description'] ?? '' }}</p>
                                         @if(isset($item['url']))
                                             <a href="{{ $item['url'] }}" target="_blank" class="text-indigo-600 text-sm hover:text-indigo-700 mt-2 inline-block">
-                                                View Project →
+                                                View Project â†’
                                             </a>
                                         @endif
                                     </div>
@@ -203,13 +203,13 @@
                             </div>
                         @empty
                             <div class="text-center py-8">
-                                <div class="text-gray-400 text-4xl mb-2">💬</div>
+                                <div class="text-gray-400 text-4xl mb-2">�¬</div>
                                 <p class="text-gray-500">No reviews yet</p>
                             </div>
                         @endforelse
                     </div>
 
-                    @if(isset($reviews) && $reviews->hasPages())
+                    @if(isset($reviews) && method_exists($reviews, 'hasPages') && $reviews->hasPages())
                         <div class="mt-6">
                             {{ $reviews->links() }}
                         </div>
@@ -222,7 +222,7 @@
                 <!-- Contact Card -->
                 <div class="bg-white rounded-xl shadow-md p-6 mb-6 sticky top-8">
                     <div class="text-center mb-6">
-                        <div class="text-3xl font-bold text-gray-900">₹{{ number_format($profile->hourly_rate) }}/hr</div>
+                        <div class="text-3xl font-bold text-gray-900">&#8377;{{ number_format($profile->hourly_rate) }}/hr</div>
                         <p class="text-gray-500 text-sm mt-1">Hourly Rate</p>
                     </div>
 
@@ -263,7 +263,7 @@
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-gray-600">Total Earnings</span>
-                            <span class="font-semibold text-gray-900">₹{{ number_format($profile->total_earnings ?? 0) }}</span>
+                            <span class="font-semibold text-gray-900">&#8377;{{ number_format($profile->total_earnings ?? 0) }}</span>
                         </div>
                     </div>
                 </div>
@@ -292,11 +292,12 @@
                 </div>
 
                 <!-- Languages -->
-                @if($profile->languages && count($profile->languages) > 0)
+                @php $langList = is_array($profile->languages) ? $profile->languages : (json_decode($profile->languages, true) ?? []); @endphp
+                @if(count($langList) > 0)
                     <div class="bg-white rounded-xl shadow-md p-6 mb-6">
                         <h3 class="font-semibold text-gray-900 mb-4">Languages</h3>
                         <div class="space-y-2">
-                            @foreach($profile->languages as $language)
+                            @foreach($langList as $language)
                                 <div class="flex justify-between items-center">
                                     <span class="text-gray-700">{{ $language['name'] ?? $language }}</span>
                                     <span class="text-gray-500 text-sm">{{ $language['level'] ?? 'Fluent' }}</span>
@@ -307,11 +308,12 @@
                 @endif
 
                 <!-- Certifications -->
-                @if($profile->certifications && count($profile->certifications) > 0)
+                @php $certList = is_array($profile->certifications) ? $profile->certifications : (json_decode($profile->certifications, true) ?? []); @endphp
+                @if(count($certList) > 0)
                     <div class="bg-white rounded-xl shadow-md p-6">
                         <h3 class="font-semibold text-gray-900 mb-4">Certifications</h3>
                         <div class="space-y-3">
-                            @foreach($profile->certifications as $cert)
+                            @foreach($certList as $cert)
                                 <div class="flex items-start">
                                     <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>

@@ -30,11 +30,13 @@ class JobController extends Controller
         // Apply filters
         if ($request->filled('keyword')) {
             $keyword = $request->keyword;
-            $query->where(function ($q) use ($keyword) {
-                $q->where('title', 'like', "%{$keyword}%")
-                  ->orWhere('description', 'like', "%{$keyword}%")
-                  ->orWhere('company_name', 'like', "%{$keyword}%");
-            });
+            // JOIN companies once rather than a correlated subquery via whereHas
+            $query->leftJoin('companies', 'job_listings.company_id', '=', 'companies.id')
+                  ->where(function ($q) use ($keyword) {
+                      $q->where('job_listings.title', 'like', "%{$keyword}%")
+                        ->orWhere('companies.name', 'like', "%{$keyword}%");
+                  })
+                  ->select('job_listings.*'); // prevent column ambiguity
         }
 
         if ($request->filled('location')) {
@@ -54,10 +56,15 @@ class JobController extends Controller
         }
 
         if ($request->filled('skills')) {
-            $skills = explode(',', $request->skills);
-            foreach ($skills as $skill) {
-                $query->whereJsonContains('required_skills', trim($skill));
-            }
+            $skills = array_map('trim', explode(',', $request->skills));
+            // Use LIKE on the stored JSON string — more portable than whereJsonContains loops
+            $query->where(function ($q) use ($skills) {
+                foreach ($skills as $skill) {
+                    if ($skill !== '') {
+                        $q->orWhere('required_skills', 'like', "%{$skill}%");
+                    }
+                }
+            });
         }
 
         // Work Mode
@@ -67,7 +74,9 @@ class JobController extends Controller
         if ($request->filled('onsite')) $workModes[] = 'onsite';
 
         if (!empty($workModes)) {
-            $query->whereIn('location_type', $workModes);
+            $query->where(function ($q) use ($workModes) {
+                $q->whereIn('work_mode', $workModes)->orWhereIn('location_type', $workModes);
+            });
         }
 
         // Sorting
@@ -93,21 +102,153 @@ class JobController extends Controller
             ->with('company')
             ->paginate(20);
 
-        // Get filter options
-        $locations = Job::where('status', 'published')
-            ->distinct()
-            ->pluck('location')
-            ->filter()
-            ->values();
+        // Get filter options — cached for 30 minutes to avoid full-table scan on each search
+        $locations = \Illuminate\Support\Facades\Cache::remember('job_locations', 1800, function () {
+            return Job::where('status', 'published')
+                ->distinct()
+                ->pluck('location')
+                ->filter()
+                ->values();
+        });
 
         $experienceLevels = ['entry', 'mid', 'senior', 'lead'];
         $jobTypes = ['full-time', 'part-time', 'contract', 'internship'];
+
+        // Compute per-job AI match scores for authenticated users
+        $matchScores = [];
+        if (Auth::check()) {
+            $user = Auth::user();
+            $profile = $user->profile;
+
+            // Collect user skills from UserSkill table + Profile->skills
+            $userSkillNames = $user->skills()
+                ->pluck('skill_name')
+                ->map(fn($s) => strtolower(trim($s)))
+                ->toArray();
+
+            if ($profile && !empty($profile->skills)) {
+                $profileSkills = array_map(fn($s) => strtolower(trim(is_array($s) ? ($s['name'] ?? '') : $s)), (array)$profile->skills);
+                $userSkillNames = array_unique(array_merge($userSkillNames, array_filter($profileSkills)));
+            }
+
+            // Build user keyword pool from headline, summary, experience titles
+            $userKeywords = $userSkillNames;
+            if ($profile) {
+                foreach (array_filter([
+                    $profile->headline ?? '',
+                    $profile->summary ?? '',
+                ]) as $text) {
+                    $words = preg_split('/[\s,\/\-]+/', strtolower($text));
+                    $userKeywords = array_merge($userKeywords, array_filter($words, fn($w) => strlen($w) > 3));
+                }
+                foreach ((array)($profile->experience ?? []) as $exp) {
+                    $title = is_array($exp) ? ($exp['title'] ?? $exp['role'] ?? '') : '';
+                    if ($title) {
+                        $words = preg_split('/[\s,\/\-]+/', strtolower($title));
+                        $userKeywords = array_merge($userKeywords, array_filter($words, fn($w) => strlen($w) > 3));
+                    }
+                }
+                $userKeywords = array_unique($userKeywords);
+            }
+
+            $hasProfileData = !empty($userSkillNames) || ($profile && ($profile->headline || $profile->summary));
+
+            // Determine user experience level from profile experience array count
+            $userExpLevel = 'entry';
+            if ($profile && !empty($profile->experience)) {
+                $expCount = count((array)$profile->experience);
+                if ($expCount >= 6) $userExpLevel = 'lead';
+                elseif ($expCount >= 3) $userExpLevel = 'senior';
+                elseif ($expCount >= 1) $userExpLevel = 'mid';
+            }
+
+            $expMap = ['entry' => 0, 'mid' => 1, 'senior' => 2, 'lead' => 3];
+            $userExpNum = $expMap[$userExpLevel] ?? 0;
+
+            foreach ($jobs as $job) {
+                // No data → skip (show nothing rather than a fake score)
+                if (!$hasProfileData) {
+                    continue;
+                }
+
+                // ── 1. Skill match (0–50 pts) ──────────────────────────────
+                $jobSkills = [];
+                if (!empty($job->required_skills)) {
+                    $raw = is_array($job->required_skills) ? $job->required_skills : (json_decode($job->required_skills, true) ?? []);
+                    $jobSkills = array_values(array_filter(array_map(
+                        fn($s) => strtolower(trim(is_array($s) ? ($s['name'] ?? '') : (string)$s)), $raw
+                    )));
+                }
+
+                $skillScore = 0;
+                if (!empty($jobSkills)) {
+                    if (!empty($userSkillNames)) {
+                        $matched = 0;
+                        foreach ($jobSkills as $js) {
+                            foreach ($userSkillNames as $us) {
+                                if ($us === $js || str_contains($us, $js) || str_contains($js, $us)) {
+                                    $matched++;
+                                    break;
+                                }
+                            }
+                        }
+                        $skillScore = (int) round(($matched / count($jobSkills)) * 50);
+                    }
+                    // Bonus: keyword match from headline/experience (partial, up to 20 pts)
+                    $titleWords = preg_split('/[\s,\/\-]+/', strtolower($job->title ?? ''));
+                    $kwMatched  = 0;
+                    foreach (array_filter($titleWords, fn($w) => strlen($w) > 3) as $tw) {
+                        foreach ($userKeywords as $uk) {
+                            if ($uk === $tw || str_contains($uk, $tw) || str_contains($tw, $uk)) {
+                                $kwMatched++;
+                                break;
+                            }
+                        }
+                    }
+                    $titleScore = $titleWords ? min(20, (int) round(($kwMatched / max(1, count(array_filter($titleWords, fn($w) => strlen($w) > 3)))) * 20)) : 0;
+                } else {
+                    // No required skills listed — neutral
+                    $skillScore  = 30;
+                    $titleScore  = 0;
+                }
+
+                // ── 2. Experience level match (0–15 pts) ───────────────────
+                $jobExpNum  = $expMap[$job->experience_level ?? ''] ?? 0;
+                $expDiff    = abs($userExpNum - $jobExpNum);
+                $expScore   = max(0, 15 - ($expDiff * 6));
+
+                // ── 3. Salary overlap (0–10 pts) ───────────────────────────
+                $salaryScore = 0;
+                if ($profile && $profile->expected_salary_min && $job->salary_max) {
+                    if ($profile->expected_salary_min <= $job->salary_max &&
+                        ($profile->expected_salary_max ?? PHP_INT_MAX) >= $job->salary_min) {
+                        $salaryScore = 10;
+                    } elseif ($profile->expected_salary_min <= $job->salary_max * 1.2) {
+                        $salaryScore = 5;
+                    }
+                }
+
+                // ── 4. Location match (0–5 pts) ────────────────────────────
+                $locationScore = 0;
+                if ($profile && $profile->current_location && $job->location) {
+                    if (str_contains(strtolower($job->location), strtolower($profile->current_location)) ||
+                        str_contains(strtolower($profile->current_location), strtolower($job->location))) {
+                        $locationScore = 5;
+                    }
+                }
+
+                $total = $skillScore + ($titleScore ?? 0) + $expScore + $salaryScore + $locationScore;
+                // Scale to 0–100, natural range is 0–100 (50+20+15+10+5)
+                $matchScores[$job->id] = min(97, max(38, $total));
+            }
+        }
 
         return view('jobs.search', compact(
             'jobs',
             'locations',
             'experienceLevels',
-            'jobTypes'
+            'jobTypes',
+            'matchScores'
         ));
     }
 
@@ -116,7 +257,9 @@ class JobController extends Controller
      */
     public function show($id)
     {
-        $job = Job::with('company')->findOrFail($id);
+        $job = Job::with(['company', 'hiringRounds' => function ($q) {
+            $q->orderBy('round_order');
+        }])->findOrFail($id);
         
         // Check if user has already applied
         $hasApplied = false;
@@ -144,7 +287,25 @@ class JobController extends Controller
             }
         );
 
-        return view('jobs.show', compact('job', 'hasApplied', 'similarJobs'));
+        // Fetch authenticated user's saved resumes for the apply modal
+        $savedResumes = collect();
+        if (Auth::check()) {
+            $savedResumes = \App\Models\Resume::where('user_id', Auth::id())
+                ->select('id', 'title', 'full_name', 'updated_at')
+                ->latest()
+                ->get();
+        }
+
+        // Load existing test attempts for this user (keyed by hiring_round_id)
+        $myAttempts = collect();
+        if (Auth::check() && $job->hiringRounds->isNotEmpty()) {
+            $myAttempts = \App\Models\RoundAttempt::where('user_id', Auth::id())
+                ->whereIn('hiring_round_id', $job->hiringRounds->pluck('id'))
+                ->get()
+                ->keyBy('hiring_round_id');
+        }
+
+        return view('jobs.show', compact('job', 'hasApplied', 'similarJobs', 'savedResumes', 'myAttempts'));
     }
 
     /**
@@ -211,25 +372,40 @@ class JobController extends Controller
             }
 
             $request->validate([
-                'cover_letter' => 'nullable|string|max:2000',
-                'resume_path' => 'nullable|string',
+                'cover_letter'    => 'nullable|string|max:2000',
+                'resume_file'     => 'nullable|string',
+                'saved_resume_id' => 'nullable|integer|exists:resumes,id',
+                'resume'          => 'nullable|file|mimes:pdf,doc,docx|max:5120',
             ]);
 
-            // Get resume path from profile if not provided
-            $resumePath = $request->resume_path;
-            if (!$resumePath && $user->profile) {
-                $resumePath = $user->profile->resume_path;
+            // Resolve resume path: uploaded file > saved resume ID > profile resume
+            $resumeFile = null;
+            if ($request->hasFile('resume')) {
+                $resumeFile = $request->file('resume')->store('resumes/applications', 'public');
+            } elseif ($request->filled('saved_resume_id')) {
+                $savedResume = \App\Models\Resume::where('id', $request->saved_resume_id)
+                    ->where('user_id', $user->id)
+                    ->first();
+                if ($savedResume) {
+                    $resumeFile = $savedResume->pdf_path ?: 'resume:' . $savedResume->id;
+                }
+            } elseif ($request->filled('resume_file')) {
+                $resumeFile = $request->resume_file;
+            } elseif ($user->profile) {
+                $resumeFile = $user->profile->resume_path ?? null;
             }
 
             // Create application
             $application = Application::create([
-                'user_id' => $user->id,
-                'job_id' => $job->id,
-                'company_id' => $job->company_id,
-                'cover_letter' => $request->cover_letter,
-                'resume_path' => $resumePath,
-                'status' => 'pending',
-                'applied_at' => now(),
+                'user_id'            => $user->id,
+                'job_id'             => $job->id,
+                'application_number' => 'APP-' . strtoupper(substr(md5(uniqid()), 0, 8)),
+                'cover_letter'       => $request->cover_letter,
+                'resume_file'        => $resumeFile,
+                'status'             => 'pending',
+                'submitted_at'       => now(),
+                'is_archived'        => false,
+                'source'             => 'manual',
             ]);
 
             // Increment usage counter if subscription exists
@@ -248,7 +424,7 @@ class JobController extends Controller
                 'user_id' => $request->user()?->id,
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             return response()->json([
                 'success' => false, 
                 'error' => 'Failed to submit application. Please try again.'
@@ -319,11 +495,17 @@ Write only the cover letter body, starting with 'Dear Hiring Manager,' and endin
                         ['role' => 'system', 'content' => 'You are a professional career advisor helping job seekers write compelling cover letters. Write natural, human-sounding letters that are tailored to the specific job and company.'],
                         ['role' => 'user', 'content' => $prompt],
                     ],
-                    'max_tokens' => 800,
+                    'max_completion_tokens' => 800,
                     'temperature' => 0.7,
                 ]);
 
                 $coverLetter = $response->choices[0]->message->content;
+
+                // Deduct 1 AI credit and log usage
+                $user->deductAICredits(1, 'cover_letter',
+                    "AI Cover Letter for {$request->job_title} at {$request->company_name}",
+                    ['job_title' => $request->job_title, 'company' => $request->company_name]
+                );
 
                 return response()->json([
                     'success' => true,
@@ -347,6 +529,12 @@ I would welcome the opportunity to discuss how my background and skills can bene
 
 Best regards,
 {$userName}";
+
+                // Still deduct 1 credit for the feature usage (template fallback)
+                $user->deductAICredits(1, 'cover_letter',
+                    "AI Cover Letter (template) for {$request->job_title} at {$request->company_name}",
+                    ['job_title' => $request->job_title, 'company' => $request->company_name, 'fallback' => true]
+                );
 
                 return response()->json([
                     'success' => true,

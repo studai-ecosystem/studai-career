@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Negotiation Coaching - ' . $strategy->role)
 
@@ -310,10 +310,10 @@
                                     <div>
                                         <p class="text-xs font-semibold text-blue-300 mb-1">Leverage Points</p>
                                         <ul class="text-xs text-gray-300 space-y-1">
-                                            <li>• Market position ({{ $strategy->market_position_percentile ?? 'N/A' }}th percentile)</li>
-                                            <li>• {{ $strategy->experience_years }} years experience</li>
+                                            <li>â€¢ Market position ({{ $strategy->market_position_percentile ?? 'N/A' }}th percentile)</li>
+                                            <li>â€¢ {{ $strategy->experience_years }} years experience</li>
                                             @if($strategy->has_other_offers)
-                                            <li>• Alternative offers available</li>
+                                            <li>â€¢ Alternative offers available</li>
                                             @endif
                                         </ul>
                                     </div>
@@ -328,9 +328,9 @@
                                     <div>
                                         <p class="text-xs font-semibold text-yellow-300 mb-1">Watch Out For</p>
                                         <ul class="text-xs text-gray-300 space-y-1">
-                                            <li>• Pressure tactics or deadlines</li>
-                                            <li>• Deflection to non-salary benefits</li>
-                                            <li>• "Take it or leave it" ultimatums</li>
+                                            <li>â€¢ Pressure tactics or deadlines</li>
+                                            <li>â€¢ Deflection to non-salary benefits</li>
+                                            <li>â€¢ "Take it or leave it" ultimatums</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -381,7 +381,7 @@
                                     </div>
                                 </div>
                                 <p class="text-sm text-gray-300 mb-2">Thank you for the offer. Based on my research and experience in similar roles, I was expecting a range of $X-Y. Can we discuss aligning the compensation with market standards?</p>
-                                <button class="text-xs text-primary-color hover:text-primary-light font-medium">Use This Response →</button>
+                                <button class="text-xs text-primary-color hover:text-primary-light font-medium">Use This Response â†’</button>
                             </div>
                             
                             <div class="suggestion-card bg-white/5 rounded-lg p-3 border border-white/10" onclick="useSuggestion(2)">
@@ -395,7 +395,7 @@
                                     </div>
                                 </div>
                                 <p class="text-sm text-gray-300 mb-2">I'm excited about this opportunity. I believe my skills in [key areas] will bring significant value. Could we explore options to reach a compensation that reflects this mutual benefit?</p>
-                                <button class="text-xs text-primary-color hover:text-primary-light font-medium">Use This Response →</button>
+                                <button class="text-xs text-primary-color hover:text-primary-light font-medium">Use This Response â†’</button>
                             </div>
                         </div>
                     </div>

@@ -1,11 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'Features - StudAI Career | AI-Powered Job Search & Hiring Platform')
+@section('title', 'Features - StudAI Hire | AI-Powered Job Search & Hiring Platform')
 
 @section('meta')
-<meta name="description" content="Explore StudAI Career's complete feature suite: AI job matching, resume optimization, automated applications, interview prep, salary intelligence, and hiring automation for employers.">
+<meta name="description" content="Explore StudAI Hire's complete feature suite: AI job matching, resume optimization, automated applications, interview prep, salary intelligence, and hiring automation for employers.">
 <meta name="keywords" content="AI job search features, resume optimization, automated applications, job matching, interview preparation, hiring platform, ATS, career analytics">
-<meta property="og:title" content="Features - StudAI Career">
+<meta property="og:title" content="Features - StudAI Hire">
 <meta property="og:description" content="Comprehensive AI-powered features for job seekers and employers. Smart matching, automation, and analytics to accelerate careers and hiring.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ route('features') }}">
@@ -467,7 +467,7 @@
 {!! json_encode([
     '@context' => 'https://schema.org',
     '@type' => 'SoftwareApplication',
-    'name' => 'StudAI Career',
+    'name' => 'StudAI Hire',
     'applicationCategory' => 'BusinessApplication',
     'description' => 'AI-powered career platform for job search, hiring, and talent management',
     'url' => url('/'),

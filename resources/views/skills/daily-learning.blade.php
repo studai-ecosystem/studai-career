@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Daily Learning')
 
@@ -13,7 +13,7 @@
         <div class="mb-8">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-4xl font-bold text-gray-900 mb-2">📚 Today's Learning</h1>
+                    <h1 class="text-4xl font-bold text-gray-900 mb-2">�š Today's Learning</h1>
                     <p class="text-lg text-gray-600">{{ now()->format('l, F j, Y') }}</p>
                 </div>
                 <a href="{{ route('skills.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors">
@@ -30,7 +30,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <div class="flex items-center mb-2">
-                        <span class="text-6xl mr-4">🔥</span>
+                        <span class="text-6xl mr-4">�¥</span>
                         <div>
                             <h2 class="text-4xl font-bold">{{ $learningStreak ?? 0 }} Day Streak</h2>
                             <p class="text-orange-100 text-lg">Keep the momentum going!</p>
@@ -39,22 +39,22 @@
                     <div class="flex items-center space-x-4 mt-4">
                         @if(($learningStreak ?? 0) >= 365)
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white bg-opacity-20">
-                            🏆 1 Year Champion
+                            † 1 Year Champion
                         </span>
                         @endif
                         @if(($learningStreak ?? 0) >= 90)
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white bg-opacity-20">
-                            💎 90 Day Master
+                            �Ž 90 Day Master
                         </span>
                         @endif
                         @if(($learningStreak ?? 0) >= 30)
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white bg-opacity-20">
-                            ⭐ 30 Day Hero
+                            â­ 30 Day Hero
                         </span>
                         @endif
                         @if(($learningStreak ?? 0) >= 7)
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white bg-opacity-20">
-                            🌟 1 Week Warrior
+                            Ÿ 1 Week Warrior
                         </span>
                         @endif
                     </div>
@@ -144,7 +144,7 @@
 
         {{-- Today's Recommendations --}}
         <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">✨ Recommended for You</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4"> Recommended for You</h2>
             
             @forelse($recommendations as $recommendation)
             <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-4 hover:shadow-xl transition-all">
@@ -156,7 +156,7 @@
                         </div>
                         @if(isset($recommendation['duration']) && $recommendation['duration'] <= ($dailyGoalMinutes ?? 30))
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white bg-opacity-20">
-                            ⚡ Fits your schedule
+                            âš¡ Fits your schedule
                         </span>
                         @endif
                     </div>
@@ -226,7 +226,7 @@
         {{-- Recent Activity Feed --}}
         @if(isset($recentActivity) && count($recentActivity) > 0)
         <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">📈 Recent Activity</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">�ˆ Recent Activity</h2>
             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                 <div class="divide-y divide-gray-200">
                     @foreach($recentActivity as $activity)

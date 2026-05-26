@@ -217,7 +217,7 @@ class IndeedPublisherService
             'latlong' => 1,
             'co' => $params['country'] ?? 'in',
             'userip' => request()->ip() ?? '1.2.3.4',
-            'useragent' => request()->userAgent() ?? 'StudAI-Career/2.0',
+            'useragent' => request()->userAgent() ?? 'studai-hire/2.0',
         ];
     }
 

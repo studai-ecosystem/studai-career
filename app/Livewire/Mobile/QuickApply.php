@@ -122,6 +122,9 @@ class QuickApply extends Component
             
             $prompt = $this->buildCoverLetterPrompt($resume);
             $this->coverLetter = $aiService->generateText($prompt, 'cover_letter');
+
+            // Deduct 1 AI credit for cover letter generation
+            auth()->user()?->deductAICredits(1, 'cover_letter', 'AI Cover Letter (Quick Apply)');
             
         } catch (\Exception $e) {
             Log::error('Failed to generate AI cover letter', [
@@ -297,7 +300,11 @@ PROMPT;
     
     public function getResumes(): \Illuminate\Database\Eloquent\Collection
     {
-        return Auth::user()->resumes()->orderByDesc('is_primary')->get();
+        // Select only the columns needed by the template to avoid loading large JSON blobs.
+        return Auth::user()->resumes()
+            ->select('id', 'title', 'full_name', 'is_primary', 'ats_score', 'updated_at')
+            ->orderByDesc('is_primary')
+            ->get();
     }
     
     public function render()

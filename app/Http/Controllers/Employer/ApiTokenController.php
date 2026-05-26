@@ -11,7 +11,7 @@ class ApiTokenController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:employer');
+        $this->middleware(['auth', 'employer']);
     }
     
     /**
@@ -19,7 +19,7 @@ class ApiTokenController extends Controller
      */
     public function index()
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         $tokens = ApiToken::where('company_id', $company->id)
             ->orderByDesc('created_at')
@@ -41,7 +41,7 @@ class ApiTokenController extends Controller
             'expires_in_days' => 'nullable|integer|min:1|max:365',
         ]);
         
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         // Check subscription limits
         $currentTokens = ApiToken::where('company_id', $company->id)
@@ -49,7 +49,7 @@ class ApiTokenController extends Controller
             ->count();
         
         // Free tier: 1 token, Pro: 5 tokens, Enterprise: unlimited
-        $maxTokens = auth('employer')->user()->subscription?->subscriptionPlan?->api_tokens_limit ?? 1;
+        $maxTokens = auth()->user()->subscription?->subscriptionPlan?->api_tokens_limit ?? 1;
         
         if ($currentTokens >= $maxTokens) {
             return response()->json([
@@ -86,7 +86,7 @@ class ApiTokenController extends Controller
      */
     public function destroy(ApiToken $apiToken)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         if ($apiToken->company_id !== $company->id) {
             abort(403);

@@ -60,7 +60,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | CDN URL for serving static assets. Leave empty to serve from local.
-    | Example: https://cdn.studaicareer.com or https://d111111abcdef8.cloudfront.net
+    | Example: https://cdn.studaihire.com or https://d111111abcdef8.cloudfront.net
     |
     */
 

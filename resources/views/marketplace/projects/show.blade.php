@@ -1,331 +1,192 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
+@section('title', $project->title . ' - StudAI Hire')
 
-@section('title', $project->title . ' - Talent Marketplace')
+@push('styles')
+<style>
+/* Fiverr-style gig page */
+.gig-tab { border-bottom: 2px solid transparent; padding-bottom: 14px; color: #62626a; font-weight:500; transition: all .15s; }
+.gig-tab.active, .gig-tab:hover { border-color: #1A73E8; color: #1A73E8; }
+.pkg-tab { padding: 12px 20px; font-weight:600; font-size:.875rem; transition: all .15s; cursor:pointer; border-bottom:3px solid transparent; }
+.pkg-tab.active { border-color: #1A73E8; color: #1A73E8; }
+.pkg-tab:not(.active) { color:#62626a; }
+.check-row { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid #f0f0f0; font-size:.875rem; color:#404145; }
+.check-row:last-child { border:none; }
+.check-icon { color:#1dbf73; font-weight:bold; flex-shrink:0; }
+.cross-icon { color:#c5c6c9; flex-shrink:0; }
+.seller-stat { text-align:center; padding:0 16px; }
+.seller-stat:not(:last-child) { border-right:1px solid #e4e5e7; }
+.badge-online { width:10px;height:10px;background:#1dbf73;border-radius:50%;border:2px solid #fff;display:inline-block;vertical-align:middle;margin-right:4px; }
+</style>
+@endpush
 
 @section('content')
-<div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Breadcrumb -->
-        <nav class="flex mb-8" aria-label="Breadcrumb">
-            <ol class="inline-flex items-center space-x-1 md:space-x-3">
-                <li class="inline-flex items-center">
-                    <a href="{{ route('marketplace.index') }}" class="text-gray-500 hover:text-indigo-600">
-                        Marketplace
-                    </a>
-                </li>
-                <li>
-                    <div class="flex items-center">
-                        <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                        </svg>
-                        <a href="{{ route('marketplace.projects') }}" class="text-gray-500 hover:text-indigo-600 ml-1 md:ml-2">
-                            Projects
-                        </a>
-                    </div>
-                </li>
-                <li>
-                    <div class="flex items-center">
-                        <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                        </svg>
-                        <span class="text-gray-700 ml-1 md:ml-2 font-medium truncate max-w-xs">
-                            {{ $project->title }}
-                        </span>
-                    </div>
-                </li>
-            </ol>
-        </nav>
+@php
+$catStyles = [
+    'web_development'    => ['bg' => 'linear-gradient(135deg,#3b82f6,#4f46e5)', 'icon' => '💻', 'label' => 'Programming & Tech'],
+    'mobile_development' => ['bg' => 'linear-gradient(135deg,#a855f7,#ec4899)', 'icon' => '📱', 'label' => 'Mobile Apps'],
+    'design'             => ['bg' => 'linear-gradient(135deg,#ec4899,#f43f5e)', 'icon' => '🎨', 'label' => 'Graphics & Design'],
+    'writing'            => ['bg' => 'linear-gradient(135deg,#f59e0b,#f97316)', 'icon' => '✍️', 'label' => 'Writing & Translation'],
+    'marketing'          => ['bg' => 'linear-gradient(135deg,#22c55e,#14b8a6)', 'icon' => '📣', 'label' => 'Digital Marketing'],
+    'data_science'       => ['bg' => 'linear-gradient(135deg,#06b6d4,#3b82f6)', 'icon' => '📊', 'label' => 'Data Science & AI'],
+    'ai_ml'              => ['bg' => 'linear-gradient(135deg,#7c3aed,#9333ea)', 'icon' => '🤖', 'label' => 'AI & Machine Learning'],
+    'devops'             => ['bg' => 'linear-gradient(135deg,#64748b,#374151)', 'icon' => '⚙️', 'label' => 'DevOps & Cloud'],
+];
+$style = $catStyles[$project->category] ?? ['bg' => 'linear-gradient(135deg,#3b82f6,#4f46e5)', 'icon' => '💼', 'label' => 'Services'];
+$skillsRaw = $project->skills_required;
+$skills = is_array($skillsRaw) ? $skillsRaw : (json_decode($skillsRaw ?? '[]', true) ?: []);
+$employer = $project->employer;
+$midBudget = intval((($project->budget_min ?? 5000) + ($project->budget_max ?? 20000)) / 2);
+$packages = [
+    ['label'=>'Basic',    'price'=>$project->budget_min ?? 5000,  'days'=>intval(($project->estimated_duration_days??30)*.4), 'revisions'=>2],
+    ['label'=>'Standard', 'price'=>$midBudget,                    'days'=>intval(($project->estimated_duration_days??30)*.7), 'revisions'=>5],
+    ['label'=>'Premium',  'price'=>$project->budget_max ?? 20000, 'days'=>$project->estimated_duration_days??30,             'revisions'=>99],
+];
+@endphp
 
-        <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Main Content -->
-            <div class="lg:w-2/3">
-                <!-- Project Header -->
-                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-                    <div class="flex flex-wrap items-center gap-2 mb-4">
-                        @if($project->is_urgent)
-                            <span class="px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded-full">
-                                🔥 Urgent
-                            </span>
-                        @endif
-                        @if($project->is_featured)
-                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
-                                ⭐ Featured
-                            </span>
-                        @endif
-                        <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm font-medium rounded-full">
-                            {{ ucwords(str_replace('-', ' ', $project->category)) }}
-                        </span>
-                        <span class="px-3 py-1 bg-gray-100 text-gray-800 text-sm font-medium rounded-full">
-                            {{ $project->project_type == 'fixed_price' ? 'Fixed Price' : 'Hourly' }}
-                        </span>
-                    </div>
+<div class="min-h-screen" style="background:#f9f9f9;">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-                        {{ $project->title }}
-                    </h1>
+    {{-- Breadcrumb --}}
+    <nav class="text-sm text-gray-500 mb-5 flex items-center gap-1.5 flex-wrap">
+        <a href="{{ route('marketplace.index') }}" class="hover:text-blue-600">Marketplace</a>
+        <span>›</span>
+        <a href="{{ route('marketplace.projects') }}" class="hover:text-blue-600">{{ $style['label'] }}</a>
+        <span>›</span>
+        <span class="text-gray-700 truncate max-w-xs">{{ Str::limit($project->title, 50) }}</span>
+    </nav>
 
-                    <div class="flex flex-wrap items-center gap-4 text-gray-500 text-sm">
-                        <span class="flex items-center">
-                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            Posted {{ $project->published_at?->diffForHumans() ?? 'Recently' }}
-                        </span>
-                        <span class="flex items-center">
-                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                            </svg>
-                            {{ $project->allows_remote ? 'Remote' : ($project->location ?? 'On-site') }}
-                        </span>
-                        <span class="flex items-center">
-                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            {{ $project->proposals_count ?? 0 }} proposals
-                        </span>
+    <div class="flex flex-col lg:flex-row gap-8 items-start">
+
+        {{-- LEFT COLUMN --}}
+        <div class="flex-1 min-w-0">
+
+            {{-- Title & badges --}}
+            <div class="flex flex-wrap gap-2 mb-3">
+                <span class="px-2.5 py-1 text-xs font-semibold rounded-full" style="background:#eff6ff;color:#1d4ed8;">
+                    {{ $style['label'] }}
+                </span>
+                @if($project->is_urgent)
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-full" style="background:#fef2f2;color:#b91c1c;">🔥 Urgent</span>
+                @endif
+                @if($project->is_featured)
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-full" style="background:#fefce8;color:#92400e;">⭐ Featured</span>
+                @endif
+            </div>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-5">{{ $project->title }}</h1>
+
+            {{-- Seller mini-bar --}}
+            <div class="flex items-center gap-3 mb-6 pb-5 border-b border-gray-200 flex-wrap">
+                <div class="relative">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($employer->name ?? 'Client') }}&size=48&background=1A73E8&color=fff&rounded=true"
+                         class="rounded-full" style="width:48px;height:48px;" alt="">
+                    <span class="absolute bottom-0 right-0 block" style="width:11px;height:11px;background:#1dbf73;border-radius:50%;border:2px solid #fff;"></span>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-900 text-sm leading-tight">{{ $employer->name ?? 'Client' }}</p>
+                    <p class="text-xs text-gray-500">{{ $employer->email ?? 'Verified Client' }}</p>
+                </div>
+                <div class="flex items-center gap-1 ml-2">
+                    <span style="color:#ffb33e;">★★★★★</span>
+                    <span class="text-xs font-bold text-gray-800">5.0</span>
+                </div>
+                <div class="ml-auto flex items-center gap-2">
+                    <span class="px-2 py-0.5 text-xs font-bold rounded" style="background:#1dbf73;color:#fff;">PRO CLIENT</span>
+                </div>
+            </div>
+
+            {{-- Gig banner --}}
+            <div class="rounded-2xl overflow-hidden mb-6 shadow-sm flex items-center justify-center relative"
+                 style="height:300px;background:{{ $style['bg'] }};">
+                <span style="font-size:80px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.2));">{{ $style['icon'] }}</span>
+                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.35),transparent 50%);"></div>
+                <div style="position:absolute;bottom:20px;left:24px;right:24px;" class="flex flex-wrap gap-2">
+                    @foreach(array_slice($skills, 0, 4) as $skill)
+                        <span style="background:rgba(255,255,255,.25);color:#fff;padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:600;">{{ $skill }}</span>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Tabs --}}
+            <div class="flex gap-6 border-b border-gray-200 mb-6 overflow-x-auto" id="gig-tabs">
+                <button onclick="switchTab('overview')" class="gig-tab active whitespace-nowrap" id="tab-overview">Overview</button>
+                <button onclick="switchTab('description')" class="gig-tab whitespace-nowrap" id="tab-description">About this Project</button>
+                <button onclick="switchTab('requirements')" class="gig-tab whitespace-nowrap" id="tab-requirements">Requirements & FAQ</button>
+                <button onclick="switchTab('reviews')" class="gig-tab whitespace-nowrap" id="tab-reviews">Reviews</button>
+            </div>
+
+            {{-- Tab: Overview --}}
+            <div id="panel-overview" class="tab-panel">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
+                    <h2 class="font-bold text-gray-900 text-lg mb-4">Project at a Glance</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center p-4 rounded-xl" style="background:#f0f4ff;">
+                            <div class="text-2xl mb-1">📅</div>
+                            <div class="font-bold text-gray-900 text-sm">{{ $project->estimated_duration_days ?? '—' }} Days</div>
+                            <div class="text-xs text-gray-500">Duration</div>
+                        </div>
+                        <div class="text-center p-4 rounded-xl" style="background:#f0fdf4;">
+                            <div class="text-2xl mb-1">💰</div>
+                            <div class="font-bold text-gray-900 text-sm">₹{{ number_format($project->budget_min ?? 0) }}+</div>
+                            <div class="text-xs text-gray-500">Budget</div>
+                        </div>
+                        <div class="text-center p-4 rounded-xl" style="background:#fdf4ff;">
+                            <div class="text-2xl mb-1">📋</div>
+                            <div class="font-bold text-gray-900 text-sm">{{ $project->proposals_count ?? 0 }}</div>
+                            <div class="text-xs text-gray-500">Proposals</div>
+                        </div>
+                        <div class="text-center p-4 rounded-xl" style="background:#fff7ed;">
+                            <div class="text-2xl mb-1">👁️</div>
+                            <div class="font-bold text-gray-900 text-sm">{{ $project->views_count ?? 0 }}</div>
+                            <div class="text-xs text-gray-500">Views</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Description -->
-                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Project Description</h2>
-                    <div class="prose prose-indigo max-w-none text-gray-600">
-                        {!! nl2br(e($project->description)) !!}
-                    </div>
-                </div>
-
-                <!-- Requirements -->
-                @if($project->requirements)
-                    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Requirements</h2>
-                        <div class="prose prose-indigo max-w-none text-gray-600">
-                            {!! nl2br(e($project->requirements)) !!}
-                        </div>
-                    </div>
-                @endif
-
-                <!-- Deliverables -->
-                @if($project->deliverables)
-                    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Expected Deliverables</h2>
-                        <div class="prose prose-indigo max-w-none text-gray-600">
-                            {!! nl2br(e($project->deliverables)) !!}
-                        </div>
-                    </div>
-                @endif
-
-                <!-- Skills Required -->
-                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Skills Required</h2>
+                {{-- Skills --}}
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
+                    <h2 class="font-bold text-gray-900 text-lg mb-4">Skills Required</h2>
                     <div class="flex flex-wrap gap-2">
-                        @foreach($project->skills_required ?? [] as $skill)
-                            <span class="px-3 py-1.5 bg-indigo-100 text-indigo-700 text-sm font-medium rounded-full">
+                        @foreach($skills as $skill)
+                            <a href="{{ route('marketplace.projects') }}"
+                               class="px-4 py-2 rounded-full text-sm font-medium border border-gray-200 hover:border-blue-400 hover:text-blue-600 text-gray-700 transition">
                                 {{ $skill }}
-                            </span>
+                            </a>
                         @endforeach
                     </div>
                 </div>
 
-                <!-- Submit Proposal Section -->
-                @auth
-                    @if(auth()->id() !== $project->employer_id)
-                        <div class="bg-white rounded-xl shadow-md p-6" id="submit-proposal">
-                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Submit a Proposal</h2>
-                            
-                            @if($hasSubmitted ?? false)
-                                <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-                                    <svg class="w-12 h-12 text-green-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    <h3 class="font-semibold text-green-800">Proposal Submitted!</h3>
-                                    <p class="text-green-600 text-sm mt-1">You've already submitted a proposal for this project.</p>
-                                    <a href="{{ route('marketplace.freelancer.proposals') }}" class="text-indigo-600 hover:text-indigo-700 font-medium text-sm mt-2 inline-block">
-                                        View My Proposals →
-                                    </a>
-                                </div>
-                            @else
-                                <form action="{{ route('marketplace.freelancer.submit-proposal', $project) }}" method="POST" class="space-y-6">
-                                    @csrf
-                                    
-                                    <!-- Cover Letter -->
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Cover Letter</label>
-                                        <textarea name="cover_letter" rows="6" required
-                                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                                  placeholder="Introduce yourself and explain why you're the best fit for this project...">{{ old('cover_letter') }}</textarea>
-                                        @error('cover_letter')
-                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-
-                                    <!-- Bid Amount -->
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                                Your Bid (₹)
-                                            </label>
-                                            <input type="number" name="bid_amount" value="{{ old('bid_amount') }}" required
-                                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                                   placeholder="{{ $project->project_type == 'hourly' ? 'Hourly rate' : 'Total project cost' }}">
-                                            @error('bid_amount')
-                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                                Estimated Duration (days)
-                                            </label>
-                                            <input type="number" name="estimated_days" value="{{ old('estimated_days') }}" required
-                                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                                   placeholder="Number of days">
-                                            @error('estimated_days')
-                                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <!-- AI Assistance -->
-                                    <div class="bg-indigo-50 rounded-lg p-4">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center">
-                                                <svg class="w-5 h-5 text-indigo-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-                                                </svg>
-                                                <span class="text-indigo-700 font-medium">AI Proposal Helper</span>
-                                            </div>
-                                            <button type="button" onclick="generateAIProposal()" 
-                                                    class="px-3 py-1.5 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition">
-                                                Generate Suggestion
-                                            </button>
-                                        </div>
-                                        <p class="text-indigo-600 text-sm mt-2">Get AI-powered suggestions based on your profile and project requirements.</p>
-                                    </div>
-
-                                    <button type="submit" 
-                                            class="w-full px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
-                                        Submit Proposal
-                                    </button>
-                                </form>
-                            @endif
-                        </div>
-                    @endif
-                @else
-                    <div class="bg-white rounded-xl shadow-md p-6 text-center">
-                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
-                        <h3 class="font-semibold text-gray-900 mb-2">Sign in to Submit a Proposal</h3>
-                        <p class="text-gray-500 mb-4">Create an account or sign in to apply for this project.</p>
-                        <div class="flex gap-4 justify-center">
-                            <a href="{{ route('login') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                                Sign In
-                            </a>
-                            <a href="{{ route('register') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
-                                Register
-                            </a>
-                        </div>
-                    </div>
-                @endauth
-            </div>
-
-            <!-- Sidebar -->
-            <div class="lg:w-1/3">
-                <!-- Budget & Details -->
-                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Project Details</h3>
-                    
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center py-3 border-b border-gray-100">
-                            <span class="text-gray-600">Budget</span>
-                            <span class="font-bold text-green-600 text-lg">
-                                @if($project->project_type == 'hourly')
-                                    ₹{{ number_format($project->hourly_rate_min) }} - ₹{{ number_format($project->hourly_rate_max) }}/hr
-                                @else
-                                    ₹{{ number_format($project->budget_min) }} - ₹{{ number_format($project->budget_max) }}
+                {{-- Deliverables --}}
+                @if($project->deliverables)
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
+                        <h2 class="font-bold text-gray-900 text-lg mb-4">What You Will Deliver</h2>
+                        <ul class="space-y-2">
+                            @foreach(explode("\n", $project->deliverables) as $line)
+                                @if(trim($line))
+                                    <li class="flex items-start gap-2 text-gray-700 text-sm">
+                                        <span style="color:#1dbf73;" class="mt-0.5 font-bold shrink-0">✓</span>
+                                        {{ trim($line) }}
+                                    </li>
                                 @endif
-                            </span>
-                        </div>
-                        <div class="flex justify-between items-center py-3 border-b border-gray-100">
-                            <span class="text-gray-600">Experience Level</span>
-                            <span class="font-medium text-gray-900">{{ ucfirst($project->experience_level ?? 'Any') }}</span>
-                        </div>
-                        <div class="flex justify-between items-center py-3 border-b border-gray-100">
-                            <span class="text-gray-600">Duration</span>
-                            <span class="font-medium text-gray-900">{{ $project->estimated_duration_days ?? 'Flexible' }} {{ $project->duration_type ?? 'days' }}</span>
-                        </div>
-                        @if($project->deadline)
-                            <div class="flex justify-between items-center py-3 border-b border-gray-100">
-                                <span class="text-gray-600">Deadline</span>
-                                <span class="font-medium text-gray-900">{{ $project->deadline->format('M d, Y') }}</span>
-                            </div>
-                        @endif
-                        <div class="flex justify-between items-center py-3">
-                            <span class="text-gray-600">Proposals</span>
-                            <span class="font-medium text-gray-900">{{ $project->proposals_count ?? 0 }}</span>
-                        </div>
+                            @endforeach
+                        </ul>
                     </div>
+                @endif
 
-                    @auth
-                        @if(auth()->id() !== $project->employer_id && !($hasSubmitted ?? false))
-                            <a href="#submit-proposal" 
-                               class="mt-6 block w-full px-6 py-3 bg-indigo-600 text-white font-semibold text-center rounded-lg hover:bg-indigo-700 transition">
-                                Submit a Proposal
-                            </a>
-                        @endif
-                    @endauth
-                </div>
-
-                <!-- Client Info -->
-                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">About the Client</h3>
-                    
-                    <div class="flex items-center mb-4">
-                        <img src="{{ $project->employer->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($project->employer->name ?? 'E') }}" 
-                             alt="{{ $project->employer->name ?? 'Client' }}"
-                             class="w-14 h-14 rounded-full mr-4 object-cover">
-                        <div>
-                            <h4 class="font-semibold text-gray-900">{{ $project->employer->name ?? 'Client' }}</h4>
-                            @if($project->company)
-                                <p class="text-gray-500 text-sm">{{ $project->company->name }}</p>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="space-y-3 text-sm">
-                        <div class="flex items-center text-gray-600">
-                            <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
-                            Member since {{ $project->employer->created_at?->format('M Y') ?? 'Recently' }}
-                        </div>
-                        <div class="flex items-center text-gray-600">
-                            <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                            </svg>
-                            {{ $clientStats['total_projects'] ?? 0 }} projects posted
-                        </div>
-                        <div class="flex items-center text-gray-600">
-                            <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            {{ $clientStats['completed_contracts'] ?? 0 }} hires
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Similar Projects -->
+                {{-- Similar Projects --}}
                 @if(isset($similarProjects) && $similarProjects->isNotEmpty())
-                    <div class="bg-white rounded-xl shadow-md p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Similar Projects</h3>
-                        
-                        <div class="space-y-4">
-                            @foreach($similarProjects as $similar)
-                                <a href="{{ route('marketplace.project.show', $similar) }}" 
-                                   class="block p-3 rounded-lg hover:bg-gray-50 transition">
-                                    <h4 class="font-medium text-gray-900 mb-1 line-clamp-1">{{ $similar->title }}</h4>
-                                    <div class="flex justify-between text-sm">
-                                        <span class="text-gray-500">{{ $similar->category }}</span>
-                                        <span class="text-green-600 font-medium">₹{{ number_format($similar->budget_min) }}</span>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <h2 class="font-bold text-gray-900 text-lg mb-4">Similar Projects</h2>
+                        <div class="space-y-3">
+                            @foreach($similarProjects->take(4) as $sim)
+                                <a href="{{ route('marketplace.project.show', $sim) }}"
+                                   class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition group">
+                                    <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl shrink-0"
+                                         style="background:{{ $catStyles[$sim->category]['bg'] ?? 'linear-gradient(135deg,#3b82f6,#4f46e5)' }};">
+                                        {{ $catStyles[$sim->category]['icon'] ?? '💼' }}
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold text-gray-900 group-hover:text-blue-600 truncate">{{ $sim->title }}</p>
+                                        <p class="text-xs text-gray-400">₹{{ number_format($sim->budget_min ?? 0) }} – ₹{{ number_format($sim->budget_max ?? 0) }}</p>
                                     </div>
                                 </a>
                             @endforeach
@@ -333,16 +194,443 @@
                     </div>
                 @endif
             </div>
+
+            {{-- Tab: Description --}}
+            <div id="panel-description" class="tab-panel hidden">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
+                    <h2 class="font-bold text-gray-900 text-lg mb-4">About This Project</h2>
+                    <div class="text-gray-700 leading-relaxed text-sm whitespace-pre-line">{{ $project->description }}</div>
+                </div>
+            </div>
+
+            {{-- Tab: Requirements & FAQ --}}
+            <div id="panel-requirements" class="tab-panel hidden">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
+                    <h2 class="font-bold text-gray-900 text-lg mb-4">Submission Requirements</h2>
+                    <div class="text-gray-700 leading-relaxed text-sm whitespace-pre-line">{{ $project->requirements ?? 'Share your portfolio, relevant work experience, and why you are the best fit. Include links to similar completed projects. Availability for a 30-min discovery call is preferred.' }}</div>
+                    <div class="mt-6 pt-6 border-t border-gray-100">
+                        <h3 class="font-semibold text-gray-900 mb-3 text-sm">Include in your proposal:</h3>
+                        <ul class="space-y-2">
+                            @foreach(['Portfolio / past work samples', 'Your approach and methodology', 'Timeline and milestones breakdown', 'Your competitive rate', 'Questions about the project (optional)'] as $req)
+                                <li class="flex items-center gap-2 text-sm text-gray-700">
+                                    <span style="color:#1A73E8;" class="font-bold">→</span> {{ $req }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <h2 class="font-bold text-gray-900 text-lg mb-2">FAQ</h2>
+                    @foreach([
+                        ['q' => 'What is the payment process?', 'a' => 'Payments are held in escrow. Funds are released to the freelancer only after you approve each milestone.'],
+                        ['q' => 'Can I request revisions?', 'a' => 'Yes. You can request revisions on any milestone before approving it. Disputes can be raised if needed.'],
+                        ['q' => 'How do I select the right freelancer?', 'a' => 'Review proposals, check portfolio links, and message candidates before hiring from this project page.'],
+                        ['q' => 'What if the project scope changes?', 'a' => 'The freelancer can propose additional milestones through the contract dashboard if scope increases.'],
+                    ] as $faq)
+                        <details class="border-b border-gray-100 last:border-none group">
+                            <summary class="flex items-center justify-between py-3 cursor-pointer text-sm font-semibold text-gray-900">
+                                {{ $faq['q'] }}
+                                <svg class="w-4 h-4 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </summary>
+                            <p class="text-sm text-gray-600 pb-4 leading-relaxed">{{ $faq['a'] }}</p>
+                        </details>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Tab: Reviews --}}
+            <div id="panel-reviews" class="tab-panel hidden">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center gap-6 mb-6 pb-6 border-b border-gray-100">
+                        <div class="text-center">
+                            <div class="text-5xl font-extrabold text-gray-900">5.0</div>
+                            <div class="flex justify-center gap-0.5 my-1">
+                                @for($i=0;$i<5;$i++) <span style="color:#ffb33e;font-size:1.1rem;">★</span> @endfor
+                            </div>
+                            <div class="text-xs text-gray-500">Based on {{ $project->proposals_count ?? 0 }} proposals</div>
+                        </div>
+                        <div class="flex-1">
+                            @foreach([5,4,3,2,1] as $star)
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-xs text-gray-500 w-4">{{ $star }}</span>
+                                    <div class="flex-1 rounded-full" style="background:#f0f0f0;height:6px;">
+                                        <div class="rounded-full" style="background:#ffb33e;height:6px;width:{{ $star===5?'90%':($star===4?'7%':'1%') }};"></div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <p class="text-center text-gray-400 py-6 text-sm">Reviews will appear once the project is completed.</p>
+                </div>
+            </div>
+
+        </div>{{-- /left --}}
+
+        {{-- RIGHT SIDEBAR --}}
+        <div class="w-full lg:w-80 xl:w-96 shrink-0 sticky top-4">
+
+            {{-- Package Card --}}
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden mb-4">
+                <div class="flex border-b border-gray-100">
+                    @foreach($packages as $i => $pkg)
+                        <button onclick="switchPkg({{ $i }})" id="pkg-tab-{{ $i }}"
+                                class="pkg-tab flex-1 {{ $i===1?'active':'' }}">
+                            {{ $pkg['label'] }}
+                        </button>
+                    @endforeach
+                </div>
+                @foreach($packages as $i => $pkg)
+                    <div id="pkg-panel-{{ $i }}" class="{{ $i!==1?'hidden':'' }} p-5">
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <div class="text-2xl font-extrabold text-gray-900">₹{{ number_format($pkg['price']) }}</div>
+                                <p class="text-xs text-gray-500 mt-0.5">{{ $pkg['label'] }} package</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-semibold text-gray-900 text-sm">{{ $pkg['days'] }}-day delivery</div>
+                                <p class="text-xs text-gray-400">{{ $pkg['revisions'] === 99 ? 'Unlimited' : $pkg['revisions'] }} revisions</p>
+                            </div>
+                        </div>
+                        @php
+                        $allFeatures = ['Source files included','Commercial use license','Dedicated project manager','Post-launch support (30 days)','Priority support'];
+                        $included = array_slice($allFeatures, 0, $i+2);
+                        $excluded = array_slice($allFeatures, $i+2);
+                        @endphp
+                        <div class="space-y-0 mb-4">
+                            @foreach($included as $f)
+                                <div class="check-row"><span class="check-icon">✓</span><span>{{ $f }}</span></div>
+                            @endforeach
+                            @foreach($excluded as $f)
+                                <div class="check-row" style="opacity:.4;"><span class="cross-icon">✕</span><span>{{ $f }}</span></div>
+                            @endforeach
+                        </div>
+                        @auth
+                            @if(auth()->id() !== ($project->employer_id ?? null))
+                                @if($hasApplied ?? false)
+                                    <div class="text-center py-3 rounded-xl mb-3 text-sm font-semibold" style="background:#f0fdf4;color:#15803d;">✓ Proposal Submitted</div>
+                                    <a href="{{ route('marketplace.freelancer.proposals') }}"
+                                       class="block w-full text-center py-3 rounded-xl text-sm font-semibold border border-gray-200 text-gray-700 hover:bg-gray-50 transition">
+                                        View My Proposals
+                                    </a>
+                                @else
+                                    <button onclick="openProposalModal({{ $pkg['price'] }})"
+                                            class="block w-full py-3 rounded-xl text-white font-bold text-base hover:opacity-90 transition mb-2"
+                                            style="background:#1A73E8;">
+                                        Submit Proposal → ₹{{ number_format($pkg['price']) }}
+                                    </button>
+                                    <button onclick="openContactModal()"
+                                       class="block w-full text-center py-2.5 rounded-xl font-semibold text-sm border-2 hover:bg-blue-50 transition"
+                                       style="border-color:#1A73E8;color:#1A73E8;">
+                                        Contact Client
+                                    </button>
+                                @endif
+                            @else
+                                <a href="{{ route('marketplace.employer.manage-project', $project) }}"
+                                   class="block w-full text-center py-3 rounded-xl text-white font-bold text-sm" style="background:#1A73E8;">
+                                    Manage Project
+                                </a>
+                                <a href="{{ route('marketplace.employer.edit-project', $project) }}"
+                                   class="block w-full text-center py-2.5 rounded-xl border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition mt-2">
+                                    Edit Project
+                                </a>
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}"
+                               class="block w-full text-center py-3 rounded-xl text-white font-bold text-base hover:opacity-90 transition"
+                               style="background:#1A73E8;">
+                                Login to Submit Proposal
+                            </a>
+                        @endauth
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Deadline card --}}
+            @if($project->deadline)
+                <div class="bg-white rounded-2xl border border-orange-200 p-4 mb-4 flex items-center gap-3">
+                    <span class="text-2xl">⏰</span>
+                    <div>
+                        <p class="text-sm font-semibold text-orange-700">Deadline</p>
+                        <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($project->deadline)->format('d M Y') }} · {{ \Carbon\Carbon::parse($project->deadline)->diffForHumans() }}</p>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Client card --}}
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <h3 class="font-bold text-gray-900 mb-4">About the Client</h3>
+                <div class="flex items-center gap-3 mb-4">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($employer->name ?? 'Client') }}&size=52&background=1A73E8&color=fff&rounded=true"
+                         style="width:52px;height:52px;" class="rounded-full" alt="">
+                    <div>
+                        <p class="font-semibold text-gray-900 text-sm">{{ $employer->name ?? 'Client' }}</p>
+                        <p class="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+                            <span style="width:8px;height:8px;background:#1dbf73;border-radius:50%;display:inline-block;"></span> Online
+                        </p>
+                    </div>
+                </div>
+                <div class="flex justify-around text-center mb-4 pb-4 border-b border-gray-100">
+                    <div><p class="font-bold text-gray-900 text-sm">{{ $project->proposals_count ?? 0 }}</p><p class="text-xs text-gray-400">Proposals</p></div>
+                    <div><p class="font-bold text-gray-900 text-sm">{{ $project->views_count ?? 0 }}</p><p class="text-xs text-gray-400">Views</p></div>
+                    <div><p class="font-bold text-gray-900 text-sm">{{ $project->allows_remote ? '🌍' : '📍' }}</p><p class="text-xs text-gray-400">{{ $project->allows_remote ? 'Remote' : 'On-site' }}</p></div>
+                </div>
+                <dl class="space-y-2 text-sm">
+                    <div class="flex justify-between"><dt class="text-gray-500">Posted</dt><dd class="font-medium text-gray-900">{{ $project->published_at?->diffForHumans() }}</dd></div>
+                    <div class="flex justify-between"><dt class="text-gray-500">Budget Type</dt><dd class="font-medium text-gray-900">{{ $project->project_type === 'fixed_price' ? 'Fixed Price' : 'Hourly' }}</dd></div>
+                    <div class="flex justify-between"><dt class="text-gray-500">Experience</dt><dd class="font-medium text-gray-900">{{ ucfirst($project->experience_level ?? 'Any') }}</dd></div>
+                    <div class="flex justify-between"><dt class="text-gray-500">Budget Range</dt><dd class="font-medium text-gray-900">₹{{ number_format($project->budget_min??0) }} – ₹{{ number_format($project->budget_max??0) }}</dd></div>
+                </dl>
+            </div>
+
+        </div>{{-- /sidebar --}}
+    </div>
+</div>
+</div>
+
+{{-- Contact Client Modal --}}
+<div id="contactModal" class="fixed inset-0 z-50 hidden" style="background:rgba(0,0,0,.5);">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg">
+            <div class="flex items-center justify-between p-5 border-b border-gray-100">
+                <div>
+                    <h3 class="font-bold text-gray-900 text-lg">Contact Client</h3>
+                    <p class="text-xs text-gray-500 mt-0.5">Send a message to the project owner</p>
+                </div>
+                <button onclick="closeContactModal()" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
+            </div>
+            @auth
+            <form action="{{ route('marketplace.project.contact', $project) }}" method="POST" class="p-5 space-y-4">
+                @csrf
+                <div class="flex items-center gap-3 p-3 rounded-xl" style="background:#f8faff;">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style="background:#1A73E8;">
+                        {{ strtoupper(substr($project->employer?->name ?? 'C', 0, 2)) }}
+                    </div>
+                    <div>
+                        <p class="font-semibold text-sm text-gray-900">{{ $project->employer?->name ?? 'Client' }}</p>
+                        <p class="text-xs text-gray-500">Re: {{ Str::limit($project->title, 50) }}</p>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Subject *</label>
+                    <input type="text" name="subject" required maxlength="200"
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500"
+                           value="Interested in your project: {{ Str::limit($project->title, 60) }}">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Message *</label>
+                    <textarea name="message" rows="5" required minlength="20" maxlength="2000"
+                              class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 resize-none"
+                              placeholder="Hi, I saw your project and I'd love to learn more about it. I have experience with..."></textarea>
+                </div>
+                <div class="flex gap-3 pt-1">
+                    <button type="submit" class="flex-1 py-3 text-white font-bold rounded-xl hover:opacity-90 transition" style="background:#1A73E8;">
+                        Send Message
+                    </button>
+                    <button type="button" onclick="closeContactModal()"
+                            class="px-5 py-3 border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+            @else
+            <div class="p-6 text-center">
+                <p class="text-gray-600 mb-4">Please sign in to contact this client.</p>
+                <a href="{{ route('login') }}" class="inline-block px-6 py-3 text-white font-bold rounded-xl" style="background:#1A73E8;">Sign In</a>
+            </div>
+            @endauth
         </div>
     </div>
 </div>
 
-@push('scripts')
+{{-- Proposal Modal --}}
+<div id="proposalModal" class="fixed inset-0 z-50 hidden" style="background:rgba(0,0,0,.5);">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl">
+            <div class="flex items-center justify-between p-5 border-b border-gray-100">
+                <h3 class="font-bold text-gray-900 text-lg">Submit Your Proposal</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
+            </div>
+            <form id="proposalForm" action="{{ route('marketplace.freelancer.submit-proposal', $project) }}" method="POST" class="p-5 space-y-4">
+                @csrf
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-sm font-semibold text-gray-700">Cover Letter *</label>
+                        <button type="button" onclick="aiGenerateCoverLetter()"
+                                id="aiGenerateBtn"
+                                class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all"
+                                style="background:#eff6ff;color:#1A73E8;border:1px solid #bfdbfe;">
+                            <span id="aiGenerateIcon">✨</span>
+                            <span id="aiGenerateBtnText">AI Generate</span>
+                        </button>
+                    </div>
+                    <textarea name="cover_letter" id="coverLetterArea" rows="5" required
+                              class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 resize-none"
+                              placeholder="Introduce yourself and explain why you are the best fit..."></textarea>
+                    <p id="aiGenerateError" class="hidden mt-1 text-xs text-red-500"></p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Bid Amount (₹) *</label>
+                        <input type="number" name="proposed_amount" id="bidAmount" required min="1"
+                               class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500"
+                               placeholder="{{ $project->budget_min ?? 5000 }}">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Delivery (days) *</label>
+                        <input type="number" name="estimated_duration_days" required min="1"
+                               class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500"
+                               value="{{ $project->estimated_duration_days ?? 30 }}"
+                               placeholder="{{ $project->estimated_duration_days ?? 30 }}">
+                    </div>
+                </div>
+                <div class="rounded-xl p-3 text-sm" style="background:#eff6ff;color:#1e40af;">
+                    💡 <strong>Tip:</strong> Proposals with portfolio links and clear methodology get 3× more responses.
+                </div>
+                <div id="proposalError" class="hidden rounded-xl p-3 text-sm font-medium" style="background:#fef2f2;color:#dc2626;"></div>
+                <div class="flex gap-3 pt-1">
+                    <button type="submit" id="proposalSubmitBtn" class="flex-1 py-3 text-white font-bold rounded-xl hover:opacity-90 transition" style="background:#1A73E8;">
+                        Submit Proposal
+                    </button>
+                    <button type="button" onclick="closeModal()"
+                            class="px-5 py-3 border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
-function generateAIProposal() {
-    // AI proposal generation would be implemented here
-    alert('AI Proposal generation coming soon! This feature uses your profile and project requirements to suggest a compelling cover letter.');
+function switchTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.gig-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.remove('hidden');
+    document.getElementById('tab-' + name).classList.add('active');
+}
+function switchPkg(idx) {
+    [0,1,2].forEach(i => {
+        document.getElementById('pkg-panel-' + i).classList.add('hidden');
+        document.getElementById('pkg-tab-' + i).classList.remove('active');
+    });
+    document.getElementById('pkg-panel-' + idx).classList.remove('hidden');
+    document.getElementById('pkg-tab-' + idx).classList.add('active');
+}
+function openProposalModal(price) {
+    document.getElementById('proposalModal').classList.remove('hidden');
+    const bidInput = document.getElementById('bidAmount');
+    if (bidInput) bidInput.value = price;
+    document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+    document.getElementById('proposalModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+function openContactModal() {
+    document.getElementById('contactModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closeContactModal() {
+    document.getElementById('contactModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+document.getElementById('proposalModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+document.getElementById('contactModal').addEventListener('click', function(e) {
+    if (e.target === this) closeContactModal();
+});
+
+// Proposal form — AJAX submit
+document.getElementById('proposalForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const form    = this;
+    const btn     = document.getElementById('proposalSubmitBtn');
+    const errDiv  = document.getElementById('proposalError');
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+    errDiv.classList.add('hidden');
+
+    try {
+        const res  = await fetch(form.action, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
+            body: new FormData(form),
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            closeModal();
+            // Show success banner
+            const banner = document.createElement('div');
+            banner.className = 'fixed top-4 right-4 z-[9999] px-5 py-3 rounded-xl shadow-lg text-white font-semibold text-sm';
+            banner.style.background = '#15803d';
+            banner.textContent = '✓ Proposal submitted successfully!';
+            document.body.appendChild(banner);
+            setTimeout(() => banner.remove(), 4000);
+            // Optionally reload to refresh "Proposal Submitted" state
+            setTimeout(() => location.reload(), 1200);
+        } else {
+            errDiv.textContent = '⚠ ' + (data.message || 'Failed to submit proposal.');
+            errDiv.classList.remove('hidden');
+            btn.disabled = false;
+            btn.textContent = 'Submit Proposal';
+        }
+    } catch (err) {
+        errDiv.textContent = '⚠ Network error. Please try again.';
+        errDiv.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Submit Proposal';
+    }
+});
+
+async function aiGenerateCoverLetter() {
+    const btn    = document.getElementById('aiGenerateBtn');
+    const icon   = document.getElementById('aiGenerateIcon');
+    const label  = document.getElementById('aiGenerateBtnText');
+    const area   = document.getElementById('coverLetterArea');
+    const errEl  = document.getElementById('aiGenerateError');
+
+    btn.disabled = true;
+    icon.textContent = '⏳';
+    label.textContent = 'Generating...';
+    errEl.classList.add('hidden');
+
+    try {
+        const res = await fetch('{{ route("marketplace.ai.cover-letter") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                project_title: {!! json_encode($project->title) !!},
+                project_description: {!! json_encode(Str::limit($project->description ?? '', 600)) !!},
+                skills_required: {!! json_encode($project->skills_required ?? []) !!},
+                budget: {{ $project->budget_min ?? 0 }}
+            })
+        });
+        const data = await res.json();
+        if (data.cover_letter) {
+            area.value = data.cover_letter;
+            area.style.borderColor = '#1A73E8';
+            setTimeout(() => area.style.borderColor = '', 1500);
+        } else {
+            throw new Error(data.error || 'Failed to generate');
+        }
+    } catch (e) {
+        errEl.textContent = '⚠ ' + e.message;
+        errEl.classList.remove('hidden');
+    } finally {
+        btn.disabled = false;
+        icon.textContent = '✨';
+        label.textContent = 'AI Generate';
+    }
 }
 </script>
-@endpush
 @endsection

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Agent Performance Metrics')
 
@@ -231,6 +231,9 @@
     // Applications Over Time Chart
     const applicationsCtx = document.getElementById('applicationsChart');
     if (applicationsCtx) {
+        const appGrad = applicationsCtx.getContext('2d').createLinearGradient(0, 0, 0, 300);
+        appGrad.addColorStop(0, 'rgba(99,102,241,0.45)');
+        appGrad.addColorStop(1, 'rgba(99,102,241,0.02)');
         new Chart(applicationsCtx, {
             type: 'line',
             data: {
@@ -238,27 +241,37 @@
                 datasets: [{
                     label: 'Applications',
                     data: {!! json_encode($applicationsOverTime['data']) !!},
-                    borderColor: 'rgb(236, 72, 153)',
-                    backgroundColor: 'rgba(236, 72, 153, 0.1)',
-                    tension: 0.4,
-                    fill: true
+                    borderColor: '#6366f1',
+                    backgroundColor: appGrad,
+                    borderWidth: 3,
+                    tension: 0.45,
+                    fill: true,
+                    pointBackgroundColor: '#6366f1',
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: { duration: 1000, easing: 'easeInOutQuart' },
                 plugins: {
-                    legend: {
-                        display: false
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(99,102,241,0.9)',
+                        titleColor: '#fff', bodyColor: '#e0e7ff',
+                        cornerRadius: 10, padding: 12,
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
+                        ticks: { stepSize: 1, color: '#6b7280' },
+                        grid: { color: 'rgba(99,102,241,0.08)' }
+                    },
+                    x: { ticks: { color: '#6b7280' }, grid: { display: false } }
                 }
             }
         });
@@ -274,20 +287,37 @@
                 datasets: [{
                     data: {!! json_encode($outcomeDistribution['data']) !!},
                     backgroundColor: [
-                        'rgb(34, 197, 94)',   // green - success
-                        'rgb(239, 68, 68)',   // red - rejected
-                        'rgb(251, 191, 36)',  // yellow - no response
-                        'rgb(156, 163, 175)', // gray - withdrawn
-                        'rgb(59, 130, 246)',  // blue - pending
-                    ]
+                        'rgba(34,197,94,0.85)',
+                        'rgba(239,68,68,0.85)',
+                        'rgba(251,191,36,0.85)',
+                        'rgba(156,163,175,0.85)',
+                        'rgba(99,102,241,0.85)',
+                    ],
+                    hoverBackgroundColor: [
+                        'rgba(34,197,94,1)',
+                        'rgba(239,68,68,1)',
+                        'rgba(251,191,36,1)',
+                        'rgba(156,163,175,1)',
+                        'rgba(99,102,241,1)',
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#fff',
+                    hoverOffset: 10,
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: { animateRotate: true, animateScale: true, duration: 900, easing: 'easeInOutBack' },
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, color: '#374151' }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(30,27,75,0.92)',
+                        titleColor: '#c7d2fe', bodyColor: '#e0e7ff',
+                        cornerRadius: 10, padding: 12,
                     }
                 }
             }
@@ -297,6 +327,11 @@
     // Learning Progress Chart
     const learningCtx = document.getElementById('learningChart');
     if (learningCtx) {
+        const ctx2d = learningCtx.getContext('2d');
+        const srGrad = ctx2d.createLinearGradient(0, 0, 0, 300);
+        srGrad.addColorStop(0, 'rgba(34,197,94,0.35)'); srGrad.addColorStop(1, 'rgba(34,197,94,0.02)');
+        const msGrad = ctx2d.createLinearGradient(0, 0, 0, 300);
+        msGrad.addColorStop(0, 'rgba(99,102,241,0.35)'); msGrad.addColorStop(1, 'rgba(99,102,241,0.02)');
         new Chart(learningCtx, {
             type: 'line',
             data: {
@@ -305,17 +340,27 @@
                     {
                         label: 'Success Rate',
                         data: {!! json_encode($learningMetrics['success_rate'] ?? []) !!},
-                        borderColor: 'rgb(34, 197, 94)',
-                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                        tension: 0.4,
+                        borderColor: '#22c55e',
+                        backgroundColor: srGrad,
+                        borderWidth: 3,
+                        tension: 0.45,
+                        fill: true,
+                        pointBackgroundColor: '#22c55e',
+                        pointRadius: 4, pointHoverRadius: 7,
+                        pointBorderColor: '#fff', pointBorderWidth: 2,
                         yAxisID: 'y'
                     },
                     {
                         label: 'Avg Match Score',
                         data: {!! json_encode($learningMetrics['avg_score'] ?? []) !!},
-                        borderColor: 'rgb(59, 130, 246)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.4,
+                        borderColor: '#6366f1',
+                        backgroundColor: msGrad,
+                        borderWidth: 3,
+                        tension: 0.45,
+                        fill: true,
+                        pointBackgroundColor: '#6366f1',
+                        pointRadius: 4, pointHoverRadius: 7,
+                        pointBorderColor: '#fff', pointBorderWidth: 2,
                         yAxisID: 'y'
                     }
                 ]
@@ -323,28 +368,27 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
+                animation: { duration: 1000, easing: 'easeInOutQuart' },
+                interaction: { mode: 'index', intersect: false },
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, color: '#374151' }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(30,27,75,0.92)',
+                        titleColor: '#c7d2fe', bodyColor: '#e0e7ff',
+                        cornerRadius: 10, padding: 12,
                     }
                 },
                 scales: {
                     y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        min: 0,
-                        max: 100,
-                        ticks: {
-                            callback: function(value) {
-                                return value + '%';
-                            }
-                        }
-                    }
+                        type: 'linear', display: true, position: 'left',
+                        min: 0, max: 100,
+                        ticks: { color: '#6b7280', callback: function(v){ return v+'%'; } },
+                        grid: { color: 'rgba(99,102,241,0.07)' }
+                    },
+                    x: { ticks: { color: '#6b7280' }, grid: { display: false } }
                 }
             }
         });

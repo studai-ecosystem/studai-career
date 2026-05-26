@@ -14,7 +14,7 @@ use OpenAI\Laravel\Facades\OpenAI;
 
 class CareerTrajectoryService
 {
-    protected const MODEL = 'gpt-5.1'; // Azure OpenAI GPT-5.1
+    protected const MODEL = 'gpt-5.4'; // Azure OpenAI deployment // Azure OpenAI GPT-5.1
     protected const CACHE_TTL = 86400; // 24 hours
     protected const MAX_PATHS = 5;
     
@@ -139,7 +139,7 @@ class CareerTrajectoryService
                     ]
                 ],
                 'temperature' => 0.7,
-                'max_tokens' => 4000,
+                'max_completion_tokens' => 4000,
             ]);
             
             $content = $response->choices[0]->message->content;
@@ -337,7 +337,7 @@ PROMPT;
                         ['role' => 'user', 'content' => $prompt]
                     ],
                     'temperature' => 0.5,
-                    'max_tokens' => 2000,
+                    'max_completion_tokens' => 2000,
                 ]);
                 
                 $content = $response->choices[0]->message->content;

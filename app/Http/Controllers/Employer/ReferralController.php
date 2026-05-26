@@ -17,7 +17,7 @@ class ReferralController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:employer');
+        $this->middleware(['auth', 'employer']);
     }
     
     /**
@@ -25,7 +25,7 @@ class ReferralController extends Controller
      */
     public function index(Request $request)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         $query = EmployeeReferral::where('company_id', $company->id)
             ->with(['referrer', 'candidate', 'job', 'application']);
@@ -108,7 +108,7 @@ class ReferralController extends Controller
             'referrer_notes' => 'nullable|string',
         ]);
         
-        $employer = auth('employer')->user();
+        $employer = auth()->user();
         $company = $employer->company;
         
         // Get referral settings
@@ -218,7 +218,7 @@ class ReferralController extends Controller
      */
     public function leaderboard(Request $request)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         $period = $request->input('period', 'all_time'); // all_time, this_year, this_quarter, this_month
         
         $query = DB::table('employee_referrals')
@@ -283,7 +283,7 @@ class ReferralController extends Controller
      */
     public function approve(Request $request, EmployeeReferral $referral)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         if ($referral->company_id !== $company->id) {
             abort(403);
@@ -340,7 +340,7 @@ class ReferralController extends Controller
      */
     public function settings()
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         $settings = ReferralSetting::firstOrCreate(
             ['company_id' => $company->id],
@@ -368,7 +368,7 @@ class ReferralController extends Controller
      */
     public function updateSettings(Request $request)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         $validated = $request->validate([
             'enabled' => 'nullable|boolean',

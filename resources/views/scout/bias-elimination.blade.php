@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Bias Elimination & Ethical AI - S.C.O.U.T.')
 
@@ -6,6 +6,14 @@
 <div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
+        <!-- Back Button -->
+        <div class="mb-4">
+            <a href="{{ route('employer.scout.dashboard') }}"
+                class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg px-4 py-2 shadow-sm hover:shadow transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Back to Dashboard
+            </a>
+        </div>
         {{-- Header --}}
         <div class="mb-8">
             <div class="flex items-center justify-between">
@@ -124,7 +132,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">Lower is better • Target: <10%</p>
+                        <p class="text-xs text-gray-500 mt-2">Lower is better â€¢ Target: <10%</p>
                     </div>
 
                     <div class="glass-card p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
@@ -185,7 +193,7 @@
                             </div>
                             <div class="flex-1">
                                 <p class="font-semibold text-gray-800">Bias Audit Completed</p>
-                                <p class="text-sm text-gray-600">Analyzed 234 applications • Fairness Rating: Excellent</p>
+                                <p class="text-sm text-gray-600">Analyzed 234 applications â€¢ Fairness Rating: Excellent</p>
                                 <p class="text-xs text-gray-500 mt-1">2 hours ago</p>
                             </div>
                         </div>
@@ -225,7 +233,7 @@
                     <div class="glass-card p-6 rounded-xl shadow-lg">
                         <h4 class="font-semibold text-gray-700 mb-2">Selection Rate Parity</h4>
                         <p class="text-3xl font-bold text-green-600">0.87</p>
-                        <p class="text-sm text-gray-600 mt-2">Target: ≥0.80 (4/5ths rule)</p>
+                        <p class="text-sm text-gray-600 mt-2">Target: â‰¥0.80 (4/5ths rule)</p>
                         <div class="mt-4 flex items-center space-x-2">
                             <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">Passing</span>
                         </div>

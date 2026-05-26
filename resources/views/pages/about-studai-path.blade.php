@@ -1,61 +1,78 @@
 {{--
-    StudAI Path — About Page
+    StudAI Hire — About Page
     Brand story, mission, and team
 --}}
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'About StudAI Path | Our Mission to Automate Career Success')
+@section('title', 'About StudAI Hire | Our Mission to Automate Career Success')
 
 @section('meta')
 <meta name="description" content="Meet the team building India's first autonomous career OS. Learn how we're using AI to transform job search and hiring for millions.">
-<meta property="og:title" content="About StudAI Path — Your Career. On Autopilot.">
+<meta property="og:title" content="About StudAI Hire — Your Career. On Autopilot.">
 <meta property="og:description" content="We're building the future of work. One automated career at a time.">
 <link rel="canonical" href="{{ route('about') }}">
 @endsection
 
+@push('styles')
+<style>
+@keyframes orbA { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-25px) scale(1.06)} 66%{transform:translate(-20px,18px) scale(.96)} }
+@keyframes orbB { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-28px,22px) scale(1.04)} 66%{transform:translate(22px,-18px) scale(.98)} }
+@keyframes orbC { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(18px,28px) scale(1.07)} }
+@keyframes orbD { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-22px,-12px) scale(1.09)} }
+.about-stat-card { transition: transform .3s ease, box-shadow .3s ease; }
+.about-stat-card:hover { transform: translateY(-6px); }
+.principle-card { transition: transform .3s ease, box-shadow .3s ease; }
+.principle-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(99,102,241,.14); }
+</style>
+@endpush
+
 @section('content')
 {{-- Hero Section --}}
-<section class="relative overflow-hidden bg-gradient-to-br from-ink-primary via-slate-900 to-ink-primary text-white">
-    <div class="absolute inset-0 opacity-20">
-        <div class="absolute -top-40 -left-12 h-96 w-96 rounded-full bg-google-blue-500/30 blur-3xl"></div>
-        <div class="absolute top-20 right-0 h-[28rem] w-[28rem] rounded-full bg-purple-500/20 blur-3xl"></div>
+<section class="relative overflow-hidden" style="background:linear-gradient(135deg,#eef1ff 0%,#f5f0ff 30%,#eefff7 65%,#fff8ee 100%);">
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute" style="width:600px;height:600px;top:-150px;right:-100px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.28),transparent 70%);filter:blur(70px);animation:orbA 14s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:480px;height:480px;bottom:-100px;left:-80px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.22),transparent 70%);filter:blur(60px);animation:orbB 12s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:320px;height:320px;top:35%;left:38%;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.18),transparent 70%);filter:blur(50px);animation:orbC 16s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:220px;height:220px;top:8%;left:12%;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.2),transparent 70%);filter:blur(40px);animation:orbD 10s ease-in-out infinite;"></div>
+        <div class="absolute inset-0" style="background-image:radial-gradient(circle,rgba(99,102,241,.14) 1px,transparent 1px);background-size:36px 36px;"></div>
     </div>
     <div class="relative mx-auto max-w-6xl px-6 py-24 lg:py-32">
         <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
             <div class="space-y-6">
-                <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2 text-sm font-semibold uppercase tracking-widest">
+                <span class="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-widest" style="background:rgba(99,102,241,.12);color:#6366f1;border:1px solid rgba(99,102,241,.25);backdrop-filter:blur(8px);">
                     Our Story
                 </span>
-                <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl">
-                    Building the career operating system for ambitious talent.
+                <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl" style="color:#1a1a2e;line-height:1.12;">
+                    Building the career operating system for <span style="background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ambitious talent.</span>
                 </h1>
-                <p class="text-lg text-slate-200">
-                    StudAI Path exists to eliminate the friction between talent and opportunity. We're combining AI agents, market intelligence, and human-centered design to automate career success for millions.
+                <p class="text-lg" style="color:#4b5563;">
+                    StudAI Hire exists to eliminate the friction between talent and opportunity. We're combining AI agents, market intelligence, and human-centered design to automate career success for millions.
                 </p>
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-                    <a href="{{ route('register') }}" class="group inline-flex items-center rounded-xl bg-white px-8 py-3 text-lg font-semibold text-google-blue-600 transition-all duration-300 hover:shadow-2xl">
+                    <a href="{{ route('register') }}" class="group inline-flex items-center rounded-xl px-8 py-3 text-lg font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#7c3aed);box-shadow:0 4px 18px rgba(99,102,241,.4);">
                         Join the Movement
                         <svg class="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
                     </a>
-                    <a href="{{ route('about') }}#careers" class="inline-flex items-center rounded-xl border border-white/20 bg-white/10 px-8 py-3 text-lg font-semibold text-white transition-all duration-300 hover:bg-white/20">
+                    <a href="{{ route('about') }}#careers" class="inline-flex items-center rounded-xl px-8 py-3 text-lg font-semibold" style="background:rgba(255,255,255,.8);color:#6366f1;border:1.5px solid rgba(99,102,241,.25);backdrop-filter:blur(8px);">
                         We're Hiring
                     </a>
                 </div>
             </div>
-            <div class="rounded-3xl border border-google-blue-500/30 bg-slate-900/70 p-8 shadow-2xl">
-                <h2 class="text-2xl font-semibold text-white">Impact So Far</h2>
-                <dl class="mt-6 grid gap-6 sm:grid-cols-2">
+            <div class="about-stat-card rounded-3xl p-8" style="background:rgba(255,255,255,.85);backdrop-filter:blur(16px);border:1px solid rgba(99,102,241,.18);box-shadow:0 20px 60px rgba(99,102,241,.2),0 4px 16px rgba(99,102,241,.12);">
+                <h2 class="text-2xl font-semibold mb-1" style="color:#1a1a2e;">Impact So Far</h2>
+                <p class="text-sm mb-6" style="color:#6b7280;">Growing every single day</p>
+                <dl class="mt-2 grid gap-6 sm:grid-cols-2">
                     @foreach ([
-                        ['label' => 'Careers Launched', 'value' => '50K+'],
-                        ['label' => 'Jobs Indexed', 'value' => '2.5M'],
-                        ['label' => 'Countries', 'value' => '12'],
-                        ['label' => 'Interview Success Rate', 'value' => '94%'],
+                        ['label' => 'Careers Launched', 'value' => '50K+', 'color' => '#6366f1'],
+                        ['label' => 'Jobs Indexed', 'value' => '2.5M', 'color' => '#059669'],
+                        ['label' => 'Countries', 'value' => '12', 'color' => '#b45309'],
+                        ['label' => 'Interview Success Rate', 'value' => '94%', 'color' => '#e11d48'],
                     ] as $stat)
-                        <div>
-                            <dd class="text-3xl font-bold text-white">{{ $stat['value'] }}</dd>
-                            <dt class="mt-1 text-xs uppercase tracking-widest text-slate-400">{{ $stat['label'] }}</dt>
+                        <div class="rounded-2xl p-4" style="background:linear-gradient(135deg,rgba(99,102,241,.06),rgba(139,92,246,.04));border:1px solid rgba(99,102,241,.1);">
+                            <dd class="text-3xl font-bold" style="color:{{ $stat['color'] }};">{{ $stat['value'] }}</dd>
+                            <dt class="mt-1 text-xs uppercase tracking-widest" style="color:#9ca3af;">{{ $stat['label'] }}</dt>
                         </div>
                     @endforeach
                 </dl>
@@ -180,11 +197,11 @@
         </div>
         <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             @foreach ([
-                ['name' => 'Arjun Mehta', 'role' => 'CEO & Co-founder', 'bio' => 'Applied to 200+ jobs before founding StudAI Path. Former product at Microsoft. IIT Delhi.'],
+                ['name' => 'Arjun Mehta', 'role' => 'CEO & Co-founder', 'bio' => 'Applied to 200+ jobs before founding StudAI Hire. Former product at Microsoft. IIT Delhi.'],
                 ['name' => 'Priya Sharma', 'role' => 'CTO & Co-founder', 'bio' => 'Built ML systems at Google. Obsessed with making AI practical. Stanford MS.'],
                 ['name' => 'Rahul Verma', 'role' => 'Head of AI', 'bio' => 'Led NLP at Amazon. Published researcher. Makes our AI actually understand jobs.'],
                 ['name' => 'Sneha Iyer', 'role' => 'VP Product', 'bio' => 'Former PM at Razorpay. Designs experiences that feel like magic.'],
-                ['name' => 'Karan Singh', 'role' => 'VP Growth', 'bio' => 'Scaled Swiggy B2B. Now bringing StudAI Path to every job seeker in India.'],
+                ['name' => 'Karan Singh', 'role' => 'VP Growth', 'bio' => 'Scaled Swiggy B2B. Now bringing StudAI Hire to every job seeker in India.'],
                 ['name' => 'Dr. Ananya Rao', 'role' => 'Head of AI Ethics', 'bio' => 'PhD from MIT. Ensures our AI is fair, explainable, and bias-free.'],
             ] as $leader)
                 <div class="rounded-2xl border border-surface-200 bg-surface-50 p-6 hover:shadow-card transition-shadow">
@@ -304,7 +321,7 @@
 {!! json_encode([
     '@context' => 'https://schema.org',
     '@type' => 'Organization',
-    'name' => 'StudAI Path',
+    'name' => 'StudAI Hire',
     'alternateName' => 'StudAI Technologies Pvt. Ltd.',
     'url' => url('/'),
     'logo' => asset('images/logo-dark.svg'),

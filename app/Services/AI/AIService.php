@@ -24,7 +24,7 @@ class AIService
     public function __construct()
     {
         $this->provider = config('ai.provider', 'azure');
-        $this->model = config('ai.default_model', 'gpt-5.1');
+        $this->model = config('ai.default_model', config('ai.azure.models.chat'));
         $this->maxTokens = config('ai.max_tokens', 16384);
         $this->temperature = config('ai.temperature', 0.7);
         $this->timeout = config('ai.timeout.default', 60);
@@ -46,7 +46,7 @@ class AIService
     {
         $endpoint = config('ai.azure.endpoint');
         $apiKey = config('ai.azure.api_key');
-        $deploymentId = config('ai.azure.deployment_id', 'gpt-5.1');
+        $deploymentId = config('ai.azure.deployment_id', config('ai.azure.models.chat'));
         $apiVersion = config('ai.azure.api_version', '2024-12-01-preview');
 
         if (empty($endpoint) || empty($apiKey)) {
@@ -83,13 +83,13 @@ class AIService
     }
 
     /**
-     * Call Azure Anthropic API (Fallback - Claude Sonnet 4.5)
+     * Call Azure Anthropic API (Fallback - Claude Sonnet 4.6)
      */
     protected function callAzureAnthropic(array $messages, array $options = []): string
     {
         $endpoint = config('ai.anthropic.endpoint');
         $apiKey = config('ai.anthropic.api_key');
-        $model = config('ai.anthropic.model', 'claude-sonnet-4-5');
+        $model = config('ai.anthropic.model', 'claude-sonnet-4-6');
 
         if (empty($endpoint) || empty($apiKey)) {
             throw new \Exception('Azure Anthropic credentials not configured');
@@ -110,7 +110,7 @@ class AIService
                 'model' => $model,
                 'messages' => $anthropicMessages['messages'],
                 'system' => $anthropicMessages['system'] ?? '',
-                'max_tokens' => $options['max_tokens'] ?? config('ai.anthropic.max_tokens', 4096),
+                'max_completion_tokens' => $options['max_tokens'] ?? config('ai.anthropic.max_tokens', 4096),
             ]);
 
         if (!$response->successful()) {
@@ -187,7 +187,7 @@ class AIService
         $anthropicCircuit = CircuitBreakerService::forAzureAnthropic();
 
         try {
-            // Primary: Azure OpenAI (GPT-5.1) with Circuit Breaker
+            // Primary: Azure OpenAI (GPT-5.4 — Orin™) with Circuit Breaker
             Log::info('Calling Azure OpenAI API', [
                 'model' => $this->model,
                 'tokens' => $this->maxTokens,
@@ -348,7 +348,7 @@ class AIService
             $usage = $data['usage'] ?? [];
             $tokensUsed = ($usage['prompt_tokens'] ?? 0) + ($usage['completion_tokens'] ?? 0);
             
-            // Calculate cost (Azure OpenAI GPT-5.1 pricing estimate)
+            // Calculate cost (Azure OpenAI GPT-5.4 pricing estimate)
             $cost = (($usage['prompt_tokens'] ?? 0) * 0.01 / 1000) + 
                     (($usage['completion_tokens'] ?? 0) * 0.03 / 1000);
 
@@ -374,7 +374,7 @@ class AIService
                 'user_id' => $this->user?->id,
                 'tokens' => $tokensUsed,
                 'cost' => $cost,
-                'model' => 'gpt-5.1',
+                'model' => config('ai.azure.models.chat'),
                 'provider' => 'azure_openai'
             ]);
 
@@ -415,7 +415,7 @@ class AIService
                 'user_id' => $this->user?->id,
                 'tokens' => $tokensUsed,
                 'cost' => $cost,
-                'model' => 'claude-sonnet-4-5',
+                'model' => config('ai.anthropic.model', 'claude-sonnet-4-6'),
                 'provider' => 'azure_anthropic'
             ]);
 
@@ -433,7 +433,7 @@ class AIService
             $usage = $response->usage;
             $tokensUsed = $usage->totalTokens ?? 0;
             
-            // Calculate cost (Azure OpenAI pricing: GPT-5.1)
+            // Calculate cost (Azure OpenAI pricing: GPT-5.4)
             $cost = (($usage->promptTokens ?? 0) * 0.01 / 1000) + 
                     (($usage->completionTokens ?? 0) * 0.03 / 1000);
 
@@ -519,16 +519,21 @@ class AIService
      */
     protected function findSimilarCachedResponse(string $prompt): ?string
     {
-        // Simplified: In production, use vector similarity search
-        $cacheKeys = Cache::getRedis()->keys('ai_response_*');
-        
-        foreach ($cacheKeys as $key) {
-            // Return first available cached response
-            if (Cache::has($key)) {
-                return $key;
+        // Only attempt Redis key scanning when Redis is the cache driver
+        try {
+            $store = Cache::getStore();
+            if ($store instanceof \Illuminate\Cache\RedisStore) {
+                $cacheKeys = $store->getRedis()->keys('ai_response_*');
+                foreach ($cacheKeys as $key) {
+                    if (Cache::has($key)) {
+                        return Cache::get($key);
+                    }
+                }
             }
+        } catch (\Throwable) {
+            // Non-Redis cache store or Redis unavailable — skip
         }
-        
+
         return null;
     }
 
@@ -647,5 +652,63 @@ class AIService
     public function generateEmbeddings(string $text): array
     {
         return $this->generateEmbedding($text);
+    }
+
+    /**
+     * Check if the AI service is reachable and responding.
+     */
+    public function isAvailable(): bool
+    {
+        try {
+            $result = $this->generateText('ping', null, ['cache_hours' => 0, 'skip_cache' => true]);
+            // If both providers fail, the fallback response is returned (non-empty string)
+            // but it contains "technical difficulties" - detect that as unavailable
+            return !empty($result) && !str_contains($result, 'technical difficulties');
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Analyze text and return structured analysis as array.
+     */
+    public function analyze(string $text, ?string $context = null): array
+    {
+        $systemPrompt = $context ?? 'You are an expert analyst. Analyze the provided text and return a structured JSON analysis.';
+        return $this->generateJSON(
+            "Analyze the following:\n\n{$text}",
+            $systemPrompt
+        );
+    }
+
+    /**
+     * Summarize text into a concise string.
+     */
+    public function summarize(string $text, int $maxWords = 150): string
+    {
+        return $this->generateText(
+            "Summarize the following text in no more than {$maxWords} words:\n\n{$text}",
+            'You are a professional summarizer. Provide clear, concise summaries.'
+        );
+    }
+
+    /**
+     * Get token usage statistics for the current user.
+     */
+    public function getUsageStats(): array
+    {
+        if ($this->user) {
+            $stats = \App\Models\AIConversation::where('user_id', $this->user->id)
+                ->selectRaw('SUM(tokens_used) as total_tokens, SUM(cost) as total_cost, COUNT(*) as total_requests')
+                ->first();
+
+            return [
+                'total_tokens'   => (int) ($stats->total_tokens ?? 0),
+                'total_cost'     => (float) ($stats->total_cost ?? 0.0),
+                'total_requests' => (int) ($stats->total_requests ?? 0),
+            ];
+        }
+
+        return ['total_tokens' => 0, 'total_cost' => 0.0, 'total_requests' => 0];
     }
 }

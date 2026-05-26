@@ -17,9 +17,13 @@ class Interview extends Model
         'meeting_link',
         'notes',
         'status',
+        'round',
+        'question_set',
         'feedback',
         'rating',
         'interviewer_notes',
+        'ai_recommendation',
+        'ai_score_summary',
         'started_at',
         'completed_at',
         'canceled_at',
@@ -32,6 +36,8 @@ class Interview extends Model
         'completed_at' => 'datetime',
         'canceled_at' => 'datetime',
         'feedback' => 'array',
+        'question_set' => 'array',
+        'ai_score_summary' => 'array',
     ];
 
     /**
@@ -44,9 +50,14 @@ class Interview extends Model
 
     public function interviewers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'interview_interviewer')
-            ->withPivot('is_lead', 'availability')
+        return $this->belongsToMany(User::class, 'interview_panelists')
+            ->withPivot('is_lead', 'status')
             ->withTimestamps();
+    }
+
+    public function panelScores(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Models\InterviewPanelScore::class);
     }
 
     /**

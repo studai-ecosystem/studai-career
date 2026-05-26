@@ -5,7 +5,7 @@ return [
     'documentations' => [
         'default' => [
             'api' => [
-                'title' => 'StudAI Career API',
+                'title' => 'StudAI Hire API',
             ],
 
             'routes' => [

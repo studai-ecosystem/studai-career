@@ -11,14 +11,14 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="StudAI Career - AI-powered career platform helping job seekers and employers connect meaningfully. Join 210K+ professionals building their future.">
+    <meta name="description" content="StudAI Hire - AI-powered career platform helping job seekers and employers connect meaningfully. Join 210K+ professionals building their future.">
     <meta name="keywords" content="career platform, job search, AI recruitment, hiring, jobs, resume builder">
-    <meta property="og:title" content="StudAI Career - Build Your Future with AI-Powered Career Intelligence">
+    <meta property="og:title" content="StudAI Hire - Build Your Future with AI-Powered Career Intelligence">
     <meta property="og:description" content="Transform your career journey with intelligent job matching, AI-powered resume optimization, and personalized career guidance.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="/images/og-image.jpg">
     
-    <title>StudAI Career - AI-Powered Career Platform | Job Search Made Intelligent</title>
+    <title>StudAI Hire - AI-Powered Career Platform | Job Search Made Intelligent</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -234,7 +234,7 @@
 
         <!-- Footer -->
         <div class="mt-16 text-center text-sm text-gray-500 fade-in" style="animation-delay: 0.9s;">
-            <p class="mb-2">© 2024 StudAI Career Private Limited. All rights reserved.</p>
+            <p class="mb-2">© 2024 StudAI Hire Private Limited. All rights reserved.</p>
             <div class="flex items-center justify-center gap-4">
                 <a href="/public/privacy" class="hover:text-gray-300 transition-colors">Privacy Policy</a>
                 <span>•</span>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Rewards Store')
 
@@ -17,7 +17,7 @@
                     <div class="text-2xl font-bold text-indigo-600">{{ number_format($profile->available_points) }}</div>
                 </div>
                 <a href="{{ route('gamification.dashboard') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">
-                    ← Dashboard
+                    â† Dashboard
                 </a>
             </div>
         </div>
@@ -40,7 +40,7 @@
         @php $featuredRewards = collect($rewards)->filter(fn($r) => $r['reward']->is_featured)->take(3); @endphp
         @if($featuredRewards->count() > 0)
         <div class="mb-12">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">🔥 Featured Rewards</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">�¥ Featured Rewards</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 @foreach($featuredRewards as $item)
                 @php $reward = $item['reward']; @endphp
@@ -49,7 +49,7 @@
                     <img src="{{ $reward->image }}" alt="{{ $reward->name }}" class="w-full h-40 object-cover rounded-xl mb-4">
                     @else
                     <div class="w-full h-40 bg-white/10 rounded-xl flex items-center justify-center text-6xl mb-4">
-                        🎁
+                        
                     </div>
                     @endif
                     
@@ -91,12 +91,12 @@
                 @else
                 <div class="w-full h-32 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-5xl">
                     @switch($reward->category)
-                        @case('premium_feature') ⭐ @break
-                        @case('badge') 🏅 @break
-                        @case('boost') 🚀 @break
-                        @case('physical') 📦 @break
-                        @case('partner') 🤝 @break
-                        @default 🎁
+                        @case('premium_feature') â­ @break
+                        @case('badge') … @break
+                        @case('boost') € @break
+                        @case('physical') �¦ @break
+                        @case('partner')  @break
+                        @default 
                     @endswitch
                 </div>
                 @endif
@@ -159,7 +159,7 @@
             </div>
             @empty
             <div class="col-span-full text-center py-12">
-                <div class="text-6xl mb-4">🎁</div>
+                <div class="text-6xl mb-4"></div>
                 <h3 class="text-xl font-bold text-gray-900 mb-2">No rewards available</h3>
                 <p class="text-gray-500">Check back later for new rewards!</p>
             </div>
@@ -172,14 +172,14 @@
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-bold text-gray-900">Your Active Rewards</h2>
                 <a href="{{ route('gamification.my-rewards') }}" class="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
-                    View All →
+                    View All â†’
                 </a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 @foreach($userRewards->take(3) as $userReward)
                 <div class="bg-white rounded-xl shadow-sm p-4 flex items-center gap-4">
                     <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl">
-                        ✓
+                        �
                     </div>
                     <div class="flex-1">
                         <h4 class="font-semibold text-gray-900">{{ $userReward->reward->name }}</h4>
@@ -203,7 +203,7 @@
 <div id="redeemModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
         <div class="text-center mb-4">
-            <div class="text-5xl mb-2">🎁</div>
+            <div class="text-5xl mb-2"></div>
             <h3 class="text-xl font-bold text-gray-900">Redeem Reward</h3>
         </div>
         <p class="text-gray-600 text-center mb-4">

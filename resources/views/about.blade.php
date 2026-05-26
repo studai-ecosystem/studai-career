@@ -24,12 +24,12 @@
                 <div class="mt-8 lg:mt-0">
                     <div class="text-base max-w-prose mx-auto lg:max-w-none">
                         <p class="text-lg text-gray-500">
-                            At StudAI Career, we believe that everyone deserves a fulfilling career. We're on a mission to democratize access to career guidance and opportunities using the power of Artificial Intelligence.
+                            At StudAI Hire, we believe that everyone deserves a fulfilling career. We're on a mission to democratize access to career guidance and opportunities using the power of Artificial Intelligence.
                         </p>
                     </div>
                     <div class="mt-5 prose prose-pink text-gray-500 mx-auto lg:max-w-none lg:row-start-1 lg:col-start-1">
                         <p>
-                            The job market is evolving rapidly, and traditional methods of job searching and career planning are no longer sufficient. We built StudAI Career to bridge the gap between talent and opportunity.
+                            The job market is evolving rapidly, and traditional methods of job searching and career planning are no longer sufficient. We built StudAI Hire to bridge the gap between talent and opportunity.
                         </p>
                         <p>
                             Our team consists of career coaches, data scientists, and software engineers who are passionate about helping people succeed. We leverage cutting-edge AI technology to provide personalized insights, actionable advice, and real-time market data.

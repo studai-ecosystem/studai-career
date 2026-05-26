@@ -101,6 +101,14 @@
     <div class="min-h-screen p-6">
         <!-- Header -->
         <div class="max-w-7xl mx-auto mb-8">
+        <!-- Back Button -->
+        <div class="mb-4">
+            <a href="{{ route('employer.scout.dashboard') }}"
+                class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg px-4 py-2 shadow-sm hover:shadow transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Back to Dashboard
+            </a>
+        </div>
             <div class="glass-panel rounded-xl p-6">
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">
                     <i data-lucide="brain" class="inline-block w-8 h-8 mr-2 text-purple-600"></i>
@@ -111,6 +119,14 @@
         </div>
 
         <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Back Button -->
+        <div class="mb-4">
+            <a href="{{ route('employer.scout.dashboard') }}"
+                class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg px-4 py-2 shadow-sm hover:shadow transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Back to Dashboard
+            </a>
+        </div>
             <!-- Main Assessment Area (Left 2 columns) -->
             <div class="lg:col-span-2 space-y-6">
                 

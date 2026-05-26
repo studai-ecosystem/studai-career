@@ -73,7 +73,7 @@ class AIPrompt extends Model
         'variables' => 'array',
         'metadata' => 'array',
         'version' => 'integer',
-        'max_tokens' => 'integer',
+        'max_completion_tokens' => 'integer',
         'temperature' => 'float',
         'usage_count' => 'integer',
         'avg_latency_ms' => 'float',

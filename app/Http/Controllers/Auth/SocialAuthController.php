@@ -81,8 +81,8 @@ class SocialAuthController extends Controller
 
             // Determine redirect destination
             if ($isNewUser) {
-                return redirect()->route('onboarding')
-                    ->with('success', 'Welcome to StudAI Career! Let\'s set up your profile.');
+                return redirect()->route('profile.edit')
+                    ->with('success', 'Welcome to StudAI Hire! Please complete your profile to get started.');
             }
 
             return redirect()->intended(route('dashboard'))

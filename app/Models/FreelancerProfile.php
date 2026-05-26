@@ -57,6 +57,19 @@ class FreelancerProfile extends Model
         'verified_at' => 'datetime',
     ];
 
+    // Accessors
+    public function getSkillsAttribute(mixed $value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+        if (is_string($value) && $value !== '') {
+            $decoded = json_decode($value, true);
+            return is_array($decoded) ? $decoded : [];
+        }
+        return [];
+    }
+
     // Relationships
     public function user(): BelongsTo
     {

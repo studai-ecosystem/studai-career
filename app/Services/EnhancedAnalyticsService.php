@@ -86,7 +86,7 @@ class EnhancedAnalyticsService
             ->select(
                 'location',
                 DB::raw('COUNT(*) as job_count'),
-                DB::raw('AVG(min_salary) as avg_salary'),
+                DB::raw('AVG(salary_min) as avg_salary'),
                 DB::raw('COUNT(DISTINCT company_id) as company_count')
             )
             ->groupBy('location');
@@ -232,7 +232,7 @@ class EnhancedAnalyticsService
         $query = Job::query()
             ->where('status', 'published')
             ->where('title', 'like', "%{$jobTitle}%")
-            ->whereNotNull('min_salary');
+            ->whereNotNull('salary_min');
         
         if ($location) {
             $query->where('location', 'like', "%{$location}%");
@@ -242,7 +242,7 @@ class EnhancedAnalyticsService
             $query->where('experience_level', $experienceLevel);
         }
         
-        $salaries = $query->pluck('min_salary')->sort()->values();
+        $salaries = $query->pluck('salary_min')->sort()->values();
         
         if ($salaries->isEmpty()) {
             return [
@@ -934,8 +934,8 @@ class EnhancedAnalyticsService
                 $avgSalary = Job::whereMonth('created_at', $date->month)
                     ->whereYear('created_at', $date->year)
                     ->when($industry, fn($q) => $q->whereHas('company', fn($c) => $c->where('industry', $industry)))
-                    ->whereNotNull('min_salary')
-                    ->avg('min_salary');
+                    ->whereNotNull('salary_min')
+                    ->avg('salary_min');
                 
                 $salaries[] = round($avgSalary ?? 0, 0);
             }

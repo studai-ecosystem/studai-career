@@ -24,20 +24,30 @@ class CreateResumeAction
             // Generate AI summary if not provided
             if (empty($data['professional_summary'])) {
                 $targetJob = isset($data['target_job_id']) ? Job::find($data['target_job_id']) : null;
-                $summary = $this->aiService->generateProfessionalSummary($resume, $targetJob);
-                
-                $resume->update([
-                    'professional_summary' => $summary,
-                    'summary_is_ai_generated' => true,
-                ]);
+                try {
+                    $summary = $this->aiService->generateProfessionalSummary($resume, $targetJob);
+                    $resume->update([
+                        'professional_summary' => $summary,
+                        'summary_is_ai_generated' => true,
+                    ]);
+                } catch (\Exception $e) {
+                    // Non-fatal: resume created without AI summary, user can generate later
+                    \Illuminate\Support\Facades\Log::warning('Resume AI summary skipped', ['error' => $e->getMessage()]);
+                }
             }
 
-            // Track creation
-            $resume->analytics()->create([
-                'event_type' => 'created',
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-            ]);
+            // Track creation (non-fatal — analytics table has no updated_at)
+            try {
+                \Illuminate\Support\Facades\DB::table('resume_analytics')->insert([
+                    'resume_id'  => $resume->id,
+                    'event_type' => 'created',
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'created_at' => now(),
+                ]);
+            } catch (\Exception $e) {
+                // Analytics failure must never prevent resume creation
+            }
 
             return $resume;
         });

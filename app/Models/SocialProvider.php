@@ -122,7 +122,7 @@ class SocialProvider extends Model
             return $this->redirect_url;
         }
 
-        return url("/auth/social/{$this->slug}/callback");
+        return route('social.callback', ['provider' => $this->slug]);
     }
 
     /**

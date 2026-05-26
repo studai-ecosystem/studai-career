@@ -57,7 +57,7 @@ class CultureAnalysis extends Model
     // Relationships
     public function companyDnaProfile(): BelongsTo
     {
-        return $this->belongsTo(CompanyDNAProfile::class);
+        return $this->belongsTo(CompanyDNAProfile::class, 'company_dna_profile_id');
     }
 
     // Scopes

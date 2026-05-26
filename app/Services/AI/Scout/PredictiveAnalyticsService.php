@@ -699,12 +699,12 @@ class PredictiveAnalyticsService
                 "Team Compatibility: " . round(($factors['team_compatibility'] ?? 0) * 100, 1) . "%";
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5-mini',
+                'model' => config('ai.azure.models.chat_mini'),
                 'messages' => [
                     ['role' => 'system', 'content' => $prompt],
                     ['role' => 'user', 'content' => $message],
                 ],
-                'max_tokens' => 350,
+                'max_completion_tokens' => 350,
                 'temperature' => 0.4,
             ]);
 
@@ -920,12 +920,12 @@ class PredictiveAnalyticsService
                 "Growth Opportunities Score: " . round($growth * 100, 0) . "%";
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5-mini',
+                'model' => config('ai.azure.models.chat_mini'),
                 'messages' => [
                     ['role' => 'system', 'content' => $prompt],
                     ['role' => 'user', 'content' => $message],
                 ],
-                'max_tokens' => 280,
+                'max_completion_tokens' => 280,
                 'temperature' => 0.4,
             ]);
 
@@ -1063,7 +1063,7 @@ class PredictiveAnalyticsService
         return 'Tenure outlook is healthy; maintain standard engagement cadence and refresh milestones quarterly.';
     }
 
-    private function buildTenureProbabilityCurve(int $expected, array $range): array
+    private function buildTenureProbabilityCurve(int|float $expected, array $range): array
     {
         $min = max(6, $range['min']);
         $max = min(144, $range['max']);

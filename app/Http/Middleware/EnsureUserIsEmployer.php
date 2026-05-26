@@ -17,18 +17,25 @@ class EnsureUserIsEmployer
     {
         // Check if user is authenticated
         if (!auth()->check()) {
-            return redirect()->route('login')->with('error', 'Please login to continue.');
+            return redirect()->route('login')->with('error', 'Please log in to continue.');
         }
 
-        // Check if user is an employer
-        if (!auth()->user()->isEmployer()) {
-            abort(403, 'Access denied. Employer account required.');
-        }
+        $user = auth()->user();
 
-        // Ensure employer has a company
-        if (!auth()->user()->company) {
+        // Non-employer trying to access employer routes — redirect gracefully
+        if (!$user->isEmployer()) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Employer account required.'], 403);
+            }
+
             return redirect()->route('dashboard')
-                ->with('error', 'Please set up your company profile first.');
+                ->with('error', 'This area is for employer accounts only. Please log in with a company account.');
+        }
+
+        // Employer has no company yet — send them to onboarding (not a hard 403)
+        if (!$user->company && !$request->routeIs('employer.onboarding') && !$request->routeIs('employer.onboarding.save')) {
+            return redirect()->route('employer.onboarding')
+                ->with('info', 'Please complete your company setup first.');
         }
 
         return $next($request);

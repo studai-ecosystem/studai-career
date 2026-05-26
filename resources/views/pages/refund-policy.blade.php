@@ -1,12 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'Refund Policy - StudAI Career | Money-Back Guarantee & Cancellation Terms')
+@section('title', 'Refund Policy - StudAI Hire | Money-Back Guarantee & Cancellation Terms')
 
 @section('meta')
-<meta name="description" content="StudAI Career refund policy covering subscription cancellations, money-back guarantee, and payment terms for Indian users using Razorpay and PayU.">
+<meta name="description" content="StudAI Hire refund policy covering subscription cancellations, money-back guarantee, and payment terms for Indian users using Razorpay and PayU.">
 <meta name="keywords" content="refund policy, money back guarantee, cancellation, subscription refund, payment terms">
-<meta property="og:title" content="Refund Policy - StudAI Career">
-<meta property="og:description" content="Clear and transparent refund policy with money-back guarantee for StudAI Career services.">
+<meta property="og:title" content="Refund Policy - StudAI Hire">
+<meta property="og:description" content="Clear and transparent refund policy with money-back guarantee for StudAI Hire services.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ route('refund-policy') }}">
 <link rel="canonical" href="{{ route('refund-policy') }}">
@@ -77,7 +77,7 @@
             <!-- Introduction -->
             <div class="bg-slate-900/50 backdrop-blur-sm rounded-3xl border border-slate-800 p-8 mb-12">
                 <p class="text-lg text-gray-200 leading-relaxed mb-6">
-                    At StudAI Career, we're confident in the value of our services. This Refund Policy outlines the terms and conditions for refunds and cancellations for our subscription plans and services.
+                    At StudAI Hire, we're confident in the value of our services. This Refund Policy outlines the terms and conditions for refunds and cancellations for our subscription plans and services.
                 </p>
                 <p class="text-gray-300 leading-relaxed">
                     This policy applies to all payments made through our platform using Razorpay, PayU, or other approved payment gateways. For questions about refunds, contact our support team at refunds@studai.careers.
@@ -137,7 +137,7 @@
                     <div class="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 p-6">
                         <h4 class="font-semibold text-white mb-3">Self-Service Cancellation</h4>
                         <ol class="list-decimal list-inside text-gray-300 text-sm space-y-1">
-                            <li>Log into your StudAI Career account</li>
+                            <li>Log into your StudAI Hire account</li>
                             <li>Navigate to Account Settings → Billing</li>
                             <li>Click "Cancel Subscription"</li>
                             <li>Follow the confirmation prompts</li>
@@ -368,7 +368,7 @@
                     
                     <div class="mt-8 pt-6 border-t border-green-500/20">
                         <p class="text-sm text-gray-400">
-                            <strong>Business Details:</strong> StudAI Career Private Limited | CIN: L72900KA2024PTC180234<br>
+                            <strong>Business Details:</strong> StudAI Hire Private Limited | CIN: L72900KA2024PTC180234<br>
                             <strong>Address:</strong> WeWork Prestige Atlanta, 80 Feet Road, Koramangala 4th Block, Bengaluru 560034<br>
                             <strong>GST:</strong> 29AABCS1234C1Z5
                         </p>
@@ -394,24 +394,24 @@
 {!! json_encode([
     '@context' => 'https://schema.org',
     '@type' => 'WebPage',
-    'name' => 'Refund Policy - StudAI Career',
-    'description' => 'StudAI Career refund policy covering subscription cancellations, money-back guarantee, and payment terms',
+    'name' => 'Refund Policy - StudAI Hire',
+    'description' => 'StudAI Hire refund policy covering subscription cancellations, money-back guarantee, and payment terms',
     'url' => route('refund-policy'),
     'lastReviewed' => '2024-12-01',
     'publisher' => [
         '@type' => 'Organization',
-        'name' => 'StudAI Career',
+        'name' => 'StudAI Hire',
         'url' => url('/'),
         'sameAs' => [
-            'https://www.linkedin.com/company/studai-career'
+            'https://www.linkedin.com/company/studai-hire'
         ]
     ],
     'mainEntity' => [
         '@type' => 'Service',
-        'name' => 'StudAI Career Platform',
+        'name' => 'StudAI Hire Platform',
         'provider' => [
             '@type' => 'Organization',
-            'name' => 'StudAI Career Private Limited'
+            'name' => 'StudAI Hire Private Limited'
         ],
         'termsOfService' => route('terms'),
         'hasPOS' => [

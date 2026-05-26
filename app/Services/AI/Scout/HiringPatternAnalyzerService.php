@@ -13,7 +13,7 @@ use OpenAI\Laravel\Facades\OpenAI;
 class HiringPatternAnalyzerService
 {
     private const CACHE_TTL = 43200; // 12 hours
-    private const MODEL = 'gpt-5.1'; // Azure OpenAI GPT-5.1
+    private const MODEL = 'gpt-5.4'; // Azure OpenAI deployment // Azure OpenAI GPT-5.1
     private const MIN_HIRES_FOR_ANALYSIS = 5;
 
     public function analyzeHiringPatterns(int $companyId, ?int $jobId = null): array
@@ -127,7 +127,7 @@ PROMPT;
                 ['role' => 'user', 'content' => $prompt],
             ],
             'temperature' => 0.3,
-            'max_tokens' => 1200,
+            'max_completion_tokens' => 1200,
         ]);
 
         return json_decode($response->choices[0]->message->content, true) ?? [];
@@ -179,7 +179,7 @@ PROMPT;
                 ['role' => 'user', 'content' => $prompt],
             ],
             'temperature' => 0.3,
-            'max_tokens' => 1000,
+            'max_completion_tokens' => 1000,
         ]);
 
         return json_decode($response->choices[0]->message->content, true) ?? ['characteristics' => [], 'top_traits' => []];
@@ -236,7 +236,7 @@ PROMPT;
                 ['role' => 'user', 'content' => $prompt],
             ],
             'temperature' => 0.3,
-            'max_tokens' => 1000,
+            'max_completion_tokens' => 1000,
         ]);
 
         return json_decode($response->choices[0]->message->content, true) ?? ['patterns' => [], 'departure_indicators' => []];
@@ -299,7 +299,7 @@ PROMPT;
                 ['role' => 'user', 'content' => $prompt],
             ],
             'temperature' => 0.4,
-            'max_tokens' => 800,
+            'max_completion_tokens' => 800,
         ]);
 
         return $response->choices[0]->message->content ?? 'No recommendations generated.';

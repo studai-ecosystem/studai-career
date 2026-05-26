@@ -183,9 +183,9 @@ class BehavioralIntelligenceService
 
                 // Use AI to analyze and extract cultural values
                 $response = OpenAI::chat()->create([
-                    'model' => 'gpt-5',
+                    'model' => config('ai.azure.models.chat'),
                     'temperature' => 0.4,
-                    'max_tokens' => 2000,
+                    'max_completion_tokens' => 2000,
                     'messages' => [
                         [
                             'role' => 'system',
@@ -291,9 +291,9 @@ class BehavioralIntelligenceService
             $scenarioCategories = $this->determineScenarioCategories($focusAreas, $count);
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'temperature' => 0.8, // Higher for variety
-                'max_tokens' => 4000,
+                'max_completion_tokens' => 4000,
                 'messages' => [
                     [
                         'role' => 'system',
@@ -349,7 +349,7 @@ class BehavioralIntelligenceService
                     'evaluates_dimensions' => $scenario['evaluates_dimensions'] ?? [],
                     'metadata' => [
                         'generated_at' => now()->toIso8601String(),
-                        'ai_model' => 'gpt-5'
+                        'ai_model' => config('ai.azure.models.chat')
                     ]
                 ];
             }, $scenarios, array_keys($scenarios));
@@ -458,7 +458,7 @@ class BehavioralIntelligenceService
                 'ai_feedback' => $evaluation['feedback'],
                 'metadata' => [
                     'evaluated_at' => now()->toIso8601String(),
-                    'evaluation_model' => 'gpt-5'
+                    'evaluation_model' => config('ai.azure.models.chat')
                 ]
             ]);
 
@@ -531,9 +531,9 @@ class BehavioralIntelligenceService
             $selectedApproachData = $validApproaches[$selectedApproach] ?? null;
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'temperature' => 0.3,
-                'max_tokens' => 1500,
+                'max_completion_tokens' => 1500,
                 'messages' => [
                     [
                         'role' => 'system',
@@ -1286,9 +1286,9 @@ class BehavioralIntelligenceService
             $companyCulture = $assessment->company_culture_context;
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'temperature' => 0.5,
-                'max_tokens' => 2000,
+                'max_completion_tokens' => 2000,
                 'messages' => [
                     [
                         'role' => 'system',

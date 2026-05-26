@@ -1,8 +1,17 @@
-@extends('layouts.employer')
+@extends('layouts.dashboard')
 
 @section('title', 'Employee Referrals')
 
 @section('content')
+
+        <!-- Back Button -->
+        <div class="mb-4">
+            <a href="{{ route('employer.home') }}"
+                class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg px-4 py-2 shadow-sm hover:shadow transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Back to Dashboard
+            </a>
+        </div>
 <div class="py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
@@ -354,7 +363,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Position *</label>
                         <select name="job_id" required class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <option value="">Select a position</option>
-                            @foreach(\App\Models\Job::where('company_id', auth('employer')->user()->company_id)->where('status', 'published')->get() as $job)
+                            @foreach(\App\Models\Job::where('company_id', auth()->user()->company_id)->where('status', 'published')->get() as $job)
                             <option value="{{ $job->id }}">{{ $job->title }}</option>
                             @endforeach
                         </select>

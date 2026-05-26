@@ -125,7 +125,7 @@ class Certificate extends Model
     {
         $params = http_build_query([
             'name' => $this->assessment->title . ' Certificate',
-            'organizationName' => 'StudAI Career Platform',
+            'organizationName' => 'StudAI Hire Platform',
             'issueYear' => $this->issued_at->year,
             'issueMonth' => $this->issued_at->month,
             'certUrl' => route('certificates.verify', $this->verification_code),

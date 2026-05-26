@@ -9,15 +9,40 @@
         entries: @entangle($wireModel).live,
         collapsed: {},
         loading: {},
+        months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+        yearOptions: [],
         
         init() {
             if (!this.entries || this.entries.length === 0) {
                 this.entries = [this.createEntry()];
             }
-            // Initialize all entries as expanded
             this.entries.forEach((_, index) => {
                 this.collapsed[index] = false;
             });
+            // Build year list: 5 years ahead → 1960
+            const cy = new Date().getFullYear();
+            for (let y = cy + 5; y >= 1960; y--) this.yearOptions.push(y);
+        },
+
+        getMonth(date) {
+            if (!date) return '';
+            const p = date.split('-');
+            return p[1] ? parseInt(p[1]) : '';
+        },
+
+        getYear(date) {
+            if (!date) return '';
+            return date.split('-')[0] || '';
+        },
+
+        setDate(index, field, part, val) {
+            const cur = this.entries[index][field] || '';
+            const p = cur.split('-');
+            let yr = p[0] || '';
+            let mo = p[1] || '';
+            if (part === 'year')  yr = val;
+            if (part === 'month') mo = String(val).padStart(2, '0');
+            this.entries[index][field] = (yr && mo) ? yr + '-' + mo : (yr || '');
         },
         
         createEntry() {
@@ -83,11 +108,11 @@
                 
                 const data = await response.json();
                 
-                if (data.success && data.description) {
+                if (data.description) {
                     this.entries[index].description = data.description;
-                    this.showNotification('Description generated successfully!', 'success');
+                    this.showNotification('Description generated!', 'success');
                 } else {
-                    this.showNotification(data.message || 'Failed to generate description.', 'error');
+                    this.showNotification(data.error || data.message || 'Failed to generate description.', 'error');
                 }
             } catch (error) {
                 console.error('Error generating description:', error);
@@ -124,14 +149,13 @@
                 
                 const data = await response.json();
                 
-                if (data.success && data.achievements) {
-                    // Merge new achievements with existing ones
+                if (data.achievements && Array.isArray(data.achievements)) {
                     const existingAchievements = entry.achievements || [];
                     const newAchievements = [...existingAchievements, ...data.achievements];
-                    this.entries[index].achievements = newAchievements.slice(0, 8); // Max 8 achievements
-                    this.showNotification('Achievements suggested successfully!', 'success');
+                    this.entries[index].achievements = newAchievements.slice(0, 8);
+                    this.showNotification('Achievements suggested!', 'success');
                 } else {
-                    this.showNotification(data.message || 'Failed to suggest achievements.', 'error');
+                    this.showNotification(data.error || data.message || 'Failed to suggest achievements.', 'error');
                 }
             } catch (error) {
                 console.error('Error suggesting achievements:', error);
@@ -266,29 +290,54 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {{-- Start Date --}}
                     <div>
-                        <label :for="'start_date-' + index" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Start Date <span class="text-red-500">*</span>
                         </label>
-                        <input
-                            type="month"
-                            :id="'start_date-' + index"
-                            x-model="entry.start_date"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white text-sm"
-                        >
+                        <div class="flex gap-2">
+                            <select
+                                @change="setDate(index, 'start_date', 'month', $event.target.value)"
+                                class="flex-1 px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white text-sm">
+                                <option value="">Month</option>
+                                <template x-for="(m, mi) in months" :key="mi">
+                                    <option :value="String(mi+1).padStart(2,'0')" :selected="getMonth(entry.start_date) == mi+1" x-text="m"></option>
+                                </template>
+                            </select>
+                            <select
+                                @change="setDate(index, 'start_date', 'year', $event.target.value)"
+                                class="w-24 px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white text-sm">
+                                <option value="">Year</option>
+                                <template x-for="y in yearOptions" :key="y">
+                                    <option :value="y" :selected="getYear(entry.start_date) == y" x-text="y"></option>
+                                </template>
+                            </select>
+                        </div>
                     </div>
-                    
+
                     {{-- End Date --}}
                     <div>
-                        <label :for="'end_date-' + index" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             End Date
                         </label>
-                        <input
-                            type="month"
-                            :id="'end_date-' + index"
-                            x-model="entry.end_date"
-                            :disabled="entry.current"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
+                        <div class="flex gap-2" :class="{ 'opacity-40 pointer-events-none': entry.current }">
+                            <select
+                                @change="setDate(index, 'end_date', 'month', $event.target.value)"
+                                :disabled="entry.current"
+                                class="flex-1 px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white text-sm disabled:cursor-not-allowed">
+                                <option value="">Month</option>
+                                <template x-for="(m, mi) in months" :key="mi">
+                                    <option :value="String(mi+1).padStart(2,'0')" :selected="getMonth(entry.end_date) == mi+1" x-text="m"></option>
+                                </template>
+                            </select>
+                            <select
+                                @change="setDate(index, 'end_date', 'year', $event.target.value)"
+                                :disabled="entry.current"
+                                class="w-24 px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white text-sm disabled:cursor-not-allowed">
+                                <option value="">Year</option>
+                                <template x-for="y in yearOptions" :key="y">
+                                    <option :value="y" :selected="getYear(entry.end_date) == y" x-text="y"></option>
+                                </template>
+                            </select>
+                        </div>
                     </div>
                     
                     {{-- Current Position --}}

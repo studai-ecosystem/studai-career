@@ -23,6 +23,7 @@ class Job extends Model
         'description',
         'location',
         'location_type',
+        'work_mode',
         'employment_type',
         'experience_level',
         'salary_min',
@@ -49,6 +50,20 @@ class Job extends Model
         'saves_count',
         'search_keywords',
         'ai_embeddings',
+        // Orin™ fields
+        'application_link_token',
+        'open_date',
+        'close_date',
+        'eval_start_date',
+        'final_date',
+        'target_hire_count',
+        'orin_generated_jd',
+        'orin_application_form_fields',
+        'application_phase',
+        'requires_portfolio',
+        'requires_github',
+        'requires_work_sample',
+        'mandatory_screening_questions',
     ];
 
     protected $casts = [
@@ -63,6 +78,18 @@ class Job extends Model
         'filled_at' => 'datetime',
         'salary_min' => 'decimal:2',
         'salary_max' => 'decimal:2',
+        // Orin™ fields
+        'open_date'                     => 'date',
+        'close_date'                    => 'date',
+        'eval_start_date'               => 'date',
+        'final_date'                    => 'date',
+        'target_hire_count'             => 'integer',
+        'orin_generated_jd'             => 'array',
+        'orin_application_form_fields'  => 'array',
+        'mandatory_screening_questions' => 'array',
+        'requires_portfolio'            => 'boolean',
+        'requires_github'               => 'boolean',
+        'requires_work_sample'          => 'boolean',
     ];
 
     /**
@@ -81,6 +108,11 @@ class Job extends Model
     public function applications(): HasMany
     {
         return $this->hasMany(Application::class);
+    }
+
+    public function hiringRounds(): HasMany
+    {
+        return $this->hasMany(HiringRound::class)->orderBy('round_order');
     }
 
     public function savedBy()
@@ -125,7 +157,9 @@ class Job extends Model
 
     public function scopeRemote($query)
     {
-        return $query->where('location_type', 'remote');
+        return $query->where(function ($q) {
+            $q->where('work_mode', 'remote')->orWhere('location_type', 'remote');
+        });
     }
 
     public function scopeByExperienceLevel($query, $level)
@@ -153,6 +187,18 @@ class Job extends Model
     /**
      * Accessors & Mutators
      */
+    public function getCompanyNameAttribute(): string
+    {
+        // Try to get from company relationship first, then fall back to raw attribute
+        return $this->company?->name ?? ($this->attributes['company_name'] ?? '');
+    }
+
+    public function getLocationTypeAttribute(): string
+    {
+        // The DB column is 'work_mode', fall back gracefully
+        return $this->attributes['location_type'] ?? $this->attributes['work_mode'] ?? '';
+    }
+
     public function getSalaryRangeAttribute(): ?string
     {
         if (!$this->salary_min && !$this->salary_max) {

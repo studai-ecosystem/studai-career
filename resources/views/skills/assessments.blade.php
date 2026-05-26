@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Skill Assessments')
 
@@ -79,7 +79,7 @@
         {{-- Active Assessments (In Progress) --}}
         @if($activeAssessments->count() > 0)
         <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">🔥 In Progress</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">�¥ In Progress</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($activeAssessments as $assessment)
                 <div class="bg-gradient-to-br from-orange-500 to-red-600 rounded-xl shadow-lg overflow-hidden text-white">
@@ -88,7 +88,7 @@
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white bg-opacity-20">
                                 {{ ucfirst($assessment->assessment_type) }}
                             </span>
-                            <span class="text-sm font-medium">⏱️ {{ $assessment->timeElapsed }}</span>
+                            <span class="text-sm font-medium">â±ï¸ {{ $assessment->timeElapsed }}</span>
                         </div>
                         
                         <h3 class="text-xl font-bold mb-2">{{ $assessment->skill_name }}</h3>
@@ -117,7 +117,7 @@
         {{-- Available Skills to Assess --}}
         <div class="mb-8">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-2xl font-bold text-gray-900">📝 Create New Assessment</h2>
+                <h2 class="text-2xl font-bold text-gray-900">� Create New Assessment</h2>
                 <div class="flex items-center space-x-2">
                     <label for="difficultyFilter" class="text-sm font-medium text-gray-700">Difficulty:</label>
                     <select id="difficultyFilter" onchange="filterSkills()" class="rounded-lg border-gray-300 text-sm">
@@ -160,7 +160,7 @@
         {{-- Graded Assessments --}}
         @if($gradedAssessments->count() > 0)
         <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">📊 Test Results</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">�Š Test Results</h2>
             
             {{-- Grade Distribution Chart --}}
             <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
@@ -242,7 +242,7 @@
                                     <div class="flex items-center space-x-2">
                                         @if($assessment->certificate_hash)
                                         <a href="{{ route('skills.certificate.public', $assessment->certificate_hash) }}" target="_blank" class="text-yellow-600 hover:text-yellow-700 font-medium">
-                                            📜 Certificate
+                                            �œ Certificate
                                         </a>
                                         @endif
                                         <button onclick="showResults({{ $assessment->id }})" class="text-blue-600 hover:text-blue-700 font-medium">

@@ -1,5 +1,4 @@
 @props([
-    'wireModel' => null,
     'maxSkills' => 20,
     'showProficiency' => true,
     'showYears' => true,
@@ -50,7 +49,7 @@ $categoryLabels = [
 
 <div
     x-data="{
-        skills: @entangle($wireModel) ?? [],
+        skills: @entangle($attributes->wire('model')),
         searchQuery: '',
         showDropdown: false,
         activeCategory: 'all',

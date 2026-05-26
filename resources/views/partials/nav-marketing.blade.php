@@ -1,15 +1,11 @@
-{{-- StudAI Path Marketing Navigation --}}
+{{-- StudAI Hire Marketing Navigation --}}
 <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             {{-- Logo --}}
-            <a href="/" class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#1A73E8] to-purple-500 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                </div>
-                <span class="text-xl font-semibold text-gray-900">StudAI<span class="text-[#1A73E8]">Path</span></span>
+            <a href="/" class="flex items-center gap-2 group">
+                <img src="/assets/logo/icon.png" alt="StudAI Hire" style="width:36px;height:36px;object-fit:contain;flex-shrink:0" class="transition-transform duration-200 group-hover:scale-110">
+                <span class="text-xl font-semibold text-gray-900">StudAI<span class="text-[#1A73E8]">One</span></span>
             </a>
 
             {{-- Desktop Navigation --}}

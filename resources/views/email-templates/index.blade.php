@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Email Template Library')
 
@@ -8,12 +8,12 @@
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">📧 Email Template Library</h1>
+                <h1 class="text-3xl font-bold text-gray-900">�§ Email Template Library</h1>
                 <p class="text-gray-600">Professional templates for every hiring stage</p>
             </div>
             <div class="mt-4 md:mt-0 flex gap-3">
                 <a href="{{ route('email-templates.user-analytics') }}" class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition">
-                    📊 My Analytics
+                    �Š My Analytics
                 </a>
                 <a href="{{ route('email-templates.create') }}" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
                     + Create Template
@@ -74,7 +74,7 @@
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-orange-100 category-section" data-category="{{ $category->id }}">
                 <div class="bg-gradient-to-r from-orange-500 to-amber-500 px-6 py-4">
                     <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                        <span>{{ $category->icon ?? '📁' }}</span>
+                        <span>{{ $category->icon ?? '�' }}</span>
                         {{ $category->name }}
                         <span class="bg-white/20 px-2 py-1 rounded-full text-sm">{{ $category->templates->count() }}</span>
                     </h2>
@@ -119,7 +119,7 @@
         <div class="mt-8 bg-white rounded-2xl shadow-lg overflow-hidden border border-orange-100">
             <div class="bg-gradient-to-r from-slate-700 to-slate-800 px-6 py-4">
                 <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                    <span>👤</span>
+                    <span>�¤</span>
                     My Templates
                     <span class="bg-white/20 px-2 py-1 rounded-full text-sm">{{ $userTemplates->count() }}</span>
                 </h2>
@@ -135,9 +135,9 @@
                             <h3 class="font-semibold text-gray-900">{{ $template->name }}</h3>
                             <div class="flex gap-1">
                                 <button onclick="event.stopPropagation(); editTemplate({{ $template->id }})" 
-                                        class="p-1 hover:bg-gray-100 rounded">✏️</button>
+                                        class="p-1 hover:bg-gray-100 rounded">ï¸</button>
                                 <button onclick="event.stopPropagation(); deleteTemplate({{ $template->id }})" 
-                                        class="p-1 hover:bg-gray-100 rounded">🗑️</button>
+                                        class="p-1 hover:bg-gray-100 rounded">�‘ï¸</button>
                             </div>
                         </div>
                         <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ $template->subject }}</p>
@@ -155,8 +155,8 @@
         <!-- Variables Reference -->
         <div class="mt-8 bg-white rounded-2xl shadow-lg overflow-hidden border border-orange-100">
             <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between cursor-pointer" onclick="toggleVariables()">
-                <h2 class="text-xl font-bold text-gray-900">📋 Available Variables</h2>
-                <span id="variables-toggle" class="text-gray-500">▼</span>
+                <h2 class="text-xl font-bold text-gray-900">�‹ Available Variables</h2>
+                <span id="variables-toggle" class="text-gray-500">â–¼</span>
             </div>
             <div id="variables-list" class="p-6 hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -177,7 +177,7 @@
     <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
             <h3 class="text-xl font-bold text-gray-900" id="modal-title">Template Preview</h3>
-            <button onclick="closeModal()" class="p-2 hover:bg-gray-100 rounded-lg">✕</button>
+            <button onclick="closeModal()" class="p-2 hover:bg-gray-100 rounded-lg">�</button>
         </div>
         <div class="flex-1 overflow-y-auto p-6">
             <div id="modal-subject" class="mb-4 p-3 bg-gray-50 rounded-lg">
@@ -189,10 +189,10 @@
         <div class="px-6 py-4 border-t border-gray-200 flex justify-between gap-3">
             <div class="flex gap-2">
                 <button onclick="aiCustomize()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
-                    🤖 AI Customize
+                    – AI Customize
                 </button>
                 <button onclick="duplicateTemplate()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
-                    📋 Duplicate
+                    �‹ Duplicate
                 </button>
             </div>
             <div class="flex gap-2">
@@ -211,7 +211,7 @@
 <div id="ai-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-xl font-bold text-gray-900">🤖 AI Customize Template</h3>
+            <h3 class="text-xl font-bold text-gray-900">– AI Customize Template</h3>
         </div>
         <div class="p-6 space-y-4">
             <div>
@@ -242,7 +242,7 @@
                 Cancel
             </button>
             <button onclick="runAiCustomization()" id="ai-submit-btn" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
-                ✨ Generate
+                 Generate
             </button>
         </div>
     </div>
@@ -298,7 +298,7 @@ function toggleVariables() {
     const list = document.getElementById('variables-list');
     const toggle = document.getElementById('variables-toggle');
     list.classList.toggle('hidden');
-    toggle.textContent = list.classList.contains('hidden') ? '▼' : '▲';
+    toggle.textContent = list.classList.contains('hidden') ? 'â–¼' : 'â–²';
 }
 
 async function openTemplatePreview(templateId) {
@@ -337,7 +337,7 @@ function closeAiModal() {
 async function runAiCustomization() {
     const btn = document.getElementById('ai-submit-btn');
     btn.disabled = true;
-    btn.textContent = '⏳ Generating...';
+    btn.textContent = 'â³ Generating...';
     
     try {
         const response = await fetch(`/email-templates/${currentTemplateId}/ai-customize`, {
@@ -367,7 +367,7 @@ async function runAiCustomization() {
         alert('An error occurred');
     } finally {
         btn.disabled = false;
-        btn.textContent = '✨ Generate';
+        btn.textContent = ' Generate';
     }
 }
 

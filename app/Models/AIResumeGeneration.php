@@ -10,6 +10,8 @@ class AIResumeGeneration extends Model
 {
     use HasFactory;
 
+    protected $table = 'ai_resume_generations';
+
     protected $fillable = [
         'user_id',
         'resume_id',

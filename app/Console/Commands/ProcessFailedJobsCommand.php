@@ -239,7 +239,7 @@ class ProcessFailedJobsCommand extends Command
      */
     protected function buildAlertMessage(int $recentCount, int $hours, int $totalCount): string
     {
-        $appName = config('app.name', 'StudAI Career');
+        $appName = config('app.name', 'StudAI Hire');
         $env = config('app.env', 'unknown');
 
         return <<<MSG

@@ -66,8 +66,8 @@ class BackgroundCheckCompleted extends Notification implements ShouldQueue
 
         return $mail
             ->action('View Full Report', route('background-checks.show', $this->backgroundCheck))
-            ->line('Thank you for using StudAI Path for your hiring needs.')
-            ->salutation('Best regards, StudAI Path Team');
+            ->line('Thank you for using StudAI Hire for your hiring needs.')
+            ->salutation('Best regards, StudAI Hire Team');
     }
 
     /**

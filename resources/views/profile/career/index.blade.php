@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -59,7 +59,7 @@
                                         <span class="px-4 py-2 bg-primary-100 text-primary-800 rounded-full text-sm font-medium">
                                             {{ $skill['name'] }}
                                             @if(isset($skill['proficiency']))
-                                                <span class="text-xs text-primary-600">• {{ ucfirst($skill['proficiency']) }}</span>
+                                                <span class="text-xs text-primary-600">â€¢ {{ ucfirst($skill['proficiency']) }}</span>
                                             @endif
                                         </span>
                                     @endforeach
@@ -97,7 +97,7 @@
                                         <div class="border-l-4 border-secondary-500 pl-4">
                                             <h4 class="font-semibold text-gray-900">{{ $edu['degree'] }}</h4>
                                             <p class="text-gray-600">{{ $edu['institution'] }}</p>
-                                            <p class="text-sm text-gray-500">{{ $edu['field'] ?? '' }} • {{ $edu['graduation_year'] ?? '' }}</p>
+                                            <p class="text-sm text-gray-500">{{ $edu['field'] ?? '' }} â€¢ {{ $edu['graduation_year'] ?? '' }}</p>
                                         </div>
                                     @endforeach
                                 </div>
@@ -179,31 +179,31 @@
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-700">Headline</span>
                                 <span class="text-xs font-semibold {{ $profile->headline ? 'text-green-600' : 'text-gray-400' }}">
-                                    {{ $profile->headline ? '✓' : '○' }}
+                                    {{ $profile->headline ? '�' : 'â—‹' }}
                                 </span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-700">Summary</span>
                                 <span class="text-xs font-semibold {{ $profile->summary ? 'text-green-600' : 'text-gray-400' }}">
-                                    {{ $profile->summary ? '✓' : '○' }}
+                                    {{ $profile->summary ? '�' : 'â—‹' }}
                                 </span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-700">Experience</span>
                                 <span class="text-xs font-semibold {{ !empty($profile->experience) ? 'text-green-600' : 'text-gray-400' }}">
-                                    {{ !empty($profile->experience) ? '✓' : '○' }}
+                                    {{ !empty($profile->experience) ? '�' : 'â—‹' }}
                                 </span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-700">Education</span>
                                 <span class="text-xs font-semibold {{ !empty($profile->education) ? 'text-green-600' : 'text-gray-400' }}">
-                                    {{ !empty($profile->education) ? '✓' : '○' }}
+                                    {{ !empty($profile->education) ? '�' : 'â—‹' }}
                                 </span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-700">Skills</span>
                                 <span class="text-xs font-semibold {{ !empty($profile->skills) ? 'text-green-600' : 'text-gray-400' }}">
-                                    {{ !empty($profile->skills) ? '✓' : '○' }}
+                                    {{ !empty($profile->skills) ? '�' : 'â—‹' }}
                                 </span>
                             </div>
                         </div>
@@ -214,7 +214,7 @@
                             </div>
                         @else
                             <div class="mt-4 pt-4 border-t border-primary-200">
-                                <p class="text-sm font-semibold text-green-700">🎉 Perfect! Your profile is complete</p>
+                                <p class="text-sm font-semibold text-green-700">‰ Perfect! Your profile is complete</p>
                             </div>
                         @endif
                     </div>

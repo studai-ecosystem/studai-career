@@ -147,7 +147,7 @@ class BambooHrService extends BaseAtsProvider
         return $this->post($connection, 'applicant_tracking/applications', [
             'applicantId' => $candidateId,
             'jobId' => $jobId,
-            'source' => $data['source'] ?? 'StudAI Career',
+            'source' => $data['source'] ?? 'StudAI Hire',
         ]);
     }
 
@@ -210,7 +210,7 @@ class BambooHrService extends BaseAtsProvider
             'lastName' => $localData['last_name'] ?? $nameParts[1] ?? null,
             'email' => $localData['email'] ?? null,
             'phone' => $localData['phone'] ?? null,
-            'source' => $localData['source'] ?? 'StudAI Career',
+            'source' => $localData['source'] ?? 'StudAI Hire',
         ];
     }
 

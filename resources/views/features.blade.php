@@ -16,7 +16,7 @@
             </h1>
             
             <p class="text-lg text-slate-300/90 max-w-2xl mx-auto leading-relaxed">
-                StudAI Career replaces fragmented tools with a unified, AI-powered workflow designed to get you hired faster and at a higher salary.
+                StudAI Hire replaces fragmented tools with a unified, AI-powered workflow designed to get you hired faster and at a higher salary.
             </p>
         </div>
     </section>
@@ -116,7 +116,7 @@
                 Ready to transform your career?
             </h2>
             <p class="text-lg text-slate-300/90 mb-10">
-                Join thousands of professionals who are landing their dream jobs faster with StudAI Career.
+                Join thousands of professionals who are landing their dream jobs faster with StudAI Hire.
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="{{ route('register') }}" class="w-full sm:w-auto inline-flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-cyan-400 px-8 py-3.5 text-sm font-semibold text-slate-950 shadow-[0_18px_45px_rgba(15,23,42,0.95)] hover:brightness-110 hover:-translate-y-0.5 transition">

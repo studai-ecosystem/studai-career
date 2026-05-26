@@ -1,11 +1,11 @@
 <?php
 /**
- * Database Setup Script for StudAI Career Platform
+ * Database Setup Script for StudAI Hire Platform
  * Creates both main and analytics databases
  */
 
 echo "==============================================\n";
-echo " StudAI Career - Database Setup\n";
+echo " StudAI Hire - Database Setup\n";
 echo "==============================================\n\n";
 
 // Database configuration

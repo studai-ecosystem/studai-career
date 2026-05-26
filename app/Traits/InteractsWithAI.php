@@ -61,7 +61,7 @@ trait InteractsWithAI
     /**
      * Set the user context for AI usage tracking / credit deduction.
      */
-    protected function setAIUser(User $user): self
+    public function setAIUser(User $user): self
     {
         $this->getAIService()->forUser($user);
 

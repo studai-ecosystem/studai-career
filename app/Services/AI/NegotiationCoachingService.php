@@ -1,15 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\AI;
 
-use App\Models\NegotiationSession;
+use App\Jobs\CheckAndAwardSkillBadges;
 use App\Models\NegotiationMessage;
+use App\Models\NegotiationSession;
 use App\Models\NegotiationStrategy;
+use App\Services\VantageEvaluatorService;
 use Illuminate\Support\Facades\Log;
 use OpenAI\Laravel\Facades\OpenAI;
 
 class NegotiationCoachingService
 {
+    public function __construct(
+        private readonly VantageEvaluatorService $vantageEvaluator,
+    ) {}
     /**
      * Start a new coaching session
      */
@@ -187,7 +194,7 @@ class NegotiationCoachingService
             $prompt = $this->buildCoachingPrompt($session, $employerMessage, $tone, $keyPhrases);
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'messages' => [
                     [
                         'role' => 'system',
@@ -198,7 +205,7 @@ class NegotiationCoachingService
                         'content' => $prompt
                     ],
                 ],
-                'max_tokens' => 500,
+                'max_completion_tokens' => 500,
                 'temperature' => 0.7,
             ]);
 
@@ -475,6 +482,9 @@ class NegotiationCoachingService
             'urgency' => 'low',
             'confidence_score' => 100,
         ]);
+
+        // Vantage Intelligence — evaluate skill signals and dispatch badge check
+        $this->runVantageEvaluation($session);
     }
 
     /**
@@ -580,5 +590,28 @@ class NegotiationCoachingService
         ];
 
         return $fallbacks[$tone] ?? $fallbacks['neutral'];
+    }
+
+    /**
+     * Run Vantage Intelligence evaluation on the completed negotiation session.
+     * Stores skill_scores on the session and dispatches badge check asynchronously.
+     */
+    private function runVantageEvaluation(NegotiationSession $session): void
+    {
+        try {
+            $skillMap = $this->vantageEvaluator->evaluateNegotiationSession($session);
+
+            CheckAndAwardSkillBadges::dispatch(
+                $session->user,
+                'negotiation_session',
+                $session->id,
+                $skillMap
+            );
+        } catch (\Exception $e) {
+            Log::error('NegotiationCoachingService: Vantage evaluation failed', [
+                'session_id' => $session->id,
+                'error'      => $e->getMessage(),
+            ]);
+        }
     }
 }

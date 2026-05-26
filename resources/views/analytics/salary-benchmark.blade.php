@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Salary Benchmark Tool - Real-time Comparison')
 
@@ -7,8 +7,8 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-            <a href="{{ route('analytics.dashboard') }}" class="text-green-600 hover:text-green-800 text-sm mb-2 inline-block">← Back to Analytics</a>
-            <h1 class="text-3xl font-bold text-gray-900">💰 Real-time Salary Benchmark</h1>
+            <a href="{{ route('analytics.dashboard') }}" class="text-green-600 hover:text-green-800 text-sm mb-2 inline-block">â† Back to Analytics</a>
+            <h1 class="text-3xl font-bold text-gray-900">�° Real-time Salary Benchmark</h1>
             <p class="text-gray-600">Compare your salary against market rates instantly</p>
         </div>
 
@@ -43,7 +43,7 @@
 
                 <div class="flex items-center gap-4">
                     <button type="submit" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium">
-                        🔍 Get Benchmark
+                        � Get Benchmark
                     </button>
                     <div id="loading" class="hidden">
                         <svg class="animate-spin h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24">
@@ -111,7 +111,7 @@
 
             <!-- Compare Your Salary -->
             <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-green-100">
-                <h2 class="text-xl font-bold text-gray-900 mb-4">📊 Compare Your Salary</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-4">�Š Compare Your Salary</h2>
                 <div class="flex items-end gap-4">
                     <div class="flex-1">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Your Current Salary</label>
@@ -131,7 +131,7 @@
                 <div id="comparison-result" class="mt-6 hidden">
                     <div class="p-6 rounded-xl" id="comparison-card">
                         <div class="flex items-center gap-4">
-                            <div class="text-4xl" id="comparison-emoji">📊</div>
+                            <div class="text-4xl" id="comparison-emoji">�Š</div>
                             <div>
                                 <div class="text-lg font-bold" id="comparison-text">--</div>
                                 <div class="text-sm text-gray-600" id="comparison-detail">--</div>
@@ -143,14 +143,14 @@
 
             <!-- Salary by Company Size -->
             <div class="bg-white rounded-2xl shadow-lg p-8 border border-green-100">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">🏢 Salary by Company Size</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-6">¢ Salary by Company Size</h2>
                 <canvas id="companySizeChart" height="200"></canvas>
             </div>
         </div>
 
         <!-- No Results -->
         <div id="no-results" class="hidden bg-white rounded-2xl shadow-lg p-8 text-center border border-orange-100">
-            <div class="text-6xl mb-4">🔍</div>
+            <div class="text-6xl mb-4">�</div>
             <h2 class="text-xl font-bold text-gray-900 mb-2">No Data Found</h2>
             <p class="text-gray-600" id="no-results-message">Try adjusting your search criteria</p>
         </div>
@@ -264,31 +264,31 @@ document.addEventListener('DOMContentLoaded', function() {
             percentile = Math.round((salary / p25) * 25);
             message = "Below Market Rate";
             detailMsg = `Your salary is in the bottom 25%. Consider negotiating for ${formatSalary(median - salary)} more.`;
-            emoji.textContent = "⚠️";
+            emoji.textContent = "âš ï¸";
             bgClass = "bg-red-50";
         } else if (salary < median) {
             percentile = 25 + ((salary - p25) / (median - p25)) * 25;
             message = "Slightly Below Median";
             detailMsg = `You're between 25th-50th percentile. Room for ${formatSalary(median - salary)} increase.`;
-            emoji.textContent = "📊";
+            emoji.textContent = "�Š";
             bgClass = "bg-yellow-50";
         } else if (salary < p75) {
             percentile = 50 + ((salary - median) / (p75 - median)) * 25;
             message = "Above Median - Great!";
             detailMsg = `You're between 50th-75th percentile. Well positioned in the market.`;
-            emoji.textContent = "✅";
+            emoji.textContent = "�";
             bgClass = "bg-green-50";
         } else if (salary < p90) {
             percentile = 75 + ((salary - p75) / (p90 - p75)) * 15;
             message = "Excellent - Top Quartile!";
             detailMsg = `You're in the top 25% of earners for this role.`;
-            emoji.textContent = "🌟";
+            emoji.textContent = "Ÿ";
             bgClass = "bg-green-100";
         } else {
             percentile = 90 + Math.min(10, ((salary - p90) / p90) * 10);
             message = "Outstanding - Top 10%!";
             detailMsg = `You're among the highest paid professionals in this role.`;
-            emoji.textContent = "🏆";
+            emoji.textContent = "†";
             bgClass = "bg-purple-50";
         }
 

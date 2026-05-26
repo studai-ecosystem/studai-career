@@ -15,7 +15,7 @@ class ApplicationQualityScorerService
 {
     use LogsAiUsage;
 
-    protected const MODEL = 'gpt-5.1'; // Azure OpenAI GPT-5.1 (was gpt-5-mini)
+    protected const MODEL = 'gpt-5.4'; // Azure OpenAI deployment // Azure OpenAI GPT-5.1 (was gpt-5-mini)
     protected const CACHE_TTL = 5400; // 90 minutes
 
     /**
@@ -62,7 +62,7 @@ class ApplicationQualityScorerService
                     ['role' => 'user', 'content' => $prompt],
                 ],
                 'temperature' => 0.3,
-                'max_tokens' => 2000,
+                'max_completion_tokens' => 2000,
             ]);
 
             $usage = $response->usage ?? null;

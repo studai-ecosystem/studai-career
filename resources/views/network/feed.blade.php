@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
-@section('title', 'Network Feed - StudAI Career')
+@section('title', 'Network Feed - StudAI Hire')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">

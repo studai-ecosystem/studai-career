@@ -182,6 +182,57 @@ class Resume extends Model
     }
 
     /**
+     * Return skills as a flat array of non-empty strings,
+     * handling the mixed (string / array / nested-array) formats
+     * that may exist from previous save logic.
+     */
+    public function getFlatSkillsAttribute(): array
+    {
+        $raw = $this->skills ?? [];
+        $flat = [];
+
+        $extract = function (mixed $item) use (&$flat, &$extract): void {
+            if (is_string($item)) {
+                // may be comma or newline separated
+                foreach (preg_split('/[,\r\n]+/', $item) as $s) {
+                    $s = trim($s);
+                    if ($s !== '') {
+                        $flat[] = $s;
+                    }
+                }
+            } elseif (is_array($item)) {
+                foreach ($item as $child) {
+                    $extract($child);
+                }
+            }
+        };
+
+        foreach ($raw as $item) {
+            $extract($item);
+        }
+
+        return array_values(array_unique($flat));
+    }
+
+    /**
+     * Numeric ATS score derived from ats_analysis when ats_score
+     * was incorrectly stored as a label string ("excellent" etc.).
+     */
+    public function getNumericAtsScoreAttribute(): ?int
+    {
+        $stored = $this->ats_score;
+        if (is_numeric($stored)) {
+            return (int) $stored;
+        }
+        // Stored as label — fall back to ats_analysis.score
+        $analysis = $this->ats_analysis;
+        if (is_array($analysis) && isset($analysis['score'])) {
+            return (int) $analysis['score'];
+        }
+        return null;
+    }
+
+    /**
      * Calculate ATS compatibility score
      */
     public function calculateAtsScore(): string
@@ -316,6 +367,7 @@ class Resume extends Model
             'event_type' => 'viewed',
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
+            'created_at' => now(),
         ]);
     }
 
@@ -332,6 +384,7 @@ class Resume extends Model
             'event_type' => 'exported',
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
+            'created_at' => now(),
         ]);
     }
 

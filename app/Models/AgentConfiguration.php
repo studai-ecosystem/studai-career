@@ -28,6 +28,9 @@ class AgentConfiguration extends Model
     protected $fillable = [
         'user_id',
         'is_active',
+        'is_paused',
+        'activated_at',
+        'deactivated_at',
         'daily_application_limit',
         'applications_this_month',
         'applications_today',
@@ -68,7 +71,10 @@ class AgentConfiguration extends Model
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
+        'is_active'  => 'boolean',
+        'is_paused'  => 'boolean',
+        'activated_at'   => 'datetime',
+        'deactivated_at' => 'datetime',
         'daily_application_limit' => 'integer',
         'applications_this_month' => 'integer',
         'applications_today' => 'integer',

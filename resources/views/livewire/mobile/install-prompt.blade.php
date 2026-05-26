@@ -14,7 +14,7 @@
             <!-- App Icon -->
             <div class="flex-shrink-0">
                 <img src="/images/icons/icon-72x72.png" 
-                     alt="StudAI Career" 
+                     alt="StudAI Hire" 
                      class="w-14 h-14 rounded-xl shadow-md"
                      onerror="this.style.display='none'">
             </div>
@@ -22,7 +22,7 @@
             <!-- Content -->
             <div class="flex-1 min-w-0">
                 <h3 class="font-bold text-gray-900 dark:text-white text-sm mb-1">
-                    Install StudAI Career
+                    Install StudAI Hire
                 </h3>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
                     Add to your home screen for a faster, app-like experience with offline access.

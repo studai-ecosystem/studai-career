@@ -12,6 +12,7 @@ use App\Services\Agent\AgentLearningService;
 use App\Services\Agent\AgentAuditService;
 use App\Notifications\AgentApprovalRequestNotification;
 use App\Jobs\Agent\DiscoverJobsJob;
+use App\Jobs\Agent\ScanInternalJobsJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -171,25 +172,26 @@ class AgentController extends Controller
         $config = AgentConfiguration::where('user_id', $request->user()->id)->first();
 
         if (!$config) {
-            return response()->json([
-                'message' => 'No agent configuration found. Please configure your agent first.',
-            ], 404);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'No agent configuration found. Please configure your agent first.'], 404);
+            }
+            return redirect()->route('agent.configure')->with('error', 'Please configure your agent first.');
         }
 
         if ($config->is_active) {
-            return response()->json([
-                'message' => 'Agent is already active.',
-                'config' => $config,
-            ]);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Agent is already active.', 'config' => $config]);
+            }
+            return redirect()->route('agent.dashboard')->with('info', 'Agent is already active.');
         }
 
         // Check subscription limits
         $user = $request->user();
         if ($user->getRemainingApplications() <= 0) {
-            return response()->json([
-                'message' => 'You have reached your monthly application limit. Please upgrade your plan.',
-                'limit_reached' => true,
-            ], 403);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'You have reached your monthly application limit. Please upgrade your plan.', 'limit_reached' => true], 403);
+            }
+            return redirect()->route('agent.dashboard')->with('error', 'You have reached your monthly application limit. Please upgrade your plan.');
         }
 
         $config->update([
@@ -198,18 +200,23 @@ class AgentController extends Controller
             'activated_at' => now(),
         ]);
 
-        // Dispatch immediate discovery job
+        // Dispatch immediate discovery jobs (external + internal platform jobs)
         DiscoverJobsJob::dispatch();
+        ScanInternalJobsJob::dispatch();
 
         Log::info('Agent activated', [
             'user_id' => $user->id,
             'config_id' => $config->id,
         ]);
 
-        return response()->json([
-            'message' => 'Agent activated successfully. It will start discovering and applying to jobs based on your criteria.',
-            'config' => $config,
-        ]);
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Agent activated successfully. It will start discovering and applying to jobs based on your criteria.',
+                'config' => $config,
+            ]);
+        }
+
+        return redirect()->route('agent.dashboard')->with('success', 'Agent activated successfully! It will start discovering and applying to jobs based on your criteria.');
     }
 
     /**
@@ -220,16 +227,17 @@ class AgentController extends Controller
         $config = AgentConfiguration::where('user_id', $request->user()->id)->first();
 
         if (!$config) {
-            return response()->json([
-                'message' => 'No agent configuration found.',
-            ], 404);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'No agent configuration found.'], 404);
+            }
+            return redirect()->route('agent.dashboard')->with('error', 'No agent configuration found.');
         }
 
         if ($config->is_paused) {
-            return response()->json([
-                'message' => 'Agent is already paused.',
-                'config' => $config,
-            ]);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Agent is already paused.', 'config' => $config]);
+            }
+            return redirect()->route('agent.dashboard')->with('info', 'Agent is already paused.');
         }
 
         $config->update([
@@ -241,10 +249,11 @@ class AgentController extends Controller
             'config_id' => $config->id,
         ]);
 
-        return response()->json([
-            'message' => 'Agent paused. It will not submit new applications until resumed.',
-            'config' => $config,
-        ]);
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Agent paused. It will not submit new applications until resumed.', 'config' => $config]);
+        }
+
+        return redirect()->route('agent.dashboard')->with('success', 'Agent paused. It will not submit new applications until resumed.');
     }
 
     /**
@@ -255,22 +264,24 @@ class AgentController extends Controller
         $config = AgentConfiguration::where('user_id', $request->user()->id)->first();
 
         if (!$config) {
-            return response()->json([
-                'message' => 'No agent configuration found.',
-            ], 404);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'No agent configuration found.'], 404);
+            }
+            return redirect()->route('agent.dashboard')->with('error', 'No agent configuration found.');
         }
 
         if (!$config->is_active) {
-            return response()->json([
-                'message' => 'Agent is not active. Please activate it first.',
-            ], 400);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Agent is not active. Please activate it first.'], 400);
+            }
+            return redirect()->route('agent.dashboard')->with('error', 'Agent is not active. Please activate it first.');
         }
 
         if (!$config->is_paused) {
-            return response()->json([
-                'message' => 'Agent is not paused.',
-                'config' => $config,
-            ]);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Agent is not paused.', 'config' => $config]);
+            }
+            return redirect()->route('agent.dashboard')->with('info', 'Agent is not paused.');
         }
 
         $config->update([
@@ -282,10 +293,11 @@ class AgentController extends Controller
             'config_id' => $config->id,
         ]);
 
-        return response()->json([
-            'message' => 'Agent resumed successfully.',
-            'config' => $config,
-        ]);
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Agent resumed successfully.', 'config' => $config]);
+        }
+
+        return redirect()->route('agent.dashboard')->with('success', 'Agent resumed successfully.');
     }
 
     /**
@@ -296,16 +308,17 @@ class AgentController extends Controller
         $config = AgentConfiguration::where('user_id', $request->user()->id)->first();
 
         if (!$config) {
-            return response()->json([
-                'message' => 'No agent configuration found.',
-            ], 404);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'No agent configuration found.'], 404);
+            }
+            return redirect()->route('agent.dashboard')->with('error', 'No agent configuration found.');
         }
 
         if (!$config->is_active) {
-            return response()->json([
-                'message' => 'Agent is already inactive.',
-                'config' => $config,
-            ]);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Agent is already inactive.', 'config' => $config]);
+            }
+            return redirect()->route('agent.dashboard')->with('info', 'Agent is already inactive.');
         }
 
         $config->update([
@@ -319,10 +332,11 @@ class AgentController extends Controller
             'config_id' => $config->id,
         ]);
 
-        return response()->json([
-            'message' => 'Agent deactivated successfully.',
-            'config' => $config,
-        ]);
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Agent deactivated successfully.', 'config' => $config]);
+        }
+
+        return redirect()->route('agent.dashboard')->with('success', 'Agent deactivated successfully.');
     }
 
     /**

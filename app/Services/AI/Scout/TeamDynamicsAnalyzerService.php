@@ -12,7 +12,7 @@ use OpenAI\Laravel\Facades\OpenAI;
 class TeamDynamicsAnalyzerService
 {
     private const CACHE_TTL = 86400; // 24 hours
-    private const MODEL = 'gpt-5.1'; // Azure OpenAI GPT-5.1
+    private const MODEL = 'gpt-5.4'; // Azure OpenAI deployment // Azure OpenAI GPT-5.1
 
     public function analyzeTeamDynamics(int $companyId, ?string $department = null): array
     {
@@ -120,7 +120,7 @@ PROMPT;
                 ['role' => 'user', 'content' => $prompt],
             ],
             'temperature' => 0.3,
-            'max_tokens' => 1200,
+            'max_completion_tokens' => 1200,
         ]);
 
         return json_decode($response->choices[0]->message->content, true) ?? [];
@@ -158,7 +158,7 @@ PROMPT;
                 ['role' => 'user', 'content' => $prompt],
             ],
             'temperature' => 0.3,
-            'max_tokens' => 1000,
+            'max_completion_tokens' => 1000,
         ]);
 
         return json_decode($response->choices[0]->message->content, true) ?? [];
@@ -196,7 +196,7 @@ PROMPT;
                 ['role' => 'user', 'content' => $prompt],
             ],
             'temperature' => 0.4,
-            'max_tokens' => 1000,
+            'max_completion_tokens' => 1000,
         ]);
 
         return json_decode($response->choices[0]->message->content, true) ?? [];
@@ -231,7 +231,7 @@ PROMPT;
                 ['role' => 'user', 'content' => $prompt],
             ],
             'temperature' => 0.4,
-            'max_tokens' => 1000,
+            'max_completion_tokens' => 1000,
         ]);
 
         return json_decode($response->choices[0]->message->content, true) ?? [];
@@ -290,7 +290,7 @@ PROMPT;
                 ['role' => 'user', 'content' => $prompt],
             ],
             'temperature' => 0.3,
-            'max_tokens' => 1000,
+            'max_completion_tokens' => 1000,
         ]);
 
         $fitAssessment = json_decode($response->choices[0]->message->content, true) ?? [];

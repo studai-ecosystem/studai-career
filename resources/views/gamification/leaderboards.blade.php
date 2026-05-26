@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Leaderboards')
 
@@ -12,7 +12,7 @@
                 <p class="text-gray-600 mt-1">See how you rank against other professionals</p>
             </div>
             <a href="{{ route('gamification.dashboard') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">
-                ← Back to Dashboard
+                â† Back to Dashboard
             </a>
         </div>
 
@@ -27,7 +27,7 @@
                             @if($userRank > 0)
                                 #{{ $userRank }}
                             @else
-                                —
+                                â€”
                             @endif
                         </div>
                         <div class="text-white/80">Global Rank</div>
@@ -98,12 +98,12 @@
                     <div class="space-y-2">
                         <a href="{{ route('gamification.leaderboards', ['type' => 'global']) }}"
                            class="flex items-center gap-3 p-3 rounded-xl transition {{ $type === 'global' ? 'bg-indigo-50 text-indigo-700' : 'hover:bg-gray-50' }}">
-                            <span class="text-xl">🌍</span>
+                            <span class="text-xl"></span>
                             <span class="font-medium">Global</span>
                         </a>
                         <a href="{{ route('gamification.leaderboards', ['type' => 'industry', 'industry' => $profile->primary_industry ?? 'Technology']) }}"
                            class="flex items-center gap-3 p-3 rounded-xl transition {{ $type === 'industry' ? 'bg-indigo-50 text-indigo-700' : 'hover:bg-gray-50' }}">
-                            <span class="text-xl">🏢</span>
+                            <span class="text-xl">¢</span>
                             <span class="font-medium">Industry</span>
                         </a>
                     </div>
@@ -118,9 +118,9 @@
                         <div class="flex items-center justify-between">
                             <h2 class="text-2xl font-bold text-white">
                                 @if($type === 'global')
-                                    🌍 Global Leaderboard
+                                     Global Leaderboard
                                 @else
-                                    🏢 {{ $selectedIndustry ?? 'Industry' }} Leaderboard
+                                    ¢ {{ $selectedIndustry ?? 'Industry' }} Leaderboard
                                 @endif
                             </h2>
                             
@@ -144,7 +144,7 @@
                             <!-- 2nd Place -->
                             <div class="text-center">
                                 <div class="w-20 h-20 mx-auto bg-gray-200 rounded-full flex items-center justify-center text-3xl mb-2 ring-4 ring-gray-300">
-                                    🥈
+                                    ˆ
                                 </div>
                                 <div class="font-bold text-gray-900">{{ $leaderboard[1]['display_name'] ?? 'Anonymous' }}</div>
                                 <div class="text-sm text-gray-500">Level {{ $leaderboard[1]['level'] }}</div>
@@ -157,7 +157,7 @@
                             <!-- 1st Place -->
                             <div class="text-center -mt-8">
                                 <div class="w-24 h-24 mx-auto bg-yellow-100 rounded-full flex items-center justify-center text-4xl mb-2 ring-4 ring-yellow-400 animate-pulse">
-                                    🥇
+                                    ‡
                                 </div>
                                 <div class="font-bold text-gray-900 text-lg">{{ $leaderboard[0]['display_name'] ?? 'Anonymous' }}</div>
                                 <div class="text-sm text-gray-500">Level {{ $leaderboard[0]['level'] }}</div>
@@ -170,7 +170,7 @@
                             <!-- 3rd Place -->
                             <div class="text-center">
                                 <div class="w-20 h-20 mx-auto bg-orange-100 rounded-full flex items-center justify-center text-3xl mb-2 ring-4 ring-orange-300">
-                                    🥉
+                                    ‰
                                 </div>
                                 <div class="font-bold text-gray-900">{{ $leaderboard[2]['display_name'] ?? 'Anonymous' }}</div>
                                 <div class="text-sm text-gray-500">Level {{ $leaderboard[2]['level'] }}</div>
@@ -205,7 +205,7 @@
                                     </span>
                                 </div>
                                 <div class="text-sm text-gray-500">
-                                    Level {{ $entry['level'] }} • {{ $entry['achievements'] ?? 0 }} achievements
+                                    Level {{ $entry['level'] }} â€¢ {{ $entry['achievements'] ?? 0 }} achievements
                                 </div>
                             </div>
                             
@@ -221,7 +221,7 @@
                     <!-- Empty State -->
                     @if($leaderboard->isEmpty())
                     <div class="p-12 text-center">
-                        <div class="text-6xl mb-4">🏆</div>
+                        <div class="text-6xl mb-4">†</div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">No rankings yet</h3>
                         <p class="text-gray-500">Be the first to join the leaderboard!</p>
                     </div>

@@ -206,7 +206,7 @@ PROMPT;
 
             $response = $this->aiService->generateResponse($prompt, [
                 'response_format' => ['type' => 'json_object'],
-                'max_tokens' => 300,
+                'max_completion_tokens' => 300,
             ]);
 
             return json_decode($response, true) ?? [

@@ -10,6 +10,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\AICreditLog;
+use App\Models\FreelancerProfile;
 
 class User extends Authenticatable
 {
@@ -27,6 +29,7 @@ class User extends Authenticatable
         'password',
         'phone',
         'account_type',
+        'company_id',
         'avatar',
         'is_active',
         'preferences',
@@ -116,6 +119,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(Profile::class);
     }
+
+    /**
+     * Get the user's freelancer profile (marketplace)
+     */
+    public function freelancerProfile()
+    {
+        return $this->hasOne(FreelancerProfile::class, 'user_id');
+    }
     
     /**
      * Get the user's company (for employers)
@@ -172,7 +183,7 @@ class User extends Authenticatable
         }
         
         $plan = $subscription->subscriptionPlan;
-        return in_array($feature, $plan->features);
+        return in_array($feature, $plan?->features ?? []);
     }
     
     /**
@@ -182,14 +193,22 @@ class User extends Authenticatable
     {
         $subscription = $this->subscription;
         if (!$subscription) return 0;
-        
+
         $plan = $subscription->subscriptionPlan;
-        if ($plan->applications_limit === null) return PHP_INT_MAX; // Unlimited
-        
-        $used = $subscription->applications_used_this_month;
+        if (!$plan || $plan->applications_limit === null) return -1; // -1 = Unlimited
+
+        $used = $subscription->applications_used_this_month ?? 0;
         return max(0, $plan->applications_limit - $used);
     }
-    
+
+    /**
+     * Whether the user has unlimited applications (paid plan with null limit)
+     */
+    public function hasUnlimitedApplications(): bool
+    {
+        return $this->getRemainingApplications() === -1;
+    }
+
     /**
      * Get remaining AI credits for current month
      */
@@ -197,12 +216,21 @@ class User extends Authenticatable
     {
         $subscription = $this->subscription;
         if (!$subscription) return 0;
-        
+
         $plan = $subscription->subscriptionPlan;
-        if ($plan->ai_credits === null) return PHP_INT_MAX; // Unlimited
-        
-        $used = $subscription->ai_credits_used_this_month;
+        // -1 in DB or null both mean unlimited
+        if (!$plan || $plan->ai_credits === null || $plan->ai_credits === -1) return -1;
+
+        $used = $subscription->ai_credits_used_this_month ?? 0;
         return max(0, $plan->ai_credits - $used);
+    }
+
+    /**
+     * Whether the user has unlimited AI credits
+     */
+    public function hasUnlimitedAICredits(): bool
+    {
+        return $this->getRemainingAICredits() === -1;
     }
     
     /**
@@ -210,7 +238,8 @@ class User extends Authenticatable
      */
     public function canApplyToJobs(): bool
     {
-        return $this->getRemainingApplications() > 0;
+        $remaining = $this->getRemainingApplications();
+        return $remaining === -1 || $remaining > 0; // -1 = unlimited
     }
     
     /**
@@ -218,18 +247,32 @@ class User extends Authenticatable
      */
     public function hasAICredits(int $required = 1): bool
     {
-        return $this->getRemainingAICredits() >= $required;
+        $remaining = $this->getRemainingAICredits();
+        return $remaining === -1 || $remaining >= $required; // -1 = unlimited
     }
     
     /**
      * Deduct AI credits from user's subscription
      */
-    public function deductAICredits(int $amount = 1): void
+    public function deductAICredits(int $amount = 1, string $action = 'ai_usage', string $description = 'AI feature used', array $meta = []): void
     {
         $subscription = $this->subscription;
         if ($subscription) {
             $subscription->increment('ai_credits_used_this_month', $amount);
         }
+
+        AICreditLog::create([
+            'user_id'      => $this->id,
+            'action'       => $action,
+            'description'  => $description,
+            'credits_used' => $amount,
+            'meta'         => $meta ?: null,
+        ]);
+    }
+
+    public function aiCreditLogs()
+    {
+        return $this->hasMany(AICreditLog::class)->latest();
     }
     
     /**
@@ -551,6 +594,14 @@ class User extends Authenticatable
     public function negotiationSessions()
     {
         return $this->hasMany(NegotiationSession::class);
+    }
+
+    /**
+     * Get user's skills
+     */
+    public function skills()
+    {
+        return $this->hasMany(UserSkill::class);
     }
 
     /**

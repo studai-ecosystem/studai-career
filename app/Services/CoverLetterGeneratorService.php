@@ -75,18 +75,18 @@ class CoverLetterGeneratorService
         // Candidate information
         $prompt .= "CANDIDATE:\n";
         $prompt .= "Name: {$user->name}\n";
-        $prompt .= "Headline: " . ($profile->headline ?? 'Professional') . "\n";
-        $prompt .= "Summary: " . ($profile->summary ?? '') . "\n";
+        $prompt .= "Headline: " . ($profile?->headline ?? 'Professional') . "\n";
+        $prompt .= "Summary: " . ($profile?->summary ?? '') . "\n";
         
-        if (!empty($profile->experience)) {
+        if (!empty($profile?->experience)) {
             $prompt .= "\nRELEVANT EXPERIENCE:\n";
             foreach (array_slice($profile->experience, 0, 3) as $exp) {
-                $prompt .= "- {$exp['title']} at {$exp['company']} ({$exp['duration']})\n";
-                $prompt .= "  {$exp['description']}\n";
+                $prompt .= "- " . ($exp['title'] ?? 'Role') . " at " . ($exp['company'] ?? 'Company') . " (" . ($exp['duration'] ?? '') . ")\n";
+                $prompt .= "  " . ($exp['description'] ?? '') . "\n";
             }
         }
         
-        if (!empty($profile->skills)) {
+        if (!empty($profile?->skills)) {
             $prompt .= "\nKEY SKILLS: " . implode(', ', array_slice($profile->skills, 0, 10)) . "\n";
         }
         

@@ -10,6 +10,8 @@ class ResumeAISuggestion extends Model
 {
     use HasFactory;
 
+    protected $table = 'resume_ai_suggestions';
+
     protected $fillable = [
         'resume_id',
         'section',

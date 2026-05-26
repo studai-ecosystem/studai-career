@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Cache;
 class SkillGapAnalyzer
 {
     use InteractsWithAI;
-    protected const MODEL = 'gpt-5.1'; // Azure OpenAI GPT-5.1
+    protected const MODEL = 'gpt-5.4'; // Azure OpenAI deployment // Azure OpenAI GPT-5.1
     protected const CACHE_TTL = 43200; // 12 hours
     
     /**

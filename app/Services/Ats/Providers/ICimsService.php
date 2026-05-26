@@ -215,7 +215,7 @@ class ICimsService extends BaseAtsProvider
         return $this->post($connection, 'applicantworkflows', [
             'person' => ['id' => $candidateId],
             'job' => ['id' => $jobId],
-            'source' => $data['source'] ?? ['value' => 'StudAI Career'],
+            'source' => $data['source'] ?? ['value' => 'StudAI Hire'],
         ]);
     }
 
@@ -276,7 +276,7 @@ class ICimsService extends BaseAtsProvider
             'lastname' => $localData['last_name'] ?? $nameParts[1] ?? null,
             'emails' => isset($localData['email']) ? [['address' => $localData['email'], 'type' => 'Personal']] : [],
             'phones' => isset($localData['phone']) ? [['number' => $localData['phone'], 'type' => 'Cell']] : [],
-            'source' => ['value' => $localData['source'] ?? 'StudAI Career'],
+            'source' => ['value' => $localData['source'] ?? 'StudAI Hire'],
         ];
     }
 

@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class AIGoldenTestRun extends Model
 {
+    protected $table = 'ai_golden_test_runs';
+
     /**
      * The attributes that are mass assignable.
      *

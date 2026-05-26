@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Agent Applications')
 
@@ -131,12 +131,12 @@
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-4">
                                         <div>
-                                            <p class="font-semibold text-gray-900">{{ $application->job_title }}</p>
-                                            <p class="text-sm text-gray-600">{{ $application->company_name }}</p>
-                                            @if($application->location)
+                                            <p class="font-semibold text-gray-900">{{ $application->job?->title ?? 'Unknown Position' }}</p>
+                                            <p class="text-sm text-gray-600">{{ $application->job?->company_name ?? 'Unknown Company' }}</p>
+                                            @if($application->job?->location)
                                                 <p class="text-xs text-gray-500 mt-1">
                                                     <i data-lucide="map-pin" class="w-3 h-3 inline"></i>
-                                                    {{ $application->location }}
+                                                    {{ $application->job->location }}
                                                 </p>
                                             @endif
                                         </div>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Browse Projects - Talent Marketplace')
 
@@ -140,12 +140,12 @@
                                     <div class="flex flex-wrap items-center gap-2 mb-3">
                                         @if($project->is_urgent)
                                             <span class="px-2.5 py-0.5 bg-red-100 text-red-800 text-xs font-medium rounded-full">
-                                                🔥 Urgent
+                                                �¥ Urgent
                                             </span>
                                         @endif
                                         @if($project->is_featured)
                                             <span class="px-2.5 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">
-                                                ⭐ Featured
+                                                â­ Featured
                                             </span>
                                         @endif
                                         <span class="px-2.5 py-0.5 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full">
@@ -213,9 +213,9 @@
                                 <div class="lg:text-right lg:min-w-[180px]">
                                     <div class="text-2xl font-bold text-green-600 mb-2">
                                         @if($project->project_type == 'hourly')
-                                            ₹{{ number_format($project->hourly_rate_min ?? 0) }} - ₹{{ number_format($project->hourly_rate_max ?? 0) }}/hr
+                                            &#8377;{{ number_format($project->hourly_rate_min ?? 0) }} - &#8377;{{ number_format($project->hourly_rate_max ?? 0) }}/hr
                                         @else
-                                            ₹{{ number_format($project->budget_min ?? 0) }} - ₹{{ number_format($project->budget_max ?? 0) }}
+                                            &#8377;{{ number_format($project->budget_min ?? 0) }} - &#8377;{{ number_format($project->budget_max ?? 0) }}
                                         @endif
                                     </div>
                                     <div class="text-sm text-gray-500 mb-4">
@@ -236,14 +236,14 @@
                                 <div class="text-sm">
                                     <span class="text-gray-900 font-medium">{{ $project->employer->name ?? 'Employer' }}</span>
                                     @if($project->company)
-                                        <span class="text-gray-500">• {{ $project->company->name }}</span>
+                                        <span class="text-gray-500">â€¢ {{ $project->company->name }}</span>
                                     @endif
                                 </div>
                             </div>
                         </div>
                     @empty
                         <div class="bg-white rounded-xl shadow-md p-12 text-center">
-                            <div class="text-gray-400 text-6xl mb-4">🔍</div>
+                            <div class="text-gray-400 text-6xl mb-4">�</div>
                             <h3 class="text-lg font-medium text-gray-900 mb-2">No projects found</h3>
                             <p class="text-gray-500 mb-6">Try adjusting your filters or search query</p>
                             <a href="{{ route('marketplace.projects') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">

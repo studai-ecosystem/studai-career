@@ -1,11 +1,33 @@
 @php
     $questionIndex = 0;
     $flattenedQuestions = [];
-    foreach (($session['questions'] ?? []) as $type => $items) {
+    $typeLabelMap = [
+        'behavioral'  => 'Behavioral',
+        'technical'   => 'Technical',
+        'situational' => 'Situational',
+    ];
+
+    $rawQuestions = $session['questions'] ?? [];
+
+    // Handle if AI returned a flat array instead of nested {behavioral:[],technical:[],situational:[]}
+    if (!empty($rawQuestions) && isset($rawQuestions[0]) && is_array($rawQuestions[0])) {
+        $grouped = ['behavioral' => [], 'technical' => [], 'situational' => []];
+        foreach ($rawQuestions as $q) {
+            $t = $q['type'] ?? 'behavioral';
+            $grouped[$t][] = $q;
+        }
+        $rawQuestions = $grouped;
+    }
+
+    foreach ($rawQuestions as $type => $items) {
+        if (!is_array($items)) {
+            continue;
+        }
         foreach ($items as $item) {
             $flattenedQuestions[] = array_merge($item, [
-                'type' => $type,
-                'index' => $questionIndex,
+                'type'      => $type,
+                'typeLabel' => $typeLabelMap[$type] ?? ucfirst((string) $type),
+                'index'     => $questionIndex,
             ]);
             $questionIndex++;
         }
@@ -36,14 +58,424 @@
 
     <div class="py-8">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
-            <div x-data="interviewSession({
-                    questions: @json($flattenedQuestions),
-                    answers: @json($savedAnswers),
-                    sessionId: '{{ $sessionId }}',
-                    submitUrl: '{{ route('interview.submit-answer', $sessionId) }}',
-                    followUpUrl: '{{ route('interview.follow-up', $sessionId) }}',
-                    completeUrl: '{{ route('interview.complete', $sessionId) }}'
-                })" x-init="init()" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {{-- Safe JSON data transfer using application/json script elements.
+                 This is immune to all HTML/JS encoding edge-cases. --}}
+            <script type="application/json" id="iv-questions">@json($flattenedQuestions)</script>
+            <script type="application/json" id="iv-answers">@json($savedAnswers)</script>
+            @php
+                $ivMeta = [
+                    'sessionId'   => $sessionId,
+                    'submitUrl'   => route('interview.submit-answer', $sessionId),
+                    'followUpUrl' => route('interview.follow-up', $sessionId),
+                    'completeUrl' => route('interview.complete', $sessionId),
+                ];
+            @endphp
+            <script type="application/json" id="iv-meta">@json($ivMeta)</script>
+
+            <script>
+                (function () {
+                    function parseJsonEl(id) {
+                        try { return JSON.parse(document.getElementById(id).textContent); }
+                        catch (e) { console.error('IV data parse error [' + id + ']:', e); return null; }
+                    }
+                    var qs   = parseJsonEl('iv-questions') || [];
+                    var ans  = parseJsonEl('iv-answers')   || {};
+                    var meta = parseJsonEl('iv-meta')      || {};
+                    window.__interviewConfig = {
+                        questions:    qs,
+                        answers:      ans,
+                        sessionId:    meta.sessionId    || '',
+                        submitUrl:    meta.submitUrl    || '',
+                        followUpUrl:  meta.followUpUrl  || '',
+                        completeUrl:  meta.completeUrl  || '',
+                    };
+                })();
+            </script>
+
+            {{-- Alpine component definition (always before the x-data div) --}}
+            <script>
+                window.interviewSession = function (config) {
+                        var cfg = config || {};
+                        return {
+                            questions: cfg.questions || [],
+                            answers: cfg.answers || {},
+                            sessionId: cfg.sessionId || '',
+                            submitUrl: cfg.submitUrl || '',
+                            followUpUrl: cfg.followUpUrl || '',
+                            completeUrl: cfg.completeUrl || '',
+                            currentIndex: 0,
+                            answerText: '',
+                            saving: false,
+                            showFeedback: true,
+                            followUps: [],
+                            loadingFollowUps: false,
+                            questionSeconds: 0,
+                            totalSeconds: 0,
+                            timerInterval: null,
+                            questionInterval: null,
+                            tabSwitchCount: 0,
+                            fsViolations: 0,
+                            antiCheatVisible: false,
+                            antiCheatMessage: '',
+                            cameraActive: false,
+                            micActive: false,
+                            mediaStream: null,
+                            cameraError: null,
+
+                            init() {
+                                // Normalize question field names (AI sometimes returns 'text' instead of 'question')
+                                this.questions = this.questions.map(function (q, i) {
+                                    return Object.assign({}, q, {
+                                        index: i,
+                                        question: q.question || q.text || q.question_text || q.content || q.q || '(Question not available)',
+                                        typeLabel: q.typeLabel || (q.type ? q.type.charAt(0).toUpperCase() + q.type.slice(1) : 'General'),
+                                    });
+                                });
+
+                                if (this.questions.length === 0) {
+                                    console.warn('InterviewSession: No questions loaded.');
+                                    return;
+                                }
+
+                                console.log('InterviewSession: Loaded', this.questions.length, 'questions. First:', this.questions[0]);
+                                this.loadAnswer();
+                                this.startTimers();
+
+                                // ── Proctoring ──────────────────────────────────────────
+                                var acSelf = this;
+
+                                // 1. Force fullscreen
+                                (function requestFS() {
+                                    var el = document.documentElement;
+                                    if (el.requestFullscreen) el.requestFullscreen();
+                                    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+                                    else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+                                })();
+
+                                // 2. Detect fullscreen exit
+                                document.addEventListener('fullscreenchange', function () {
+                                    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                                        acSelf.fsViolations = (acSelf.fsViolations || 0) + 1;
+                                        if (acSelf.fsViolations >= 3) {
+                                            acSelf.antiCheatMessage = 'You exited fullscreen 3 times. Your assessment is being submitted automatically.';
+                                            acSelf.antiCheatVisible = true;
+                                            setTimeout(function () { acSelf.finishSession(); }, 2500);
+                                        } else {
+                                            var left = 3 - acSelf.fsViolations;
+                                            acSelf.antiCheatMessage = 'Fullscreen is required. Please return to fullscreen. ' + left + ' more violation' + (left === 1 ? '' : 's') + ' will auto-submit. Click "I understand" to restore fullscreen.';
+                                            acSelf.antiCheatVisible = true;
+                                        }
+                                    }
+                                });
+                                document.addEventListener('webkitfullscreenchange', function () {
+                                    document.dispatchEvent(new Event('fullscreenchange'));
+                                });
+
+                                // 3. Restore fullscreen when user dismisses warning
+                                acSelf._restoreFS = function () {
+                                    var el = document.documentElement;
+                                    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                                        if (el.requestFullscreen) el.requestFullscreen();
+                                        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+                                    }
+                                };
+
+                                // 4. Detect tab / window switching
+                                document.addEventListener('visibilitychange', function () {
+                                    if (document.hidden) { acSelf.handleTabSwitch(); }
+                                });
+
+                                // 5. Block keyboard shortcuts: Ctrl+C, Ctrl+A, PrintScreen
+                                document.addEventListener('keydown', function (e) {
+                                    if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.key === 'a' || e.key === 'A')) {
+                                        var qEl = document.getElementById('question-text');
+                                        if (qEl && qEl.contains(document.activeElement || document.elementFromPoint(0,0))) {
+                                            e.preventDefault();
+                                        }
+                                    }
+                                    if (e.key === 'PrintScreen') {
+                                        e.preventDefault();
+                                        acSelf.antiCheatMessage = 'Screenshots are not permitted during this assessment.';
+                                        acSelf.antiCheatVisible = true;
+                                    }
+                                });
+
+                                // 6. Block copy on question area
+                                document.addEventListener('copy', function (e) {
+                                    var qEl = document.getElementById('question-text');
+                                    if (qEl && qEl.contains(window.getSelection().anchorNode)) {
+                                        e.preventDefault();
+                                        acSelf.antiCheatMessage = 'Copying questions is not permitted during this assessment.';
+                                        acSelf.antiCheatVisible = true;
+                                    }
+                                });
+
+                                // 7. Split-screen detection via window resize
+                                window.addEventListener('resize', function () {
+                                    var ratio = window.innerWidth / window.screen.width;
+                                    if (ratio < 0.75) {
+                                        acSelf.antiCheatMessage = 'Split-screen detected. Please return to fullscreen to continue your assessment.';
+                                        acSelf.antiCheatVisible = true;
+                                        acSelf._restoreFS();
+                                    }
+                                });
+                                // ── End Proctoring ───────────────────────────────────────
+
+                                // Request camera + microphone access
+                                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                                    var camSelf = this;
+                                    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                                        .then(function (stream) {
+                                            camSelf.mediaStream = stream;
+                                            camSelf.cameraActive = true;
+                                            camSelf.micActive    = true;
+                                            var vid = document.getElementById('camera-preview');
+                                            if (vid) { vid.srcObject = stream; vid.play(); }
+                                        })
+                                        .catch(function (err) {
+                                            camSelf.cameraError = 'Camera/microphone access was denied (' + err.name + '). Your session has been flagged for review.';
+                                            console.warn('Camera/mic denied:', err.name);
+                                        });
+                                } else {
+                                    this.cameraError = 'This browser does not support camera access. Please use Chrome or Edge.';
+                                }
+                            },
+
+                            get currentQuestion() {
+                                return this.questions[this.currentIndex] || {};
+                            },
+
+                            get currentQuestionNumber() {
+                                return this.currentIndex + 1;
+                            },
+
+                            get totalQuestions() {
+                                return this.questions.length;
+                            },
+
+                            get progressPercent() {
+                                return Math.round(((this.currentIndex + 1) / this.totalQuestions) * 100);
+                            },
+
+                            get answeredCount() {
+                                return Object.keys(this.answers).length;
+                            },
+
+                            get averageScore() {
+                                var scores = Object.values(this.answers)
+                                    .map(function (entry) { return entry.evaluation ? entry.evaluation.score : undefined; })
+                                    .filter(function (score) { return typeof score === 'number'; });
+                                if (scores.length === 0) { return 'â€”'; }
+                                var total = scores.reduce(function (acc, val) { return acc + val; }, 0);
+                                return Math.round(total / scores.length) + '%';
+                            },
+
+                            get formattedQuestionTimer() {
+                                return this.formatSeconds(this.questionSeconds);
+                            },
+
+                            get formattedTotalTimer() {
+                                return this.formatSeconds(this.totalSeconds);
+                            },
+
+                            get questionBadgeClass() {
+                                switch (this.currentQuestion.type) {
+                                    case 'behavioral': return 'bg-yellow-100 text-yellow-800';
+                                    case 'technical': return 'bg-blue-100 text-blue-800';
+                                    case 'situational': return 'bg-purple-100 text-purple-800';
+                                    default: return 'bg-gray-100 text-gray-700';
+                                }
+                            },
+
+                            startTimers() {
+                                var self = this;
+                                this.timerInterval = setInterval(function () { self.totalSeconds++; }, 1000);
+                                this.questionInterval = setInterval(function () { self.questionSeconds++; }, 1000);
+                            },
+
+                            resetQuestionTimer() { this.questionSeconds = 0; },
+
+                            formatSeconds(seconds) {
+                                var mins = Math.floor(seconds / 60);
+                                var secs = seconds % 60;
+                                return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+                            },
+
+                            loadAnswer() {
+                                var existing = this.answers[this.currentIndex];
+                                this.answerText = existing ? (existing.answer || '') : '';
+                                this.followUps = [];
+                                this.resetQuestionTimer();
+                            },
+
+                            goTo(index) {
+                                if (index < 0 || index >= this.totalQuestions) { return; }
+                                this.currentIndex = index;
+                                this.loadAnswer();
+                                this.showFeedback = true;
+                            },
+
+                            previousQuestion() { this.goTo(this.currentIndex - 1); },
+                            nextQuestion() { this.goTo(this.currentIndex + 1); },
+
+                            navigatorClass(index) {
+                                if (index === this.currentIndex) { return 'bg-indigo-500 text-white shadow'; }
+                                if (this.answers[index]) { return 'bg-emerald-500 text-white shadow'; }
+                                return 'bg-gray-200 text-gray-600 hover:bg-gray-300';
+                            },
+
+                            async saveAnswer() {
+                                if (!this.answerText.trim()) {
+                                    alert('Please type your answer before requesting feedback.');
+                                    return;
+                                }
+                                this.saving = true;
+                                try {
+                                    var response = await fetch(this.submitUrl, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        },
+                                        body: JSON.stringify({
+                                            question_index: this.currentIndex,
+                                            question: this.currentQuestion.question,
+                                            answer: this.answerText,
+                                        })
+                                    });
+                                    if (!response.ok) { throw new Error('Failed to save answer.'); }
+                                    var data = await response.json();
+                                    if (data.success) {
+                                        this.answers[this.currentIndex] = {
+                                            question: this.currentQuestion.question,
+                                            answer: this.answerText,
+                                            evaluation: data.evaluation || null,
+                                            saved_at: new Date().toISOString(),
+                                        };
+                                        this.showFeedback = true;
+                                        // Auto-advance to next question after saving
+                                        if (this.currentIndex < this.totalQuestions - 1) {
+                                            this.nextQuestion();
+                                        }
+                                    }
+                                } catch (error) {
+                                    console.error(error);
+                                    alert('We could not save your answer right now. Please try again.');
+                                } finally {
+                                    this.saving = false;
+                                }
+                            },
+
+                            async fetchFollowUps() {
+                                if (!this.answerText.trim()) {
+                                    alert('Provide an answer first to get follow-up questions.');
+                                    return;
+                                }
+                                this.loadingFollowUps = true;
+                                this.followUps = [];
+                                try {
+                                    var response = await fetch(this.followUpUrl, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        },
+                                        body: JSON.stringify({
+                                            question: this.currentQuestion.question,
+                                            answer: this.answerText,
+                                        })
+                                    });
+                                    if (!response.ok) { throw new Error('Failed to fetch follow-up questions.'); }
+                                    this.followUps = await response.json();
+                                } catch (error) {
+                                    console.error(error);
+                                    alert('Unable to fetch follow-up questions at the moment.');
+                                } finally {
+                                    this.loadingFollowUps = false;
+                                }
+                            },
+
+                            skipQuestion() {
+                                if (confirm('Skip this question and return later?')) { this.nextQuestion(); }
+                            },
+
+                            toggleFeedback() { this.showFeedback = !this.showFeedback; },
+
+                            handleTabSwitch() {
+                                this.tabSwitchCount++;
+                                if (this.tabSwitchCount >= 3) {
+                                    this.antiCheatMessage = 'You have switched tabs 3 times. Your assessment is being submitted automatically.';
+                                    this.antiCheatVisible = true;
+                                    var self = this;
+                                    setTimeout(function () { self.finishSession(); }, 2500);
+                                } else {
+                                    var left = 3 - this.tabSwitchCount;
+                                    this.antiCheatMessage = 'Warning ' + this.tabSwitchCount + '/3: Tab switching is not allowed. ' + left + ' more violation' + (left === 1 ? '' : 's') + ' will auto-submit your assessment.';
+                                    this.antiCheatVisible = true;
+                                }
+                            },
+
+                            handlePasteAttempt() {
+                                this.antiCheatMessage = 'Copy-pasting is not permitted. Please type your answer directly to ensure authenticity.';
+                                this.antiCheatVisible = true;
+                            },
+
+                            dismissAntiCheat() { this.antiCheatVisible = false; this._restoreFS && this._restoreFS(); },
+
+                            finishSession() {
+                                if (!this.cameraActive) {
+                                    if (!confirm('Camera/microphone access was not granted. Your session will be flagged for review. Finish anyway?')) { return; }
+                                }
+                                if (this.answeredCount === 0) {
+                                    if (!confirm('You have not saved any answers yet. Are you sure you want to finish?')) { return; }
+                                }
+                                window.location.href = this.completeUrl;
+                            },
+
+                            beforeDestroy() {
+                                clearInterval(this.timerInterval);
+                                clearInterval(this.questionInterval);
+                                if (this.mediaStream) {
+                                    this.mediaStream.getTracks().forEach(function (t) { t.stop(); });
+                                }
+                            }
+                        };
+                };
+            </script>
+
+            <div x-data="interviewSession(window.__interviewConfig)" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                {{-- Anti-cheat warning overlay --}}
+                <template x-if="antiCheatVisible">
+                    <div class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.6);">
+                        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center space-y-4">
+                            <div class="text-5xl">&#128683;</div>
+                            <h3 class="text-lg font-bold text-red-700">Integrity Warning</h3>
+                            <p class="text-sm text-gray-700 leading-relaxed" x-text="antiCheatMessage"></p>
+                            <template x-if="tabSwitchCount < 3">
+                                <button @click="dismissAntiCheat()" class="mt-2 px-6 py-2 bg-indigo-600 text-white rounded-md font-semibold hover:bg-indigo-700 transition">
+                                    I understand, continue
+                                </button>
+                            </template>
+                            <template x-if="tabSwitchCount >= 3">
+                                <p class="text-sm text-gray-500 italic">Submitting your assessment&#8230;</p>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                {{-- Empty state guard --}}
+                @if(empty($flattenedQuestions))
+                    <div class="lg:col-span-3 bg-amber-50 border border-amber-200 rounded-xl p-10 text-center">
+                        <div class="text-5xl mb-4">”</div>
+                        <h3 class="text-lg font-semibold text-amber-800 mb-2">No questions were generated</h3>
+                        <p class="text-sm text-amber-700 mb-6">The AI could not generate questions for this session. Please start a new session and try again.</p>
+                        <a href="{{ route('interview.create') }}" class="inline-flex items-center px-5 py-2 bg-indigo-600 text-white rounded-md font-semibold hover:bg-indigo-700 transition">
+                            <i class="fas fa-redo mr-2"></i> Start New Session
+                        </a>
+                    </div>
+                @else
 
                 <!-- Primary Column -->
                 <div class="lg:col-span-2 space-y-6">
@@ -76,7 +508,13 @@
                         </div>
 
                         <div>
-                            <h3 class="text-2xl font-bold text-gray-900" x-text="currentQuestion.question"></h3>
+                            {{-- Alpine-bound question text. The server-rendered fallback below is hidden once Alpine loads. --}}
+                            <h3 id="question-text" class="text-2xl font-bold text-gray-900 select-none" style="user-select:none;-webkit-user-select:none" x-text="currentQuestion.question" @contextmenu.prevent @selectstart.prevent @dragstart.prevent>
+                                {{-- server-rendered fallback: shows first question instantly before Alpine binds --}}
+                                @if(!empty($flattenedQuestions[0]['question']))
+                                    {{ $flattenedQuestions[0]['question'] }}
+                                @endif
+                            </h3>
                             <template x-if="currentQuestion.context">
                                 <div class="mt-4 p-4 bg-gray-50 rounded-lg">
                                     <p class="text-sm text-gray-700" x-text="currentQuestion.context"></p>
@@ -92,94 +530,19 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Your Answer</label>
-                            <textarea x-model="answerText" rows="8" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Type your response here... Include specific examples and quantify your impact where possible."></textarea>
+                            <textarea x-model="answerText" @paste.prevent="handlePasteAttempt()" rows="8" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Type your response here... Include specific examples and quantify your impact where possible."></textarea>
                             <p class="mt-2 text-xs text-gray-500">Tip: Speak your answer out loud first, then summarize it here to capture key points.</p>
                         </div>
 
                         <div class="flex flex-wrap gap-3">
                             <button type="button" @click="saveAnswer" :disabled="saving" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md font-semibold hover:bg-indigo-700 transition disabled:opacity-70">
                                 <i class="fas fa-save mr-2"></i>
-                                <span x-text="saving ? 'Saving...' : 'Save & Get Feedback'"></span>
-                            </button>
-                            <button type="button" @click="fetchFollowUps" :disabled="loadingFollowUps" class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md font-semibold hover:bg-gray-50 transition disabled:opacity-60">
-                                <i class="fas fa-comments mr-2"></i>
-                                <span x-text="loadingFollowUps ? 'Loading...' : 'Ask for follow-up questions'"></span>
+                                <span x-text="saving ? 'Saving...' : 'Save Answer'"></span>
                             </button>
                             <button type="button" @click="skipQuestion" class="inline-flex items-center px-4 py-2 border border-transparent text-red-600 font-semibold rounded-md hover:bg-red-50 transition">
                                 <i class="fas fa-forward mr-2"></i> Skip Question
                             </button>
                         </div>
-
-                        <!-- Evaluation -->
-                        <template x-if="answers[currentIndex]?.evaluation">
-                            <div class="border border-green-200 bg-green-50 rounded-lg p-5 space-y-4">
-                                <div class="flex flex-wrap justify-between items-center">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-12 h-12 rounded-full bg-white shadow flex items-center justify-center">
-                                            <span class="text-lg font-bold text-green-600" x-text="answers[currentIndex].evaluation.score ?? '—'"></span>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm text-green-700 font-semibold">AI Feedback</p>
-                                            <p class="text-xs text-green-600">Higher scores mean stronger, more structured answers.</p>
-                                        </div>
-                                    </div>
-                                    <button type="button" @click="toggleFeedback" class="text-xs uppercase tracking-wide font-semibold text-green-600">Toggle Details</button>
-                                </div>
-
-                                <div x-show="showFeedback" class="space-y-4">
-                                    <div>
-                                        <p class="text-sm font-semibold text-green-900">Strengths</p>
-                                        <ul class="mt-2 space-y-1 text-sm text-green-800 list-disc list-inside">
-                                            <template x-for="strength in answers[currentIndex].evaluation.strengths ?? []" :key="strength">
-                                                <li x-text="strength"></li>
-                                            </template>
-                                        </ul>
-                                    </div>
-
-                                    <div>
-                                        <p class="text-sm font-semibold text-amber-900">Areas to Improve</p>
-                                        <ul class="mt-2 space-y-1 text-sm text-amber-800 list-disc list-inside">
-                                            <template x-for="gap in answers[currentIndex].evaluation.areas_for_improvement ?? []" :key="gap">
-                                                <li x-text="gap"></li>
-                                            </template>
-                                        </ul>
-                                    </div>
-
-                                    <template x-if="answers[currentIndex].evaluation.star_method_usage">
-                                        <div class="bg-white rounded-md p-4 shadow-sm">
-                                            <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">STAR Method Coverage</p>
-                                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                                                <template x-for="(used, key) in answers[currentIndex].evaluation.star_method_usage" :key="key">
-                                                    <div class="flex items-center gap-2">
-                                                        <div :class="used ? 'bg-green-500' : 'bg-gray-300'" class="w-2 h-2 rounded-full"></div>
-                                                        <span class="capitalize" x-text="key"></span>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </div>
-                                    </template>
-
-                                    <p class="text-sm text-gray-700" x-text="answers[currentIndex].evaluation.overall_feedback"></p>
-                                </div>
-                            </div>
-                        </template>
-
-                        <!-- Follow Up Questions -->
-                        <template x-if="followUps.length">
-                            <div class="border border-purple-200 bg-purple-50 rounded-lg p-4 space-y-2">
-                                <div class="flex items-center gap-2 text-purple-700 font-semibold">
-                                    <i class="fas fa-question mr-1"></i> Consider these follow-up questions
-                                </div>
-                                <ul class="text-sm text-purple-800 space-y-2">
-                                    <template x-for="item in followUps" :key="item.question">
-                                        <li>
-                                            <p class="font-medium" x-text="item.question"></p>
-                                            <p class="text-xs uppercase tracking-wide" x-text="item.purpose" ></p>
-                                        </li>
-                                    </template>
-                                </ul>
-                            </div>
-                        </template>
 
                         <!-- Navigation -->
                         <div class="flex flex-wrap gap-3 pt-4 border-t border-gray-100">
@@ -199,6 +562,41 @@
 
                 <!-- Secondary Column -->
                 <div class="space-y-6">
+
+                    <!-- Camera Monitor -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+                                <i class="fas fa-video mr-1 text-indigo-600"></i> Camera Monitor
+                            </h3>
+                            <div class="flex items-center gap-3 text-xs">
+                                <span class="flex items-center gap-1" :class="cameraActive ? 'text-green-600' : 'text-red-500'">
+                                    <span class="inline-block w-2 h-2 rounded-full" :class="cameraActive ? 'bg-green-500' : 'bg-red-500'"></span>
+                                    <span x-text="cameraActive ? 'Cam Live' : 'Cam Off'"></span>
+                                </span>
+                                <span class="flex items-center gap-1" :class="micActive ? 'text-green-600' : 'text-red-500'">
+                                    <i class="fas" :class="micActive ? 'fa-microphone' : 'fa-microphone-slash'"></i>
+                                    <span x-text="micActive ? 'Mic On' : 'Mic Off'"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <video id="camera-preview" autoplay muted playsinline x-show="cameraActive"
+                               class="w-full rounded-lg bg-gray-900 aspect-video object-cover"
+                               style="transform:scaleX(-1);"></video>
+                        <template x-if="!cameraActive && !cameraError">
+                            <div class="aspect-video rounded-lg bg-gray-100 flex flex-col items-center justify-center text-gray-400 text-sm gap-2">
+                                <i class="fas fa-spinner fa-spin text-2xl"></i>
+                                <span>Requesting camera access&hellip;</span>
+                            </div>
+                        </template>
+                        <template x-if="cameraError">
+                            <div class="aspect-video rounded-lg bg-red-50 flex flex-col items-center justify-center text-red-700 text-xs gap-2 p-3 text-center">
+                                <i class="fas fa-video-slash text-2xl"></i>
+                                <span x-text="cameraError"></span>
+                            </div>
+                        </template>
+                    </div>
+
                     <!-- Question Navigator -->
                     <div class="bg-white rounded-lg shadow-sm p-6">
                         <div class="flex items-center justify-between mb-4">
@@ -232,12 +630,12 @@
                                 <span class="font-semibold" x-text="answeredCount + ' / ' + totalQuestions"></span>
                             </li>
                             <li class="flex items-center justify-between">
-                                <span>Average score</span>
-                                <span class="font-semibold" x-text="averageScore"></span>
+                                <span>Integrity alerts</span>
+                                <span class="font-semibold" :class="tabSwitchCount > 0 ? 'text-red-600' : 'text-gray-900'" x-text="tabSwitchCount + ' / 3'"></span>
                             </li>
                         </ul>
                         <div class="pt-3 border-t border-gray-100 text-xs text-gray-500">
-                            Answers auto-save locally. Remember to click "Finish" to generate your detailed report.
+                            Answers save instantly. Your Vantage AI skill report is generated when you finish all questions.
                         </div>
                     </div>
 
@@ -254,7 +652,7 @@
                             </li>
                             <li class="flex items-start gap-2">
                                 <i class="fas fa-check-circle text-green-600 mt-1"></i>
-                                Pause after reading the question—take 20 seconds to outline your answer.
+                                Pause after reading the questionâ€”take 20 seconds to outline your answer.
                             </li>
                             <li class="flex items-start gap-2">
                                 <i class="fas fa-check-circle text-green-600 mt-1"></i>
@@ -267,247 +665,12 @@
                         </ul>
                     </div>
                 </div>
+                @endif {{-- end @else for empty questions --}}
             </div>
         </div>
     </div>
 
-    @push('scripts')
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('interviewSession', (config) => ({
-                questions: config.questions || [],
-                answers: config.answers || {},
-                sessionId: config.sessionId,
-                submitUrl: config.submitUrl,
-                followUpUrl: config.followUpUrl,
-                completeUrl: config.completeUrl,
-                currentIndex: 0,
-                answerText: '',
-                saving: false,
-                showFeedback: true,
-                followUps: [],
-                loadingFollowUps: false,
-                questionSeconds: 0,
-                totalSeconds: 0,
-                timerInterval: null,
-                questionInterval: null,
 
-                init() {
-                    if (this.questions.length === 0) {
-                        return;
-                    }
-                    this.loadAnswer();
-                    this.startTimers();
-                },
-
-                get currentQuestion() {
-                    return this.questions[this.currentIndex] || {};
-                },
-
-                get currentQuestionNumber() {
-                    return this.currentIndex + 1;
-                },
-
-                get totalQuestions() {
-                    return this.questions.length;
-                },
-
-                get progressPercent() {
-                    return Math.round(((this.currentIndex + 1) / this.totalQuestions) * 100);
-                },
-
-                get answeredCount() {
-                    return Object.keys(this.answers).length;
-                },
-
-                get averageScore() {
-                    const scores = Object.values(this.answers)
-                        .map(entry => entry.evaluation?.score)
-                        .filter(score => typeof score === 'number');
-                    if (scores.length === 0) {
-                        return '—';
-                    }
-                    const total = scores.reduce((acc, val) => acc + val, 0);
-                    return Math.round(total / scores.length) + '%';
-                },
-
-                get formattedQuestionTimer() {
-                    return this.formatSeconds(this.questionSeconds);
-                },
-
-                get formattedTotalTimer() {
-                    return this.formatSeconds(this.totalSeconds);
-                },
-
-                get questionBadgeClass() {
-                    switch (this.currentQuestion.type) {
-                        case 'behavioral':
-                            return 'bg-yellow-100 text-yellow-800';
-                        case 'technical':
-                            return 'bg-blue-100 text-blue-800';
-                        case 'situational':
-                            return 'bg-purple-100 text-purple-800';
-                        default:
-                            return 'bg-gray-100 text-gray-700';
-                    }
-                },
-
-                startTimers() {
-                    this.timerInterval = setInterval(() => {
-                        this.totalSeconds++;
-                    }, 1000);
-
-                    this.questionInterval = setInterval(() => {
-                        this.questionSeconds++;
-                    }, 1000);
-                },
-
-                resetQuestionTimer() {
-                    this.questionSeconds = 0;
-                },
-
-                formatSeconds(seconds) {
-                    const mins = Math.floor(seconds / 60);
-                    const secs = seconds % 60;
-                    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-                },
-
-                loadAnswer() {
-                    const existing = this.answers[this.currentIndex];
-                    this.answerText = existing?.answer || '';
-                    this.followUps = [];
-                    this.resetQuestionTimer();
-                },
-
-                goTo(index) {
-                    if (index < 0 || index >= this.totalQuestions) {
-                        return;
-                    }
-                    this.currentIndex = index;
-                    this.loadAnswer();
-                    this.showFeedback = true;
-                },
-
-                previousQuestion() {
-                    this.goTo(this.currentIndex - 1);
-                },
-
-                nextQuestion() {
-                    this.goTo(this.currentIndex + 1);
-                },
-
-                navigatorClass(index) {
-                    if (index === this.currentIndex) {
-                        return 'bg-indigo-500 text-white shadow';
-                    }
-                    if (this.answers[index]) {
-                        return 'bg-emerald-500 text-white shadow';
-                    }
-                    return 'bg-gray-200 text-gray-600 hover:bg-gray-300';
-                },
-
-                async saveAnswer() {
-                    if (!this.answerText.trim()) {
-                        alert('Please type your answer before requesting feedback.');
-                        return;
-                    }
-
-                    this.saving = true;
-                    try {
-                        const response = await fetch(this.submitUrl, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                question_index: this.currentIndex,
-                                question: this.currentQuestion.question,
-                                answer: this.answerText,
-                            })
-                        });
-
-                        if (!response.ok) {
-                            throw new Error('Failed to save answer.');
-                        }
-
-                        const data = await response.json();
-                        if (data.success) {
-                            this.answers[this.currentIndex] = {
-                                question: this.currentQuestion.question,
-                                answer: this.answerText,
-                                evaluation: data.evaluation || null,
-                                saved_at: new Date().toISOString(),
-                            };
-                            this.showFeedback = true;
-                        }
-                    } catch (error) {
-                        console.error(error);
-                        alert('We could not save your answer right now. Please try again.');
-                    } finally {
-                        this.saving = false;
-                    }
-                },
-
-                async fetchFollowUps() {
-                    if (!this.answerText.trim()) {
-                        alert('Provide an answer first to get follow-up questions.');
-                        return;
-                    }
-                    this.loadingFollowUps = true;
-                    this.followUps = [];
-
-                    try {
-                        const response = await fetch(this.followUpUrl, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                question: this.currentQuestion.question,
-                                answer: this.answerText,
-                            })
-                        });
-
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch follow-up questions.');
-                        }
-
-                        this.followUps = await response.json();
-                    } catch (error) {
-                        console.error(error);
-                        alert('Unable to fetch follow-up questions at the moment.');
-                    } finally {
-                        this.loadingFollowUps = false;
-                    }
-                },
-
-                skipQuestion() {
-                    if (confirm('Skip this question and return later?')) {
-                        this.nextQuestion();
-                    }
-                },
-
-                toggleFeedback() {
-                    this.showFeedback = !this.showFeedback;
-                },
-
-                finishSession() {
-                    if (this.answeredCount === 0) {
-                        if (!confirm('You have not saved any answers yet. Are you sure you want to finish?')) {
-                            return;
-                        }
-                    }
-                    window.location.href = this.completeUrl;
-                },
-
-                beforeDestroy() {
-                    clearInterval(this.timerInterval);
-                    clearInterval(this.questionInterval);
-                }
-            }));
-        });
-    </script>
-    @endpush
 </x-app-layout>
+
+

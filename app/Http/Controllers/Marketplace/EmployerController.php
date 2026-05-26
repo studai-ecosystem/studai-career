@@ -12,6 +12,8 @@ use App\Models\MarketplaceMilestone;
 use App\Models\MarketplaceProject;
 use App\Models\MarketplaceProposal;
 use App\Models\SavedFreelancer;
+use App\Notifications\ProposalOfferNotification;
+use App\Notifications\ProposalStatusNotification;
 use App\Services\MarketplaceService;
 use App\Services\PaymentGatewayService;
 use Illuminate\Http\JsonResponse;
@@ -35,7 +37,7 @@ class EmployerController extends Controller
         $this->marketplaceService->forUser(auth()->user());
         $stats = $this->marketplaceService->getEmployerStats();
 
-        $myProjects = MarketplaceProject::where('employer_id', auth()->id())
+        $projects = MarketplaceProject::where('employer_id', auth()->id())
             ->withCount('proposals')
             ->orderByDesc('created_at')
             ->limit(10)
@@ -47,15 +49,38 @@ class EmployerController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        $pendingProposals = MarketplaceProposal::whereHas('project', function ($q) {
+        $recentProposals = MarketplaceProposal::whereHas('project', function ($q) {
             $q->where('employer_id', auth()->id());
         })->pending()->with(['freelancer', 'project'])->limit(10)->get();
 
+        $savedFreelancers = SavedFreelancer::where('employer_id', auth()->id())
+            ->with(['freelancerProfile.user'])
+            ->limit(5)
+            ->get();
+
+        $spending = [
+            'this_month'  => \App\Models\MarketplaceEscrow::where('payer_id', auth()->id())
+                ->released()
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->sum('amount'),
+            'last_month'  => \App\Models\MarketplaceEscrow::where('payer_id', auth()->id())
+                ->released()
+                ->whereMonth('created_at', now()->subMonth()->month)
+                ->whereYear('created_at', now()->subMonth()->year)
+                ->sum('amount'),
+            'in_escrow'   => \App\Models\MarketplaceEscrow::where('payer_id', auth()->id())
+                ->held()
+                ->sum('amount'),
+        ];
+
         return view('marketplace.employer.dashboard', [
-            'stats' => $stats,
-            'myProjects' => $myProjects,
+            'stats'           => $stats,
+            'projects'        => $projects,
             'activeContracts' => $activeContracts,
-            'pendingProposals' => $pendingProposals,
+            'recentProposals' => $recentProposals,
+            'savedFreelancers'=> $savedFreelancers,
+            'spending'        => $spending,
         ]);
     }
 
@@ -126,7 +151,7 @@ class EmployerController extends Controller
             'message' => $request->publish 
                 ? 'Project published successfully!' 
                 : 'Project saved as draft.',
-            'redirect' => route('marketplace.employer.project', $project),
+            'redirect' => route('marketplace.employer.manage-project', $project),
         ]);
     }
 
@@ -276,10 +301,31 @@ class EmployerController extends Controller
         }
 
         $proposal->shortlist();
+        $proposal->freelancer?->notify(new ProposalStatusNotification($proposal, 'shortlisted'));
 
         return response()->json([
             'success' => true,
-            'message' => 'Proposal shortlisted!',
+            'message' => 'Proposal shortlisted! Freelancer has been notified.',
+        ]);
+    }
+
+    /**
+     * Send a hiring offer to a freelancer.
+     */
+    public function sendOffer(MarketplaceProposal $proposal): JsonResponse
+    {
+        $this->authorize('update', $proposal->project);
+
+        if (!in_array($proposal->status, ['pending', 'shortlisted'], true)) {
+            return response()->json(['success' => false, 'message' => 'Cannot send offer for this proposal.'], 422);
+        }
+
+        $proposal->sendOffer();
+        $proposal->freelancer?->notify(new ProposalOfferNotification($proposal));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Offer sent! The freelancer has been notified by email.',
         ]);
     }
 
@@ -306,7 +352,7 @@ class EmployerController extends Controller
                 'success' => true,
                 'contract' => $contract,
                 'message' => 'Proposal accepted! Contract created.',
-                'redirect' => route('marketplace.contract', $contract),
+                'redirect' => route('marketplace.contracts.show', $contract),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -324,10 +370,11 @@ class EmployerController extends Controller
         $this->authorize('update', $proposal->project);
 
         $proposal->reject();
+        $proposal->freelancer?->notify(new ProposalStatusNotification($proposal, 'rejected'));
 
         return response()->json([
             'success' => true,
-            'message' => 'Proposal rejected.',
+            'message' => 'Proposal rejected. Freelancer has been notified.',
         ]);
     }
 
@@ -530,5 +577,101 @@ class EmployerController extends Controller
                 'message' => $e->getMessage(),
             ], 422);
         }
+    }
+
+    // ── Route aliases & missing methods ───────────────────────────────────
+
+    /** Route calls manageProject(); controller has showProject() */
+    public function manageProject(MarketplaceProject $project): View
+    {
+        return $this->showProject($project);
+    }
+
+    /** Route calls reviewProposals() – dedicated proposal review page with AI scoring */
+    public function reviewProposals(MarketplaceProject $project): View
+    {
+        $this->authorize('view', $project);
+
+        $proposals = MarketplaceProposal::where('project_id', $project->id)
+            ->with(['freelancer.freelancerProfile', 'project'])
+            ->orderByDesc('ai_match_score')
+            ->orderByDesc('created_at')
+            ->get();
+
+        $stats = [
+            'total'       => $proposals->count(),
+            'pending'     => $proposals->where('status', 'pending')->count(),
+            'shortlisted' => $proposals->where('status', 'shortlisted')->count(),
+            'offered'     => $proposals->where('offer_sent_at', '!=', null)->where('status', 'shortlisted')->count(),
+            'accepted'    => $proposals->where('status', 'accepted')->count(),
+            'rejected'    => $proposals->where('status', 'rejected')->count(),
+            'avg_score'   => $proposals->whereNotNull('ai_match_score')->avg('ai_match_score'),
+        ];
+
+        return view('marketplace.employer.review-proposals', compact('project', 'proposals', 'stats'));
+    }
+
+    /** Route calls hireFreelancer(); controller has acceptProposal() */
+    public function hireFreelancer(Request $request, MarketplaceProposal $proposal): JsonResponse
+    {
+        return $this->acceptProposal($request, $proposal);
+    }
+
+    /** List all employer's projects */
+    public function projects(Request $request): View
+    {
+        $status   = $request->get('status');
+        $query    = MarketplaceProject::where('employer_id', auth()->id())->withCount('proposals')->orderByDesc('created_at');
+        if ($status) {
+            $query->where('status', $status);
+        }
+        $projects = $query->paginate(15);
+        return view('marketplace.employer.projects', compact('projects'));
+    }
+
+    /** Delete a project */
+    public function deleteProject(MarketplaceProject $project): JsonResponse
+    {
+        $this->authorize('delete', $project);
+        $project->delete();
+        return response()->json(['success' => true, 'message' => 'Project deleted.']);
+    }
+
+    /** Show invite-a-freelancer form */
+    public function showInviteForm(FreelancerProfile $profile): View
+    {
+        $myProjects = MarketplaceProject::where('employer_id', auth()->id())->open()->published()->get();
+        return view('marketplace.employer.invite', compact('profile', 'myProjects'));
+    }
+
+    /** Send invitation (alias for inviteFreelancer – but takes profile, not project) */
+    public function sendInvitation(Request $request, FreelancerProfile $profile): JsonResponse
+    {
+        $request->validate([
+            'project_id' => 'required|exists:marketplace_projects,id',
+            'message'    => 'nullable|string|max:1000',
+        ]);
+
+        $project = MarketplaceProject::findOrFail($request->project_id);
+        $this->authorize('update', $project);
+
+        $existing = \App\Models\MarketplaceInvitation::where('project_id', $project->id)
+            ->where('freelancer_id', $profile->user_id)
+            ->first();
+
+        if ($existing) {
+            return response()->json(['success' => false, 'message' => 'Already invited.'], 422);
+        }
+
+        \App\Models\MarketplaceInvitation::create([
+            'project_id'    => $project->id,
+            'employer_id'   => auth()->id(),
+            'freelancer_id' => $profile->user_id,
+            'message'       => $request->message,
+            'status'        => 'pending',
+            'expires_at'    => now()->addDays(7),
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Invitation sent!']);
     }
 }

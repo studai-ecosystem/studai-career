@@ -12,7 +12,12 @@ use OpenAI\Laravel\Facades\OpenAI;
 
 class AnswerEvaluationService
 {
-    protected string $model = 'gpt-5.1'; // Azure OpenAI GPT-5.1
+    protected string $model;
+
+    public function __construct()
+    {
+        $this->model = config('ai.azure.models.chat', 'gpt-4o');
+    }
 
     // Filler words to detect
     protected array $fillerWords = [
@@ -142,13 +147,13 @@ Return ONLY a JSON object:
 EOT;
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5-mini',
+                'model' => config('ai.azure.models.chat_mini'),
                 'messages' => [
                     ['role' => 'system', 'content' => 'You are an expert interview evaluator focused on content quality.'],
                     ['role' => 'user', 'content' => $prompt],
                 ],
                 'temperature' => 0.3,
-                'max_tokens' => 500,
+                'max_completion_tokens' => 500,
             ]);
 
             $result = json_decode($response->choices[0]->message->content, true);
@@ -204,13 +209,13 @@ Return ONLY a JSON object:
 EOT;
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5-mini',
+                'model' => config('ai.azure.models.chat_mini'),
                 'messages' => [
                     ['role' => 'system', 'content' => 'You are an expert at analyzing STAR methodology in interview answers.'],
                     ['role' => 'user', 'content' => $prompt],
                 ],
                 'temperature' => 0.2,
-                'max_tokens' => 600,
+                'max_completion_tokens' => 600,
             ]);
 
             $analysis = json_decode($response->choices[0]->message->content, true);
@@ -259,13 +264,13 @@ Return ONLY a JSON object:
 EOT;
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5-mini',
+                'model' => config('ai.azure.models.chat_mini'),
                 'messages' => [
                     ['role' => 'system', 'content' => 'You are an expert in evaluating communication clarity.'],
                     ['role' => 'user', 'content' => $prompt],
                 ],
                 'temperature' => 0.3,
-                'max_tokens' => 400,
+                'max_completion_tokens' => 400,
             ]);
 
             $result = json_decode($response->choices[0]->message->content, true);
@@ -328,13 +333,13 @@ Return ONLY a JSON object:
 EOT;
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5-mini',
+                'model' => config('ai.azure.models.chat_mini'),
                 'messages' => [
                     ['role' => 'system', 'content' => 'You are an expert at detecting confidence levels in communication.'],
                     ['role' => 'user', 'content' => $prompt],
                 ],
                 'temperature' => 0.3,
-                'max_tokens' => 300,
+                'max_completion_tokens' => 300,
             ]);
 
             $aiResult = json_decode($response->choices[0]->message->content, true);
@@ -443,7 +448,7 @@ EOT;
                     ['role' => 'user', 'content' => $prompt],
                 ],
                 'temperature' => 0.7,
-                'max_tokens' => 800,
+                'max_completion_tokens' => 800,
             ]);
 
             $feedback = json_decode($response->choices[0]->message->content, true);

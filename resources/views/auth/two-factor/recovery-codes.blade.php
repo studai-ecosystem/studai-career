@@ -103,7 +103,7 @@
         const recoveryCodes = @json($recoveryCodes);
 
         function downloadCodes() {
-            const content = 'StudAI Career - Two-Factor Recovery Codes\n\n' +
+            const content = 'StudAI Hire - Two-Factor Recovery Codes\n\n' +
                            'Store these codes in a safe place.\n' +
                            'Each code can only be used once.\n\n' +
                            recoveryCodes.join('\n') +
@@ -134,7 +134,7 @@
                         </style>
                     </head>
                     <body>
-                        <h1>StudAI Career - Recovery Codes</h1>
+                        <h1>StudAI Hire - Recovery Codes</h1>
                         <p>Store these codes in a safe place. Each code can only be used once.</p>
                         <div class="codes">
                             ${recoveryCodes.map(code => `<div class="code">${code}</div>`).join('')}

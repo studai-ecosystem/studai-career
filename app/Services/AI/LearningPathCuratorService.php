@@ -379,7 +379,7 @@ class LearningPathCuratorService
             $content = $this->ai(
                 $prompt,
                 'You are an expert educational content curator. Score learning resources by relevance and quality.',
-                ['temperature' => 0.3, 'model' => 'gpt-5-mini']
+                ['temperature' => 0.3, 'model' => config('ai.azure.models.chat_mini')]
             );
             
             // Parse scoring response

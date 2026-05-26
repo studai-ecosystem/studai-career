@@ -7,6 +7,25 @@ export default {
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
+        './resources/js/**/*.js',
+    ],
+
+    // Safelist dynamic module color classes so they survive Tailwind's purge
+    safelist: [
+        // Module bg/text/border/ring/shadow/from/to
+        { pattern: /bg-module-(coach|interview|jobs|market|negotiation|scout|vantage|resume)-(50|100|200|400|500|600|700|900)/ },
+        { pattern: /text-module-(coach|interview|jobs|market|negotiation|scout|vantage|resume)-(50|100|200|400|500|600|700|900)/ },
+        { pattern: /border-module-(coach|interview|jobs|market|negotiation|scout|vantage|resume)-(50|100|200|400|500|600|700|900)/ },
+        { pattern: /ring-module-(coach|interview|jobs|market|negotiation|scout|vantage|resume)-(50|100|200|400|500|600|700|900)/ },
+        { pattern: /from-module-(coach|interview|jobs|market|negotiation|scout|vantage|resume)-(500|600|700)/ },
+        { pattern: /to-module-(coach|interview|jobs|market|negotiation|scout|vantage|resume)-(500|600|700)/ },
+        { pattern: /shadow-(coach|interview|jobs|market|negotiation|scout|vantage|resume)-glow/ },
+        // Standard color variants
+        { pattern: /bg-(indigo|purple|orange|green|blue|amber|rose|teal|violet|yellow)-(50|100|200|500|600)/ },
+        { pattern: /text-(indigo|purple|orange|green|blue|amber|rose|teal|violet|yellow)-(500|600|700)/ },
+        { pattern: /border-(indigo|purple|orange|green|blue|amber|rose|teal|violet|yellow)-(200|300)/ },
+        // All animate- utilities
+        { pattern: /animate-.*/ },
     ],
 
     darkMode: 'class',
@@ -19,9 +38,8 @@ export default {
             // ============================================
             
             fontFamily: {
-                // Primary: Google Sans / Inter for clean, modern look
-                sans: ['Inter', 'Google Sans', ...defaultTheme.fontFamily.sans],
-                display: ['Google Sans Display', 'Inter', ...defaultTheme.fontFamily.sans],
+                sans: ['Plus Jakarta Sans', 'Inter', ...defaultTheme.fontFamily.sans],
+                display: ['Plus Jakarta Sans', 'Inter', ...defaultTheme.fontFamily.sans],
                 mono: ['JetBrains Mono', 'Fira Code', ...defaultTheme.fontFamily.mono],
             },
 
@@ -119,9 +137,9 @@ export default {
                 // Background variants
                 'canvas': {
                     DEFAULT: '#FFFFFF',
-                    light: '#FAFBFC',
-                    subtle: '#F8F9FA',
-                    muted: '#F1F3F4',
+                    light: '#f7f7fc',
+                    subtle: '#f7f7fc',
+                    muted: '#ebebf5',
                     elevated: '#FFFFFF',
                 },
 
@@ -168,6 +186,109 @@ export default {
                     },
                     'gradient-start': '#1A73E8',
                     'gradient-end': '#A855F7',
+                },
+
+                // ========================================
+                // MODULE ACCENT COLOR SYSTEM
+                // Each feature module has its own identity color
+                // ========================================
+                'module': {
+                    // Career Coach — Purple (wisdom, guidance)
+                    'coach': {
+                        DEFAULT: '#9333ea',
+                        50:  '#faf5ff',
+                        100: '#f3e8ff',
+                        200: '#e9d5ff',
+                        400: '#c084fc',
+                        500: '#a855f7',
+                        600: '#9333ea',
+                        700: '#7c3aed',
+                        900: '#4c1d95',
+                    },
+                    // Interview Lab — Orange (energy, performance)
+                    'interview': {
+                        DEFAULT: '#ea580c',
+                        50:  '#fff7ed',
+                        100: '#ffedd5',
+                        200: '#fed7aa',
+                        400: '#fb923c',
+                        500: '#f97316',
+                        600: '#ea580c',
+                        700: '#c2410c',
+                        900: '#7c2d12',
+                    },
+                    // Jobs / Job Search — Green (growth, opportunity)
+                    'jobs': {
+                        DEFAULT: '#16a34a',
+                        50:  '#f0fdf4',
+                        100: '#dcfce7',
+                        200: '#bbf7d0',
+                        400: '#4ade80',
+                        500: '#22c55e',
+                        600: '#16a34a',
+                        700: '#15803d',
+                        900: '#14532d',
+                    },
+                    // Market Intelligence — Blue (data, intelligence)
+                    'market': {
+                        DEFAULT: '#2563eb',
+                        50:  '#eff6ff',
+                        100: '#dbeafe',
+                        200: '#bfdbfe',
+                        400: '#60a5fa',
+                        500: '#3b82f6',
+                        600: '#2563eb',
+                        700: '#1d4ed8',
+                        900: '#1e3a8a',
+                    },
+                    // Negotiation — Amber/Yellow (power, confidence)
+                    'negotiation': {
+                        DEFAULT: '#d97706',
+                        50:  '#fffbeb',
+                        100: '#fef3c7',
+                        200: '#fde68a',
+                        400: '#fbbf24',
+                        500: '#f59e0b',
+                        600: '#d97706',
+                        700: '#b45309',
+                        900: '#78350f',
+                    },
+                    // S.C.O.U.T. — Rose (precision, radar)
+                    'scout': {
+                        DEFAULT: '#e11d48',
+                        50:  '#fff1f2',
+                        100: '#ffe4e6',
+                        200: '#fecdd3',
+                        400: '#fb7185',
+                        500: '#f43f5e',
+                        600: '#e11d48',
+                        700: '#be123c',
+                        900: '#881337',
+                    },
+                    // Vantage — Teal (vision, clarity)
+                    'vantage': {
+                        DEFAULT: '#0d9488',
+                        50:  '#f0fdfa',
+                        100: '#ccfbf1',
+                        200: '#99f6e4',
+                        400: '#2dd4bf',
+                        500: '#14b8a6',
+                        600: '#0d9488',
+                        700: '#0f766e',
+                        900: '#134e4a',
+                    },
+                    // Resume Builder — Violet
+                    'resume': {
+                        DEFAULT: '#7c3aed',
+                        50:  '#f5f3ff',
+                        100: '#ede9fe',
+                        200: '#ddd6fe',
+                        400: '#a78bfa',
+                        500: '#8b5cf6',
+                        600: '#7c3aed',
+                        700: '#6d28d9',
+                        900: '#4c1d95',
+                    },
                 },
 
                 // Legacy StudAI colors (preserved for compatibility)
@@ -313,6 +434,16 @@ export default {
                 'green': '0 4px 14px 0 rgba(52, 168, 83, 0.39)',
                 'red': '0 4px 14px 0 rgba(234, 67, 53, 0.39)',
                 'purple': '0 4px 14px 0 rgba(168, 85, 247, 0.39)',
+                // Card system
+                'card': '0 1px 4px rgba(0,0,0,0.05)',
+                'card-hover': '0 8px 32px rgba(99,102,241,0.12)',
+                'brand-glow': '0 0 24px rgba(99,102,241,0.20)',
+                'green-glow': '0 0 24px rgba(34,197,94,0.20)',
+                'orange-glow': '0 0 24px rgba(249,115,22,0.20)',
+                'amber-glow': '0 0 24px rgba(234,179,8,0.20)',
+                'rose-glow': '0 0 24px rgba(244,63,94,0.20)',
+                'teal-glow': '0 0 24px rgba(20,184,166,0.20)',
+                'violet-glow': '0 0 24px rgba(139,92,246,0.20)',
                 
                 // Inner shadows
                 'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
@@ -359,6 +490,12 @@ export default {
                 'float': 'float 6s ease-in-out infinite',
                 'glow': 'glow 2s ease-in-out infinite alternate',
                 'progress': 'progress 1.5s ease-in-out infinite',
+                'fade-up': 'fadeUp 0.4s cubic-bezier(0.4,0,0.2,1) both',
+                'fade-down': 'fadeDown 0.3s cubic-bezier(0.4,0,0.2,1) both',
+                'scale-in': 'scaleIn 0.22s cubic-bezier(0.4,0,0.2,1) both',
+                'slide-right': 'slideRight 0.3s cubic-bezier(0.4,0,0.2,1) both',
+                'slide-left-in': 'slideLeft 0.3s cubic-bezier(0.4,0,0.2,1) both',
+                'spin-slow': 'spinSlow 3s linear infinite',
             },
 
             keyframes: {
@@ -417,6 +554,30 @@ export default {
                 progress: {
                     '0%': { width: '0%' },
                     '100%': { width: '100%' },
+                },
+                fadeUp: {
+                    '0%':   { opacity: '0', transform: 'translateY(20px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
+                fadeDown: {
+                    '0%':   { opacity: '0', transform: 'translateY(-20px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
+                scaleIn: {
+                    '0%':   { opacity: '0', transform: 'scale(0.94)' },
+                    '100%': { opacity: '1', transform: 'scale(1)' },
+                },
+                slideRight: {
+                    '0%':   { opacity: '0', transform: 'translateX(-20px)' },
+                    '100%': { opacity: '1', transform: 'translateX(0)' },
+                },
+                slideLeft: {
+                    '0%':   { opacity: '0', transform: 'translateX(20px)' },
+                    '100%': { opacity: '1', transform: 'translateX(0)' },
+                },
+                spinSlow: {
+                    from: { transform: 'rotate(0deg)' },
+                    to:   { transform: 'rotate(360deg)' },
                 },
             },
 
@@ -534,8 +695,7 @@ export default {
     plugins: [
         forms,
         // Custom plugin for component utilities
-        function({ addComponents, addUtilities, theme }) {
-            // ========================================
+        function({ addComponents, addUtilities, theme }) {            // ========================================
             // CARD COMPONENTS
             // ========================================
             addComponents({

@@ -71,12 +71,25 @@ class ReferralStatusUpdated extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
+        $candidateName = $this->referral->candidate->name ?? 'Candidate';
+        $jobTitle      = $this->referral->job->title ?? 'the position';
+        $actionLabels  = [
+            'approved'   => 'approved',
+            'rejected'   => 'not approved',
+            'hired'      => 'hired 🎉',
+            'bonus_paid' => 'paid — bonus released',
+        ];
+        $label = $actionLabels[$this->action] ?? $this->action;
+
         return [
-            'referral_id' => $this->referral->id,
-            'candidate_name' => $this->referral->candidate->name,
-            'job_title' => $this->referral->job->title,
-            'action' => $this->action,
-            'bonus_amount' => $this->referral->bonus_amount,
+            'referral_id'    => $this->referral->id,
+            'candidate_name' => $candidateName,
+            'job_title'      => $jobTitle,
+            'action'         => $this->action,
+            'bonus_amount'   => $this->referral->bonus_amount,
+            'type'           => 'referral_' . $this->action,
+            'message'        => "Referral update: {$candidateName} for \"{$jobTitle}\" — {$label}",
+            'url'            => route('employer.referrals.index'),
         ];
     }
 }

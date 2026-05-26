@@ -30,13 +30,21 @@ class MarketplaceController extends Controller
     public function index(): View
     {
         $stats = $this->marketplaceService->getMarketplaceStats();
-        $featuredProjects = MarketplaceProject::open()->published()->featured()->limit(6)->get();
-        $topFreelancers = FreelancerProfile::verified()->topRated()->limit(8)->get();
+
+        $featuredProjects = MarketplaceProject::with(['employer', 'company'])->open()->published()->featured()->limit(8)->get();
+        if ($featuredProjects->isEmpty()) {
+            $featuredProjects = MarketplaceProject::with(['employer', 'company'])->open()->published()->orderByDesc('views_count')->limit(8)->get();
+        }
+
+        $topFreelancers = FreelancerProfile::with('user')->verified()->where('average_rating', '>=', 4.0)->orderByDesc('average_rating')->limit(8)->get();
+        if ($topFreelancers->isEmpty()) {
+            $topFreelancers = FreelancerProfile::with('user')->orderByDesc('average_rating')->limit(8)->get();
+        }
 
         return view('marketplace.index', [
-            'stats' => $stats,
+            'stats'            => $stats,
             'featuredProjects' => $featuredProjects,
-            'topFreelancers' => $topFreelancers,
+            'topFreelancers'   => $topFreelancers,
         ]);
     }
 
@@ -297,5 +305,75 @@ class MarketplaceController extends Controller
         return view('marketplace.saved-projects', [
             'savedProjects' => $savedProjects,
         ]);
+    }
+
+    // ── Route aliases (routes use different method names) ──────────────────
+
+    public function project(MarketplaceProject $project): View
+    {
+        return $this->showProject($project);
+    }
+
+    public function freelancer(FreelancerProfile $profile): View
+    {
+        return $this->showFreelancer($profile);
+    }
+
+    public function categories(): View
+    {
+        $categories = [
+            ['slug' => 'web_development',   'label' => 'Programming & Tech',    'icon' => '💻', 'count' => MarketplaceProject::open()->published()->where('category', 'web_development')->count()],
+            ['slug' => 'design',             'label' => 'Graphics & Design',     'icon' => '🎨', 'count' => MarketplaceProject::open()->published()->where('category', 'design')->count()],
+            ['slug' => 'writing',            'label' => 'Writing & Translation', 'icon' => '✍️', 'count' => MarketplaceProject::open()->published()->where('category', 'writing')->count()],
+            ['slug' => 'ai_ml',              'label' => 'AI & Machine Learning', 'icon' => '🤖', 'count' => MarketplaceProject::open()->published()->where('category', 'ai_ml')->count()],
+            ['slug' => 'marketing',          'label' => 'Digital Marketing',     'icon' => '📣', 'count' => MarketplaceProject::open()->published()->where('category', 'marketing')->count()],
+            ['slug' => 'data_science',       'label' => 'Data Science',          'icon' => '📊', 'count' => MarketplaceProject::open()->published()->where('category', 'data_science')->count()],
+            ['slug' => 'mobile_development', 'label' => 'Mobile Apps',           'icon' => '📱', 'count' => MarketplaceProject::open()->published()->where('category', 'mobile_development')->count()],
+            ['slug' => 'devops',             'label' => 'DevOps & Cloud',        'icon' => '⚙️', 'count' => MarketplaceProject::open()->published()->where('category', 'devops')->count()],
+        ];
+        return view('marketplace.categories', compact('categories'));
+    }
+
+    public function messageFreelancer(FreelancerProfile $profile): View
+    {
+        return view('marketplace.message', compact('profile'));
+    }
+
+    public function sendMessageToFreelancer(Request $request, FreelancerProfile $profile): \Illuminate\Http\RedirectResponse
+    {
+        $request->validate([
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string|max:5000',
+            'budget'  => 'nullable|numeric|min:0',
+        ]);
+
+        // Store as a direct message notification or just redirect for now
+        // Could be extended to use a DirectMessage model
+        return redirect()->route('marketplace.message', $profile)
+            ->with('success', 'Your message has been sent to ' . $profile->user?->name . '!');
+    }
+
+    public function contactProjectOwner(Request $request, MarketplaceProject $project): \Illuminate\Http\RedirectResponse
+    {
+        $request->validate([
+            'subject' => 'required|string|max:200',
+            'message' => 'required|string|min:20|max:2000',
+        ]);
+
+        $sender  = auth()->user();
+        $employer = $project->employer;
+
+        if ($employer) {
+            $employer->notify(new \App\Notifications\MarketplaceContactNotification(
+                sender: $sender,
+                project: $project,
+                subject: $request->subject,
+                message: $request->message,
+            ));
+        }
+
+        return redirect()
+            ->route('marketplace.project.show', $project)
+            ->with('success', 'Your message has been sent to the client!');
     }
 }

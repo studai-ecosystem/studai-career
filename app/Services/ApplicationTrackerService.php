@@ -15,64 +15,63 @@ class ApplicationTrackerService
      */
     public function getPipelineStats(User $user)
     {
-        $applications = Application::where('user_id', $user->id)->get();
-        
+        // Single aggregated SQL query instead of loading all applications into PHP
+        $counts = Application::where('user_id', $user->id)
+            ->selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) as draft,
+                SUM(CASE WHEN status = 'submitted' THEN 1 ELSE 0 END) as submitted,
+                SUM(CASE WHEN status = 'viewed' THEN 1 ELSE 0 END) as viewed,
+                SUM(CASE WHEN status = 'shortlisted' THEN 1 ELSE 0 END) as shortlisted,
+                SUM(CASE WHEN status = 'interview_scheduled' THEN 1 ELSE 0 END) as interview_scheduled,
+                SUM(CASE WHEN status = 'interviewed' THEN 1 ELSE 0 END) as interviewed,
+                SUM(CASE WHEN status = 'offered' THEN 1 ELSE 0 END) as offered,
+                SUM(CASE WHEN status = 'accepted' THEN 1 ELSE 0 END) as accepted,
+                SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected,
+                SUM(CASE WHEN status = 'withdrawn' THEN 1 ELSE 0 END) as withdrawn,
+                SUM(CASE WHEN status IN ('submitted','viewed','shortlisted','interview_scheduled','interviewed','offered','accepted','rejected') THEN 1 ELSE 0 END) as submitted_total,
+                SUM(CASE WHEN status NOT IN ('draft','submitted') THEN 1 ELSE 0 END) as responded,
+                SUM(CASE WHEN status NOT IN ('rejected','withdrawn','accepted') THEN 1 ELSE 0 END) as active
+            ")
+            ->first();
+
+        $byStatus = [
+            'draft'                => (int) ($counts->draft ?? 0),
+            'submitted'            => (int) ($counts->submitted ?? 0),
+            'viewed'               => (int) ($counts->viewed ?? 0),
+            'shortlisted'          => (int) ($counts->shortlisted ?? 0),
+            'interview_scheduled'  => (int) ($counts->interview_scheduled ?? 0),
+            'interviewed'          => (int) ($counts->interviewed ?? 0),
+            'offered'              => (int) ($counts->offered ?? 0),
+            'accepted'             => (int) ($counts->accepted ?? 0),
+            'rejected'             => (int) ($counts->rejected ?? 0),
+            'withdrawn'            => (int) ($counts->withdrawn ?? 0),
+        ];
+
+        $submittedTotal = (int) ($counts->submitted_total ?? 0);
+        $responded      = (int) ($counts->responded ?? 0);
+        $successful     = $byStatus['offered'] + $byStatus['accepted'];
+
         $stats = [
-            'total' => $applications->count(),
-            'by_status' => [],
-            'success_rate' => 0,
-            'response_rate' => 0,
-            'avg_response_time' => 0,
-            'active_applications' => 0,
+            'total'              => (int) ($counts->total ?? 0),
+            'by_status'          => $byStatus,
+            'success_rate'       => $submittedTotal > 0 ? round(($successful / $submittedTotal) * 100, 1) : 0,
+            'response_rate'      => $submittedTotal > 0 ? round(($responded / $submittedTotal) * 100, 1) : 0,
+            'avg_response_time'  => 0,
+            'active_applications'=> (int) ($counts->active ?? 0),
         ];
-        
-        // Count by status
-        $statusCounts = $applications->groupBy('status')->map->count();
-        $stats['by_status'] = [
-            'draft' => $statusCounts['draft'] ?? 0,
-            'submitted' => $statusCounts['submitted'] ?? 0,
-            'viewed' => $statusCounts['viewed'] ?? 0,
-            'shortlisted' => $statusCounts['shortlisted'] ?? 0,
-            'interview_scheduled' => $statusCounts['interview_scheduled'] ?? 0,
-            'interviewed' => $statusCounts['interviewed'] ?? 0,
-            'offered' => $statusCounts['offered'] ?? 0,
-            'accepted' => $statusCounts['accepted'] ?? 0,
-            'rejected' => $statusCounts['rejected'] ?? 0,
-            'withdrawn' => $statusCounts['withdrawn'] ?? 0,
-        ];
-        
-        // Calculate success rate (offers / total submitted)
-        $submitted = $applications->whereIn('status', [
-            'submitted', 'viewed', 'shortlisted', 'interview_scheduled', 
-            'interviewed', 'offered', 'accepted', 'rejected'
-        ])->count();
-        
-        if ($submitted > 0) {
-            $successful = $stats['by_status']['offered'] + $stats['by_status']['accepted'];
-            $stats['success_rate'] = round(($successful / $submitted) * 100, 1);
+
+        // Average response time requires row-level data — keep a targeted query
+        $avgDays = Application::where('user_id', $user->id)
+            ->whereNotNull('viewed_at')
+            ->whereNotNull('submitted_at')
+            ->selectRaw('AVG(DATEDIFF(viewed_at, submitted_at)) as avg_days')
+            ->value('avg_days');
+
+        if ($avgDays !== null) {
+            $stats['avg_response_time'] = round((float) $avgDays, 1);
         }
-        
-        // Calculate response rate (any response / total submitted)
-        $responded = $applications->whereNotIn('status', ['draft', 'submitted'])->count();
-        if ($submitted > 0) {
-            $stats['response_rate'] = round(($responded / $submitted) * 100, 1);
-        }
-        
-        // Calculate average response time
-        $respondedApplications = $applications->whereNotNull('viewed_at');
-        if ($respondedApplications->count() > 0) {
-            $totalDays = 0;
-            foreach ($respondedApplications as $app) {
-                $submittedDate = Carbon::parse($app->submitted_at);
-                $viewedDate = Carbon::parse($app->viewed_at);
-                $totalDays += $submittedDate->diffInDays($viewedDate);
-            }
-            $stats['avg_response_time'] = round($totalDays / $respondedApplications->count(), 1);
-        }
-        
-        // Active applications (not rejected or withdrawn)
-        $stats['active_applications'] = $applications->whereNotIn('status', ['rejected', 'withdrawn', 'accepted'])->count();
-        
+
         return $stats;
     }
     
@@ -118,6 +117,11 @@ class ApplicationTrackerService
     {
         $applications = Application::where('user_id', $user->id)
             ->whereIn('status', ['submitted', 'viewed', 'interview_scheduled'])
+            ->where(function ($q) {
+                // Pre-filter: only fetch apps older than 3 days to avoid loading everything
+                $q->where('submitted_at', '<', now()->subDays(3))
+                  ->orWhere('updated_at', '<', now()->subDays(3));
+            })
             ->with('job')
             ->get();
         
@@ -218,7 +222,8 @@ class ApplicationTrackerService
         $byCompany = [];
         
         foreach ($applications as $application) {
-            $company = $application->job->company_name;
+            if (!$application->job) continue;
+            $company = $application->job->company_name ?? 'Unknown';
             
             if (!isset($byCompany[$company])) {
                 $byCompany[$company] = [
@@ -266,35 +271,39 @@ class ApplicationTrackerService
      */
     public function getApplicationTrends(User $user, $months = 6)
     {
-        $startDate = now()->subMonths($months);
-        
-        $applications = Application::where('user_id', $user->id)
+        $startDate = now()->subMonths($months)->startOfMonth();
+
+        $rows = Application::where('user_id', $user->id)
             ->where('submitted_at', '>=', $startDate)
-            ->get();
-        
+            ->selectRaw("
+                DATE_FORMAT(submitted_at, '%Y-%m') as month_key,
+                COUNT(*) as submitted,
+                SUM(CASE WHEN viewed_at IS NOT NULL THEN 1 ELSE 0 END) as responses,
+                SUM(CASE WHEN status IN ('interview_scheduled','interviewed') THEN 1 ELSE 0 END) as interviews,
+                SUM(CASE WHEN status IN ('offered','accepted') THEN 1 ELSE 0 END) as offers,
+                SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejections
+            ")
+            ->groupByRaw("DATE_FORMAT(submitted_at, '%Y-%m')")
+            ->pluck(null, 'month_key')
+            ->all();
+
         $trends = [];
-        
-        // Group by month
         for ($i = 0; $i < $months; $i++) {
-            $month = now()->subMonths($months - $i - 1);
+            $month    = now()->subMonths($months - $i - 1);
             $monthKey = $month->format('Y-m');
-            
-            $monthApplications = $applications->filter(function ($app) use ($month) {
-                return $app->submitted_at && 
-                       Carbon::parse($app->submitted_at)->format('Y-m') === $month->format('Y-m');
-            });
-            
+            $row      = $rows[$monthKey] ?? null;
+
             $trends[] = [
-                'month' => $month->format('M Y'),
-                'month_key' => $monthKey,
-                'submitted' => $monthApplications->count(),
-                'responses' => $monthApplications->whereNotNull('viewed_at')->count(),
-                'interviews' => $monthApplications->whereIn('status', ['interview_scheduled', 'interviewed'])->count(),
-                'offers' => $monthApplications->whereIn('status', ['offered', 'accepted'])->count(),
-                'rejections' => $monthApplications->where('status', 'rejected')->count(),
+                'month'       => $month->format('M Y'),
+                'month_key'   => $monthKey,
+                'submitted'   => (int) ($row->submitted   ?? 0),
+                'responses'   => (int) ($row->responses   ?? 0),
+                'interviews'  => (int) ($row->interviews  ?? 0),
+                'offers'      => (int) ($row->offers      ?? 0),
+                'rejections'  => (int) ($row->rejections  ?? 0),
             ];
         }
-        
+
         return $trends;
     }
     

@@ -147,12 +147,14 @@ class GamificationService
 
             DB::commit();
 
+            $profile->refresh();
+
             return [
                 'success' => true,
                 'points' => $pointsEarned,
                 'xp' => $xpEarned,
                 'leveled_up' => $leveledUp,
-                'new_level' => $profile->fresh()->level,
+                'new_level' => $profile->level,
                 'achievements_unlocked' => $unlockedAchievements,
             ];
         } catch (\Exception $e) {
@@ -192,7 +194,7 @@ class GamificationService
             'user_id' => $user->id,
             'type' => $type,
             'points' => $points,
-            'balance_after' => $profile->fresh()->available_points,
+            'balance_after' => $profile->total_points,
             'source' => $source,
             'source_type' => null,
             'source_id' => $sourceId,
@@ -217,12 +219,13 @@ class GamificationService
         }
 
         $profile->decrement('available_points', $points);
+        $profile->refresh();
 
         PointsTransaction::create([
             'user_id' => $user->id,
             'type' => 'spent',
             'points' => -$points,
-            'balance_after' => $profile->fresh()->available_points,
+            'balance_after' => $profile->available_points,
             'source' => $source,
             'source_type' => null,
             'source_id' => $sourceId,
@@ -1152,8 +1155,8 @@ class GamificationService
             'profile_photo' => !empty($user->avatar),
             'resume' => !empty($user->resume_path),
             'skills' => $user->skills()->count() >= 3,
-            'experience' => $user->experiences()->count() > 0,
-            'education' => $user->educations()->count() > 0,
+            'experience' => !empty($user->profile?->experience),
+            'education' => !empty($user->profile?->education),
             'preferences' => !empty($user->job_preferences),
         ];
 

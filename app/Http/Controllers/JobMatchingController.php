@@ -273,8 +273,8 @@ class JobMatchingController extends Controller
 
         if (!$profile) {
             return response()->json([
-                'message' => 'Please complete your profile before applying',
-                'action' => 'complete_profile'
+                'success' => false,
+                'error'   => 'Please complete your profile before applying.',
             ], 422);
         }
 
@@ -285,76 +285,74 @@ class JobMatchingController extends Controller
 
         if ($existingApplication) {
             return response()->json([
-                'message' => 'You have already applied to this job',
-                'application' => $existingApplication
+                'success' => false,
+                'error'   => 'You have already applied to this job.',
             ], 409);
         }
 
         // Check subscription limits
         if (!$user->canApplyToJobs()) {
             return response()->json([
-                'message' => 'You have reached your monthly application limit',
-                'action' => 'upgrade_subscription',
-                'limit' => $user->subscription->applications_limit_per_month ?? 0,
-                'used' => $user->subscription->applications_used_this_month ?? 0
+                'success' => false,
+                'error'   => 'You have reached your monthly application limit. Please upgrade your plan.',
             ], 403);
         }
 
-        // Check AI credits for custom resume/cover letter generation
-        $useAI = $request->input('use_ai', true);
-        if ($useAI && !$user->hasAICredits(2)) { // 1 for resume, 1 for cover letter
-            return response()->json([
-                'message' => 'Insufficient AI credits for custom resume and cover letter generation',
-                'action' => 'upgrade_subscription',
-                'credits_remaining' => $user->getRemainingAICredits()
-            ], 403);
+        // Only use AI if explicitly requested AND credits available
+        $useAI = $request->boolean('use_ai', false);
+        if ($useAI && !$user->hasAICredits(2)) {
+            $useAI = false; // Silently fall back — don't block submission
         }
 
-        DB::beginTransaction();
         try {
-            $customResume = null;
-            $customCoverLetter = null;
+            $coverLetter  = $request->input('cover_letter');
+            $resumeFile   = null;
 
-            if ($useAI) {
-                // Generate AI-optimized resume
-                $customResume = $this->resumeAnalyzer->optimizeForJob($profile, $job);
-                $user->deductAICredits(1);
-
-                // Generate AI-powered cover letter
-                $customCoverLetter = $this->coverLetterGenerator->generate($profile, $job);
-                $user->deductAICredits(1);
+            if ($request->hasFile('resume')) {
+                $resumeFile = $request->file('resume')->store('resumes/applications', 'public');
+            } elseif ($request->filled('saved_resume_id')) {
+                $saved = \App\Models\Resume::where('id', $request->saved_resume_id)
+                    ->where('user_id', $user->id)->first();
+                if ($saved) {
+                    $resumeFile = $saved->pdf_path ?: 'resume:' . $saved->id;
+                }
+            } elseif ($profile) {
+                $resumeFile = $profile->resume_path ?? null;
             }
 
-            // Create application
+            if ($useAI) {
+                $user->deductAICredits(2);
+            }
+
             $application = Application::create([
-                'user_id' => $user->id,
-                'job_id' => $job->id,
-                'status' => 'submitted',
-                'custom_resume' => $customResume,
-                'custom_cover_letter' => $customCoverLetter,
-                'applied_at' => now(),
+                'user_id'            => $user->id,
+                'job_id'             => $job->id,
+                'application_number' => 'APP-' . strtoupper(substr(md5(uniqid()), 0, 8)),
+                'cover_letter'       => $coverLetter,
+                'resume_file'        => $resumeFile,
+                'status'             => 'pending',
+                'submitted_at'       => now(),
+                'is_archived'        => false,
+                'source'             => 'manual',
             ]);
 
-            // Increment counters
-            $job->increment('applications_count');
             $user->subscription?->increment('applications_used_this_month');
 
-            DB::commit();
-
             return response()->json([
-                'message' => 'Application submitted successfully',
-                'application' => $application->load('job.company'),
-                'ai_generated' => $useAI,
-                'applications_remaining' => $user->getRemainingApplications(),
-                'ai_credits_remaining' => $user->getRemainingAICredits(),
-            ], 201);
+                'success'        => true,
+                'message'        => 'Application submitted successfully!',
+                'application_id' => $application->id,
+            ]);
 
         } catch (\Exception $e) {
-            DB::rollBack();
-            
+            \Log::error('JobMatchingController apply error: ' . $e->getMessage(), [
+                'job_id'  => $job->id,
+                'user_id' => $user->id,
+            ]);
+
             return response()->json([
-                'message' => 'Failed to submit application',
-                'error' => $e->getMessage()
+                'success' => false,
+                'error'   => 'Failed to submit application. Please try again.',
             ], 500);
         }
     }

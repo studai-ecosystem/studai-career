@@ -3,69 +3,122 @@
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     @if(session('error'))
-        <div class="mb-4 p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-200 rounded-lg">
+        <div class="mb-4 p-3.5 rounded-xl text-sm flex items-center gap-2" style="background:#fef2f2; border:1px solid #fecaca; color:#dc2626">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             {{ session('error') }}
         </div>
     @endif
-
     @if(session('success'))
-        <div class="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-200 rounded-lg">
+        <div class="mb-4 p-3.5 rounded-xl text-sm flex items-center gap-2" style="background:#f0fdf4; border:1px solid #86efac; color:#16a34a">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             {{ session('success') }}
         </div>
     @endif
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+    {{-- Header --}}
+    <div class="mb-6 text-center">
+        <h2 class="text-2xl font-extrabold tracking-tight" style="color:#1a1a2e">Welcome back</h2>
+        <p class="text-sm mt-1" style="color:#6b7280">Sign in to your <span style="color:#6366f1; font-weight:600">AI Career Platform</span></p>
+    </div>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+    <div x-data="{ role: '{{ old('login_type', request('type') === 'employer' ? 'employer' : 'seeker') }}' }" class="space-y-5">
+
+        {{-- Role selector --}}
+        <div class="grid grid-cols-2 gap-3">
+            <button type="button" @click="role = 'seeker'"
+                :class="role === 'seeker' ? 'role-card active-seeker' : 'role-card'"
+                class="flex flex-col items-center gap-2 text-center w-full">
+                <div :class="role === 'seeker' ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-400'"
+                    class="flex h-11 w-11 items-center justify-center rounded-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </div>
+                <span :class="role === 'seeker' ? 'text-indigo-700' : 'text-gray-600'" class="text-xs font-bold transition-colors">Job Seeker</span>
+                <span class="text-[10px] leading-tight" style="color:#9ca3af">Find jobs &amp; career tools</span>
+                <span x-show="role === 'seeker'" class="absolute top-2 right-2 text-indigo-500">
+                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                </span>
+            </button>
+
+            <button type="button" @click="role = 'employer'"
+                :class="role === 'employer' ? 'role-card active-employer' : 'role-card'"
+                class="flex flex-col items-center gap-2 text-center w-full">
+                <div :class="role === 'employer' ? 'bg-purple-100 text-purple-600' : 'bg-gray-100 text-gray-400'"
+                    class="flex h-11 w-11 items-center justify-center rounded-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                </div>
+                <span :class="role === 'employer' ? 'text-purple-700' : 'text-gray-600'" class="text-xs font-bold transition-colors">Company</span>
+                <span class="text-[10px] leading-tight" style="color:#9ca3af">Post jobs &amp; hire talent</span>
+                <span x-show="role === 'employer'" class="absolute top-2 right-2 text-purple-500">
+                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                </span>
+            </button>
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        {{-- Context hint --}}
+        <p x-show="role === 'seeker'" class="text-center text-xs font-medium" style="color:#6366f1; margin-top:-4px">
+            Signing in as <strong>Job Seeker</strong> — AI Career Agent
+        </p>
+        <p x-show="role === 'employer'" class="text-center text-xs font-medium" style="color:#a855f7; margin-top:-4px">
+            Signing in as <strong>Employer</strong> — S.C.O.U.T™
+        </p>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+        {{-- Login form --}}
+        <form method="POST" action="{{ route('login') }}" class="space-y-4">
+            @csrf
+            <input type="hidden" name="login_type" :value="role">
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+            <div>
+                <label for="email" class="block text-xs font-semibold mb-1.5 uppercase tracking-wider" style="color:#6b7280">Email Address</label>
+                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
+                    class="auth-input"
+                    x-bind:placeholder="role === 'employer' ? 'you@yourcompany.com' : 'you@example.com'" />
+                <x-input-error :messages="$errors->get('email')" class="mt-1.5 text-xs" style="color:#dc2626" />
+            </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+            <div>
+                <label for="password" class="block text-xs font-semibold mb-1.5 uppercase tracking-wider" style="color:#6b7280">Password</label>
+                <input id="password" type="password" name="password" required autocomplete="current-password"
+                    class="auth-input" placeholder="••••••••" />
+                <x-input-error :messages="$errors->get('password')" class="mt-1.5 text-xs" style="color:#dc2626" />
+            </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
+            <div class="flex items-center justify-between">
+                <label class="inline-flex items-center gap-2 text-sm cursor-pointer" style="color:#6b7280">
+                    <input type="checkbox" name="remember"
+                        class="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                    Remember me
+                </label>
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}"
+                       :class="role === 'employer' ? 'text-purple-600 hover:text-purple-700' : 'text-indigo-600 hover:text-indigo-700'"
+                       class="text-sm font-semibold transition-colors">
+                        Forgot password?
+                    </a>
+                @endif
+            </div>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
+            <button type="submit"
+                :class="role === 'employer' ? 'btn-auth employer-btn' : 'btn-auth'">
+                <span x-text="role === 'employer' ? '🏢 Sign in to S.C.O.U.T™' : '🚀 Sign in to Career Agent'"></span>
+            </button>
+        </form>
 
-    <!-- Social Login Buttons -->
-    <x-social-login-buttons />
-    
-    <div class="mt-6 text-center">
-        <span class="text-sm text-gray-600 dark:text-gray-400">
-            {{ __("Don't have an account?") }}
-        </span>
-        <a href="{{ route('register') }}" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline ml-1">
-            {{ __('Sign up') }}
-        </a>
+        {{-- Divider --}}
+        <div class="auth-divider">or continue with</div>
+
+        <x-social-login-buttons />
+
+        <p class="text-center text-sm" style="color:#6b7280">
+            Don't have an account?
+            <a :href="role === 'employer' ? '{{ route('register') }}?type=employer' : '{{ route('register') }}'"
+               :class="role === 'employer' ? 'text-purple-600 hover:text-purple-700' : 'text-indigo-600 hover:text-indigo-700'"
+               class="font-semibold transition-colors ml-1">
+                Sign up free →
+            </a>
+        </p>
     </div>
 </x-guest-layout>

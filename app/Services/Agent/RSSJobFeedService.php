@@ -164,7 +164,7 @@ class RSSJobFeedService
     {
         $response = Http::timeout(self::HTTP_TIMEOUT)
             ->withHeaders([
-                'User-Agent' => 'StudAI-Career-Bot/1.0 (+https://studai-career.com)',
+                'User-Agent' => 'studai-hire-Bot/1.0 (+https://studai-hire.com)',
                 'Accept' => 'application/rss+xml, application/xml, text/xml',
             ])
             ->get($url);
@@ -272,7 +272,7 @@ class RSSJobFeedService
     protected function fetchRemotiveJobs(): Collection
     {
         $response = Http::timeout(self::HTTP_TIMEOUT)
-            ->withHeaders(['User-Agent' => 'StudAI-Career-Bot/1.0'])
+            ->withHeaders(['User-Agent' => 'studai-hire-Bot/1.0'])
             ->get('https://remotive.com/api/remote-jobs');
 
         if (!$response->successful()) {
@@ -307,7 +307,7 @@ class RSSJobFeedService
     protected function fetchArbeitnowJobs(): Collection
     {
         $response = Http::timeout(self::HTTP_TIMEOUT)
-            ->withHeaders(['User-Agent' => 'StudAI-Career-Bot/1.0'])
+            ->withHeaders(['User-Agent' => 'studai-hire-Bot/1.0'])
             ->get('https://arbeitnow.com/api/job-board-api');
 
         if (!$response->successful()) {
@@ -347,7 +347,7 @@ class RSSJobFeedService
     protected function fetchHimalayasJobs(): Collection
     {
         $response = Http::timeout(self::HTTP_TIMEOUT)
-            ->withHeaders(['User-Agent' => 'StudAI-Career-Bot/1.0'])
+            ->withHeaders(['User-Agent' => 'studai-hire-Bot/1.0'])
             ->get('https://himalayas.app/jobs/api', ['limit' => 100]);
 
         if (!$response->successful()) {

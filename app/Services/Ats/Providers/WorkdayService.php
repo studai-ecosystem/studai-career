@@ -185,7 +185,7 @@ class WorkdayService extends BaseAtsProvider
         $this->baseUrl = $this->getBaseUrl($connection);
         return $this->post($connection, "recruiting/jobRequisitions/{$jobId}/apply", [
             'candidateId' => $candidateId,
-            'source' => $data['source'] ?? 'StudAI Career',
+            'source' => $data['source'] ?? 'StudAI Hire',
         ]);
     }
 

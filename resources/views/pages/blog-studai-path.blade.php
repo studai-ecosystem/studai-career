@@ -1,15 +1,15 @@
 {{--
-    StudAI Path — Blog & Resources
+    StudAI Hire — Blog & Resources
     Career Insights, Guides & Trends
 --}}
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'Blog & Resources — StudAI Path | Career Insights & AI Guides')
+@section('title', 'Blog & Resources — StudAI Hire | Career Insights & AI Guides')
 
 @section('meta')
 <meta name="description" content="Expert career insights, AI job search strategies, and professional development guides. Learn how to automate your career success.">
-<meta property="og:title" content="Blog & Resources — StudAI Path">
-<meta property="og:description" content="Career advice and AI insights from the StudAI Path team.">
+<meta property="og:title" content="Blog & Resources — StudAI Hire">
+<meta property="og:description" content="Career advice and AI insights from the StudAI Hire team.">
 <link rel="canonical" href="{{ route('blog') }}">
 @endsection
 
@@ -155,7 +155,7 @@
                     ],
                     [
                         'title' => 'The Autonomous Agent: How It Works',
-                        'excerpt' => 'A deep dive into the technology behind StudAI Path\'s 24/7 job-finding AI.',
+                        'excerpt' => 'A deep dive into the technology behind StudAI Hire\'s 24/7 job-finding AI.',
                         'category' => 'AI & Automation',
                         'author' => 'Tech Team',
                         'initials' => 'TT',

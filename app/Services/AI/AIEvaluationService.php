@@ -108,7 +108,7 @@ class AIEvaluationService
                 $evaluation['passed'],
                 $evaluation['details'],
                 $latencyMs,
-                config('ai.azure.models.chat', 'gpt-5.1')
+                config('ai.azure.models.chat', config('ai.azure.models.chat'))
             );
 
             Log::info('Golden test run completed', [

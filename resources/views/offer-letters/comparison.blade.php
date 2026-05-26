@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('content')
 <div class="py-12">
@@ -92,7 +92,7 @@
                             {{ $comparison->created_at->diffForHumans() }}
                         </p>
                         <button onclick="loadComparison({{ $comparison->id }})" class="mt-3 text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
-                            View Comparison →
+                            View Comparison â†’
                         </button>
                     </div>
                     @endforeach
@@ -173,7 +173,7 @@ function renderComparison(selectedOffers) {
             tr.innerHTML += `
                 <td class="px-6 py-4 whitespace-nowrap text-sm ${isBest ? 'text-green-600 dark:text-green-400 font-semibold' : 'text-gray-500 dark:text-gray-400'}">
                     ${displayValue}
-                    ${isBest ? '★' : ''}
+                    ${isBest ? 'â˜…' : ''}
                 </td>
             `;
         });
@@ -189,7 +189,7 @@ function renderComparison(selectedOffers) {
 }
 
 function formatValue(value, format) {
-    if (value === null || value === undefined || value === '') return '—';
+    if (value === null || value === undefined || value === '') return 'â€”';
     
     switch (format) {
         case 'money':

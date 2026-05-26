@@ -424,7 +424,7 @@ PROMPT;
             $content = $this->ai(
                 $prompt,
                 'You are an assessment grader. Be fair and constructive.',
-                ['temperature' => 0.3, 'model' => 'gpt-5-mini']
+                ['temperature' => 0.3, 'model' => config('ai.azure.models.chat_mini')]
             );
             
             $jsonStart = strpos($content, '{');

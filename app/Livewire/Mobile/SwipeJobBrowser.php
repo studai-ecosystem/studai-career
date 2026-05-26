@@ -49,19 +49,14 @@ class SwipeJobBrowser extends Component
             ->when($this->minSalary, fn($q) => $q->where('salary_min', '>=', $this->minSalary))
             ->orderBy('created_at', 'desc');
 
-        // Exclude jobs user has already swiped on
+        // Exclude jobs user has already swiped on in this session
         $swipedJobIds = array_column($this->swipeHistory, 'job_id');
         if (!empty($swipedJobIds)) {
             $query->whereNotIn('id', $swipedJobIds);
         }
 
-        // Exclude already applied jobs
-        $appliedJobIds = Application::where('user_id', Auth::id())
-            ->pluck('job_id')
-            ->toArray();
-        if (!empty($appliedJobIds)) {
-            $query->whereNotIn('id', $appliedJobIds);
-        }
+        // Exclude already applied jobs — use subquery instead of loading all IDs into PHP
+        $query->whereDoesntHave('applications', fn ($q) => $q->where('user_id', Auth::id()));
 
         $newJobs = $query->take($this->perPage)->get();
 

@@ -17,7 +17,9 @@ class ResumeExportService
      */
     public function exportToPDF(Resume $resume): string
     {
-        $html = view('resume.templates.pdf', compact('resume'))->render();
+        $resume->loadMissing('template');
+        $html = $this->renderPdfTemplate($resume);
+
 
         $pdf = PDF::loadHTML($html)
             ->setPaper('a4', 'portrait')
@@ -35,6 +37,49 @@ class ResumeExportService
     }
 
     /**
+     * Render PDF HTML using plain PHP template (formatter-safe, no Blade).
+     */
+    private function renderPdfTemplate(Resume $resume): string
+    {
+        $tpl     = $resume->template;
+        $colors  = $tpl?->color_scheme ?? ['primary' => '#1a202c'];
+        $primary = $colors['primary'] ?? '#1a202c';
+        $slug    = $tpl?->slug ?? 'professional-classic';
+
+        $isTwoCol  = in_array($slug, ['modern-tech', 'creative-portfolio', 'healthcare-professional']);
+        $isMinimal = $slug === 'minimalist';
+
+        $primaryLight = $this->hexTint($primary, 0.10);
+        $badgeBg      = $this->hexTint($primary, 0.12);
+        $borderLight  = $this->hexTint($primary, 0.28);
+
+        $nameParts = explode(' ', trim($resume->full_name ?? 'U'));
+        $initials  = strtoupper(substr($nameParts[0], 0, 1))
+                   . (isset($nameParts[1]) ? strtoupper(substr($nameParts[1], 0, 1)) : '');
+
+        $template = $tpl; // available inside included file
+
+        ob_start();
+        include resource_path('views/resume/templates/pdf_gen.php');
+        return (string) ob_get_clean();
+    }
+
+    /**
+     * Blend a hex color with white at given opacity (replaces CSS color-mix for dompdf).
+     */
+    private function hexTint(string $hex, float $opacity): string
+    {
+        $hex = ltrim($hex, '#');
+        if (strlen($hex) === 3) {
+            $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+        }
+        $r = (int) round(hexdec(substr($hex, 0, 2)) * $opacity + 255 * (1 - $opacity));
+        $g = (int) round(hexdec(substr($hex, 2, 2)) * $opacity + 255 * (1 - $opacity));
+        $b = (int) round(hexdec(substr($hex, 4, 2)) * $opacity + 255 * (1 - $opacity));
+        return "rgb($r,$g,$b)";
+    }
+
+    /**
      * Export resume to DOCX
      */
     public function exportToDOCX(Resume $resume): string
@@ -44,7 +89,7 @@ class ResumeExportService
         // Set document properties
         $properties = $phpWord->getDocInfo();
         $properties->setCreator($resume->user->name);
-        $properties->setCompany('StudAI Career Platform');
+        $properties->setCompany('StudAI Hire Platform');
         $properties->setTitle($resume->title);
         $properties->setDescription('Resume for ' . $resume->full_name);
 

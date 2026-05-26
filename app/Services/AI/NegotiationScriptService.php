@@ -172,7 +172,7 @@ class NegotiationScriptService
             $prompt = $this->buildScriptPrompt($strategy, $scenario, $type, $stage, $tone);
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'messages' => [
                     [
                         'role' => 'system',
@@ -183,7 +183,7 @@ class NegotiationScriptService
                         'content' => $prompt
                     ],
                 ],
-                'max_tokens' => 800,
+                'max_completion_tokens' => 800,
                 'temperature' => 0.7,
             ]);
 
@@ -216,15 +216,22 @@ class NegotiationScriptService
         $prompt .= "**Context:**\n";
         $prompt .= "- Role: {$strategy->role}\n";
         $prompt .= "- Company: {$strategy->company_name}\n";
-        $prompt .= "- Current Offer: $" . number_format($strategy->offered_salary) . "\n";
-        $prompt .= "- Counter Offer: $" . number_format((float) $scenario->counter_offer_amount) . "\n";
-        $prompt .= "- Market Median: $" . number_format((float) $strategy->market_median) . "\n";
+        $prompt .= "- Current Offer: ₹" . number_format($strategy->offered_salary) . " LPA\n";
+        $prompt .= "- Counter Offer: ₹" . number_format((float) $scenario->counter_offer_amount) . " LPA\n";
+        $prompt .= "- Market Median: ₹" . number_format((float) $strategy->market_median) . " LPA\n";
         $prompt .= "- Tone: {$tone}\n";
-        $prompt .= "- Company Culture: {$strategy->company_culture_analysis}\n\n";
+        $cultureRaw = $strategy->company_culture_analysis ?? '';
+        if (is_array($cultureRaw)) {
+            $cultureStr = $cultureRaw['analysis'] ?? implode(', ', array_filter($cultureRaw, 'is_string'));
+        } else {
+            $cultureStr = (string) $cultureRaw;
+        }
+        $prompt .= "- Company Culture: " . mb_substr($cultureStr, 0, 300) . "\n\n";
         
         $prompt .= "**Your Strengths:**\n";
-        foreach (array_slice($strategy->strongest_points, 0, 3) as $point) {
-            $prompt .= "- {$point}\n";
+        foreach (array_slice($strategy->strongest_points ?? [], 0, 3) as $point) {
+            $pointText = is_array($point) ? ($point['point'] ?? $point['category'] ?? '') : (string) $point;
+            $prompt .= "- {$pointText}\n";
         }
         
         $prompt .= "\n**Generate:**\n";
@@ -266,7 +273,13 @@ class NegotiationScriptService
     protected function determineFormality(NegotiationStrategy $strategy): string
     {
         // Startup = casual, corporate = formal
-        $culture = strtolower($strategy->company_culture_analysis ?? '');
+        $cultureRaw = $strategy->company_culture_analysis ?? '';
+        if (is_array($cultureRaw)) {
+            $cultureStr = $cultureRaw['analysis'] ?? implode(' ', array_filter($cultureRaw, 'is_string'));
+        } else {
+            $cultureStr = (string) $cultureRaw;
+        }
+        $culture = strtolower($cultureStr);
         
         if (str_contains($culture, 'startup') || str_contains($culture, 'informal')) {
             return 'casual';
@@ -286,17 +299,17 @@ class NegotiationScriptService
 
         // Market data point
         if ($strategy->market_median) {
-            $points[] = "Market median for this role is $" . number_format((float) $strategy->market_median);
+            $points[] = 'Market median for this role is ₹' . number_format((float) $strategy->market_median) . ' LPA';
         }
 
         // Top strengths
-        foreach (array_slice($strategy->strongest_points, 0, 3) as $strength) {
-            $points[] = $strength;
+        foreach (array_slice($strategy->strongest_points ?? [], 0, 3) as $strength) {
+            $points[] = is_array($strength) ? ($strength['point'] ?? $strength['category'] ?? '') : (string) $strength;
         }
 
         // Value propositions
-        foreach (array_slice($strategy->value_propositions, 0, 2) as $value) {
-            $points[] = $value;
+        foreach (array_slice($strategy->value_propositions ?? [], 0, 2) as $value) {
+            $points[] = is_array($value) ? ($value['point'] ?? (string) $value) : (string) $value;
         }
 
         return $points;
@@ -449,10 +462,10 @@ class NegotiationScriptService
     {
         $body = "After careful consideration and research into market standards for this role, I'd like to discuss the compensation package. ";
         $body .= "Based on industry data for {$strategy->role} positions in {$strategy->location}, along with my [X years] of experience and specialized skills, ";
-        $body .= "the market rate typically ranges from $" . number_format((float) $strategy->market_25th_percentile) . " to $" . number_format((float) $strategy->market_75th_percentile) . ".\n\n";
+        $body .= "the market rate typically ranges from ₹" . number_format((float) $strategy->market_percentile_25) . " LPA to ₹" . number_format((float) $strategy->market_percentile_75) . " LPA.\n\n";
         
         $body .= "Given my background in [specific expertise] and proven track record of [key achievements], ";
-        $body .= "I believe a salary of $" . number_format((float) $scenario->counter_offer_amount) . " would better reflect the value I'll bring to {$strategy->company_name}. ";
+        $body .= "I believe a salary of ₹" . number_format((float) $scenario->counter_offer_amount) . " LPA would better reflect the value I'll bring to {$strategy->company_name}. ";
         
         if (!empty($scenario->additional_requests)) {
             $body .= "Additionally, I'd welcome the opportunity to discuss the overall compensation package, including [mention 1-2 benefits].";
@@ -491,7 +504,7 @@ class NegotiationScriptService
     {
         $body = "[Pause for their response]\n\n";
         $body .= "Great. So I've done some research on market rates for this role, and based on my [X years] of experience and the specific skills I bring, ";
-        $body .= "I was hoping we could discuss a salary closer to $" . number_format((float) $scenario->counter_offer_amount) . ". ";
+        $body .= "I was hoping we could discuss a salary closer to ₹" . number_format((float) $scenario->counter_offer_amount) . " LPA. ";
         $body .= "The market data I'm seeing shows this is around the [65-70th] percentile for similar roles.\n\n";
         $body .= "[Pause - let them respond]\n\n";
         $body .= "I completely understand if there are budget constraints. I'm also open to discussing the total compensation package, including [mention alternatives if needed].";
@@ -524,7 +537,7 @@ class NegotiationScriptService
     {
         $body = "[Maintain collaborative posture - lean slightly forward, open gestures]\n\n";
         $body .= "I've researched market standards for this role, and given my background and the value I'll bring, ";
-        $body .= "I'd like to propose a salary of $" . number_format((float) $scenario->counter_offer_amount) . ". ";
+        $body .= "I'd like to propose a salary of ₹" . number_format((float) $scenario->counter_offer_amount) . " LPA. ";
         $body .= "This aligns with the market rate for someone with my experience level and skill set.\n\n";
         $body .= "[Pull out printed market data if appropriate]\n\n";
         $body .= "Specifically, my expertise in [key areas] and track record of [achievements] position me to make an immediate impact on [specific company goals].\n\n";

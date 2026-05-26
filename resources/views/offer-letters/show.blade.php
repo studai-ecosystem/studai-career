@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @php
     $isEmployer = auth()->user()->hasAnyRole(['employer', 'recruiter', 'admin']);

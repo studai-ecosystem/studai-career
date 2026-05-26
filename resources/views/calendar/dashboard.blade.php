@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Calendar Dashboard')
 
@@ -169,7 +169,7 @@
                         <div class="flex items-center justify-between">
                             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Upcoming Events</h2>
                             <a href="{{ route('calendar.events') }}" class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
-                                View All →
+                                View All â†’
                             </a>
                         </div>
                     </div>
@@ -228,7 +228,7 @@
                         <div class="flex items-center justify-between">
                             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Scheduling Links</h2>
                             <a href="{{ route('calendar.scheduling-links') }}" class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
-                                Manage →
+                                Manage â†’
                             </a>
                         </div>
                     </div>
@@ -271,7 +271,7 @@
                         <div class="flex items-center justify-between">
                             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Availability</h2>
                             <a href="{{ route('calendar.availability') }}" class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
-                                Edit →
+                                Edit â†’
                             </a>
                         </div>
                     </div>

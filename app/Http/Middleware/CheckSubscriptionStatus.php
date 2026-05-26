@@ -21,6 +21,11 @@ class CheckSubscriptionStatus
         if (!$user) {
             return redirect()->route('login');
         }
+
+        // Bypass subscription checks in local development environment
+        if (app()->environment('local')) {
+            return $next($request);
+        }
         
         // Check if user has active subscription
         if (!$user->hasActiveSubscription()) {

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Calendar Events')
 
@@ -140,7 +140,7 @@
 
                                                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                                     {{ $event->start_time->format('g:i A') }} - {{ $event->end_time->format('g:i A') }}
-                                                    <span class="mx-1">•</span>
+                                                    <span class="mx-1">â€¢</span>
                                                     {{ $event->start_time->diffInMinutes($event->end_time) }} minutes
                                                 </p>
 

@@ -54,23 +54,62 @@
             {{-- Step 1: Resume Upload --}}
             @if ($currentStep === 1)
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Upload Your Resume</h2>
-                    <p class="text-gray-600 mb-6">Upload your resume and let our AI extract your professional information automatically.</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Upload Your Resume</h2>
+                    <p class="text-gray-600 mb-6">Upload your resume and let our AI extract your professional information automatically — or fill in manually.</p>
 
-                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-primary-500 transition-colors">
-                        <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                        </svg>
-                        
+                    {{-- Inline error --}}
+                    @if ($analysisError)
+                        <div class="mb-4 bg-red-50 border border-red-200 rounded-lg px-4 py-3 flex items-start gap-3">
+                            <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div>
+                                <p class="text-red-800 text-sm font-medium">{{ $analysisError }}</p>
+                                <button wire:click="skipResume" class="mt-1 text-sm text-red-700 underline hover:text-red-900">Fill in details manually →</button>
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Analysis success banner --}}
+                    @if ($analysisComplete)
+                        <div class="mb-4 bg-green-50 border border-green-200 rounded-lg px-4 py-3 flex items-center gap-3">
+                            <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p class="text-green-800 text-sm font-medium">Resume analyzed! Your details have been pre-filled. Review and edit each step.</p>
+                        </div>
+                    @endif
+
+                    <div x-data="{ fileName: '' }" class="border-2 border-dashed rounded-lg p-12 text-center transition-colors"
+                         :style="fileName ? 'border-color:#22c55e;background:#f0fdf4;' : 'border-color:#d1d5db;background:#fff;'">
+
+                        {{-- Icon: changes to checkmark when file picked --}}
+                        <template x-if="!fileName">
+                            <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                        </template>
+                        <template x-if="fileName">
+                            <div style="margin-bottom:16px;">
+                                <svg style="width:56px;height:56px;margin:0 auto 8px;color:#16a34a;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <p style="font-size:15px;font-weight:700;color:#15803d;margin:0 0 4px 0;" x-text="fileName"></p>
+                                <p style="font-size:12px;color:#4ade80;">Ready to analyse ✓</p>
+                            </div>
+                        </template>
+
                         <div wire:loading.remove wire:target="resumeFile">
-                            <input type="file" wire:model="resumeFile" accept=".pdf,.doc,.docx,.txt" 
-                                   class="hidden" id="resumeUpload">
+                            <input type="file" wire:model="resumeFile" accept=".pdf,.doc,.docx,.txt"
+                                   class="hidden" id="resumeUpload"
+                                   @change="fileName = $event.target.files[0] ? $event.target.files[0].name : ''">
                             <label for="resumeUpload" class="cursor-pointer">
-                                <span class="text-primary-600 font-semibold hover:text-primary-700">Click to upload</span>
-                                <span class="text-gray-600"> or drag and drop</span>
+                                <span x-show="!fileName" style="color:#6366f1;font-weight:600;">Click to upload</span>
+                                <span x-show="!fileName" style="color:#6b7280;"> or drag and drop</span>
+                                <span x-show="fileName" style="color:#15803d;font-weight:600;">Change file</span>
                             </label>
-                            <p class="text-sm text-gray-500 mt-2">PDF, DOC, DOCX, or TXT (Max 5MB)</p>
+                            <p x-show="!fileName" class="text-sm text-gray-500 mt-2">PDF, DOC, DOCX, or TXT (Max 5MB)</p>
                         </div>
 
                         <div wire:loading wire:target="resumeFile" class="text-primary-600">
@@ -88,9 +127,10 @@
 
                     @if ($resumeFile && !$analyzing && !$analysisComplete)
                         <div class="mt-6 flex justify-center">
-                            <button wire:click="uploadResume" 
-                                    class="px-8 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg">
-                                Analyze Resume with AI
+                            <button wire:click="uploadResume" wire:loading.attr="disabled"
+                                    style="display:inline-flex;align-items:center;gap:8px;padding:12px 32px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:700;font-size:15px;border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 20px rgba(99,102,241,.35);transition:all .2s;">
+                                <span wire:loading.remove wire:target="uploadResume">✨ Analyse Resume with AI</span>
+                                <span wire:loading wire:target="uploadResume">Analyzing...</span>
                             </button>
                         </div>
                     @endif
@@ -107,10 +147,20 @@
                         </div>
                     @endif
 
-                    <div class="mt-8 text-center">
-                        <button wire:click="nextStep" 
-                                class="text-gray-600 hover:text-gray-900 font-medium">
-                            Skip and fill manually →
+                    {{-- Divider --}}
+                    <div class="mt-8 flex items-center gap-4">
+                        <div class="flex-1 border-t border-gray-200"></div>
+                        <span class="text-sm text-gray-400 font-medium">OR</span>
+                        <div class="flex-1 border-t border-gray-200"></div>
+                    </div>
+
+                    <div class="mt-4 text-center">
+                        <button wire:click="skipResume" 
+                                style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:#ffffff;color:#374151;font-weight:600;font-size:14px;border:1.5px solid #ddddf0;border-radius:12px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:all .2s;">
+                            <svg style="width:16px;height:16px;flex-shrink:0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Fill in manually
                         </button>
                     </div>
                 </div>
@@ -123,17 +173,65 @@
                     <p class="text-gray-600 mb-6">Tell us about your professional background</p>
 
                     <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Professional Headline *</label>
-                            <x-ui.ai-textarea 
+                        <div x-data="{
+                                selected: null,
+                                suggestions: @js($headlineSuggestions),
+                                pick(i) {
+                                    this.selected = i;
+                                    var val = this.suggestions[i];
+                                    $wire.set('headline', val);
+                                    document.getElementById('headline').value = val;
+                                    document.getElementById('headline').dispatchEvent(new Event('input'));
+                                }
+                            }" x-init="$watch('$wire.headlineSuggestions', v => { suggestions = v; selected = 0; if(v && v[0]) pick(0); })">
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="block text-sm font-medium text-gray-700">Professional Headline *</label>
+                                <button type="button"
+                                        wire:click="generateHeadline"
+                                        wire:loading.attr="disabled"
+                                        style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:linear-gradient(135deg,#6366f1,#a855f7);color:white;font-size:12px;font-weight:600;border:none;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(99,102,241,.3);transition:all .2s;">
+                                    <svg style="width:13px;height:13px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                    <span wire:loading.remove wire:target="generateHeadline">✨ AI Generate</span>
+                                    <span wire:loading wire:target="generateHeadline" style="display:none">Generating 5 options...</span>
+                                </button>
+                            </div>
+                            <textarea
                                 wire:model="headline"
-                                field="headline"
+                                id="headline"
+                                rows="2"
+                                maxlength="255"
                                 placeholder="e.g., Senior Software Engineer with 8+ years in cloud architecture"
-                                :max-length="255"
-                                :rows="2"
-                                :show-ai-button="true"
-                            />
+                                style="width:100%;padding:12px 14px;border:1.5px solid #d1d5db;border-radius:10px;font-size:14px;color:#1a1a2e;resize:vertical;outline:none;transition:border-color .2s;font-family:inherit;line-height:1.5;"
+                                onfocus="this.style.borderColor='#6366f1'"
+                                onblur="this.style.borderColor='#d1d5db'"
+                            ></textarea>
+                            <div style="text-align:right;font-size:11px;color:#9ca3af;margin-top:3px;">
+                                <span x-data x-text="($wire.headline || '').length"></span>/255
+                            </div>
                             @error('headline') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
+
+                            {{-- AI Suggestions Panel --}}
+                            <template x-if="suggestions && suggestions.length > 0">
+                                <div style="margin-top:14px;padding:16px;background:linear-gradient(135deg,#f5f3ff,#faf5ff);border:1.5px solid #d8b4fe;border-radius:12px;">
+                                    <p style="font-size:11px;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:.07em;margin:0 0 10px 0;">
+                                        ✨ Click a suggestion to use it — then edit freely
+                                    </p>
+                                    <div style="display:flex;flex-direction:column;gap:8px;">
+                                        <template x-for="(s, i) in suggestions" :key="i">
+                                            <button type="button"
+                                                    @click="pick(i)"
+                                                    :style="selected === i
+                                                        ? 'background:linear-gradient(135deg,#6366f1,#a855f7);color:#ffffff;border:2px solid #6366f1;font-weight:600;box-shadow:0 2px 10px rgba(99,102,241,.35);text-align:left;padding:11px 14px;border-radius:9px;font-size:13px;line-height:1.45;cursor:pointer;width:100%;'
+                                                        : 'background:#ffffff;color:#1a1a2e;border:1.5px solid #e9d5ff;font-weight:400;text-align:left;padding:11px 14px;border-radius:9px;font-size:13px;line-height:1.45;cursor:pointer;width:100%;'">
+                                                <span style="opacity:.5;font-size:11px;font-weight:700;margin-right:6px;" x-text="(i+1)+'.'"></span><span x-text="s"></span>
+                                            </button>
+                                        </template>
+                                    </div>
+                                    <p style="font-size:11px;color:#9ca3af;margin:10px 0 0 0;">After selecting, you can edit the text in the field above.</p>
+                                </div>
+                            </template>
                         </div>
 
                         <div>
@@ -153,28 +251,71 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Current Location</label>
-                            <x-ui.smart-select
-                                wire:model="current_location"
-                                placeholder="Start typing your city..."
-                                :allow-create="true"
-                                :options="[
-                                    ['value' => 'Remote', 'label' => 'Remote'],
-                                    ['value' => 'New York, NY', 'label' => 'New York, NY'],
-                                    ['value' => 'San Francisco, CA', 'label' => 'San Francisco, CA'],
-                                    ['value' => 'Los Angeles, CA', 'label' => 'Los Angeles, CA'],
-                                    ['value' => 'Chicago, IL', 'label' => 'Chicago, IL'],
-                                    ['value' => 'Austin, TX', 'label' => 'Austin, TX'],
-                                    ['value' => 'Seattle, WA', 'label' => 'Seattle, WA'],
-                                    ['value' => 'Boston, MA', 'label' => 'Boston, MA'],
-                                    ['value' => 'Denver, CO', 'label' => 'Denver, CO'],
-                                    ['value' => 'Atlanta, GA', 'label' => 'Atlanta, GA'],
-                                    ['value' => 'London, UK', 'label' => 'London, UK'],
-                                    ['value' => 'Mumbai, India', 'label' => 'Mumbai, India'],
-                                    ['value' => 'Bangalore, India', 'label' => 'Bangalore, India'],
-                                    ['value' => 'Toronto, Canada', 'label' => 'Toronto, Canada'],
-                                    ['value' => 'Sydney, Australia', 'label' => 'Sydney, Australia'],
-                                ]"
-                            />
+                            <div x-data="{
+                                query: @entangle('current_location'),
+                                open: false,
+                                highlighted: 0,
+                                all: [
+                                    'Remote',
+                                    'Ahmedabad, Gujarat','Bengaluru, Karnataka','Bhopal, Madhya Pradesh',
+                                    'Bhubaneswar, Odisha','Chandigarh, Punjab','Chennai, Tamil Nadu',
+                                    'Coimbatore, Tamil Nadu','Dehradun, Uttarakhand','Delhi','Faridabad, Haryana',
+                                    'Ghaziabad, Uttar Pradesh','Gurugram, Haryana','Guwahati, Assam',
+                                    'Hyderabad, Telangana','Indore, Madhya Pradesh','Jaipur, Rajasthan',
+                                    'Kochi, Kerala','Kolkata, West Bengal','Lucknow, Uttar Pradesh',
+                                    'Ludhiana, Punjab','Mangaluru, Karnataka','Mumbai, Maharashtra',
+                                    'Mysuru, Karnataka','Nagpur, Maharashtra','Nashik, Maharashtra',
+                                    'Noida, Uttar Pradesh','Patna, Bihar','Pune, Maharashtra',
+                                    'Raipur, Chhattisgarh','Ranchi, Jharkhand','Surat, Gujarat',
+                                    'Thiruvananthapuram, Kerala','Vadodara, Gujarat','Varanasi, Uttar Pradesh',
+                                    'Vijayawada, Andhra Pradesh','Visakhapatnam, Andhra Pradesh',
+                                    'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh',
+                                    'Goa','Gujarat','Haryana','Himachal Pradesh','Jharkhand','Karnataka',
+                                    'Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram',
+                                    'Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu',
+                                    'Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal',
+                                ],
+                                get suggestions() {
+                                    if (!this.query || this.query.length < 2) return [];
+                                    const q = this.query.toLowerCase();
+                                    return this.all.filter(c => c.toLowerCase().includes(q)).slice(0, 8);
+                                },
+                                select(val) { this.query = val; this.open = false; },
+                                onInput() { this.open = true; this.highlighted = 0; },
+                                onKeydown(e) {
+                                    if (!this.open) return;
+                                    if (e.key === 'ArrowDown') { e.preventDefault(); this.highlighted = Math.min(this.highlighted + 1, this.suggestions.length - 1); }
+                                    else if (e.key === 'ArrowUp') { e.preventDefault(); this.highlighted = Math.max(this.highlighted - 1, 0); }
+                                    else if (e.key === 'Enter' && this.suggestions[this.highlighted]) { e.preventDefault(); this.select(this.suggestions[this.highlighted]); }
+                                    else if (e.key === 'Escape') { this.open = false; }
+                                }
+                            }" @click.away="open = false" style="position:relative;">
+                                <input
+                                    type="text"
+                                    x-model="query"
+                                    @input="onInput"
+                                    @keydown="onKeydown"
+                                    @focus="open = suggestions.length > 0"
+                                    placeholder="Type your city, e.g. Mumbai, Bengaluru..."
+                                    style="width:100%;padding:10px 14px;border:1.5px solid #d1d5db;border-radius:9px;font-size:14px;color:#1a1a2e;outline:none;transition:border-color .2s;"
+                                    autocomplete="off"
+                                />
+                                <div x-show="open && suggestions.length > 0"
+                                     x-transition
+                                     style="position:absolute;z-index:999;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1.5px solid #e9d5ff;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);overflow:hidden;">
+                                    <template x-for="(s, i) in suggestions" :key="s">
+                                        <div @click="select(s)"
+                                             :style="i === highlighted ? 'background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;' : 'background:#fff;color:#1a1a2e;'"
+                                             style="padding:10px 16px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;">
+                                            <svg style="width:13px;height:13px;opacity:.6;flex-shrink:0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            </svg>
+                                            <span x-text="s"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
                             @error('current_location') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
@@ -209,17 +350,104 @@
 
             {{-- Step 5: Skills --}}
             @if ($currentStep === 5)
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Skills & Expertise</h2>
-                    <p class="text-gray-600 mb-6">Add your professional skills. Let AI suggest relevant skills based on your experience!</p>
-                    
-                    <x-ui.skill-selector 
-                        wire:model="skills"
-                        :max-skills="20"
-                        :show-proficiency="true"
-                        :show-years="true"
-                        :context="$headline"
-                    />
+                <div x-data="{
+                    skills: @entangle('skills'),
+                    search: '',
+                    aiLoading: false,
+                    aiError: '',
+                    newProf: 'intermediate',
+                    common: ['JavaScript','TypeScript','Python','PHP','Java','C#','React','Vue.js','Angular','Next.js',
+                             'Node.js','Laravel','Django','HTML','CSS','Tailwind CSS','SQL','PostgreSQL','MySQL',
+                             'MongoDB','Redis','Docker','Kubernetes','AWS','Azure','GCP','Git','REST API','GraphQL',
+                             'Machine Learning','Data Science','Communication','Leadership','Teamwork','Problem Solving',
+                             'Critical Thinking','Figma','Jira','Notion','Postman','GitHub','English','Hindi',
+                             'Spanish','French','German','C++','Go','Swift','Kotlin','TypeScript','Bootstrap'],
+                    get filtered() {
+                        if (this.search.length < 1) return [];
+                        const q = this.search.toLowerCase();
+                        const existing = this.skills.map(s => s.name.toLowerCase());
+                        return this.common.filter(c => c.toLowerCase().includes(q) && !existing.includes(c.toLowerCase())).slice(0,8);
+                    },
+                    addSkill(name, prof) {
+                        prof = prof || this.newProf;
+                        if (this.skills.length >= 20) return;
+                        if (this.skills.some(s => s.name.toLowerCase() === name.toLowerCase())) return;
+                        this.skills.push({ name: name, proficiency: prof, years: 1, category: 'technical' });
+                        this.search = '';
+                    },
+                    removeSkill(i) { this.skills.splice(i, 1); },
+                    profColor(p) {
+                        return {beginner:'#9ca3af',intermediate:'#3b82f6',advanced:'#22c55e',expert:'#a855f7'}[p]||'#3b82f6';
+                    },
+                    async suggestAI() {
+                        this.aiLoading = true; this.aiError = '';
+                        try {
+                            const r = await fetch('/api/ai/suggest-skills', {
+                                method:'POST',
+                                headers:{'Content-Type':'application/json','X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]').content,'Accept':'application/json'},
+                                body: JSON.stringify({ context: $wire.headline, existing_skills: this.skills.map(s=>s.name) })
+                            });
+                            const d = await r.json();
+                            if (d.skills && Array.isArray(d.skills)) {
+                                d.skills.forEach(s => this.addSkill(s.name||s, s.proficiency||'intermediate'));
+                            } else { this.aiError = d.error || 'No suggestions returned.'; }
+                        } catch(e) { this.aiError = 'AI suggestion failed. Please try again.'; }
+                        finally { this.aiLoading = false; }
+                    }
+                }">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Skills & Expertise</h2>
+                    <p class="text-gray-600 mb-6">Add your skills. Type to search from common skills or add custom ones.</p>
+
+                    {{-- Search + Add row --}}
+                    <div style="display:flex;gap:8px;margin-bottom:12px;position:relative;">
+                        <div style="flex:1;position:relative;">
+                            <input type="text" x-model="search" placeholder="Search or type a skill..."
+                                   style="width:100%;padding:10px 14px;border:1.5px solid #d1d5db;border-radius:9px;font-size:14px;outline:none;"
+                                   onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#d1d5db'"
+                                   @keydown.enter.prevent="search.trim() && addSkill(search.trim())">
+                            {{-- Dropdown suggestions --}}
+                            <div x-show="filtered.length > 0" style="position:absolute;z-index:50;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1.5px solid #e9d5ff;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.1);overflow:hidden;">
+                                <template x-for="s in filtered" :key="s">
+                                    <div @click="addSkill(s)" style="padding:9px 14px;cursor:pointer;font-size:13px;color:#1a1a2e;" onmouseover="this.style.background='#f5f3ff'" onmouseout="this.style.background='#fff'" x-text="s"></div>
+                                </template>
+                            </div>
+                        </div>
+                        <button type="button" @click="search.trim() && addSkill(search.trim())"
+                                style="padding:10px 20px;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-weight:600;font-size:13px;border:none;border-radius:9px;cursor:pointer;white-space:nowrap;">
+                            + Add
+                        </button>
+                        <button type="button" @click="suggestAI" :disabled="aiLoading"
+                                style="padding:10px 16px;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff;font-weight:600;font-size:13px;border:none;border-radius:9px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;">
+                            <svg style="width:13px;height:13px" x-show="!aiLoading" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            <svg style="width:13px;height:13px" x-show="aiLoading" class="animate-spin" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" opacity=".25"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" opacity=".75"/></svg>
+                            <span x-text="aiLoading ? 'Suggesting...' : '✨ AI Suggest'"></span>
+                        </button>
+                    </div>
+
+                    <p x-show="aiError" x-text="aiError" style="color:#dc2626;font-size:12px;margin-bottom:8px;"></p>
+
+                    {{-- Skills list --}}
+                    <div x-show="skills.length === 0" style="padding:32px;text-align:center;color:#9ca3af;font-size:14px;border:1.5px dashed #e5e7eb;border-radius:12px;">
+                        No skills added yet. Search above or click ✨ AI Suggest.
+                    </div>
+
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                        <template x-for="(skill, i) in skills" :key="i">
+                            <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 12px;background:#fff;border:1.5px solid #e9d5ff;border-radius:999px;font-size:13px;color:#1a1a2e;">
+                                <span style="width:8px;height:8px;border-radius:50%;flex-shrink:0;" :style="'background:'+profColor(skill.proficiency)"></span>
+                                <span x-text="skill.name"></span>
+                                <select x-model="skill.proficiency" style="font-size:11px;border:none;outline:none;background:transparent;color:#6b7280;cursor:pointer;padding:0;">
+                                    <option value="beginner">Beginner</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
+                                    <option value="expert">Expert</option>
+                                </select>
+                                <button type="button" @click="removeSkill(i)" style="color:#9ca3af;background:none;border:none;cursor:pointer;padding:0;line-height:1;font-size:16px;">&times;</button>
+                            </div>
+                        </template>
+                    </div>
+
+                    <p style="font-size:12px;color:#9ca3af;margin-top:12px;" x-text="skills.length + ' / 20 skills added'"></p>
                 </div>
             @endif
 
@@ -258,17 +486,29 @@
                         {{-- Salary Expectations --}}
                         <div>
                             <h3 class="text-lg font-semibold mb-4">💰 Salary Expectations</h3>
-                            <x-ui.range-slider
-                                wire:model="expected_salary_range"
-                                :min="0"
-                                :max="500000"
-                                :step="5000"
-                                :default-min="$expected_salary_min ?? 50000"
-                                :default-max="$expected_salary_max ?? 150000"
-                                :format-currency="true"
-                                currency="$"
-                            />
-                            <p class="text-sm text-gray-500 mt-2">Drag the handles to set your expected salary range</p>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                                <div>
+                                    <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;">Minimum (₹ / year)</label>
+                                    <input type="number"
+                                           wire:model="expected_salary_min"
+                                           min="0" step="10000"
+                                           placeholder="e.g. 500000"
+                                           style="width:100%;padding:11px 14px;border:1.5px solid #d1d5db;border-radius:9px;font-size:14px;color:#1a1a2e;outline:none;transition:border-color .2s;"
+                                           onfocus="this.style.borderColor='#6366f1'"
+                                           onblur="this.style.borderColor='#d1d5db'">
+                                </div>
+                                <div>
+                                    <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;">Maximum (₹ / year)</label>
+                                    <input type="number"
+                                           wire:model="expected_salary_max"
+                                           min="0" step="10000"
+                                           placeholder="e.g. 1200000"
+                                           style="width:100%;padding:11px 14px;border:1.5px solid #d1d5db;border-radius:9px;font-size:14px;color:#1a1a2e;outline:none;transition:border-color .2s;"
+                                           onfocus="this.style.borderColor='#6366f1'"
+                                           onblur="this.style.borderColor='#d1d5db'">
+                                </div>
+                            </div>
+                            <p style="font-size:12px;color:#9ca3af;margin-top:8px;">Enter your expected annual salary range. You can type or use the up/down arrows.</p>
                         </div>
                         
                         {{-- Career Goals --}}
@@ -312,11 +552,13 @@
                 @endif
 
                 @if ($currentStep < $totalSteps)
-                    <button wire:click="nextStep" class="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 font-medium shadow-lg transition-all hover:scale-105">
+                    <button wire:click="nextStep"
+                            style="display:inline-flex;align-items:center;gap:6px;padding:12px 28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:600;font-size:14px;border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 16px rgba(99,102,241,.35);transition:all .2s;">
                         Next Step →
                     </button>
                 @else
-                    <button wire:click="saveProfile" class="px-8 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 font-semibold shadow-lg text-lg transition-all hover:scale-105">
+                    <button wire:click="saveProfile"
+                            style="display:inline-flex;align-items:center;gap:6px;padding:12px 32px;background:linear-gradient(135deg,#22c55e,#16a34a);color:white;font-weight:700;font-size:15px;border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 16px rgba(34,197,94,.35);transition:all .2s;">
                         ✓ Complete Profile
                     </button>
                 @endif

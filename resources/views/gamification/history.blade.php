@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Gamification History')
 
@@ -12,7 +12,7 @@
                 <p class="text-gray-600 mt-1">Track your points, XP, and achievements over time</p>
             </div>
             <a href="{{ route('gamification.dashboard') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">
-                ← Back to Dashboard
+                â† Back to Dashboard
             </a>
         </div>
 
@@ -25,15 +25,15 @@
                 </a>
                 <a href="{{ route('gamification.history', ['type' => 'points']) }}"
                    class="px-4 py-2 rounded-lg font-medium transition {{ $type === 'points' ? 'bg-yellow-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                    💰 Points
+                    �° Points
                 </a>
                 <a href="{{ route('gamification.history', ['type' => 'xp']) }}"
                    class="px-4 py-2 rounded-lg font-medium transition {{ $type === 'xp' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                    ✨ XP
+                     XP
                 </a>
                 <a href="{{ route('gamification.history', ['type' => 'achievements']) }}"
                    class="px-4 py-2 rounded-lg font-medium transition {{ $type === 'achievements' ? 'bg-green-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                    🏆 Achievements
+                    † Achievements
                 </a>
             </div>
         </div>
@@ -49,7 +49,7 @@
                             {{ number_format($pointsHistory->sum('amount')) }}
                         </div>
                     </div>
-                    <div class="text-4xl">💰</div>
+                    <div class="text-4xl">�°</div>
                 </div>
             </div>
 
@@ -62,7 +62,7 @@
                             {{ number_format($xpHistory->sum('amount')) }}
                         </div>
                     </div>
-                    <div class="text-4xl">✨</div>
+                    <div class="text-4xl"></div>
                 </div>
             </div>
 
@@ -75,7 +75,7 @@
                             {{ number_format($activities->count()) }}
                         </div>
                     </div>
-                    <div class="text-4xl">📊</div>
+                    <div class="text-4xl">�Š</div>
                 </div>
             </div>
         </div>
@@ -103,15 +103,15 @@
                             @endswitch">
                             <span class="text-2xl">
                                 @switch($activity->activity_type)
-                                    @case('achievement_unlocked') 🏆 @break
-                                    @case('badge_earned') 🎖️ @break
-                                    @case('level_up') ⬆️ @break
-                                    @case('points_earned') 💰 @break
-                                    @case('xp_earned') ✨ @break
-                                    @case('streak_bonus') 🔥 @break
-                                    @case('challenge_completed') 🎯 @break
-                                    @case('reward_redeemed') 🎁 @break
-                                    @default 📣
+                                    @case('achievement_unlocked') † @break
+                                    @case('badge_earned') –ï¸ @break
+                                    @case('level_up') â¬†ï¸ @break
+                                    @case('points_earned') �° @break
+                                    @case('xp_earned')  @break
+                                    @case('streak_bonus') �¥ @break
+                                    @case('challenge_completed') ¯ @break
+                                    @case('reward_redeemed')  @break
+                                    @default �£
                                 @endswitch
                             </span>
                         </div>
@@ -144,7 +144,7 @@
                 </div>
                 @empty
                 <div class="p-12 text-center">
-                    <div class="text-6xl mb-4">📭</div>
+                    <div class="text-6xl mb-4">�­</div>
                     <h3 class="text-xl font-bold text-gray-900 mb-2">No activity yet</h3>
                     <p class="text-gray-500">Start using the platform to earn points and achievements!</p>
                 </div>

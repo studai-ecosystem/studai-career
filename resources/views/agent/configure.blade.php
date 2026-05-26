@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Configure Autonomous Agent')
 
@@ -107,7 +107,7 @@
                     {{-- Salary Range --}}
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-900 mb-2">Minimum Salary (₹/year)</label>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">Minimum Salary (&#8377;/year)</label>
                             <input type="number" 
                                    name="job_search_criteria[min_salary]" 
                                    value="{{ old('job_search_criteria.min_salary', $config->job_search_criteria['min_salary'] ?? '') }}"
@@ -116,7 +116,7 @@
                                    min="0">
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-900 mb-2">Maximum Salary (₹/year)</label>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">Maximum Salary (&#8377;/year)</label>
                             <input type="number" 
                                    name="job_search_criteria[max_salary]" 
                                    value="{{ old('job_search_criteria.max_salary', $config->job_search_criteria['max_salary'] ?? '') }}"
@@ -368,7 +368,7 @@
                 <a href="{{ route('agent.dashboard') }}" class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
                     Cancel
                 </a>
-                <button type="submit" class="px-8 py-3 bg-gradient-to-r from-primary to-primary-light text-white font-semibold rounded-lg hover:shadow-xl transition-all">
+                <button type="submit" class="px-8 py-3 text-white font-semibold rounded-lg hover:shadow-xl transition-all" style="background:linear-gradient(135deg,#1A73E8,#6366f1);">
                     Save Configuration
                 </button>
             </div>

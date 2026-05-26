@@ -610,7 +610,7 @@ class ContinuousLearningService
             $prompt = $this->buildRefinementPrompt($company, $performanceData, $correlationAnalysis);
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'messages' => [
                     [
                         'role' => 'system',
@@ -622,7 +622,7 @@ class ContinuousLearningService
                     ]
                 ],
                 'temperature' => 0.4,
-                'max_tokens' => 2000
+                'max_completion_tokens' => 2000
             ]);
 
             $aiAnalysis = $response->choices[0]->message->content;
@@ -745,7 +745,7 @@ class ContinuousLearningService
             $prompt .= "Provide actionable insights about what makes candidates succeed or fail in this organization.";
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'messages' => [
                     [
                         'role' => 'system',
@@ -757,7 +757,7 @@ class ContinuousLearningService
                     ]
                 ],
                 'temperature' => 0.5,
-                'max_tokens' => 1000
+                'max_completion_tokens' => 1000
             ]);
 
             return $response->choices[0]->message->content;
@@ -844,7 +844,7 @@ class ContinuousLearningService
                          "3) Technology shifts affecting talent needs, 4) Market competition for talent.";
 
                 $response = OpenAI::chat()->create([
-                    'model' => 'gpt-5',
+                    'model' => config('ai.azure.models.chat'),
                     'messages' => [
                         [
                             'role' => 'system',
@@ -856,7 +856,7 @@ class ContinuousLearningService
                         ]
                     ],
                     'temperature' => 0.6,
-                    'max_tokens' => 1500
+                    'max_completion_tokens' => 1500
                 ]);
 
                 $analysis = $response->choices[0]->message->content;
@@ -939,7 +939,7 @@ class ContinuousLearningService
             $prompt = $this->buildPredictionPrompt($company, $historicalData, $growthTrends, $industryTrends, $emergingSkills, $timeHorizon);
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'messages' => [
                     [
                         'role' => 'system',
@@ -951,7 +951,7 @@ class ContinuousLearningService
                     ]
                 ],
                 'temperature' => 0.5,
-                'max_tokens' => 2000
+                'max_completion_tokens' => 2000
             ]);
 
             $aiAnalysis = $response->choices[0]->message->content;

@@ -197,6 +197,86 @@
                             </ul>
                         </div>
                     @endif
+
+                    {{-- Hiring Rounds --}}
+                    @if($job->hiringRounds->isNotEmpty())
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <div class="flex items-center gap-2 mb-5">
+                            <svg class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            <h2 class="text-xl font-bold text-gray-900">Hiring Rounds</h2>
+                            <span class="ml-auto text-xs font-semibold text-purple-700 bg-purple-100 px-2.5 py-1 rounded-full">{{ $job->hiringRounds->count() }} Round{{ $job->hiringRounds->count() > 1 ? 's' : '' }}</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            @foreach($job->hiringRounds as $round)
+                            @php
+                                $typeLabels = [
+                                    'info_test'       => ['label' => 'Company Info Test',  'icon' => '🏢', 'bg' => 'bg-blue-50',    'badge' => 'bg-blue-100 text-blue-700'],
+                                    'aptitude'        => ['label' => 'Aptitude Test',       'icon' => '🧠', 'bg' => 'bg-indigo-50',  'badge' => 'bg-indigo-100 text-indigo-700'],
+                                    'technical'       => ['label' => 'Technical Test',      'icon' => '💻', 'bg' => 'bg-violet-50',  'badge' => 'bg-violet-100 text-violet-700'],
+                                    'practical'       => ['label' => 'Practical Round',     'icon' => '📋', 'bg' => 'bg-purple-50',  'badge' => 'bg-purple-100 text-purple-700'],
+                                    'hr_interview'    => ['label' => 'HR Interview',        'icon' => '🤝', 'bg' => 'bg-fuchsia-50', 'badge' => 'bg-fuchsia-100 text-fuchsia-700'],
+                                    'culture_fit'     => ['label' => 'Culture Fit',         'icon' => '🌟', 'bg' => 'bg-pink-50',    'badge' => 'bg-pink-100 text-pink-700'],
+                                    'portfolio_review'=> ['label' => 'Portfolio Review',   'icon' => '🎨', 'bg' => 'bg-rose-50',    'badge' => 'bg-rose-100 text-rose-700'],
+                                ];
+                                $meta = $typeLabels[$round->type] ?? ['label' => $round->name, 'icon' => '📝', 'bg' => 'bg-gray-50', 'badge' => 'bg-gray-100 text-gray-700'];
+                            @endphp
+                            <div class="relative flex gap-4">
+                                @if(!$loop->last)
+                                <div class="absolute left-5 top-10 bottom-0 w-0.5 bg-purple-200"></div>
+                                @endif
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white border-2 border-purple-200 flex items-center justify-center text-xl shadow-sm z-10">
+                                    {{ $meta['icon'] }}
+                                </div>
+                                <div class="flex-1 {{ $meta['bg'] }} rounded-xl border border-gray-100 p-4">
+                                    <div class="flex items-start justify-between gap-2 flex-wrap">
+                                        <div>
+                                            <span class="text-xs font-bold text-purple-500 uppercase tracking-wider">Round {{ $round->round_order }}</span>
+                                            <h4 class="font-bold text-gray-900 text-sm mt-0.5">{{ $round->name ?: $meta['label'] }}</h4>
+                                            @if($round->description)
+                                            <p class="text-xs text-gray-500 mt-1">{{ $round->description }}</p>
+                                            @endif
+                                        </div>
+                                        <span class="flex-shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full {{ $meta['badge'] }}">{{ $meta['label'] }}</span>
+                                    </div>
+                                    @if($round->test_date || $round->evaluation_date)
+                                    <div class="flex flex-wrap gap-4 mt-3 pt-3 border-t border-white/80 text-xs text-gray-600">
+                                        @if($round->test_date)
+                                        <div class="flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                            <span class="font-medium text-gray-700">Test Date:</span> {{ $round->test_date->format('d M Y') }}
+                                        </div>
+                                        @endif
+                                        @if($round->evaluation_date)
+                                        <div class="flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            <span class="font-medium text-gray-700">Results by:</span> {{ $round->evaluation_date->format('d M Y') }}
+                                        </div>
+                                        @endif
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
+                        @if($job->open_date && $job->close_date)
+                        <div class="mt-4 flex items-center gap-2 text-sm text-purple-700 bg-purple-50 rounded-xl px-4 py-3 font-medium">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            Application window: <strong>{{ $job->open_date->format('d M Y') }}</strong> &ndash; <strong>{{ $job->close_date->format('d M Y') }}</strong>
+                        </div>
+                        @endif
+                    </div>
+                    @endif
+
                 </div>
 
                 <!-- Sidebar -->

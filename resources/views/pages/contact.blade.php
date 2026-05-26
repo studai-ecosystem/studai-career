@@ -1,11 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'Contact Us - StudAI Career | Support, Sales & Partnership Inquiries')
+@section('title', 'Contact Us - StudAI Hire | Support, Sales & Partnership Inquiries')
 
 @section('meta')
-<meta name="description" content="Get in touch with StudAI Career for support, sales inquiries, partnerships, or general questions. Multiple contact channels and global offices to serve you better.">
-<meta name="keywords" content="contact StudAI Career, customer support, sales inquiries, partnership, help center, contact form">
-<meta property="og:title" content="Contact Us - StudAI Career">
+<meta name="description" content="Get in touch with StudAI Hire for support, sales inquiries, partnerships, or general questions. Multiple contact channels and global offices to serve you better.">
+<meta name="keywords" content="contact StudAI Hire, customer support, sales inquiries, partnership, help center, contact form">
+<meta property="og:title" content="Contact Us - StudAI Hire">
 <meta property="og:description" content="Reach out to our team for support, sales inquiries, or partnerships. We're here to help accelerate your career journey.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ route('contact') }}">
@@ -313,12 +313,12 @@
 {!! json_encode([
     '@context' => 'https://schema.org',
     '@type' => 'ContactPage',
-    'name' => 'Contact StudAI Career',
-    'description' => 'Get in touch with StudAI Career for support, sales inquiries, partnerships, or general questions',
+    'name' => 'Contact StudAI Hire',
+    'description' => 'Get in touch with StudAI Hire for support, sales inquiries, partnerships, or general questions',
     'url' => route('contact'),
     'mainEntity' => [
         '@type' => 'Organization',
-        'name' => 'StudAI Career',
+        'name' => 'StudAI Hire',
         'contactPoint' => [
             [
                 '@type' => 'ContactPoint',

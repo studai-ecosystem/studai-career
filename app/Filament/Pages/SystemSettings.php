@@ -40,7 +40,7 @@ class SystemSettings extends Page
     {
         $this->data = [
             // General Settings
-            'site_name' => config('app.name', 'StudAI Career'),
+            'site_name' => config('app.name', 'StudAI Hire'),
             'site_tagline' => 'Find Your Perfect Career Path with AI',
             'support_email' => config('mail.from.address', 'support@studai.com'),
             'contact_phone' => '+91 1234567890',

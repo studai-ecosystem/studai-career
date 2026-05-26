@@ -6,11 +6,13 @@ namespace App\Livewire;
 
 use App\Models\Profile;
 use App\Services\AI\ResumeAnalyzerService;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use OpenAI\Laravel\Facades\OpenAI;
 
 class ProfileWizard extends Component
 {
@@ -26,10 +28,12 @@ class ProfileWizard extends Component
     public $analyzing = false;
     public $analysisComplete = false;
     public $analysisData = null;
+    public $analysisError = '';
     
     // Step 2: Basic Info
     public $headline = '';
     public $summary = '';
+    public array $headlineSuggestions = [];
     public $current_location = '';
     
     // Step 3: Experience
@@ -91,6 +95,9 @@ class ProfileWizard extends Component
     {
         $user = auth()->user();
         $profile = $user->profile;
+
+        // Restore step from session so a page refresh lands back on the right step
+        $this->currentStep = session('profile_wizard_step_' . $user->id, 1);
         
         if ($profile) {
             // Load existing profile data
@@ -102,13 +109,29 @@ class ProfileWizard extends Component
             $this->skills = $profile->skills ?? [];
             $this->certifications = $profile->certifications ?? [];
             $this->projects = $profile->projects ?? [];
-            $this->linkedin_url = $profile->linkedin_url ?? '';
-            $this->portfolio_url = $profile->portfolio_url ?? '';
-            $this->github_url = $profile->github_url ?? '';
             $this->expected_salary_min = $profile->expected_salary_min;
             $this->expected_salary_max = $profile->expected_salary_max;
-            $this->career_goals = $profile->career_goals ?? '';
+
+            // URLs and career goals are stored in the social_links JSON column
+            $social = $profile->social_links ?? [];
+            $this->linkedin_url  = $social['linkedin']  ?? '';
+            $this->portfolio_url = $social['portfolio'] ?? '';
+            $this->github_url    = $social['github']    ?? '';
+            $this->career_goals  = $social['career_goals'] ?? '';
+
+            // If profile has data, skip straight to step 2 minimum (no need to re-upload)
+            if ($this->currentStep === 1 && $profile->headline) {
+                $this->currentStep = session('profile_wizard_step_' . $user->id, 2);
+            }
         }
+    }
+
+    /**
+     * Persist the current step to the session
+     */
+    protected function saveStepToSession(): void
+    {
+        session(['profile_wizard_step_' . auth()->id() => $this->currentStep]);
     }
 
     /**
@@ -120,42 +143,43 @@ class ProfileWizard extends Component
             'resumeFile' => 'required|file|mimes:pdf,doc,docx,txt|max:5120', // 5MB
         ]);
 
+        $this->analysisError = '';
+
         try {
             $this->analyzing = true;
             $this->uploadProgress = 0;
-            
+
             $user = auth()->user();
-            
+
             // Store file
             $path = $this->resumeFile->store('resumes/' . $user->id, 'private');
             $fullPath = Storage::disk('private')->path($path);
-            
+
             $this->uploadProgress = 50;
-            
+
             // Analyze with AI
             $resumeAnalyzer = app(ResumeAnalyzerService::class);
             $this->analysisData = $resumeAnalyzer->analyzeResume($fullPath);
-            
+
             $this->uploadProgress = 100;
             $this->analyzing = false;
             $this->analysisComplete = true;
-            
+
             // Auto-fill from analysis
             $this->autoFillFromAnalysis();
-            
-            session()->flash('message', 'Resume analyzed successfully! Review and edit the information below.');
-            
+
             // Move to next step
             $this->currentStep = 2;
-            
-        } catch (\Exception $e) {
+            $this->saveStepToSession();
+
+        } catch (\Throwable $e) {
             $this->analyzing = false;
             Log::error('Resume analysis failed', [
                 'error' => $e->getMessage(),
-                'user_id' => $user->id,
+                'user_id' => auth()->id(),
             ]);
-            
-            session()->flash('error', 'Failed to analyze resume. Please try again or fill in manually.');
+
+            $this->analysisError = 'Could not analyze resume automatically. You can skip and fill in your details manually.';
         }
     }
 
@@ -167,59 +191,158 @@ class ProfileWizard extends Component
         if (!$this->analysisData) {
             return;
         }
-        
+
         $data = $this->analysisData;
-        
+
         // Basic info
-        if (isset($data['personal_info']['professional_title'])) {
+        if (!empty($data['personal_info']['professional_title'])) {
             $this->headline = $data['personal_info']['professional_title'];
         }
-        
-        if (isset($data['summary'])) {
+
+        if (!empty($data['summary'])) {
             $this->summary = $data['summary'];
         }
-        
-        if (isset($data['personal_info']['location'])) {
+
+        if (!empty($data['personal_info']['location'])) {
             $this->current_location = $data['personal_info']['location'];
         }
-        
-        // Experience
-        if (isset($data['experience'])) {
-            $this->experience = $data['experience'];
+
+        // Experience — normalize start/end dates to YYYY-MM-DD for <input type="date">
+        if (!empty($data['experience']) && is_array($data['experience'])) {
+            $this->experience = array_map(function (array $exp): array {
+                return [
+                    'title'        => $exp['title'] ?? '',
+                    'company'      => $exp['company'] ?? '',
+                    'start_date'   => $this->normalizeDate($exp['start_date'] ?? ''),
+                    'end_date'     => strtolower($exp['end_date'] ?? '') === 'present' ? '' : $this->normalizeDate($exp['end_date'] ?? ''),
+                    'current'      => strtolower($exp['end_date'] ?? '') === 'present',
+                    'description'  => $exp['description'] ?? '',
+                    'achievements' => is_array($exp['achievements'] ?? null) ? $exp['achievements'] : [],
+                ];
+            }, $data['experience']);
         }
-        
-        // Education
-        if (isset($data['education'])) {
-            $this->education = $data['education'];
+
+        // Education — graduation_year must be int
+        if (!empty($data['education']) && is_array($data['education'])) {
+            $this->education = array_map(function (array $edu): array {
+                return [
+                    'degree'          => $edu['degree'] ?? '',
+                    'institution'     => $edu['institution'] ?? '',
+                    'field'           => $edu['field'] ?? '',
+                    'graduation_year' => (int) ($edu['graduation_year'] ?? date('Y')),
+                    'gpa'             => $edu['gpa'] ?? null,
+                ];
+            }, $data['education']);
         }
-        
-        // Skills
-        if (isset($data['skills'])) {
-            $this->skills = $data['skills'];
+
+        // Skills — AI returns {technical:[], soft:[], languages:[]} OR a flat array
+        if (!empty($data['skills'])) {
+            $rawSkills = $data['skills'];
+            $normalized = [];
+
+            if (isset($rawSkills['technical']) || isset($rawSkills['soft'])) {
+                // Nested format — flatten
+                foreach ($rawSkills['technical'] ?? [] as $s) {
+                    if (is_array($s)) {
+                        $normalized[] = ['name' => $s['name'] ?? '', 'proficiency' => strtolower($s['proficiency'] ?? 'intermediate'), 'years' => (int) ($s['years'] ?? 1)];
+                    } elseif (is_string($s)) {
+                        $normalized[] = ['name' => $s, 'proficiency' => 'intermediate', 'years' => 1];
+                    }
+                }
+                foreach ($rawSkills['soft'] ?? [] as $s) {
+                    $name = is_array($s) ? ($s['name'] ?? '') : $s;
+                    if ($name) {
+                        $normalized[] = ['name' => $name, 'proficiency' => 'intermediate', 'years' => 1];
+                    }
+                }
+                foreach ($rawSkills['tools'] ?? [] as $s) {
+                    $name = is_array($s) ? ($s['name'] ?? '') : $s;
+                    if ($name) {
+                        $normalized[] = ['name' => $name, 'proficiency' => 'intermediate', 'years' => 1];
+                    }
+                }
+            } elseif (is_array($rawSkills)) {
+                // Already flat array of strings or objects
+                foreach ($rawSkills as $s) {
+                    if (is_array($s) && isset($s['name'])) {
+                        $normalized[] = ['name' => $s['name'], 'proficiency' => strtolower($s['proficiency'] ?? 'intermediate'), 'years' => (int) ($s['years'] ?? 1)];
+                    } elseif (is_string($s)) {
+                        $normalized[] = ['name' => $s, 'proficiency' => 'intermediate', 'years' => 1];
+                    }
+                }
+            }
+
+            if (!empty($normalized)) {
+                $this->skills = array_values(array_filter($normalized, fn($s) => !empty($s['name'])));
+            }
         }
-        
+
         // Certifications
-        if (isset($data['certifications'])) {
-            $this->certifications = $data['certifications'];
+        if (!empty($data['certifications']) && is_array($data['certifications'])) {
+            $this->certifications = array_map(fn($c) => [
+                'name'        => $c['name'] ?? '',
+                'issuer'      => $c['issuer'] ?? '',
+                'date'        => $this->normalizeDate($c['date'] ?? ''),
+                'expiry_date' => null,
+            ], $data['certifications']);
         }
-        
+
         // Projects
-        if (isset($data['projects'])) {
+        if (!empty($data['projects']) && is_array($data['projects'])) {
             $this->projects = $data['projects'];
         }
-        
+
         // Links
-        if (isset($data['personal_info']['linkedin'])) {
+        if (!empty($data['personal_info']['linkedin'])) {
             $this->linkedin_url = $data['personal_info']['linkedin'];
         }
-        
-        if (isset($data['personal_info']['portfolio'])) {
+
+        if (!empty($data['personal_info']['portfolio'])) {
             $this->portfolio_url = $data['personal_info']['portfolio'];
         }
-        
-        if (isset($data['personal_info']['github'])) {
+
+        if (!empty($data['personal_info']['github'])) {
             $this->github_url = $data['personal_info']['github'];
         }
+    }
+
+    /**
+     * Convert YYYY-MM or YYYY to YYYY-MM-DD for HTML date inputs
+     */
+    protected function normalizeDate(string $date): string
+    {
+        if (empty($date)) {
+            return '';
+        }
+        // Already full date
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            return $date;
+        }
+        // YYYY-MM → YYYY-MM-01
+        if (preg_match('/^\d{4}-\d{2}$/', $date)) {
+            return $date . '-01';
+        }
+        // YYYY → YYYY-01-01
+        if (preg_match('/^\d{4}$/', $date)) {
+            return $date . '-01-01';
+        }
+        return '';
+    }
+
+    /**
+     * Skip resume upload and go straight to manual entry.
+     * Pre-seeds one blank entry in each section so forms aren't empty.
+     */
+    public function skipResume()
+    {
+        if (empty($this->experience)) {
+            $this->addExperience();
+        }
+        if (empty($this->education)) {
+            $this->addEducation();
+        }
+        $this->currentStep = 2;
+        $this->saveStepToSession();
     }
 
     /**
@@ -341,6 +464,127 @@ class ProfileWizard extends Component
     }
 
     /**
+     * Generate 5 professional headline suggestions using AI from resume data
+     */
+    public function generateHeadline(): void
+    {
+        $this->headlineSuggestions = [];
+        $this->resetErrorBag('headline');
+
+        try {
+            $context = [];
+
+            if ($this->analysisData) {
+                $data = is_array($this->analysisData) ? $this->analysisData : (array) $this->analysisData;
+
+                if (!empty($data['skills'])) {
+                    $skillsRaw = (array) $data['skills'];
+                    $flatSkills = [];
+                    foreach ($skillsRaw as $group) {
+                        if (is_array($group)) {
+                            foreach ($group as $item) {
+                                if (is_array($item)) {
+                                    $flatSkills[] = $item['language'] ?? $item['name'] ?? '';
+                                } elseif (is_string($item)) {
+                                    $flatSkills[] = $item;
+                                }
+                            }
+                        } elseif (is_string($group)) {
+                            $flatSkills[] = $group;
+                        }
+                    }
+                    $flatSkills = array_filter($flatSkills);
+                    if ($flatSkills) {
+                        $context[] = 'Skills: ' . implode(', ', array_slice($flatSkills, 0, 8));
+                    }
+                }
+
+                if (!empty($data['experience'])) {
+                    $exp   = (array) $data['experience'];
+                    $first = (array) ($exp[0] ?? []);
+                    $title   = is_string($first['title']   ?? null) ? $first['title']   : '';
+                    $company = is_string($first['company'] ?? null) ? $first['company'] : '';
+                    if ($title)   $context[] = 'Latest role: ' . $title;
+                    if ($company) $context[] = 'at ' . $company;
+                }
+            }
+
+            if ($this->summary) $context[] = 'Summary: ' . $this->summary;
+            if (empty($context)) $context[] = 'A career professional looking for new opportunities';
+
+            $background = implode('. ', $context);
+            $prompt = 'Generate exactly 5 different, creative LinkedIn-style professional headlines (each max 120 characters) for someone with this background: '
+                . $background
+                . '. Each headline should have a different angle or tone (e.g. achievement-focused, skill-focused, role-focused, impact-focused, passion-focused).'
+                . ' Return ONLY a JSON array of exactly 5 strings, like: ["Headline 1","Headline 2","Headline 3","Headline 4","Headline 5"]. No other text, no numbering, no explanation.';
+
+            $endpoint   = config('ai.azure.endpoint');
+            $apiKey     = config('ai.azure.api_key');
+            $deployment = config('ai.azure.deployment_id', config('ai.default_model', 'gpt-5.4'));
+            $apiVersion = config('ai.azure.api_version', '2024-12-01-preview');
+
+            if (empty($endpoint) || empty($apiKey)) {
+                throw new \Exception('Azure OpenAI credentials not configured.');
+            }
+
+            $url = rtrim($endpoint, '/') . "/openai/deployments/{$deployment}/chat/completions?api-version={$apiVersion}";
+
+            $response = Http::timeout(45)
+                ->withHeaders([
+                    'api-key'      => $apiKey,
+                    'Content-Type' => 'application/json',
+                ])
+                ->post($url, [
+                    'messages' => [
+                        ['role' => 'system', 'content' => 'You are a professional resume writer. Always respond with only a valid JSON array of strings, nothing else.'],
+                        ['role' => 'user',   'content' => $prompt],
+                    ],
+                    'max_completion_tokens' => 300,
+                    'temperature'           => 0.85,
+                ]);
+
+            if (!$response->successful()) {
+                throw new \Exception('Azure OpenAI request failed: ' . $response->body());
+            }
+
+            $raw = trim($response->json('choices.0.message.content') ?? '');
+
+            // Strip markdown code fences if present
+            $raw = preg_replace('/^```(?:json)?\s*/i', '', $raw);
+            $raw = preg_replace('/\s*```$/', '', $raw);
+            $raw = trim($raw);
+
+            $suggestions = json_decode($raw, true);
+
+            // Fallback: split by newlines if JSON fails
+            if (!is_array($suggestions)) {
+                $suggestions = array_filter(array_map('trim', explode("\n", $raw)));
+            }
+
+            $suggestions = array_values(array_slice(
+                array_filter(array_map('trim', (array) $suggestions), fn($s) => is_string($s) && $s !== ''),
+                0, 5
+            ));
+
+            if (!empty($suggestions)) {
+                $this->headlineSuggestions = $suggestions;
+                $this->headline = $suggestions[0];
+            }
+        } catch (\Throwable $e) {
+            Log::error('generateHeadline failed', ['error' => $e->getMessage()]);
+            $this->addError('headline', 'AI generation failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Select a generated headline suggestion
+     */
+    public function selectHeadline(int $index): void
+    {
+        $this->headline = $this->headlineSuggestions[$index] ?? $this->headline;
+    }
+
+    /**
      * Navigate to next step
      */
     public function nextStep()
@@ -349,6 +593,7 @@ class ProfileWizard extends Component
         
         if ($this->currentStep < $this->totalSteps) {
             $this->currentStep++;
+            $this->saveStepToSession();
         }
     }
 
@@ -359,6 +604,7 @@ class ProfileWizard extends Component
     {
         if ($this->currentStep > 1) {
             $this->currentStep--;
+            $this->saveStepToSession();
         }
     }
 
@@ -369,6 +615,7 @@ class ProfileWizard extends Component
     {
         if ($step >= 1 && $step <= $this->totalSteps) {
             $this->currentStep = $step;
+            $this->saveStepToSession();
         }
     }
 
@@ -425,40 +672,48 @@ class ProfileWizard extends Component
      */
     public function saveProfile()
     {
-        $this->validate();
-        
         try {
             $user = auth()->user();
             $profile = $user->profile ?? new Profile();
-            
-            $profile->user_id = $user->id;
-            $profile->headline = $this->headline;
-            $profile->summary = $this->summary;
+
+            $profile->user_id        = $user->id;
+            $profile->headline       = $this->headline;
+            $profile->summary        = $this->summary;
             $profile->current_location = $this->current_location;
-            $profile->experience = $this->experience;
-            $profile->education = $this->education;
-            $profile->skills = $this->skills;
-            $profile->certifications = $this->certifications;
-            $profile->projects = $this->projects;
-            $profile->linkedin_url = $this->linkedin_url;
-            $profile->portfolio_url = $this->portfolio_url;
-            $profile->github_url = $this->github_url;
-            $profile->expected_salary_min = $this->expected_salary_min;
-            $profile->expected_salary_max = $this->expected_salary_max;
-            $profile->career_goals = $this->career_goals;
-            
+            $profile->experience     = $this->experience ?: [];
+            $profile->education      = $this->education ?: [];
+            $profile->skills         = $this->skills ?: [];
+            $profile->certifications = $this->certifications ?: [];
+            $profile->projects       = $this->projects ?: [];
+            $profile->expected_salary_min = $this->expected_salary_min ?: null;
+            $profile->expected_salary_max = $this->expected_salary_max ?: null;
+
+            // Store URLs and career goals in the social_links JSON column
+            $profile->social_links = [
+                'linkedin'     => $this->linkedin_url  ?: '',
+                'portfolio'    => $this->portfolio_url ?: '',
+                'github'       => $this->github_url    ?: '',
+                'career_goals' => $this->career_goals  ?: '',
+            ];
+
+            // Update completion score
+            $profile->profile_completeness = $this->completionPercentage;
+
             $profile->save();
-            
+
+            // Clear wizard step session so next visit starts fresh
+            session()->forget('profile_wizard_step_' . $user->id);
+
             session()->flash('message', 'Profile saved successfully!');
-            
+
             return redirect()->route('profile.career.index');
-            
+
         } catch (\Exception $e) {
             Log::error('Profile save failed', [
-                'error' => $e->getMessage(),
-                'user_id' => $user->id,
+                'error'   => $e->getMessage(),
+                'user_id' => auth()->id(),
             ]);
-            
+
             session()->flash('error', 'Failed to save profile. Please try again.');
         }
     }

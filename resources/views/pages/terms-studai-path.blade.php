@@ -1,15 +1,15 @@
 {{--
-    StudAI Path — Terms of Service
+    StudAI Hire — Terms of Service
     User Agreement & Service Terms
 --}}
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'Terms of Service — StudAI Path')
+@section('title', 'Terms of Service — StudAI Hire')
 
 @section('meta')
-<meta name="description" content="Terms and Conditions for using StudAI Path services. Covers user obligations, subscription terms, AI usage, and liability provisions.">
-<meta property="og:title" content="Terms of Service — StudAI Path">
-<meta property="og:description" content="Read our terms before using StudAI Path.">
+<meta name="description" content="Terms and Conditions for using StudAI Hire services. Covers user obligations, subscription terms, AI usage, and liability provisions.">
+<meta property="og:title" content="Terms of Service — StudAI Hire">
+<meta property="og:description" content="Read our terms before using StudAI Hire.">
 <link rel="canonical" href="{{ route('terms') }}">
 @endsection
 
@@ -28,7 +28,7 @@
         </div>
         <h1 class="text-4xl font-bold sm:text-5xl">Terms of Service</h1>
         <p class="mt-4 text-lg text-slate-200 max-w-2xl mx-auto">
-            Please read these terms carefully before using StudAI Path.
+            Please read these terms carefully before using StudAI Hire.
         </p>
     </div>
 </section>
@@ -66,7 +66,7 @@
             {{-- Introduction --}}
             <div class="bg-surface-50 rounded-2xl border border-surface-200 p-6 mb-12 not-prose">
                 <p class="text-ink-secondary">
-                    These Terms of Service ("Terms") govern your use of the StudAI Path website, mobile apps, and services (the "Services") operated by StudAI Path Technologies Private Limited ("we", "us", "Company").
+                    These Terms of Service ("Terms") govern your use of the StudAI Hire website, mobile apps, and services (the "Services") operated by StudAI Hire Technologies Private Limited ("we", "us", "Company").
                 </p>
                 <p class="text-ink-secondary mt-4">
                     By accessing or using our Services, you agree to be bound by these Terms. If you disagree, do not use our Services.
@@ -90,7 +90,7 @@
             {{-- Section 2 --}}
             <div id="services" class="mb-12">
                 <h2 class="text-2xl font-bold text-ink-primary">2. Description of Services</h2>
-                <p class="text-ink-secondary mt-4">StudAI Path provides:</p>
+                <p class="text-ink-secondary mt-4">StudAI Hire provides:</p>
                 <ul class="space-y-2 text-ink-secondary mt-4">
                     <li><strong>Autonomous Career Agent:</strong> AI-powered job search and application automation</li>
                     <li><strong>Resume Studio:</strong> AI resume creation and optimization tools</li>
@@ -171,7 +171,7 @@
                 <h2 class="text-2xl font-bold text-ink-primary">7. Intellectual Property</h2>
                 <h3 class="text-xl font-semibold text-ink-primary mt-6 mb-3">7.1 Our Content</h3>
                 <p class="text-ink-secondary">
-                    The Services, including design, logos, AI models, and software, are owned by StudAI Path and protected by IP laws. You may not copy, modify, or distribute without permission.
+                    The Services, including design, logos, AI models, and software, are owned by StudAI Hire and protected by IP laws. You may not copy, modify, or distribute without permission.
                 </p>
                 
                 <h3 class="text-xl font-semibold text-ink-primary mt-6 mb-3">7.2 Your Content</h3>
@@ -231,7 +231,7 @@
                     <p class="text-ink-secondary mb-4">Questions about these Terms?</p>
                     <ul class="space-y-2 text-ink-secondary">
                         <li><strong>Email:</strong> <a href="mailto:legal@studaipath.com" class="text-google-blue-600 hover:underline">legal@studaipath.com</a></li>
-                        <li><strong>Address:</strong> StudAI Path Technologies Pvt. Ltd., WeWork Prestige Atlanta, Koramangala, Bengaluru 560034, India</li>
+                        <li><strong>Address:</strong> StudAI Hire Technologies Pvt. Ltd., WeWork Prestige Atlanta, Koramangala, Bengaluru 560034, India</li>
                     </ul>
                 </div>
             </div>

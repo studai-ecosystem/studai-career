@@ -1,11 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'About StudAI Career | Mission, Team & Vision For The Future Of Work')
+@section('title', 'About StudAI Hire | Mission, Team & Vision For The Future Of Work')
 
 @section('meta')
-<meta name="description" content="Meet the people behind StudAI Career, explore our milestones, and learn how we are building the most intelligent career OS for emerging markets.">
-<meta property="og:title" content="About StudAI Career">
-<meta property="og:description" content="StudAI Career is on a mission to unlock career mobility with AI-powered workflows and inclusive hiring practices.">
+<meta name="description" content="Meet the people behind StudAI Hire, explore our milestones, and learn how we are building the most intelligent career OS for emerging markets.">
+<meta property="og:title" content="About StudAI Hire">
+<meta property="og:description" content="StudAI Hire is on a mission to unlock career mobility with AI-powered workflows and inclusive hiring practices.">
 <link rel="canonical" href="{{ route('about') }}">
 @endsection
 
@@ -22,7 +22,7 @@
 				<span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2 text-sm font-semibold uppercase tracking-[0.35em]">Our Story</span>
 				<h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl">Building the career operating system for ambitious talent.</h1>
 				<p class="text-lg text-slate-200">
-					StudAI Career exists to eliminate friction between job seekers and employers. We combine applied AI, human-centered workflows, and local market intelligence to help millions access meaningful work and empower teams to hire with confidence.
+					StudAI Hire exists to eliminate friction between job seekers and employers. We combine applied AI, human-centered workflows, and local market intelligence to help millions access meaningful work and empower teams to hire with confidence.
 				</p>
 				<div class="flex flex-col gap-4 sm:flex-row sm:items-center">
 					<a href="{{ route('pricing') }}" class="group inline-flex items-center rounded-xl bg-gradient-to-r from-[#1A73E8] via-blue-500 to-blue-400 px-8 py-3 text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:shadow-blue-500/40">
@@ -83,7 +83,7 @@
 					<li>Career mobility is a continuous journey. Our platform evolves with new skills, industries, and work models.</li>
 				</ul>
 				<div class="mt-8 rounded-2xl border border-blue-500/30 bg-blue-500/10 p-6 text-blue-200">
-					“StudAI Career helped us turn a 90-day hiring cycle into a 28-day sprint, without sacrificing candidate experience.”
+					“StudAI Hire helped us turn a 90-day hiring cycle into a 28-day sprint, without sacrificing candidate experience.”
 					<div class="mt-4 text-sm font-semibold">— Kavya Menon, VP Talent, Verve Labs</div>
 				</div>
 			</div>
@@ -141,7 +141,7 @@
 				</div>
 			</div>
 			<div class="rounded-3xl border border-slate-800 bg-slate-900/70 p-8">
-				<h3 class="text-2xl font-semibold text-white">Life At StudAI Career</h3>
+				<h3 class="text-2xl font-semibold text-white">Life At StudAI Hire</h3>
 				<p class="mt-2 text-slate-300">We are a distributed-first team with hubs in Bengaluru, Singapore, and Berlin. Culture is built around autonomy, experimentation, and inclusivity.</p>
 				<ul class="mt-6 space-y-4 text-slate-300">
 					<li><span class="font-semibold text-white">Remote-friendly:</span> Hybrid work with quarterly in-person build weeks.</li>
@@ -149,7 +149,7 @@
 					<li><span class="font-semibold text-white">Wellbeing:</span> Comprehensive health coverage, mental wellness stipend, and recharge weeks.</li>
 					<li><span class="font-semibold text-white">Open source:</span> We contribute AI fairness tooling and hiring analytics components back to the community.</li>
 				</ul>
-				<a href="https://www.linkedin.com/company/studai-career/jobs" target="_blank" rel="noopener" class="mt-8 inline-flex items-center rounded-xl bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20">
+				<a href="https://www.linkedin.com/company/studai-hire/jobs" target="_blank" rel="noopener" class="mt-8 inline-flex items-center rounded-xl bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20">
 					See Open Roles
 				</a>
 			</div>
@@ -183,7 +183,7 @@
 {!! json_encode([
 	'@context' => 'https://schema.org',
 	'@type' => 'Organization',
-	'name' => 'StudAI Career',
+	'name' => 'StudAI Hire',
 	'url' => url('/'),
 	'logo' => asset('images/logo-dark.svg'),
 	'foundingDate' => '2022',
@@ -192,7 +192,7 @@
 		['@type' => 'Person', 'name' => 'Ashna Verma'],
 	],
 	'sameAs' => [
-		'https://www.linkedin.com/company/studai-career',
+		'https://www.linkedin.com/company/studai-hire',
 		'https://twitter.com/studai_career'
 	],
 	'contactPoint' => [

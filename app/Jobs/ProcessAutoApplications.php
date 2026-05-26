@@ -68,16 +68,18 @@ class ProcessAutoApplications implements ShouldQueue
             $query->whereKey($this->configurationId);
         }
 
-        $configurations = $query->get();
-
-        foreach ($configurations as $configuration) {
-            $this->processConfiguration(
-                $configuration,
-                $agentService,
-                $resumeResolver,
-                $submissionService
-            );
-        }
+        // Use chunk() to avoid loading all configurations into memory at once.
+        // With thousands of active agents this prevents memory exhaustion.
+        $query->chunk(100, function ($configurations) use ($agentService, $resumeResolver, $submissionService): void {
+            foreach ($configurations as $configuration) {
+                $this->processConfiguration(
+                    $configuration,
+                    $agentService,
+                    $resumeResolver,
+                    $submissionService
+                );
+            }
+        });
     }
 
     /**

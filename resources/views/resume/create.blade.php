@@ -1,6 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('title', 'Create Resume')
+@section('page-title', 'Create Resume')
+@section('page-description', 'Build an ATS-optimized resume with AI')
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-data="resumeBuilder()">
@@ -42,31 +44,212 @@
         <div x-show="step === 1" class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Choose Your Template</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                @foreach($templates as $template)
-                    <label class="cursor-pointer">
-                        <input type="radio" name="template_id" value="{{ $template->id }}" 
-                               x-model="formData.template_id" class="sr-only">
-                        <div class="border-2 rounded-lg p-4 transition-all"
-                             :class="formData.template_id == {{ $template->id }} ? 'border-purple-600 bg-purple-50' : 'border-gray-200 hover:border-purple-300'">
-                            <div class="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-md mb-3 flex items-center justify-center">
-                                <i data-lucide="file-text" class="w-16 h-16 text-gray-400"></i>
+            {{-- Template Preview Modal --}}
+            <div x-data="{ open: false, tpl: null }" @keydown.escape.window="open=false">
+                <div x-show="open" x-transition.opacity style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:24px;" @click.self="open=false">
+                    <div style="background:#fff;border-radius:16px;width:100%;max-width:760px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.35);">
+                        {{-- Modal header --}}
+                        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                            <div>
+                                <h3 x-text="tpl?.name" style="font-size:18px;font-weight:700;color:#111827;margin:0"></h3>
+                                <p x-text="tpl?.description" style="font-size:13px;color:#6b7280;margin:4px 0 0 0"></p>
                             </div>
-                            <h3 class="font-semibold text-gray-900">{{ $template->name }}</h3>
-                            <p class="text-sm text-gray-600 mt-1">{{ $template->description }}</p>
-                            
-                            <div class="flex gap-2 mt-3">
-                                @if($template->is_ats_friendly)
-                                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">ATS Friendly</span>
-                                @endif
-                                @if($template->is_premium)
-                                    <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">Premium</span>
-                                @endif
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <label style="display:inline-flex;align-items:center;gap:8px;padding:9px 20px;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-size:13px;font-weight:700;border-radius:9px;cursor:pointer;border:none;">
+                                    <input type="radio" name="template_id" :value="tpl?.id" x-model="formData.template_id" class="sr-only" @change="open=false">
+                                    ✓ Use This Template
+                                </label>
+                                <button type="button" @click="open=false" style="background:#f3f4f6;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:18px;color:#6b7280;">✕</button>
                             </div>
                         </div>
-                    </label>
+                        {{-- Resume preview --}}
+                        <div style="overflow-y:auto;padding:24px;background:#f8fafc;">
+                            <div x-show="tpl" style="background:#fff;border-radius:8px;box-shadow:0 2px 16px rgba(0,0,0,.08);overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;">
+                                {{-- Dynamic preview rendered from Alpine tpl data --}}
+                                <template x-if="tpl">
+                                    <div>
+                                        {{-- Header --}}
+                                        <div :style="'background:'+tpl.primary+';padding:28px 32px;'">
+                                            <div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-.3px;">Priya Sharma</div>
+                                            <div :style="'font-size:14px;color:rgba(255,255,255,.8);margin-top:4px;font-weight:500;'" x-text="tpl.name + ' · Sample Resume'"></div>
+                                            <div style="display:flex;gap:20px;margin-top:12px;flex-wrap:wrap;">
+                                                <span style="font-size:12px;color:rgba(255,255,255,.75);">📧 priya@example.com</span>
+                                                <span style="font-size:12px;color:rgba(255,255,255,.75);">📱 +91 98765 43210</span>
+                                                <span style="font-size:12px;color:rgba(255,255,255,.75);">📍 Bengaluru, India</span>
+                                                <span style="font-size:12px;color:rgba(255,255,255,.75);">🔗 linkedin.com/in/priya</span>
+                                            </div>
+                                        </div>
+                                        {{-- Body --}}
+                                        <div :style="tpl.cols==2 ? 'display:flex;' : ''">
+                                            {{-- Sidebar (2-col only) --}}
+                                            <template x-if="tpl.cols==2">
+                                                <div :style="'width:220px;flex-shrink:0;padding:20px 18px;background:'+tpl.secondary+'15;border-right:1px solid #e5e7eb;'">
+                                                    <div :style="'font-size:10px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:8px;'">Skills</div>
+                                                    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px;">
+                                                        <template x-for="s in ['Laravel','React','Python','MySQL','Docker','AWS','Git','REST API']">
+                                                            <span :style="'background:'+tpl.primary+'18;color:'+tpl.primary+';font-size:10px;padding:3px 7px;border-radius:4px;font-weight:600;'" x-text="s"></span>
+                                                        </template>
+                                                    </div>
+                                                    <div :style="'font-size:10px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:8px;'">Education</div>
+                                                    <div style="font-size:11px;font-weight:700;color:#1f2937;">B.Tech Computer Science</div>
+                                                    <div style="font-size:11px;color:#6b7280;">IIT Bombay · 2019–2023</div>
+                                                    <div style="font-size:11px;color:#6b7280;">CGPA: 8.7 / 10</div>
+                                                    <div :style="'font-size:10px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin:14px 0 8px;'">Languages</div>
+                                                    <div style="font-size:11px;color:#374151;">English · Native</div>
+                                                    <div style="font-size:11px;color:#374151;">Hindi · Fluent</div>
+                                                </div>
+                                            </template>
+                                            {{-- Main content --}}
+                                            <div style="flex:1;padding:20px 24px;">
+                                                {{-- Summary --}}
+                                                <div :style="'font-size:11px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:6px;'">Professional Summary</div>
+                                                <p style="font-size:12px;color:#374151;line-height:1.6;margin-bottom:18px;">Full-stack software engineer with 4+ years building scalable SaaS products. Expert in Laravel, React, and cloud infrastructure. Led 3 cross-functional teams delivering ₹2Cr+ revenue impact. Passionate about clean code and developer experience.</p>
+                                                {{-- Experience --}}
+                                                <div :style="'font-size:11px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:10px;'">Work Experience</div>
+                                                <div style="margin-bottom:14px;">
+                                                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                                                        <div style="font-size:13px;font-weight:700;color:#111827;">Senior Software Engineer</div>
+                                                        <div style="font-size:11px;color:#6b7280;">Jan 2023 – Present</div>
+                                                    </div>
+                                                    <div style="font-size:12px;font-weight:600;color:#6b7280;margin-bottom:5px;">Infosys · Bengaluru, India</div>
+                                                    <ul style="font-size:11px;color:#374151;padding-left:16px;line-height:1.7;margin:0;">
+                                                        <li>Reduced API response time by 45% via Redis caching, improving UX for 50K+ users</li>
+                                                        <li>Led migration of monolith to microservices, cutting deployment time from 2h to 12min</li>
+                                                        <li>Mentored 5 junior engineers; introduced code-review culture reducing bugs by 30%</li>
+                                                    </ul>
+                                                </div>
+                                                <div style="margin-bottom:14px;">
+                                                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                                                        <div style="font-size:13px;font-weight:700;color:#111827;">Software Engineer</div>
+                                                        <div style="font-size:11px;color:#6b7280;">Jun 2020 – Dec 2022</div>
+                                                    </div>
+                                                    <div style="font-size:12px;font-weight:600;color:#6b7280;margin-bottom:5px;">Razorpay · Bengaluru, India</div>
+                                                    <ul style="font-size:11px;color:#374151;padding-left:16px;line-height:1.7;margin:0;">
+                                                        <li>Built payment reconciliation engine processing ₹500Cr/month with 99.99% accuracy</li>
+                                                        <li>Integrated 12 banking partners via REST APIs; cut integration time by 60%</li>
+                                                    </ul>
+                                                </div>
+                                                {{-- Skills (single col only) --}}
+                                                <template x-if="tpl.cols!=2">
+                                                    <div>
+                                                        <div :style="'font-size:11px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:8px;'">Skills</div>
+                                                        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+                                                            <template x-for="s in ['Laravel','PHP','React','TypeScript','Python','MySQL','PostgreSQL','Redis','Docker','AWS','Git','REST API','Tailwind CSS','Vue.js']">
+                                                                <span :style="'background:'+tpl.primary+'15;color:'+tpl.primary+';font-size:11px;padding:4px 9px;border-radius:5px;font-weight:600;'" x-text="s"></span>
+                                                            </template>
+                                                        </div>
+                                                        <div :style="'font-size:11px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:8px;'">Education</div>
+                                                        <div style="font-size:12px;font-weight:700;color:#111827;">B.Tech Computer Science · IIT Bombay · 2019–2023 · CGPA 8.7</div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        {{-- Accent bottom --}}
+                                        <div :style="'height:5px;background:'+tpl.accent+';'"></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                @foreach($templates as $template)
+                    @php
+                        $colors = is_array($template->color_scheme) ? $template->color_scheme : (json_decode($template->color_scheme, true) ?? []);
+                        $primary   = $colors['primary']   ?? '#1a202c';
+                        $secondary = $colors['secondary'] ?? '#2d3748';
+                        $accent    = $colors['accent']    ?? '#4a5568';
+                        $layout    = is_array($template->layout_config) ? $template->layout_config : (json_decode($template->layout_config, true) ?? []);
+                        $cols      = $layout['columns'] ?? 1;
+                        $tplData   = json_encode([
+                            'id'          => $template->id,
+                            'name'        => $template->name,
+                            'description' => $template->description,
+                            'primary'     => $primary,
+                            'secondary'   => $secondary,
+                            'accent'      => $accent,
+                            'cols'        => $cols,
+                            'ats'         => $template->is_ats_friendly,
+                            'premium'     => $template->is_premium,
+                            'category'    => $template->category,
+                        ]);
+                    @endphp
+                    <div class="relative group">
+                        <label class="cursor-pointer block">
+                            <input type="radio" name="template_id" value="{{ $template->id }}"
+                                   x-model="formData.template_id" class="sr-only">
+                            <div class="border-2 rounded-xl p-0 overflow-hidden transition-all"
+                                 :class="formData.template_id == {{ $template->id }} ? 'border-purple-600 ring-2 ring-purple-300' : 'border-gray-200 hover:border-purple-300'">
+                                {{-- Mini preview thumbnail --}}
+                                <div class="h-52 relative overflow-hidden" style="background:#f8fafc;">
+                                    @if($template->preview_image)
+                                        <img src="{{ asset('storage/' . $template->preview_image) }}" alt="{{ $template->name }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full flex flex-col select-none" style="font-size:5.5px;">
+                                            <div class="px-3 py-2 flex-shrink-0" style="background:{{ $primary }};">
+                                                <div style="width:56px;height:6px;background:rgba(255,255,255,.9);border-radius:2px;margin-bottom:3px;"></div>
+                                                <div style="width:40px;height:4px;background:rgba(255,255,255,.6);border-radius:2px;margin-bottom:4px;"></div>
+                                                <div style="display:flex;gap:10px;">
+                                                    <div style="width:30px;height:2.5px;background:rgba(255,255,255,.45);border-radius:1px;"></div>
+                                                    <div style="width:30px;height:2.5px;background:rgba(255,255,255,.45);border-radius:1px;"></div>
+                                                    <div style="width:30px;height:2.5px;background:rgba(255,255,255,.45);border-radius:1px;"></div>
+                                                </div>
+                                            </div>
+                                            @if($cols == 2)
+                                            <div style="display:flex;flex:1;overflow:hidden;">
+                                                <div style="width:38%;padding:6px;background:{{ $secondary }}18;border-right:1px solid #e5e7eb;">
+                                                    @for($i=0;$i<5;$i++)<div style="width:100%;height:{{ $i%3==0?'3px':'2px' }};background:{{ $i%3==0 ? $accent : '#d1d5db' }};border-radius:1px;margin-bottom:3px;"></div>@endfor
+                                                    <div style="width:100%;height:3px;background:{{ $accent }};border-radius:1px;margin:5px 0 3px;"></div>
+                                                    @for($i=0;$i<3;$i++)<div style="width:100%;height:2px;background:#d1d5db;border-radius:1px;margin-bottom:3px;"></div>@endfor
+                                                </div>
+                                                <div style="flex:1;padding:6px;">
+                                                    @for($s=0;$s<3;$s++)<div style="width:50%;height:3px;background:{{ $primary }};border-radius:1px;margin-bottom:3px;"></div>@for($i=0;$i<3;$i++)<div style="width:100%;height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px;"></div>@endfor<div style="margin-bottom:5px;"></div>@endfor
+                                                </div>
+                                            </div>
+                                            @else
+                                            <div style="flex:1;padding:8px;">
+                                                @for($s=0;$s<4;$s++)<div style="width:35%;height:3px;background:{{ $primary }};border-radius:1px;margin-bottom:3px;"></div>@for($i=0;$i<3;$i++)<div style="width:100%;height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px;"></div>@endfor<div style="margin-bottom:6px;"></div>@endfor
+                                            </div>
+                                            @endif
+                                            <div style="height:3px;background:{{ $accent }};flex-shrink:0;"></div>
+                                        </div>
+                                    @endif
+                                    {{-- Selected checkmark --}}
+                                    <div x-show="formData.template_id == {{ $template->id }}" style="position:absolute;top:8px;right:8px;background:#6366f1;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">✓</div>
+                                    {{-- Category badge --}}
+                                    <span style="position:absolute;top:8px;left:8px;background:{{ $primary }};color:#fff;font-size:8px;font-weight:700;padding:3px 7px;border-radius:4px;">{{ ucfirst($template->category ?? 'classic') }}</span>
+                                    {{-- Preview button overlay --}}
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                        <button type="button"
+                                                @click.prevent="tpl = {{ $tplData }}; open = true"
+                                                style="background:#fff;color:#6366f1;font-size:12px;font-weight:700;padding:8px 16px;border-radius:8px;border:2px solid #6366f1;cursor:pointer;">
+                                            👁 Full Preview
+                                        </button>
+                                    </div>
+                                </div>
+                                {{-- Card footer --}}
+                                <div style="padding:12px 14px;">
+                                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                                        <h3 style="font-size:14px;font-weight:700;color:#111827;margin:0;">{{ $template->name }}</h3>
+                                        <div style="display:flex;gap:4px;">
+                                            @if($template->is_ats_friendly)<span style="font-size:10px;background:#dcfce7;color:#15803d;padding:2px 7px;border-radius:4px;font-weight:700;">ATS ✓</span>@endif
+                                            @if($template->is_premium)<span style="font-size:10px;background:#f3e8ff;color:#7c3aed;padding:2px 7px;border-radius:4px;font-weight:700;">Pro</span>@endif
+                                        </div>
+                                    </div>
+                                    <p style="font-size:12px;color:#6b7280;margin:4px 0 10px;">{{ Str::limit($template->description, 60) }}</p>
+                                    <button type="button"
+                                            @click.prevent="tpl = {{ $tplData }}; open = true"
+                                            style="width:100%;padding:7px;border:1.5px solid #e9d5ff;border-radius:7px;background:#faf5ff;color:#7c3aed;font-size:12px;font-weight:600;cursor:pointer;">
+                                        👁 See Full Resume Preview
+                                    </button>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
                 @endforeach
             </div>
+            </div>{{-- end x-data modal wrapper --}}
 
             <div class="mt-6 flex justify-end">
                 <button type="button" @click="nextStep" class="btn btn-primary">
@@ -154,6 +337,55 @@
             <h2 class="text-2xl font-bold text-gray-900 mb-6">AI Enhancement</h2>
             
             <div class="space-y-6">
+                <!-- AI Skills Generation -->
+                <div class="border-2 border-indigo-200 rounded-lg p-6 bg-gradient-to-br from-indigo-50 to-blue-50">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center">
+                                <i data-lucide="zap" class="w-6 h-6 text-white"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900">AI Skills Suggestion</h3>
+                            <p class="text-gray-600 mt-1">Tell us your job role and AI will suggest relevant skills for your resume</p>
+                            <div class="mt-3 flex gap-2">
+                                <input type="text" x-model="skillsJobRole" placeholder="e.g. Full Stack Developer, Data Scientist..."
+                                    class="form-input flex-1 text-sm" @keydown.enter.prevent="generateSkills()">
+                                <button type="button" @click="generateSkills()"
+                                    :disabled="skillsLoading || !skillsJobRole.trim()"
+                                    class="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2">
+                                    <svg x-show="skillsLoading" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                    </svg>
+                                    <span x-text="skillsLoading ? 'Generating...' : '✨ Suggest Skills'"></span>
+                                </button>
+                            </div>
+
+                            <!-- Skills output -->
+                            <div x-show="suggestedSkills.length > 0" class="mt-4">
+                                <p class="text-sm font-medium text-gray-700 mb-2">Click to add skills to your resume:</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <template x-for="skill in suggestedSkills" :key="skill">
+                                        <button type="button"
+                                            @click="toggleSkill(skill)"
+                                            :class="selectedSkills.includes(skill) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-700 border-gray-300 hover:border-indigo-400'"
+                                            class="px-3 py-1 rounded-full border text-sm font-medium transition-colors">
+                                            <span x-text="skill"></span>
+                                            <span x-show="selectedSkills.includes(skill)" class="ml-1">✓</span>
+                                        </button>
+                                    </template>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2" x-show="selectedSkills.length > 0">
+                                    <span x-text="selectedSkills.length"></span> skill(s) selected — these will be saved with your resume
+                                </p>
+                            </div>
+                            <!-- Hidden input carries selected skills -->
+                            <input type="hidden" name="ai_skills" :value="JSON.stringify(selectedSkills)">
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Option 1: Generate from Profile -->
                 <div class="border-2 border-purple-200 rounded-lg p-6 bg-gradient-to-br from-purple-50 to-pink-50">
                     <div class="flex items-start">
@@ -236,13 +468,17 @@ function resumeBuilder() {
         step: 1,
         loading: false,
         generateAISummary: true,
+        skillsJobRole: '',
+        skillsLoading: false,
+        suggestedSkills: [],
+        selectedSkills: [],
         formData: {
             template_id: {{ $templates->first()->id ?? 'null' }},
             title: '',
             full_name: '{{ auth()->user()->name }}',
             email: '{{ auth()->user()->email }}',
-            phone: '{{ auth()->user()->profile->phone ?? "" }}',
-            location: '{{ auth()->user()->profile->location ?? "" }}',
+            phone: '{{ auth()->user()->profile?->phone ?? "" }}',
+            location: '{{ auth()->user()->profile?->location ?? "" }}',
             linkedin_url: '',
             github_url: '',
             portfolio_url: '',
@@ -276,6 +512,43 @@ function resumeBuilder() {
         handleSubmit(e) {
             this.loading = true;
             // Form will submit normally
+        },
+
+        async generateSkills() {
+            if (!this.skillsJobRole.trim()) return;
+            this.skillsLoading = true;
+            this.suggestedSkills = [];
+            try {
+                const res = await fetch('/resume/ai/suggest-skills', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ job_role: this.skillsJobRole })
+                });
+                const data = await res.json();
+                if (data.skills) {
+                    this.suggestedSkills = data.skills;
+                    // Pre-select all by default
+                    this.selectedSkills = [...data.skills];
+                } else {
+                    alert(data.error || 'Failed to generate skills');
+                }
+            } catch (e) {
+                alert('Network error. Please try again.');
+            } finally {
+                this.skillsLoading = false;
+            }
+        },
+
+        toggleSkill(skill) {
+            if (this.selectedSkills.includes(skill)) {
+                this.selectedSkills = this.selectedSkills.filter(s => s !== skill);
+            } else {
+                this.selectedSkills.push(skill);
+            }
         }
     }
 }

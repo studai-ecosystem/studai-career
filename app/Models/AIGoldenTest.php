@@ -43,6 +43,8 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class AIGoldenTest extends Model
 {
+    protected $table = 'ai_golden_tests';
+
     /**
      * Evaluation types.
      */

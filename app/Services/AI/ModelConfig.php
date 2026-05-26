@@ -20,7 +20,7 @@ final class ModelConfig
      */
     public static function chat(): string
     {
-        return config('ai.azure.models.chat', 'gpt-5.1');
+        return config('ai.azure.models.chat', config('ai.azure.models.chat'));
     }
 
     /**
@@ -28,7 +28,7 @@ final class ModelConfig
      */
     public static function chatMini(): string
     {
-        return config('ai.azure.models.chat_mini', 'gpt-5.1');
+        return config('ai.azure.models.chat_mini', config('ai.azure.models.chat'));
     }
 
     /**

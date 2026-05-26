@@ -45,7 +45,7 @@ class StatsOverview extends StatsOverviewWidget
                 ->extraAttributes([
                     'class' => 'cursor-pointer',
                 ])
-                ->url(route('filament.admin.resources.users.index')),
+                ->url(route('filament.studai.resources.users.index')),
 
             Stat::make('Active Jobs', number_format($activeJobs))
                 ->description($jobsThisMonth . ' posted this month')
@@ -56,7 +56,7 @@ class StatsOverview extends StatsOverviewWidget
                 ->extraAttributes([
                     'class' => 'cursor-pointer',
                 ])
-                ->url(route('filament.admin.resources.jobs.index')),
+                ->url(route('filament.studai.resources.jobs.index')),
 
             Stat::make('Verified Companies', number_format($verifiedCompanies) . ' / ' . number_format($totalCompanies))
                 ->description($companiesThisMonth . ' new this month')
@@ -67,7 +67,7 @@ class StatsOverview extends StatsOverviewWidget
                 ->extraAttributes([
                     'class' => 'cursor-pointer',
                 ])
-                ->url(route('filament.admin.resources.companies.index')),
+                ->url(route('filament.studai.resources.companies.index')),
 
             Stat::make('Active Subscriptions', number_format($activeSubscriptions))
                 ->description($subscriptionsThisMonth . ' new this month')
@@ -78,7 +78,7 @@ class StatsOverview extends StatsOverviewWidget
                 ->extraAttributes([
                     'class' => 'cursor-pointer',
                 ])
-                ->url(route('filament.admin.resources.user-subscriptions.index')),
+                ->url(route('filament.studai.resources.user-subscriptions.index')),
         ];
     }
 }

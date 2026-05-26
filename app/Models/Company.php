@@ -37,6 +37,12 @@ class Company extends Model
         'ceo_approval_rate',
         'recommend_rate',
         'benefits',
+        'company_email',
+        'hr_email',
+        'contact_phone',
+        'linkedin_url',
+        'culture',
+        'logo_url',
     ];
     
     protected $casts = [
@@ -65,6 +71,14 @@ class Company extends Model
     public function jobs()
     {
         return $this->hasMany(Job::class);
+    }
+
+    /**
+     * Get all applications for this company's jobs
+     */
+    public function applications()
+    {
+        return $this->hasManyThrough(Application::class, Job::class);
     }
     
     /**
@@ -116,6 +130,14 @@ class Company extends Model
         return $this->hasOne(User::class);
     }
     
+    /**
+     * Get all users belonging to this company (employer accounts)
+     */
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     /**
      * Get team members
      */

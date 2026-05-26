@@ -44,7 +44,7 @@ class BackgroundCheckConsentRequest extends Notification implements ShouldQueue
         $consentUrl = route('background-check-consent.show', $this->backgroundCheck);
 
         return (new MailMessage)
-            ->subject('Background Check Consent Required - ' . ($company->name ?? 'StudAI Path'))
+            ->subject('Background Check Consent Required - ' . ($company->name ?? 'StudAI Hire'))
             ->greeting('Hello ' . $notifiable->name . '!')
             ->line('As part of the hiring process for the position of **' . ($job->title ?? 'the applied role') . '**, a background check is required.')
             ->line('**Company:** ' . ($company->name ?? 'N/A'))
@@ -54,7 +54,7 @@ class BackgroundCheckConsentRequest extends Notification implements ShouldQueue
             ->action('Review & Provide Consent', $consentUrl)
             ->line('This consent request will expire in ' . config('background-check.consent_expiry_days', 7) . ' days.')
             ->line('If you have any questions, please contact the hiring team.')
-            ->salutation('Best regards, StudAI Path Team');
+            ->salutation('Best regards, StudAI Hire Team');
     }
 
     /**

@@ -1,343 +1,254 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Employer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Interview;
-use App\Models\User;
+use App\Models\InterviewPanelScore;
+use App\Services\InterviewService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\View\View;
 
 class InterviewManagementController extends Controller
 {
-    public function __construct()
+    public function __construct(private readonly InterviewService $service)
     {
         $this->middleware(['auth', 'employer']);
     }
 
-    /**
-     * Display a listing of interviews
-     */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $company = Auth::user()->company;
 
-        $query = Interview::with(['application.user', 'application.job', 'interviewers'])
-            ->whereHas('application.job', function ($q) use ($company) {
-                $q->where('company_id', $company->id);
-            });
+        $interviewQuery = Interview::with(['application.user', 'application.job'])
+            ->whereHas('application.job', fn ($q) => $q->where('company_id', $company->id));
 
-        // Filter by status
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $interviewQuery->where('status', $request->status);
         }
-
-        // Filter by type
         if ($request->filled('type')) {
-            $query->where('interview_type', $request->type);
+            $interviewQuery->where('interview_type', $request->type);
         }
-
-        // Filter by date range
         if ($request->filled('date_from')) {
-            $query->whereDate('scheduled_at', '>=', $request->date_from);
+            $interviewQuery->whereDate('scheduled_at', '>=', $request->date_from);
         }
         if ($request->filled('date_to')) {
-            $query->whereDate('scheduled_at', '<=', $request->date_to);
+            $interviewQuery->whereDate('scheduled_at', '<=', $request->date_to);
         }
 
-        // Sort
-        $sortBy = $request->get('sort', 'upcoming');
-        switch ($sortBy) {
-            case 'recent':
-                $query->latest('scheduled_at');
-                break;
-            case 'oldest':
-                $query->oldest('scheduled_at');
-                break;
-            default: // upcoming
-                $query->where('scheduled_at', '>=', now())
-                    ->orderBy('scheduled_at', 'asc');
-        }
+        $sort = $request->get('sort', 'recent');
+        match ($sort) {
+            'oldest' => $interviewQuery->oldest('scheduled_at'),
+            'round'  => $interviewQuery->orderBy('round'),
+            default  => $interviewQuery->latest('scheduled_at'),
+        };
 
-        $interviews = $query->paginate(20);
+        $interviews = $interviewQuery->paginate(20);
 
-        // Get statistics
+        $pendingSchedule = Application::with(['user', 'job'])
+            ->whereHas('job', fn ($q) => $q->where('company_id', $company->id))
+            ->where('status', 'shortlisted')
+            ->doesntHave('interviews')
+            ->latest('status_updated_at')
+            ->limit(20)
+            ->get();
+
         $stats = [
-            'total' => Interview::whereHas('application.job', fn($q) => $q->where('company_id', $company->id))->count(),
-            'upcoming' => Interview::whereHas('application.job', fn($q) => $q->where('company_id', $company->id))
-                ->where('scheduled_at', '>=', now())
-                ->where('status', 'scheduled')
-                ->count(),
-            'completed' => Interview::whereHas('application.job', fn($q) => $q->where('company_id', $company->id))
-                ->where('status', 'completed')
-                ->count(),
-            'canceled' => Interview::whereHas('application.job', fn($q) => $q->where('company_id', $company->id))
-                ->where('status', 'canceled')
-                ->count(),
+            'total'     => Interview::whereHas('application.job', fn ($q) => $q->where('company_id', $company->id))->count(),
+            'scheduled' => Interview::whereHas('application.job', fn ($q) => $q->where('company_id', $company->id))->where('status', 'scheduled')->count(),
+            'completed' => Interview::whereHas('application.job', fn ($q) => $q->where('company_id', $company->id))->where('status', 'completed')->count(),
+            'pending'   => $pendingSchedule->count(),
         ];
 
-        return view('employer.interviews.index', compact('interviews', 'stats'));
+        return view('employer.interviews.index', compact('interviews', 'stats', 'pendingSchedule'));
     }
 
-    /**
-     * Display the specified interview
-     */
-    public function show($id)
+    public function scheduleForm(int $applicationId): View
     {
-        $company = Auth::user()->company;
+        $company     = Auth::user()->company;
+        $application = Application::with(['user', 'job', 'interviews'])
+            ->whereHas('job', fn ($q) => $q->where('company_id', $company->id))
+            ->findOrFail($applicationId);
 
-        $interview = Interview::with([
-            'application.user.profile',
-            'application.job',
-            'interviewers'
-        ])
-            ->whereHas('application.job', function ($q) use ($company) {
-                $q->where('company_id', $company->id);
-            })
+        $existingRound = $application->interviews->count();
+
+        return view('employer.interviews.schedule', compact('application', 'existingRound'));
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'application_id'   => 'required|exists:applications,id',
+            'interview_type'   => 'required|in:phone,video,onsite,technical,behavioral,panel',
+            'scheduled_at'     => 'required|date|after:now',
+            'duration_minutes' => 'required|integer|min:15|max:240',
+            'location'         => 'nullable|string|max:500',
+            'meeting_link'     => 'nullable|url|max:500',
+            'notes'            => 'nullable|string|max:2000',
+            'round'            => 'nullable|integer|min:1|max:10',
+        ]);
+
+        $company     = Auth::user()->company;
+        $application = Application::whereHas('job', fn ($q) => $q->where('company_id', $company->id))
+            ->findOrFail($validated['application_id']);
+
+        $interview = $this->service->schedule($application, $validated);
+
+        return redirect()
+            ->route('employer.interviews.show', $interview->id)
+            ->with('success', 'Interview scheduled! Candidate notified.');
+    }
+
+    public function show(int $id): View
+    {
+        $company   = Auth::user()->company;
+        $interview = Interview::with(['application.user', 'application.job', 'interviewers', 'panelScores.interviewer'])
+            ->whereHas('application.job', fn ($q) => $q->where('company_id', $company->id))
             ->findOrFail($id);
 
         return view('employer.interviews.show', compact('interview'));
     }
 
-    /**
-     * Store a newly created interview
-     */
-    public function store(Request $request)
+    public function saveScore(Request $request, int $id): RedirectResponse
     {
         $validated = $request->validate([
-            'application_id' => 'required|exists:applications,id',
-            'interview_type' => 'required|in:phone,video,onsite,technical,behavioral,panel',
-            'scheduled_at' => 'required|date|after:now',
-            'duration_minutes' => 'required|integer|min:15|max:240',
-            'location' => 'nullable|string|max:500',
-            'meeting_link' => 'nullable|url|max:500',
-            'notes' => 'nullable|string|max:2000',
-            'interviewers' => 'nullable|array',
-            'interviewers.*' => 'exists:users,id',
+            'scores'           => 'required|array',
+            'scores.*.key'     => 'required|string',
+            'scores.*.score'   => 'required|integer|min:1|max:5',
+            'scores.*.comment' => 'nullable|string|max:500',
         ]);
 
-        $company = Auth::user()->company;
+        $company   = Auth::user()->company;
+        $interview = Interview::whereHas('application.job', fn ($q) => $q->where('company_id', $company->id))
+            ->findOrFail($id);
 
-        // Verify application belongs to company
-        $application = Application::whereHas('job', function ($q) use ($company) {
-            $q->where('company_id', $company->id);
-        })->findOrFail($validated['application_id']);
-
-        DB::beginTransaction();
-        try {
-            // Create interview
-            $interview = Interview::create([
-                'application_id' => $application->id,
-                'interview_type' => $validated['interview_type'],
-                'scheduled_at' => $validated['scheduled_at'],
-                'duration_minutes' => $validated['duration_minutes'],
-                'location' => $validated['location'] ?? null,
-                'meeting_link' => $validated['meeting_link'] ?? null,
-                'notes' => $validated['notes'] ?? null,
-                'status' => 'scheduled',
-            ]);
-
-            // Attach interviewers if provided
-            if (!empty($validated['interviewers'])) {
-                $interviewerData = collect($validated['interviewers'])->mapWithKeys(function ($userId, $index) {
-                    return [$userId => ['is_lead' => $index === 0]];
-                })->toArray();
-
-                $interview->interviewers()->attach($interviewerData);
-            }
-
-            // Update application status
-            $application->update([
-                'status' => Application::STATUS_INTERVIEW_SCHEDULED,
-                'interview_at' => $validated['scheduled_at'],
-            ]);
-
-            DB::commit();
-
-            return redirect()
-                ->route('employer.interviews.show', $interview->id)
-                ->with('success', 'Interview scheduled successfully!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()
-                ->withInput()
-                ->with('error', 'Failed to schedule interview. Please try again.');
-        }
-    }
-
-    /**
-     * Update the specified interview
-     */
-    public function update(Request $request, $id)
-    {
-        $company = Auth::user()->company;
-
-        $interview = Interview::whereHas('application.job', function ($q) use ($company) {
-            $q->where('company_id', $company->id);
-        })->findOrFail($id);
-
-        $validated = $request->validate([
-            'interview_type' => 'sometimes|in:phone,video,onsite,technical,behavioral,panel',
-            'scheduled_at' => 'sometimes|date|after:now',
-            'duration_minutes' => 'sometimes|integer|min:15|max:240',
-            'location' => 'nullable|string|max:500',
-            'meeting_link' => 'nullable|url|max:500',
-            'notes' => 'nullable|string|max:2000',
-            'interviewers' => 'nullable|array',
-            'interviewers.*' => 'exists:users,id',
-        ]);
-
-        DB::beginTransaction();
-        try {
-            $interview->update($validated);
-
-            // Update interviewers if provided
-            if (isset($validated['interviewers'])) {
-                $interviewerData = collect($validated['interviewers'])->mapWithKeys(function ($userId, $index) {
-                    return [$userId => ['is_lead' => $index === 0]];
-                })->toArray();
-
-                $interview->interviewers()->sync($interviewerData);
-            }
-
-            // If rescheduled, update application
-            if (isset($validated['scheduled_at'])) {
-                $interview->application->update([
-                    'interview_at' => $validated['scheduled_at'],
-                ]);
-            }
-
-            DB::commit();
-
-            return back()->with('success', 'Interview updated successfully!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Failed to update interview. Please try again.');
-        }
-    }
-
-    /**
-     * Mark interview as completed
-     */
-    public function complete(Request $request, $id)
-    {
-        $company = Auth::user()->company;
-
-        $interview = Interview::whereHas('application.job', function ($q) use ($company) {
-            $q->where('company_id', $company->id);
-        })->findOrFail($id);
-
-        $validated = $request->validate([
-            'rating' => 'nullable|integer|min:1|max:5',
-            'feedback' => 'nullable|array',
-            'feedback.strengths' => 'nullable|string|max:1000',
-            'feedback.weaknesses' => 'nullable|string|max:1000',
-            'feedback.recommendations' => 'nullable|string|max:1000',
-            'interviewer_notes' => 'nullable|string|max:2000',
-            'decision' => 'required|in:proceed,reject,need_more_info',
-        ]);
-
-        DB::beginTransaction();
-        try {
-            $interview->markAsCompleted(
-                $validated['feedback'] ?? [],
-                $validated['rating'] ?? null,
-                $validated['interviewer_notes'] ?? null
+        $userId = Auth::id();
+        foreach ($validated['scores'] as $s) {
+            InterviewPanelScore::updateOrCreate(
+                ['interview_id' => $interview->id, 'user_id' => $userId, 'question_key' => $s['key']],
+                ['score' => $s['score'], 'comment' => $s['comment'] ?? null]
             );
-
-            // Update application status based on decision
-            $newStatus = match($validated['decision']) {
-                'proceed' => Application::STATUS_SHORTLISTED,
-                'reject' => Application::STATUS_REJECTED,
-                'need_more_info' => Application::STATUS_INTERVIEW_COMPLETED,
-            };
-
-            $interview->application->update(['status' => $newStatus]);
-
-            DB::commit();
-
-            return back()->with('success', 'Interview marked as completed!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Failed to complete interview. Please try again.');
         }
+
+        return back()->with('success', 'Scores saved.');
     }
 
-    /**
-     * Cancel the specified interview
-     */
-    public function cancel(Request $request, $id)
+    public function evaluate(int $id): View
     {
-        $company = Auth::user()->company;
+        $company   = Auth::user()->company;
+        $interview = Interview::with(['application.user', 'application.job', 'panelScores.interviewer', 'interviewers'])
+            ->whereHas('application.job', fn ($q) => $q->where('company_id', $company->id))
+            ->findOrFail($id);
 
-        $interview = Interview::whereHas('application.job', function ($q) use ($company) {
-            $q->where('company_id', $company->id);
-        })->findOrFail($id);
-
-        $validated = $request->validate([
-            'reason' => 'nullable|string|max:500',
-        ]);
-
-        DB::beginTransaction();
-        try {
-            $interview->cancel($validated['reason'] ?? null);
-
-            // Update application status back to reviewing
-            $interview->application->update([
-                'status' => Application::STATUS_VIEWED,
-                'interview_at' => null,
+        $scoresByQuestion = $interview->panelScores
+            ->groupBy('question_key')
+            ->map(fn ($group) => [
+                'avg'    => round($group->avg('score'), 1),
+                'scores' => $group->map(fn ($s) => [
+                    'interviewer' => $s->interviewer?->name ?? 'Unknown',
+                    'score'       => $s->score,
+                    'comment'     => $s->comment,
+                ])->values()->toArray(),
             ]);
 
-            DB::commit();
-
-            return back()->with('success', 'Interview canceled successfully!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Failed to cancel interview. Please try again.');
-        }
+        return view('employer.interviews.evaluate', compact('interview', 'scoresByQuestion'));
     }
 
-    /**
-     * Get interviewer availability for calendar
-     */
-    public function availability(Request $request)
+    public function submitEvaluation(Request $request, int $id): RedirectResponse
     {
-        $company = Auth::user()->company;
-
         $validated = $request->validate([
-            'date_from' => 'required|date',
-            'date_to' => 'required|date|after:date_from',
-            'interviewer_ids' => 'nullable|array',
-            'interviewer_ids.*' => 'exists:users,id',
+            'interviewer_notes' => 'nullable|string|max:3000',
         ]);
 
-        // Get scheduled interviews for the period
-        $interviews = Interview::whereHas('application.job', function ($q) use ($company) {
-            $q->where('company_id', $company->id);
-        })
-            ->whereBetween('scheduled_at', [$validated['date_from'], $validated['date_to']])
-            ->where('status', 'scheduled')
-            ->with('interviewers:id,name')
-            ->get();
+        $company   = Auth::user()->company;
+        $interview = Interview::whereHas('application.job', fn ($q) => $q->where('company_id', $company->id))
+            ->findOrFail($id);
 
-        // Format for calendar
-        $events = $interviews->map(function ($interview) {
-            return [
-                'id' => $interview->id,
-                'title' => $interview->interview_type . ' Interview',
-                'start' => $interview->scheduled_at->toIso8601String(),
-                'end' => $interview->end_time->toIso8601String(),
-                'interviewers' => $interview->interviewers->pluck('name')->toArray(),
-            ];
-        });
+        $panelScores = $interview->panelScores
+            ->groupBy('question_key')
+            ->map(fn ($group) => $group->map(fn ($s) => ['score' => $s->score, 'comment' => $s->comment])->toArray())
+            ->toArray();
 
-        return response()->json($events);
+        if (!empty($validated['interviewer_notes'])) {
+            $interview->update(['interviewer_notes' => $validated['interviewer_notes']]);
+        }
+
+        $summary = $this->service->evaluate($interview, $panelScores);
+
+        return redirect()
+            ->route('employer.interviews.decide', $interview->id)
+            ->with('success', 'Evaluation complete. AI score: ' . ($summary['overall_score'] ?? 'N/A') . '/5');
+    }
+
+    public function decideForm(int $id): View
+    {
+        $company   = Auth::user()->company;
+        $interview = Interview::with(['application.user', 'application.job'])
+            ->whereHas('application.job', fn ($q) => $q->where('company_id', $company->id))
+            ->findOrFail($id);
+
+        return view('employer.interviews.decide', compact('interview'));
+    }
+
+    public function submitDecision(Request $request, int $id): RedirectResponse
+    {
+        $validated = $request->validate([
+            'decision'         => 'required|in:hire,reject,next_round',
+            'reason'           => 'nullable|string|max:2000',
+            'scheduled_at'     => 'nullable|date|after:now',
+            'interview_type'   => 'nullable|in:phone,video,onsite,technical,behavioral,panel',
+            'duration_minutes' => 'nullable|integer|min:15|max:240',
+            'meeting_link'     => 'nullable|url|max:500',
+        ]);
+
+        $company   = Auth::user()->company;
+        $interview = Interview::with(['application.user', 'application.job'])
+            ->whereHas('application.job', fn ($q) => $q->where('company_id', $company->id))
+            ->findOrFail($id);
+
+        $this->service->decide($interview, $validated['decision'], $validated);
+
+        $messages = [
+            'hire'       => 'Candidate hired! Emails sent.',
+            'reject'     => 'Decision recorded. Candidate notified.',
+            'next_round' => 'Next round scheduled.',
+        ];
+
+        return redirect()
+            ->route('employer.interviews.index')
+            ->with('success', $messages[$validated['decision']]);
+    }
+
+    public function cancel(Request $request, int $id): RedirectResponse
+    {
+        $company   = Auth::user()->company;
+        $interview = Interview::whereHas('application.job', fn ($q) => $q->where('company_id', $company->id))
+            ->findOrFail($id);
+
+        $interview->update([
+            'status'              => 'canceled',
+            'canceled_at'         => now(),
+            'cancellation_reason' => $request->input('reason', ''),
+        ]);
+
+        return back()->with('success', 'Interview canceled.');
+    }
+
+    public function complete(int $id): RedirectResponse
+    {
+        $company   = Auth::user()->company;
+        $interview = Interview::whereHas('application.job', fn ($q) => $q->where('company_id', $company->id))
+            ->findOrFail($id);
+
+        $interview->update(['status' => 'completed', 'completed_at' => now()]);
+
+        return redirect()
+            ->route('employer.interviews.evaluate', $interview->id)
+            ->with('info', 'Interview marked complete. Submit evaluation now.');
     }
 }

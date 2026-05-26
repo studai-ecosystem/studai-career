@@ -196,7 +196,7 @@ class SuccessFactorsService extends BaseAtsProvider
         return $this->post($connection, 'JobApplication', [
             'jobReqId' => $jobId,
             'candidateId' => $candidateId,
-            'source' => $data['source'] ?? 'StudAI Career',
+            'source' => $data['source'] ?? 'StudAI Hire',
         ]);
     }
 

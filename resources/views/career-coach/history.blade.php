@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Session History - AI Career Coach')
 
@@ -14,14 +14,14 @@
                     <li class="text-gray-900 dark:text-white font-medium">History</li>
                 </ol>
             </nav>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">📜 Session History</h1>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">�œ Session History</h1>
             <p class="mt-1 text-gray-600 dark:text-gray-400">Review your past coaching conversations</p>
         </div>
 
         <!-- Sessions List -->
         <div class="space-y-4">
             @forelse($sessions as $session)
-            <a href="{{ route('career-coach.session', $session) }}" 
+            <a href="{{ route('career-coach.session.show', $session) }}" 
                class="block bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
@@ -89,7 +89,7 @@
             @empty
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
                 <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                    <span class="text-3xl">💬</span>
+                    <span class="text-3xl">�¬</span>
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No sessions yet</h3>
                 <p class="text-gray-500 dark:text-gray-400 mb-4">Start your first coaching session to see it here</p>

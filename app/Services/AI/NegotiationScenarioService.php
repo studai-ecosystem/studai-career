@@ -291,7 +291,7 @@ class NegotiationScenarioService
             $prompt .= "Be specific and actionable.";
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'messages' => [
                     [
                         'role' => 'system',
@@ -302,7 +302,7 @@ class NegotiationScenarioService
                         'content' => $prompt
                     ],
                 ],
-                'max_tokens' => 400,
+                'max_completion_tokens' => 400,
                 'temperature' => 0.7,
             ]);
 

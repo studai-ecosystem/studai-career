@@ -1,5 +1,5 @@
 <x-marketing-layout 
-    title="Pricing - StudAI Career | Choose Your Plan"
+    title="Pricing - StudAI Hire | Choose Your Plan"
     description="Flexible pricing plans for every job seeker. Start free or upgrade to unlock premium AI-powered features. No hidden fees, cancel anytime.">
 
     {{-- Razorpay Checkout Script --}}

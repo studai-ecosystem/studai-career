@@ -7,9 +7,9 @@ return [
     | AI Service Provider
     |--------------------------------------------------------------------------
     |
-    | Primary AI provider for StudAI Career platform.
+    | Primary AI provider for StudAI Hire platform.
     | Supported: 'azure', 'anthropic'
-    | Default: 'azure' (Azure OpenAI Service with GPT-5.1)
+    | Default: 'azure' (Azure OpenAI Service with GPT-5.4 — Orin™ Engine)
     |
     */
 
@@ -18,53 +18,41 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Azure OpenAI Configuration (Primary)
+    | Azure OpenAI Configuration (Primary — Orin™ Engine GPT-5.4)
     |--------------------------------------------------------------------------
-    |
-    | Azure OpenAI Service credentials and endpoints.
-    | Using GPT-5.1 for all AI operations.
-    | Credentials stored securely in environment variables.
-    |
     */
 
     'azure' => [
         'api_key' => env('AZURE_OPENAI_API_KEY'),
         'endpoint' => env('AZURE_OPENAI_ENDPOINT'),
-        'deployment_id' => env('AZURE_OPENAI_DEPLOYMENT_ID', 'gpt-5.1'),
+        'deployment_id' => env('AZURE_OPENAI_DEPLOYMENT_ID', 'gpt-5.4'),
         'api_version' => env('AZURE_OPENAI_API_VERSION', '2024-12-01-preview'),
         
-        // Model configurations - GPT-5.1
+        // Model configurations — GPT-5.4 (Orin™)
         'models' => [
-            'chat' => env('AZURE_OPENAI_MODEL', 'gpt-5.1'),
-            'chat_mini' => env('AZURE_OPENAI_MODEL_MINI', 'gpt-5.1'),
+            'chat' => env('AZURE_OPENAI_MODEL', 'gpt-5.4'),
+            'chat_mini' => env('AZURE_OPENAI_MODEL_MINI', 'gpt-5.4'),
             'embeddings' => env('AI_MODEL_EMBEDDINGS', 'text-embedding-3-large'),
         ],
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Azure Anthropic Configuration (Fallback)
+    | Azure Anthropic Configuration (Fallback — Claude Sonnet 4.6)
     |--------------------------------------------------------------------------
-    |
-    | Azure-hosted Anthropic Claude for fallback when Azure OpenAI fails.
-    | Using Claude Sonnet 4.5 via Azure AI Foundry.
-    |
     */
 
     'anthropic' => [
         'api_key' => env('AZURE_ANTHROPIC_API_KEY'),
         'endpoint' => env('AZURE_ANTHROPIC_ENDPOINT'),
-        'model' => env('AZURE_ANTHROPIC_MODEL', 'claude-sonnet-4-5'),
-        'max_tokens' => env('ANTHROPIC_MAX_TOKENS', 4096),
+        'model' => env('AZURE_ANTHROPIC_MODEL', 'claude-sonnet-4-6'),
+        'max_tokens' => env('ANTHROPIC_MAX_TOKENS', 8192),
     ],
 
     /*
     |--------------------------------------------------------------------------
     | OpenAI Configuration (Legacy/Optional)
     |--------------------------------------------------------------------------
-    |
-    | Direct OpenAI API credentials (optional secondary fallback).
-    |
     */
 
     'openai' => [
@@ -107,8 +95,8 @@ return [
         'presence_penalty' => 0,
     ],
 
-    // Aliases for AIService backward compatibility - GPT-5.1
-    'default_model' => env('AZURE_OPENAI_MODEL', 'gpt-5.1'),
+    // Aliases for AIService backward compatibility — GPT-5.4 (Orin™)
+    'default_model' => env('AZURE_OPENAI_MODEL', 'gpt-5.4'),
     'max_tokens' => env('AI_MAX_TOKENS', 16384),
     'temperature' => env('AI_TEMPERATURE', 0.7),
 

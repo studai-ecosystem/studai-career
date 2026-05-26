@@ -11,7 +11,7 @@ return new class extends Migration
     /**
      * Run the migrations.
      * 
-     * Complete Gamification System for StudAI Career:
+     * Complete Gamification System for StudAI Hire:
      * - Points/XP system with levels
      * - Achievements with tiers (bronze/silver/gold/platinum)
      * - Badges and certifications

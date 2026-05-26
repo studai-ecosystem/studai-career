@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Freelancer Dashboard - Talent Marketplace')
 
@@ -35,7 +35,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Total Earnings</p>
-                        <p class="mt-2 text-3xl font-bold text-gray-900">₹{{ number_format($stats['total_earnings'] ?? 0) }}</p>
+                        <p class="mt-2 text-3xl font-bold text-gray-900">&#8377;{{ number_format($stats['total_earnings'] ?? 0) }}</p>
                     </div>
                     <div class="p-3 bg-green-100 rounded-full">
                         <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,7 +49,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Pending Earnings</p>
-                        <p class="mt-2 text-3xl font-bold text-gray-900">₹{{ number_format($stats['pending_earnings'] ?? 0) }}</p>
+                        <p class="mt-2 text-3xl font-bold text-gray-900">&#8377;{{ number_format($stats['pending_earnings'] ?? 0) }}</p>
                     </div>
                     <div class="p-3 bg-blue-100 rounded-full">
                         <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,7 +96,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-lg font-semibold text-gray-900">Active Contracts</h2>
                         <a href="{{ route('marketplace.freelancer.contracts') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
-                            View All →
+                            View All â†’
                         </a>
                     </div>
 
@@ -135,7 +135,7 @@
                                 </div>
 
                                 <div class="flex items-center justify-between text-sm">
-                                    <span class="text-gray-500">Value: <span class="text-gray-900 font-medium">₹{{ number_format($contract->total_amount ?? 0) }}</span></span>
+                                    <span class="text-gray-500">Value: <span class="text-gray-900 font-medium">&#8377;{{ number_format($contract->total_amount ?? 0) }}</span></span>
                                     <a href="{{ route('marketplace.contracts.show', $contract) }}" class="text-indigo-600 hover:text-indigo-700 font-medium">
                                         View Details
                                     </a>
@@ -143,10 +143,10 @@
                             </div>
                         @empty
                             <div class="text-center py-8">
-                                <div class="text-gray-400 text-4xl mb-2">📋</div>
+                                <div class="text-gray-400 text-4xl mb-2">�‹</div>
                                 <p class="text-gray-500 mb-4">No active contracts</p>
                                 <a href="{{ route('marketplace.projects') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">
-                                    Browse Projects →
+                                    Browse Projects â†’
                                 </a>
                             </div>
                         @endforelse
@@ -158,7 +158,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-lg font-semibold text-gray-900">Recent Proposals</h2>
                         <a href="{{ route('marketplace.freelancer.proposals') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
-                            View All →
+                            View All â†’
                         </a>
                     </div>
 
@@ -187,19 +187,19 @@
                                 
                                 <div class="flex items-center justify-between text-sm">
                                     <span class="text-gray-600">
-                                        Your bid: <span class="text-gray-900 font-medium">₹{{ number_format($proposal->bid_amount) }}</span>
+                                        Your bid: <span class="text-gray-900 font-medium">&#8377;{{ number_format($proposal->proposed_amount) }}</span>
                                     </span>
                                     <span class="text-gray-600">
-                                        {{ $proposal->estimated_days }} days
+                                        {{ $proposal->estimated_duration_days }} days
                                     </span>
                                 </div>
                             </div>
                         @empty
                             <div class="text-center py-8">
-                                <div class="text-gray-400 text-4xl mb-2">📝</div>
+                                <div class="text-gray-400 text-4xl mb-2">�</div>
                                 <p class="text-gray-500 mb-4">No proposals yet</p>
                                 <a href="{{ route('marketplace.projects') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">
-                                    Browse Projects →
+                                    Browse Projects â†’
                                 </a>
                             </div>
                         @endforelse
@@ -211,7 +211,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-lg font-semibold text-gray-900">Recommended for You</h2>
                         <a href="{{ route('marketplace.projects') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
-                            View All →
+                            View All â†’
                         </a>
                     </div>
 
@@ -233,7 +233,7 @@
                                     </div>
                                     <div class="text-right">
                                         <div class="text-lg font-bold text-green-600">
-                                            ₹{{ number_format($project->budget_min ?? 0) }}+
+                                            &#8377;{{ number_format($project->budget_min ?? 0) }}+
                                         </div>
                                         <p class="text-gray-500 text-xs">{{ $project->proposals_count ?? 0 }} proposals</p>
                                     </div>
@@ -241,7 +241,7 @@
                             </div>
                         @empty
                             <div class="text-center py-8">
-                                <div class="text-gray-400 text-4xl mb-2">🎯</div>
+                                <div class="text-gray-400 text-4xl mb-2">¯</div>
                                 <p class="text-gray-500">Update your profile to get personalized recommendations</p>
                             </div>
                         @endforelse
@@ -328,7 +328,7 @@
                     <div class="space-y-3">
                         @forelse($badges ?? [] as $userBadge)
                             <div class="flex items-center p-2 bg-gray-50 rounded-lg">
-                                <span class="text-2xl mr-3">{{ $userBadge->badge->icon ?? '🏆' }}</span>
+                                <span class="text-2xl mr-3">{{ $userBadge->badge->icon ?? '†' }}</span>
                                 <div>
                                     <p class="font-medium text-gray-900">{{ $userBadge->badge->name }}</p>
                                     <p class="text-gray-500 text-xs">{{ $userBadge->badge->category }}</p>
@@ -362,6 +362,13 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                             <span class="text-gray-700">My Proposals</span>
+                        </a>
+                        <a href="{{ route('marketplace.freelancer.offers') }}" 
+                           class="flex items-center p-3 rounded-lg hover:bg-blue-50 transition" style="background:#eff6ff;">
+                            <svg class="w-5 h-5 mr-3" style="color:#1A73E8;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            <span class="font-semibold" style="color:#1A73E8;">🎁 My Offers</span>
                         </a>
                         <a href="{{ route('marketplace.freelancer.earnings') }}" 
                            class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">

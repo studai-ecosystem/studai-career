@@ -2,18 +2,14 @@
 
 use App\Jobs\ProcessAutoApplications;
 use App\Jobs\Agent\DiscoverJobsJob;
+use App\Jobs\Agent\ScanInternalJobsJob;
 use App\Jobs\Agent\SubmitApplicationsJob;
 use App\Jobs\Agent\UpdateLearningJob;
 use App\Jobs\Agent\SendDigestJob;
 use App\Jobs\RetryFailedPaymentJob;
-use App\Jobs\UpdateMarketDataJob;
-use App\Jobs\AnalyzeTrendsJob;
-use App\Jobs\UpdateUserPositioningJob;
-use App\Jobs\GenerateInsightsJob;
 use App\Jobs\AnalyzeSkillGapsJob;
 use App\Jobs\CurateLearningResourcesJob;
 use App\Jobs\SendDailyLearningRecommendationJob;
-use App\Jobs\UpdateMarketTrendsJob;
 use App\Jobs\ValidateUserSkillsJob;
 use App\Jobs\UpdatePredictionsJob;
 use App\Jobs\UpdateTalentPipelinesJob;
@@ -30,6 +26,14 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+// ── Orin™ Application Pipeline ────────────────────────────────────────────
+// Runs hourly to check job lifecycle dates and trigger evaluation pipeline.
+Schedule::command('orin:process-deadlines')
+    ->hourly()
+    ->name('Orin: Process Application Deadlines')
+    ->onOneServer()
+    ->withoutOverlapping();
+
 // Schedule job alerts to run daily at 9 AM
 Schedule::command('jobs:send-alerts')->dailyAt('09:00')->name('Send Job Alerts');
 
@@ -41,6 +45,13 @@ Schedule::command('jobs:send-alerts')->dailyAt('09:00')->name('Send Job Alerts')
 Schedule::job(new DiscoverJobsJob())
     ->hourly()
     ->name('Agent: Discover Jobs')
+    ->onOneServer()
+    ->withoutOverlapping();
+
+// Scan internal platform jobs for all active agents (runs hourly, offset by 10 min)
+Schedule::job(new ScanInternalJobsJob())
+    ->hourlyAt(10)
+    ->name('Agent: Scan Internal Jobs')
     ->onOneServer()
     ->withoutOverlapping();
 
@@ -80,41 +91,6 @@ Schedule::job(new ProcessAutoApplications())
     ->name('Process Auto Applications (Legacy)')
     ->onOneServer()
     ->withoutOverlapping();
-
-// ===============================================
-// MARKET INTELLIGENCE JOB SCHEDULING
-// ===============================================
-
-// Update market data snapshots (runs hourly)
-Schedule::job(new UpdateMarketDataJob())
-    ->hourly()
-    ->name('Market: Update Market Data')
-    ->onOneServer()
-    ->withoutOverlapping();
-
-// Analyze salary and skill trends (runs daily at 1 AM)
-Schedule::job(new AnalyzeTrendsJob())
-    ->dailyAt('01:00')
-    ->name('Market: Analyze Trends')
-    ->onOneServer()
-    ->withoutOverlapping();
-
-// Recalculate user market positions (runs daily at 3 AM)
-Schedule::job(new UpdateUserPositioningJob())
-    ->dailyAt('03:00')
-    ->name('Market: Update User Positioning')
-    ->onOneServer()
-    ->withoutOverlapping();
-
-// Generate AI insights and send weekly digest (runs Sunday at 6 AM)
-Schedule::job(new GenerateInsightsJob())
-    ->weekly()
-    ->sundays()
-    ->at('06:00')
-    ->name('Market: Generate Weekly Insights')
-    ->onOneServer()
-    ->withoutOverlapping();
-
 
 // ===============================================
 // SKILL GAP ANALYZER SCHEDULING
@@ -164,16 +140,6 @@ Schedule::call(function () {
     ->name('Skill Analyzer: Daily Learning Emails')
     ->onOneServer()
     ->withoutOverlapping();
-
-// Update market trends (runs weekly on Mondays at 1 AM)
-Schedule::job(new UpdateMarketTrendsJob())
-    ->weekly()
-    ->mondays()
-    ->at('01:00')
-    ->name('Skill Analyzer: Weekly Market Trends Update')
-    ->onOneServer()
-    ->withoutOverlapping()
-    ->emailOutputOnFailure(config('mail.admin_email'));
 
 // ValidateUserSkillsJob is triggered on-demand via API, not scheduled
 

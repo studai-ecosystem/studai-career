@@ -105,7 +105,7 @@ class AIFormAssistantController extends Controller
                 ->forUser($request->user())
                 ->generateText($userPrompt, $systemPrompt, [
                     'temperature' => 0.7,
-                    'max_tokens' => 500,
+                    'max_completion_tokens' => 500,
                 ]);
 
             // Clean up the response
@@ -175,7 +175,7 @@ class AIFormAssistantController extends Controller
                 ->forUser($request->user())
                 ->generateText($userPrompt, $systemPrompt, [
                     'temperature' => 0.5,
-                    'max_tokens' => 600,
+                    'max_completion_tokens' => 600,
                 ]);
 
             // Clean up
@@ -282,7 +282,7 @@ class AIFormAssistantController extends Controller
                 ->forUser($request->user())
                 ->generateText($userPrompt, $systemPrompt, [
                     'temperature' => 0.3,
-                    'max_tokens' => 50,
+                    'max_completion_tokens' => 50,
                 ]);
 
             return response()->json([
@@ -328,7 +328,7 @@ class AIFormAssistantController extends Controller
                 ->forUser($request->user())
                 ->generateText($userPrompt, $systemPrompt, [
                     'temperature' => 0.7,
-                    'max_tokens' => 300,
+                    'max_completion_tokens' => 300,
                 ]);
 
             return response()->json([

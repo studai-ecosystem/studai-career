@@ -482,13 +482,13 @@ class BiasEliminationService
                 . "Provide analysis in JSON format with keys: patterns_detected, severity_level, specific_concerns, recommendations";
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'messages' => [
                     ['role' => 'system', 'content' => 'You are an expert in employment law and bias detection. Analyze hiring data for fairness and compliance.'],
                     ['role' => 'user', 'content' => $prompt]
                 ],
                 'temperature' => 0.3,
-                'max_tokens' => 2000,
+                'max_completion_tokens' => 2000,
             ]);
 
             $aiAnalysis = json_decode($response->choices[0]->message->content, true);

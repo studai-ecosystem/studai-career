@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Negotiation Scenarios - ' . $strategy->role)
 
@@ -29,7 +29,7 @@
         transition: background 0.2s;
     }
     .sortable-header:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.05);
     }
     .sort-icon {
         display: inline-block;
@@ -44,10 +44,10 @@
 @endpush
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="w-full px-4 sm:px-6 py-6 overflow-x-hidden">
     <!-- Header -->
     <div class="mb-8">
-        <a href="{{ route('negotiation.strategy', $strategy->id) }}" class="inline-flex items-center text-sm text-gray-400 hover:text-white mb-4 transition">
+        <a href="{{ route('negotiation.strategy', $strategy->id) }}" class="inline-flex items-center text-sm text-gray-500 hover:text-gray-900 mb-4 transition">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -56,23 +56,23 @@
         
         <div class="flex items-start justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-white mb-2">Negotiation Scenarios</h1>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Negotiation Scenarios</h1>
                 <p class="text-gray-400">{{ $strategy->role }} at {{ $strategy->company_name }}</p>
             </div>
             
             <div class="flex items-center space-x-2">
-                <span class="text-sm text-gray-400">{{ $scenarios->count() }} scenarios</span>
+                <span class="text-sm text-gray-500">{{ $scenarios->count() }} scenarios</span>
             </div>
         </div>
     </div>
 
     <!-- Scenario Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
         @foreach($scenarios as $scenario)
-        <div class="scenario-card bg-white/5 backdrop-filter backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+        <div class="scenario-card bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex flex-col">
             <div class="flex items-start justify-between mb-4">
                 <div>
-                    <h3 class="text-lg font-semibold text-white mb-1">{{ $scenario->scenario_name }}</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ $scenario->scenario_name }}</h3>
                     <span class="risk-badge risk-{{ $scenario->risk_level }}">{{ ucfirst($scenario->risk_level) }} Risk</span>
                 </div>
                 
@@ -99,24 +99,24 @@
             
             <div class="space-y-3 mb-4">
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-400">Counter Amount</span>
-                    <span class="text-white font-semibold">${{ number_format($scenario->counter_amount) }}</span>
+                    <span class="text-sm text-gray-500">Counter Amount</span>
+                    <span class="text-gray-900 font-semibold">&#8377;{{ number_format($scenario->counter_offer_amount) }}</span>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-400">Success Probability</span>
-                    <span class="text-white font-semibold">{{ $scenario->success_probability }}%</span>
+                    <span class="text-sm text-gray-500">Success Probability</span>
+                    <span class="text-gray-900 font-semibold">{{ $scenario->predicted_response_probability }}%</span>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-400">Expected Outcome</span>
-                    <span class="text-white font-semibold">${{ number_format($scenario->expected_outcome) }}</span>
+                    <span class="text-sm text-gray-500">Expected Outcome</span>
+                    <span class="text-gray-900 font-semibold">&#8377;{{ number_format($scenario->expected_outcome) }}</span>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-400">Potential Gain</span>
-                    <span class="text-green-400 font-semibold">+${{ number_format($scenario->expected_outcome - $strategy->offered_salary) }}</span>
+                    <span class="text-sm text-gray-500">Potential Gain</span>
+                    <span class="text-green-400 font-semibold">+&#8377;{{ number_format($scenario->expected_outcome - $strategy->offered_salary) }}</span>
                 </div>
             </div>
             
-            <button onclick="viewScenarioDetail({{ $scenario->id }})" class="w-full py-2 bg-gradient-to-r from-primary-color to-primary-light text-white rounded-lg font-medium hover:shadow-lg transition">
+            <button onclick="viewScenarioDetail({{ $scenario->id }})" class="mt-auto w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm shadow transition">
                 View Details
             </button>
         </div>
@@ -124,114 +124,114 @@
     </div>
 
     <!-- Risk/Reward Visualization -->
-    <div class="bg-white/5 backdrop-filter backdrop-blur-lg rounded-2xl p-6 border border-white/10 mb-8">
+    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm mb-5">
         <div class="flex items-center justify-between mb-6">
             <div>
-                <h2 class="text-xl font-semibold text-white mb-1">Risk/Reward Analysis</h2>
-                <p class="text-sm text-gray-400">Visual comparison of scenario risk levels and potential gains</p>
+                <h2 class="text-xl font-semibold text-gray-900 mb-1">Risk/Reward Analysis</h2>
+                <p class="text-sm text-gray-500">Visual comparison of scenario risk levels and potential gains</p>
             </div>
             
             <div class="flex items-center space-x-4">
                 <div class="flex items-center">
                     <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-                    <span class="text-xs text-gray-400">Low Risk</span>
+                    <span class="text-xs text-gray-500">Low Risk</span>
                 </div>
                 <div class="flex items-center">
                     <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
-                    <span class="text-xs text-gray-400">Medium Risk</span>
+                    <span class="text-xs text-gray-500">Medium Risk</span>
                 </div>
                 <div class="flex items-center">
                     <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
-                    <span class="text-xs text-gray-400">High Risk</span>
+                    <span class="text-xs text-gray-500">High Risk</span>
                 </div>
             </div>
         </div>
         
-        <div class="relative" style="height: 400px;">
+        <div class="relative" style="height: 280px;">
             <canvas id="riskRewardChart"></canvas>
         </div>
         
-        <div class="mt-4 text-sm text-gray-400 text-center">
+        <div class="mt-4 text-sm text-gray-500 text-center">
             <p>Bubble size represents success probability. Hover for details.</p>
         </div>
     </div>
 
     <!-- Comparison Table -->
-    <div class="bg-white/5 backdrop-filter backdrop-blur-lg rounded-2xl p-6 border border-white/10 mb-8">
-        <h2 class="text-xl font-semibold text-white mb-6">Detailed Comparison</h2>
+    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm mb-5">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">Detailed Comparison</h2>
         
         <div class="overflow-x-auto">
             <table class="w-full" id="scenarioTable">
                 <thead>
-                    <tr class="border-b border-white/10">
-                        <th class="sortable-header px-4 py-3 text-left text-sm font-semibold text-gray-400" onclick="sortTable(0)">
+                    <tr class="border-b border-gray-200">
+                        <th class="sortable-header px-4 py-3 text-left text-sm font-semibold text-gray-500" onclick="sortTable(0)">
                             Scenario
                             <span class="sort-icon">↕</span>
                         </th>
-                        <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-400" onclick="sortTable(1)">
+                        <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-500" onclick="sortTable(1)">
                             Counter Amount
                             <span class="sort-icon">↕</span>
                         </th>
-                        <th class="sortable-header px-4 py-3 text-center text-sm font-semibold text-gray-400" onclick="sortTable(2)">
+                        <th class="sortable-header px-4 py-3 text-center text-sm font-semibold text-gray-500" onclick="sortTable(2)">
                             Risk Level
                             <span class="sort-icon">↕</span>
                         </th>
-                        <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-400" onclick="sortTable(3)">
+                        <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-500" onclick="sortTable(3)">
                             Success %
                             <span class="sort-icon">↕</span>
                         </th>
-                        <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-400" onclick="sortTable(4)">
+                        <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-500" onclick="sortTable(4)">
                             Expected
                             <span class="sort-icon">↕</span>
                         </th>
-                        <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-400" onclick="sortTable(5)">
+                        <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-500" onclick="sortTable(5)">
                             Best Case
                             <span class="sort-icon">↕</span>
                         </th>
-                        <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-400" onclick="sortTable(6)">
+                        <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-500" onclick="sortTable(6)">
                             Worst Case
                             <span class="sort-icon">↕</span>
                         </th>
-                        <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-400" onclick="sortTable(7)">
+                        <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-500" onclick="sortTable(7)">
                             ROI
                             <span class="sort-icon">↕</span>
                         </th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-400">Actions</th>
+                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-500">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
                     @foreach($scenarios as $scenario)
-                    <tr class="border-b border-white/5 hover:bg-white/5 transition">
+                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
                         <td class="px-4 py-4">
                             <div class="flex items-center">
                                 <div>
-                                    <div class="text-white font-medium">{{ $scenario->scenario_name }}</div>
-                                    <div class="text-xs text-gray-500 mt-1">{{ Str::limit($scenario->description, 50) }}</div>
+                                    <div class="text-gray-900 font-medium">{{ $scenario->scenario_name }}</div>
+                                    <div class="text-xs text-gray-500 mt-1">{{ Str::limit($scenario->counter_offer_justification, 50) }}</div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-4 py-4 text-right text-white font-semibold" data-value="{{ $scenario->counter_amount }}">
-                            ${{ number_format($scenario->counter_amount) }}
+                        <td class="px-4 py-4 text-right text-gray-900 font-semibold" data-value="{{ $scenario->counter_offer_amount }}">
+                            &#8377;{{ number_format($scenario->counter_offer_amount) }}
                         </td>
                         <td class="px-4 py-4 text-center" data-value="{{ $scenario->risk_level === 'low' ? 1 : ($scenario->risk_level === 'medium' ? 2 : 3) }}">
                             <span class="risk-badge risk-{{ $scenario->risk_level }}">{{ ucfirst($scenario->risk_level) }}</span>
                         </td>
-                        <td class="px-4 py-4 text-right" data-value="{{ $scenario->success_probability }}">
+                        <td class="px-4 py-4 text-right" data-value="{{ $scenario->predicted_response_probability }}">
                             <div class="flex items-center justify-end">
-                                <div class="w-20 bg-white/10 rounded-full h-2 mr-3">
-                                    <div class="bg-gradient-to-r from-green-500 to-green-400 h-2 rounded-full" style="width: {{ $scenario->success_probability }}%"></div>
+                                <div class="w-20 bg-gray-200 rounded-full h-2 mr-3">
+                                    <div class="bg-gradient-to-r from-green-500 to-green-400 h-2 rounded-full" style="width: {{ $scenario->predicted_response_probability }}%"></div>
                                 </div>
-                                <span class="text-white font-medium">{{ $scenario->success_probability }}%</span>
+                                <span class="text-gray-900 font-medium">{{ $scenario->predicted_response_probability }}%</span>
                             </div>
                         </td>
-                        <td class="px-4 py-4 text-right text-white font-semibold" data-value="{{ $scenario->expected_outcome }}">
-                            ${{ number_format($scenario->expected_outcome) }}
+                        <td class="px-4 py-4 text-right text-gray-900 font-semibold" data-value="{{ $scenario->expected_outcome }}">
+                            &#8377;{{ number_format($scenario->expected_outcome) }}
                         </td>
                         <td class="px-4 py-4 text-right text-green-400 font-medium" data-value="{{ $scenario->best_case_outcome }}">
-                            ${{ number_format($scenario->best_case_outcome) }}
+                            &#8377;{{ number_format($scenario->best_case_outcome) }}
                         </td>
                         <td class="px-4 py-4 text-right text-red-400 font-medium" data-value="{{ $scenario->worst_case_outcome }}">
-                            ${{ number_format($scenario->worst_case_outcome) }}
+                            &#8377;{{ number_format($scenario->worst_case_outcome) }}
                         </td>
                         <td class="px-4 py-4 text-right" data-value="{{ (($scenario->expected_outcome - $strategy->offered_salary) / $strategy->offered_salary) * 100 }}">
                             <span class="text-green-400 font-semibold">
@@ -252,13 +252,13 @@
 
     <!-- Scenario Detail Modals -->
     @foreach($scenarios as $scenario)
-    <div id="scenarioModal{{ $scenario->id }}" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50" onclick="if(event.target === this) closeScenarioDetail({{ $scenario->id }})">
-        <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto border border-white/10 shadow-2xl">
+    <div id="scenarioModal{{ $scenario->id }}" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[1000]" onclick="if(event.target === this) closeScenarioDetail({{ $scenario->id }})"style="padding-top:0">>
+        <div class="bg-white rounded-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto border border-gray-200 shadow-2xl">
             <div class="sticky top-0 bg-gradient-to-r from-primary-color to-primary-light p-6 rounded-t-2xl">
                 <div class="flex items-start justify-between">
                     <div>
                         <h2 class="text-2xl font-bold text-white mb-2">{{ $scenario->scenario_name }}</h2>
-                        <p class="text-white/80">{{ $scenario->description }}</p>
+                        <p class="text-white/80">{{ $scenario->counter_offer_justification }}</p>
                     </div>
                     <button onclick="closeScenarioDetail({{ $scenario->id }})" class="text-white/80 hover:text-white transition">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,21 +271,21 @@
             <div class="p-6 space-y-6">
                 <!-- Key Metrics -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-white/5 rounded-xl p-4 text-center border border-white/10">
-                        <div class="text-2xl font-bold text-white mb-1">${{ number_format($scenario->counter_amount) }}</div>
-                        <div class="text-xs text-gray-400">Counter Amount</div>
+                    <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-100">
+                        <div class="text-2xl font-bold text-gray-900 mb-1">&#8377;{{ number_format($scenario->counter_offer_amount) }}</div>
+                        <div class="text-xs text-gray-500">Counter Amount</div>
                     </div>
-                    <div class="bg-white/5 rounded-xl p-4 text-center border border-white/10">
-                        <div class="text-2xl font-bold text-white mb-1">{{ $scenario->success_probability }}%</div>
-                        <div class="text-xs text-gray-400">Success Rate</div>
+                    <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-100">
+                        <div class="text-2xl font-bold text-gray-900 mb-1">{{ $scenario->predicted_response_probability }}%</div>
+                        <div class="text-xs text-gray-500">Success Rate</div>
                     </div>
-                    <div class="bg-white/5 rounded-xl p-4 text-center border border-white/10">
-                        <div class="text-2xl font-bold text-white mb-1">${{ number_format($scenario->expected_outcome) }}</div>
-                        <div class="text-xs text-gray-400">Expected</div>
+                    <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-100">
+                        <div class="text-2xl font-bold text-gray-900 mb-1">&#8377;{{ number_format($scenario->expected_outcome) }}</div>
+                        <div class="text-xs text-gray-500">Expected</div>
                     </div>
                     <div class="bg-white/5 rounded-xl p-4 text-center border border-{{ $scenario->risk_level === 'low' ? 'green' : ($scenario->risk_level === 'medium' ? 'yellow' : 'red') }}-500/30">
                         <div class="text-2xl font-bold text-{{ $scenario->risk_level === 'low' ? 'green' : ($scenario->risk_level === 'medium' ? 'yellow' : 'red') }}-400 mb-1">{{ ucfirst($scenario->risk_level) }}</div>
-                        <div class="text-xs text-gray-400">Risk Level</div>
+                        <div class="text-xs text-gray-500">Risk Level</div>
                     </div>
                 </div>
 
@@ -297,8 +297,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <div>
-                            <h3 class="text-sm font-semibold text-blue-300 mb-1">Predicted Employer Response</h3>
-                            <p class="text-sm text-gray-300">{{ $scenario->predicted_response }}</p>
+                            <h3 class="text-sm font-semibold text-blue-600 mb-1">Predicted Employer Response</h3>
+                            <p class="text-sm text-gray-600">{{ $scenario->predicted_response }}</p>
                         </div>
                     </div>
                 </div>
@@ -306,7 +306,7 @@
 
                 <!-- Outcome Range -->
                 <div>
-                    <h3 class="text-white font-semibold mb-3">Outcome Scenarios</h3>
+                    <h3 class="text-gray-900 font-semibold mb-3">Outcome Scenarios</h3>
                     <div class="space-y-3">
                         <div class="flex items-center justify-between p-3 bg-green-500/10 rounded-lg border border-green-500/20">
                             <div class="flex items-center">
@@ -315,7 +315,7 @@
                                 </svg>
                                 <span class="text-sm text-green-300 font-medium">Best Case</span>
                             </div>
-                            <span class="text-lg font-bold text-green-400">${{ number_format($scenario->best_case_outcome) }}</span>
+                            <span class="text-lg font-bold text-green-400">&#8377;{{ number_format($scenario->best_case_outcome) }}</span>
                         </div>
                         
                         <div class="flex items-center justify-between p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
@@ -325,7 +325,7 @@
                                 </svg>
                                 <span class="text-sm text-blue-300 font-medium">Expected</span>
                             </div>
-                            <span class="text-lg font-bold text-blue-400">${{ number_format($scenario->expected_outcome) }}</span>
+                            <span class="text-lg font-bold text-blue-400">&#8377;{{ number_format($scenario->expected_outcome) }}</span>
                         </div>
                         
                         <div class="flex items-center justify-between p-3 bg-red-500/10 rounded-lg border border-red-500/20">
@@ -335,7 +335,7 @@
                                 </svg>
                                 <span class="text-sm text-red-300 font-medium">Worst Case</span>
                             </div>
-                            <span class="text-lg font-bold text-red-400">${{ number_format($scenario->worst_case_outcome) }}</span>
+                            <span class="text-lg font-bold text-red-400">&#8377;{{ number_format($scenario->worst_case_outcome) }}</span>
                         </div>
                     </div>
                 </div>
@@ -344,7 +344,7 @@
                 <div class="grid md:grid-cols-2 gap-4">
                     @if($scenario->success_indicators)
                     <div>
-                        <h3 class="text-white font-semibold mb-3 flex items-center">
+                        <h3 class="text-gray-900 font-semibold mb-3 flex items-center">
                             <svg class="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
@@ -352,8 +352,8 @@
                         </h3>
                         <ul class="space-y-2">
                             @foreach($scenario->success_indicators as $indicator)
-                            <li class="flex items-start text-sm text-gray-300">
-                                <span class="text-green-400 mr-2">✓</span>
+                            <li class="flex items-start text-sm text-gray-600">
+                                <span class="text-green-400 mr-2">&#10003;</span>
                                 <span>{{ $indicator }}</span>
                             </li>
                             @endforeach
@@ -363,7 +363,7 @@
                     
                     @if($scenario->failure_indicators)
                     <div>
-                        <h3 class="text-white font-semibold mb-3 flex items-center">
+                        <h3 class="text-gray-900 font-semibold mb-3 flex items-center">
                             <svg class="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
@@ -371,7 +371,7 @@
                         </h3>
                         <ul class="space-y-2">
                             @foreach($scenario->failure_indicators as $indicator)
-                            <li class="flex items-start text-sm text-gray-300">
+                            <li class="flex items-start text-sm text-gray-600">
                                 <span class="text-red-400 mr-2">⚠</span>
                                 <span>{{ $indicator }}</span>
                             </li>
@@ -382,11 +382,11 @@
                 </div>
 
                 <!-- Actions -->
-                <div class="flex space-x-4 pt-4 border-t border-white/10">
+                <div class="flex space-x-4 pt-4 border-t border-gray-100">
                     <button onclick="useScenario({{ $scenario->id }})" class="flex-1 py-3 bg-gradient-to-r from-primary-color to-primary-light text-white rounded-lg font-semibold hover:shadow-lg transition">
                         Use This Scenario
                     </button>
-                    <button onclick="closeScenarioDetail({{ $scenario->id }})" class="px-6 py-3 bg-white/5 text-white rounded-lg font-semibold hover:bg-white/10 transition">
+                    <button onclick="closeScenarioDetail({{ $scenario->id }})" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition">
                         Close
                     </button>
                 </div>
@@ -397,30 +397,37 @@
 </div>
 
 @push('scripts')
+@php
+$scenariosChartData = $scenarios->map(function($s) use ($strategy) {
+    return [
+        'id'          => $s->id,
+        'name'        => $s->scenario_name,
+        'risk'        => $s->risk_level === 'low' ? 25 : ($s->risk_level === 'medium' ? 50 : 75),
+        'gain'        => $s->expected_outcome - $strategy->offered_salary,
+        'probability' => $s->predicted_response_probability,
+        'color'       => $s->risk_level === 'low'
+                            ? 'rgba(16, 185, 129, 0.8)'
+                            : ($s->risk_level === 'medium'
+                                ? 'rgba(245, 158, 11, 0.8)'
+                                : 'rgba(239, 68, 68, 0.8)'),
+    ];
+})->values();
+@endphp
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 // Risk/Reward Scatter Plot
-const scenariosData = @json($scenarios->map(function($s) use ($strategy) {
-    return [
-        'id' => $s->id,
-        'name' => $s->scenario_name,
-        'risk' => $s->risk_level === 'low' ? 25 : ($s->risk_level === 'medium' ? 50 : 75),
-        'gain' => $s->expected_outcome - $strategy->offered_salary,
-        'probability' => $s->success_probability,
-        'color' => $s->risk_level === 'low' ? 'rgba(16, 185, 129, 0.8)' : ($s->risk_level === 'medium' ? 'rgba(245, 158, 11, 0.8)' : 'rgba(239, 68, 68, 0.8)')
-    ];
-})->values());
+const scenariosData = @json($scenariosChartData);
 
 const ctx = document.getElementById('riskRewardChart').getContext('2d');
 new Chart(ctx, {
-    type: 'scatter',
+    type: 'bubble',
     data: {
         datasets: [{
             label: 'Scenarios',
             data: scenariosData.map(s => ({
                 x: s.risk,
                 y: s.gain,
-                r: s.probability / 2, // radius based on probability
+                r: Math.max(10, s.probability / 3),
                 name: s.name,
                 probability: s.probability
             })),
@@ -447,7 +454,7 @@ new Chart(ctx, {
                     label: function(context) {
                         return [
                             `Risk Score: ${context.parsed.x}`,
-                            `Expected Gain: $${context.parsed.y.toLocaleString()}`,
+                            `Expected Gain: \u20B9${context.parsed.y.toLocaleString()}`,
                             `Success Rate: ${context.raw.probability}%`
                         ];
                     }
@@ -474,24 +481,24 @@ new Chart(ctx, {
                     }
                 },
                 grid: {
-                    color: 'rgba(255, 255, 255, 0.05)'
+                    color: 'rgba(0, 0, 0, 0.08)'
                 }
             },
             y: {
                 title: {
                     display: true,
-                    text: '↑ Expected Gain ($)',
+                    text: '↑ Expected Gain (₹)',
                     color: '#9ca3af',
                     font: { size: 12 }
                 },
                 ticks: {
                     color: '#6b7280',
                     callback: function(value) {
-                        return '$' + (value / 1000).toFixed(0) + 'k';
+                        return '\u20B9' + (value / 1000).toFixed(0) + 'k';
                     }
                 },
                 grid: {
-                    color: 'rgba(255, 255, 255, 0.05)'
+                    color: 'rgba(0, 0, 0, 0.08)'
                 }
             }
         }

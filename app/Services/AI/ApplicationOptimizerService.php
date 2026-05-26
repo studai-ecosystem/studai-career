@@ -416,19 +416,25 @@ PROMPT;
     }
 
     /**
-     * Get historical success rate
+     * Get historical success rate using aggregated query instead of loading all records.
      */
     protected function getHistoricalSuccessRate(User $user): array
     {
-        $applications = Application::where('user_id', $user->id)->get();
-        
-        if ($applications->isEmpty()) {
+        $stats = Application::where('user_id', $user->id)
+            ->selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN status IN ('interview','offer','accepted') THEN 1 ELSE 0 END) as successful
+            ")
+            ->first();
+
+        $total = (int) ($stats->total ?? 0);
+
+        if ($total === 0) {
             return ['rate' => 'No data', 'sample_size' => 0];
         }
-        
-        $total = $applications->count();
-        $successful = $applications->whereIn('status', ['interview', 'offer', 'accepted'])->count();
-        
+
+        $successful = (int) ($stats->successful ?? 0);
+
         return [
             'rate' => round(($successful / $total) * 100, 1) . '%',
             'sample_size' => $total,

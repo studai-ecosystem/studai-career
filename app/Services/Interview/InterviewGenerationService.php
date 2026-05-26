@@ -153,7 +153,7 @@ class InterviewGenerationService
         $prompt = $this->buildBehavioralQuestionPrompt($session, $companyData);
 
         $aiResponse = $this->openAIService->generateCompletion($prompt, [
-            'max_tokens' => 500,
+            'max_completion_tokens' => 500,
             'temperature' => 0.7,
         ]);
 
@@ -192,7 +192,7 @@ class InterviewGenerationService
         $prompt = $this->buildTechnicalQuestionPrompt($session, $companyData);
 
         $aiResponse = $this->openAIService->generateCompletion($prompt, [
-            'max_tokens' => 500,
+            'max_completion_tokens' => 500,
             'temperature' => 0.6,
         ]);
 
@@ -225,7 +225,7 @@ class InterviewGenerationService
         $prompt = $this->buildSituationalQuestionPrompt($session, $companyData);
 
         $aiResponse = $this->openAIService->generateCompletion($prompt, [
-            'max_tokens' => 500,
+            'max_completion_tokens' => 500,
             'temperature' => 0.7,
         ]);
 

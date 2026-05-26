@@ -57,7 +57,7 @@ class ResumeAnalyzerService
 
             // Call Azure OpenAI GPT-5 for semantic analysis
             $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat', 'gpt-5'),
+                'model' => config('ai.azure.models.chat', config('ai.azure.models.chat')),
                 'messages' => [
                     [
                         'role' => 'system',
@@ -69,7 +69,7 @@ class ResumeAnalyzerService
                     ]
                 ],
                 'temperature' => 0.7,
-                'max_tokens' => 2500,
+                'max_completion_tokens' => 2500,
                 'response_format' => ['type' => 'json_object']
             ]);
 

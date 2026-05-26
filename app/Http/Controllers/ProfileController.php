@@ -26,13 +26,26 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
+
+        $request->user()->fill([
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+            'phone'    => $validated['phone'] ?? $request->user()->phone,
+            'location' => $validated['location'] ?? $request->user()->location,
+            'bio'      => $validated['bio'] ?? $request->user()->bio,
+        ]);
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
 
         $request->user()->save();
+
+        // Save HR email to the linked company (employers only)
+        if (!empty($validated['hr_email']) && $request->user()->company) {
+            $request->user()->company->update(['hr_email' => $validated['hr_email']]);
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

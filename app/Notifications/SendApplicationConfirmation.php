@@ -37,8 +37,9 @@ class SendApplicationConfirmation extends Notification implements ShouldQueue
     {
         $job = $this->application->job;
         $company = $job->company;
+        $hrEmail = $company?->hr_email ?? null;
         
-        return (new MailMessage)
+        $message = (new MailMessage)
             ->subject('Application Submitted - ' . $job->title)
             ->greeting('Hello ' . $notifiable->name . '!')
             ->line('Your application has been successfully submitted.')
@@ -49,6 +50,13 @@ class SendApplicationConfirmation extends Notification implements ShouldQueue
             ->action('View Application', url('/applications/' . $this->application->id))
             ->line('We will notify you when the employer reviews your application.')
             ->line('Good luck!');
+
+        // Set Reply-To as company HR email so candidate replies go directly to HR
+        if ($hrEmail) {
+            $message->replyTo($hrEmail, $company->name . ' HR');
+        }
+
+        return $message;
     }
     
     /**
@@ -56,13 +64,19 @@ class SendApplicationConfirmation extends Notification implements ShouldQueue
      */
     public function toArray($notifiable): array
     {
+        $jobTitle    = $this->application->job->title ?? 'a position';
+        $companyName = $this->application->job->company->name ?? 'the employer';
+
         return [
-            'application_id' => $this->application->id,
+            'application_id'     => $this->application->id,
             'application_number' => $this->application->application_number,
-            'job_id' => $this->application->job_id,
-            'job_title' => $this->application->job->title,
-            'company_name' => $this->application->job->company->name,
-            'match_score' => $this->application->match_score,
+            'job_id'             => $this->application->job_id,
+            'job_title'          => $jobTitle,
+            'company_name'       => $companyName,
+            'match_score'        => $this->application->match_score,
+            'type'               => 'application_submitted',
+            'message'            => "Application submitted for \"{$jobTitle}\" at {$companyName}",
+            'url'                => url('/applications/' . $this->application->id),
         ];
     }
 }

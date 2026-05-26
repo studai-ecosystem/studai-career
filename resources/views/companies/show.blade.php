@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
-@section('title', $company->name . ' - Reviews & Ratings | StudAI Career')
+@section('title', $company->name . ' - Reviews & Ratings | StudAI Hire')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -142,11 +142,11 @@
                     {{-- Category Ratings --}}
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
                         @foreach ([
-                            'culture' => ['label' => 'Culture', 'icon' => 'üé≠'],
-                            'compensation' => ['label' => 'Pay', 'icon' => 'üí∞'],
+                            'culture' => ['label' => 'Culture', 'icon' => '≠'],
+                            'compensation' => ['label' => 'Pay', 'icon' => '?∞'],
                             'work_life_balance' => ['label' => 'Work-Life', 'icon' => '‚öñÔ∏è'],
-                            'career_growth' => ['label' => 'Growth', 'icon' => 'üìà'],
-                            'management' => ['label' => 'Management', 'icon' => 'üëî'],
+                            'career_growth' => ['label' => 'Growth', 'icon' => '?à'],
+                            'management' => ['label' => 'Management', 'icon' => '?î'],
                         ] as $key => $info)
                             @php $rating = $ratingSummary['category_ratings'][$key] ?? null; @endphp
                             <div class="text-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
@@ -190,11 +190,11 @@
 
                                 <div class="grid md:grid-cols-2 gap-4">
                                     <div>
-                                        <p class="text-sm text-green-600 dark:text-green-400 font-medium mb-1">‚úì Pros</p>
+                                        <p class="text-sm text-green-600 dark:text-green-400 font-medium mb-1">? Pros</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">{{ $review->pros }}</p>
                                     </div>
                                     <div>
-                                        <p class="text-sm text-red-600 dark:text-red-400 font-medium mb-1">‚úó Cons</p>
+                                        <p class="text-sm text-red-600 dark:text-red-400 font-medium mb-1">? Cons</p>
                                         <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">{{ $review->cons }}</p>
                                     </div>
                                 </div>
@@ -280,15 +280,15 @@
                     <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Help others by sharing</h3>
                     <div class="space-y-2">
                         <a href="{{ route('companies.reviews.create', $company) }}" class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition">
-                            <span class="text-2xl">üìù</span>
+                            <span class="text-2xl">?ù</span>
                             <span class="font-medium text-gray-900 dark:text-white">Write a Review</span>
                         </a>
                         <a href="{{ route('companies.salaries.create', $company) }}" class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition">
-                            <span class="text-2xl">üí∞</span>
+                            <span class="text-2xl">?∞</span>
                             <span class="font-medium text-gray-900 dark:text-white">Share Salary</span>
                         </a>
                         <a href="{{ route('companies.interviews.create', $company) }}" class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition">
-                            <span class="text-2xl">üé§</span>
+                            <span class="text-2xl">§</span>
                             <span class="font-medium text-gray-900 dark:text-white">Share Interview</span>
                         </a>
                     </div>

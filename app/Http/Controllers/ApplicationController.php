@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Application;
 use App\Models\Job;
 use App\Events\JobApplied;
+use App\Mail\ApplicationConfirmationMail;
 use App\Services\ApplicationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -28,29 +31,30 @@ class ApplicationController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Application::where('user_id', Auth::id())
+        $query = Application::where('applications.user_id', Auth::id())
             ->with(['job.company'])
-            ->latest();
+            ->join('job_listings', 'applications.job_id', '=', 'job_listings.id')
+            ->leftJoin('companies', 'job_listings.company_id', '=', 'companies.id')
+            ->select('applications.*')
+            ->latest('applications.created_at');
         
         // Filter by status
         if ($request->filled('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
+            $query->where('applications.status', $request->status);
         }
         
-        // Search by job title or company
+        // Search by job title or company — JOIN already done, no sub-query needed
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->whereHas('job', function($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhereHas('company', function($cq) use ($search) {
-                      $cq->where('name', 'like', "%{$search}%");
-                  });
+            $query->where(function ($q) use ($search) {
+                $q->where('job_listings.title', 'like', "%{$search}%")
+                  ->orWhere('companies.name', 'like', "%{$search}%");
             });
         }
         
         $applications = $query->paginate(20);
         
-        // Get status counts
+        // Get status counts — single GROUP BY
         $statusCounts = Application::where('user_id', Auth::id())
             ->selectRaw('status, count(*) as count')
             ->groupBy('status')
@@ -170,6 +174,19 @@ class ApplicationController extends Controller
             // Dispatch event — listeners handle employer & applicant notifications
             JobApplied::dispatch(Auth::user(), $job, $application);
 
+            // Send confirmation email with application date, closing date, evaluation date
+            try {
+                $application->loadMissing(['user', 'job.company']);
+                Mail::to(Auth::user()->email)
+                    ->send(new ApplicationConfirmationMail($application));
+                $application->updateQuietly(['confirmation_email_sent' => true]);
+            } catch (\Throwable $e) {
+                Log::warning('Application confirmation email failed', [
+                    'application_id' => $application->id,
+                    'error'          => $e->getMessage(),
+                ]);
+            }
+
             return redirect()
                 ->route('applications.show', $application)
                 ->with('success', 'Application submitted successfully!');
@@ -218,10 +235,7 @@ class ApplicationController extends Controller
         
         $draft = $this->applicationService->saveDraft(Auth::user(), $job, $data);
         
-        return response()->json([
-            'message' => 'Draft saved successfully',
-            'draft_id' => $draft->id,
-        ]);
+        return $this->jsonSuccess('Draft saved successfully', ['draft_id' => $draft->id]);
     }
     
     /**
@@ -288,35 +302,42 @@ class ApplicationController extends Controller
     }
     
     /**
-     * Get application statistics
+     * Get application statistics — single aggregated query
      */
     public function statistics()
     {
         $userId = Auth::id();
         
+        $raw = Application::where('user_id', $userId)
+            ->selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'submitted' THEN 1 ELSE 0 END) as submitted,
+                SUM(CASE WHEN status = 'viewed' THEN 1 ELSE 0 END) as viewed,
+                SUM(CASE WHEN status = 'shortlisted' THEN 1 ELSE 0 END) as shortlisted,
+                SUM(CASE WHEN status = 'interviewed' THEN 1 ELSE 0 END) as interviewed,
+                SUM(CASE WHEN status = 'offered' THEN 1 ELSE 0 END) as offered,
+                SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected,
+                AVG(CASE WHEN match_score IS NOT NULL THEN match_score END) as avg_match_score
+            ")
+            ->first();
+
+        $total     = (int) ($raw->total ?? 0);
+        $responded = (int) ($raw->viewed ?? 0) + (int) ($raw->shortlisted ?? 0)
+                   + (int) ($raw->interviewed ?? 0) + (int) ($raw->offered ?? 0);
+
         $stats = [
-            'total' => Application::where('user_id', $userId)->count(),
-            'submitted' => Application::where('user_id', $userId)->where('status', 'submitted')->count(),
-            'viewed' => Application::where('user_id', $userId)->where('status', 'viewed')->count(),
-            'shortlisted' => Application::where('user_id', $userId)->where('status', 'shortlisted')->count(),
-            'interviewed' => Application::where('user_id', $userId)->where('status', 'interviewed')->count(),
-            'offered' => Application::where('user_id', $userId)->where('status', 'offered')->count(),
-            'rejected' => Application::where('user_id', $userId)->where('status', 'rejected')->count(),
+            'total'          => $total,
+            'submitted'      => (int) ($raw->submitted ?? 0),
+            'viewed'         => (int) ($raw->viewed ?? 0),
+            'shortlisted'    => (int) ($raw->shortlisted ?? 0),
+            'interviewed'    => (int) ($raw->interviewed ?? 0),
+            'offered'        => (int) ($raw->offered ?? 0),
+            'rejected'       => (int) ($raw->rejected ?? 0),
+            'response_rate'  => $total > 0 ? round(($responded / $total) * 100, 1) : 0,
+            'success_rate'   => $total > 0 ? round(((int) ($raw->offered ?? 0) / $total) * 100, 1) : 0,
+            'avg_match_score' => $raw->avg_match_score ? round((float) $raw->avg_match_score, 1) : null,
         ];
         
-        $stats['response_rate'] = $stats['total'] > 0 
-            ? round((($stats['viewed'] + $stats['shortlisted'] + $stats['interviewed'] + $stats['offered']) / $stats['total']) * 100, 1)
-            : 0;
-        
-        $stats['success_rate'] = $stats['total'] > 0
-            ? round(($stats['offered'] / $stats['total']) * 100, 1)
-            : 0;
-        
-        // Average match score
-        $stats['avg_match_score'] = Application::where('user_id', $userId)
-            ->whereNotNull('match_score')
-            ->avg('match_score');
-        
-        return response()->json($stats);
+        return $this->jsonSuccess('Statistics retrieved', $stats);
     }
 }

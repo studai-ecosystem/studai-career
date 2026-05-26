@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('content')
 <div class="py-12">
@@ -16,7 +16,7 @@
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Background Check Details</h1>
                     <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        {{ $backgroundCheck->candidate->name ?? 'Candidate' }} • {{ $backgroundCheck->provider_name }}
+                        {{ $backgroundCheck->candidate->name ?? 'Candidate' }} â€¢ {{ $backgroundCheck->provider_name }}
                     </p>
                 </div>
                 <div class="mt-4 sm:mt-0 flex gap-2">

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', $template->name . ' - Email Template')
 
@@ -8,7 +8,7 @@
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
             <div>
-                <a href="{{ route('email-templates.index') }}" class="text-orange-600 hover:text-orange-800 text-sm mb-2 inline-block">← Back to Templates</a>
+                <a href="{{ route('email-templates.index') }}" class="text-orange-600 hover:text-orange-800 text-sm mb-2 inline-block">â† Back to Templates</a>
                 <h1 class="text-3xl font-bold text-gray-900">{{ $template->name }}</h1>
                 <div class="flex items-center gap-2 mt-2">
                     <span class="px-2 py-1 bg-{{ $template->type === 'system' ? 'blue' : ($template->type === 'ai_generated' ? 'purple' : 'gray') }}-100 text-{{ $template->type === 'system' ? 'blue' : ($template->type === 'ai_generated' ? 'purple' : 'gray') }}-700 text-xs rounded-full capitalize">
@@ -23,14 +23,14 @@
             <div class="mt-4 md:mt-0 flex gap-3">
                 @if($template->user_id === auth()->id())
                 <a href="{{ route('email-templates.edit', $template->id) }}" class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition">
-                    ✏️ Edit
+                    ï¸ Edit
                 </a>
                 @endif
                 <button onclick="openAiModal()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
-                    🤖 AI Customize
+                    – AI Customize
                 </button>
                 <button onclick="openSendModal()" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
-                    📧 Send Email
+                    �§ Send Email
                 </button>
             </div>
         </div>
@@ -53,7 +53,7 @@
 
                 <!-- Variables Used -->
                 <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                    <h2 class="text-lg font-bold text-gray-900 mb-4">📋 Variables in this Template</h2>
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">�‹ Variables in this Template</h2>
                     @if(empty($template->variables))
                     <p class="text-gray-500">No variables used in this template.</p>
                     @else
@@ -71,7 +71,7 @@
                 <!-- Version History -->
                 @if($template->versions->isNotEmpty())
                 <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                    <h2 class="text-lg font-bold text-gray-900 mb-4">📜 Version History</h2>
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">�œ Version History</h2>
                     <div class="space-y-3">
                         @foreach($template->versions as $version)
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -93,23 +93,23 @@
             <div class="space-y-6">
                 <!-- Quick Actions -->
                 <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                    <h2 class="text-lg font-bold text-gray-900 mb-4">⚡ Quick Actions</h2>
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">âš¡ Quick Actions</h2>
                     <div class="space-y-2">
                         <button onclick="duplicateTemplate()" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-left">
-                            📋 Duplicate Template
+                            �‹ Duplicate Template
                         </button>
                         <button onclick="openPreviewModal()" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-left">
-                            👁️ Preview with Sample Data
+                            �ï¸ Preview with Sample Data
                         </button>
                         <button onclick="copyToClipboard()" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-left">
-                            📄 Copy HTML
+                            �„ Copy HTML
                         </button>
                     </div>
                 </div>
 
                 <!-- Analytics -->
                 <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                    <h2 class="text-lg font-bold text-gray-900 mb-4">📊 Analytics</h2>
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">�Š Analytics</h2>
                     <div class="space-y-4">
                         <div>
                             <div class="flex justify-between text-sm mb-1">
@@ -144,7 +144,7 @@
 
                 <!-- Template Info -->
                 <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                    <h2 class="text-lg font-bold text-gray-900 mb-4">ℹ️ Template Info</h2>
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">â„¹ï¸ Template Info</h2>
                     <dl class="space-y-3 text-sm">
                         <div class="flex justify-between">
                             <dt class="text-gray-600">Category</dt>
@@ -169,7 +169,7 @@
 <div id="send-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-xl font-bold text-gray-900">📧 Send Email</h3>
+            <h3 class="text-xl font-bold text-gray-900">�§ Send Email</h3>
         </div>
         <form id="send-form" class="p-6 space-y-4">
             <div>
@@ -212,7 +212,7 @@
 <div id="ai-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-xl font-bold text-gray-900">🤖 AI Customize Template</h3>
+            <h3 class="text-xl font-bold text-gray-900">– AI Customize Template</h3>
         </div>
         <div class="p-6 space-y-4">
             <div>
@@ -243,7 +243,7 @@
                 Cancel
             </button>
             <button onclick="runAiCustomization()" id="ai-btn" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
-                ✨ Generate
+                 Generate
             </button>
         </div>
     </div>
@@ -273,7 +273,7 @@ function closeAiModal() {
 async function sendEmail() {
     const btn = document.getElementById('send-btn');
     btn.disabled = true;
-    btn.textContent = '⏳ Sending...';
+    btn.textContent = 'â³ Sending...';
     
     const form = document.getElementById('send-form');
     const formData = new FormData(form);
@@ -322,7 +322,7 @@ async function sendEmail() {
 async function runAiCustomization() {
     const btn = document.getElementById('ai-btn');
     btn.disabled = true;
-    btn.textContent = '⏳ Generating...';
+    btn.textContent = 'â³ Generating...';
     
     try {
         const response = await fetch(`/email-templates/${templateId}/ai-customize`, {
@@ -366,7 +366,7 @@ async function runAiCustomization() {
         alert('An error occurred');
     } finally {
         btn.disabled = false;
-        btn.textContent = '✨ Generate';
+        btn.textContent = ' Generate';
     }
 }
 

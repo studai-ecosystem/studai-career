@@ -164,10 +164,7 @@
                     <p class="text-indigo-100 mt-2">Review market intelligence, rehearse mock negotiations, and align with your BATNA so you walk in with conviction.</p>
                 </div>
                 <div class="flex flex-col gap-3 min-w-[220px]">
-                    <a href="{{ route('market.salary-intelligence') }}" class="inline-flex items-center justify-center px-4 py-2 bg-white text-indigo-600 rounded-md font-semibold hover:bg-indigo-100 transition">
-                        <i class="fas fa-chart-line mr-2"></i> Market salary intel
-                    </a>
-                    <a href="{{ route('negotiation.dashboard') }}" class="inline-flex items-center justify-center px-4 py-2 border border-white/40 rounded-md font-semibold hover:bg-white/10 transition">
+                    <a href="{{ route('negotiation.dashboard') }}" class="inline-flex items-center justify-center px-4 py-2 bg-white text-indigo-600 rounded-md font-semibold hover:bg-indigo-100 transition">
                         <i class="fas fa-chess-knight mr-2"></i> Negotiation strategies
                     </a>
                 </div>

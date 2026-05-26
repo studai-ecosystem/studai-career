@@ -14,6 +14,8 @@ class InterviewSession extends Model
 
     protected $fillable = [
         'user_id',
+        'cache_key',
+        'job_title',
         'discovered_job_id',
         'company_name',
         'role_title',
@@ -25,6 +27,7 @@ class InterviewSession extends Model
         'overall_score',
         'performance_metrics',
         'ai_insights',
+        'session_data',
         'interviewer_style',
         'started_at',
         'completed_at',
@@ -33,6 +36,7 @@ class InterviewSession extends Model
     protected $casts = [
         'performance_metrics' => 'array',
         'ai_insights' => 'array',
+        'session_data' => 'array',
         'interviewer_style' => 'array',
         'overall_score' => 'decimal:2',
         'started_at' => 'datetime',

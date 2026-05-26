@@ -1,12 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'AI-Powered Career Platform | StudAI Career - Your Intelligent Job Search Partner')
+@section('title', 'StudAI Hire - India\'s First Autonomous Career OS | Your Career, On Autopilot')
 
 @section('meta')
-<meta name="description" content="Transform your career with StudAI Career's AI-powered job matching, resume optimization, and talent pipeline management. Connect with top employers and discover opportunities tailored to your skills.">
-<meta name="keywords" content="AI career platform, job search, resume builder, talent matching, career advancement, job board India, AI recruitment">
-<meta property="og:title" content="StudAI Career - AI-Powered Career Transformation">
-<meta property="og:description" content="Discover your dream job with intelligent matching, automated applications, and personalized career guidance powered by advanced AI.">
+<meta name="description" content="StudAI Hire - The AI that finds jobs, applies for you, and lands interviews while you sleep. India's first autonomous career operating system.">
+<meta property="og:title" content="StudAI Hire - Your Career, On Autopilot">
+<meta property="og:description" content="AI that applies to 100+ jobs daily, preps you for interviews, and negotiates your salary. Fully autonomous. Fully free to start.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ url('/') }}">
 <meta name="twitter:card" content="summary_large_image">
@@ -14,505 +13,626 @@
 @endsection
 
 @section('content')
-<!-- Hero Section -->
-<section class="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-purple-900 via-pink-800 to-blue-900">
-    <!-- Animated Background -->
-    <div class="absolute inset-0 opacity-20">
-        <div class="absolute top-0 -left-4 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-        <div class="absolute top-0 -right-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-        <div class="absolute -bottom-8 left-20 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
-    </div>
+
+<style>
+    /* -- HOME PAGE DESIGN TOKENS ------------------- */
+    :root {
+        --brand:       #6366f1;
+        --brand-dark:  #4f46e5;
+        --brand-light: #f0f0ff;
+        --bg:          #f7f7fc;
+        --surface:     #ffffff;
+        --border:      #ebebf5;
+        --text:        #1a1a2e;
+        --text-2:      #4b5563;
+        --text-3:      #9ca3af;
+    }
+
+    /* -- KEYFRAMES --------------------------------- */
+    @keyframes fadeUp      { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn      { from{opacity:0} to{opacity:1} }
+    @keyframes ticker      { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    @keyframes floatY      { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes pingDot     { 0%{transform:scale(1);opacity:.8} 80%,100%{transform:scale(2.2);opacity:0} }
+    @keyframes shimmer     { to{background-position:-200% center} }
+    @keyframes gradShift   { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+    @keyframes blobMove    { 0%,100%{transform:translate(0,0)scale(1)} 33%{transform:translate(30px,-40px)scale(1.05)} 66%{transform:translate(-20px,20px)scale(.97)} }
+
+    .animate-fade-up   { animation:fadeUp .7s ease both; }
+    .delay-1 { animation-delay:.1s }
+    .delay-2 { animation-delay:.2s }
+    .delay-3 { animation-delay:.35s }
+    .delay-4 { animation-delay:.5s }
+    .delay-5 { animation-delay:.65s }
+
+    .ticker-track { animation:ticker 32s linear infinite; }
+    .ticker-track:hover { animation-play-state:paused; }
+
+    .float-anim { animation:floatY 4s ease-in-out infinite; }
+    .ping-dot   { animation:pingDot 2s cubic-bezier(0,0,.2,1) infinite; }
+    .blob       { animation:blobMove 10s ease-in-out infinite; }
+    .blob-2     { animation-delay:3s; }
+    .blob-3     { animation-delay:6s; }
+
+    /* -- GRADIENT TEXT ------------------------------ */
+    .grad-text {
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+        background-size: 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradShift 4s ease infinite;
+    }
+
+    /* -- HERO CARD ---------------------------------- */
+    .hero-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,.04), 0 24px 64px rgba(99,102,241,.08);
+    }
+
+    /* -- FEATURE CARDS ------------------------------ */
+    .feat-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    .feat-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 24px 48px rgba(99,102,241,.14);
+        border-color: rgba(99,102,241,.3);
+    }
+
+    /* -- TESTIMONIAL CARDS --------------------------- */
+    .testi-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .testi-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(99,102,241,.12); }
+
+    /* -- FAQ ---------------------------------------- */
+    details summary { list-style:none; cursor:pointer; }
+    details summary::-webkit-details-marker { display:none; }
+    details[open] .faq-chevron { transform:rotate(180deg); }
+    .faq-chevron { transition:transform .25s ease; }
+
+    /* -- STAT NUMBER ------------------------------- */
+    .stat-num {
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* -- SUBTLE GRID BG ---------------------------- */
+    .dot-grid {
+        background-image: radial-gradient(rgba(99,102,241,.12) 1px, transparent 1px);
+        background-size: 28px 28px;
+    }
+
+    /* -- CTA SECTION ------------------------------- */
+    .cta-section {
+        background: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #a855f7 100%);
+        background-size: 200%;
+        animation: gradShift 6s ease infinite;
+    }
+
+    /* -- BRAND GLOW BTN ----------------------------- */
+    .btn-brand {
+        background: linear-gradient(135deg, #6366f1, #7c3aed);
+        color: white;
+        font-weight: 700;
+        border-radius: 12px;
+        padding: 14px 28px;
+        transition: transform .2s ease, box-shadow .2s ease;
+        box-shadow: 0 4px 20px rgba(99,102,241,.35);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+    }
+    .btn-brand:hover { transform:translateY(-3px); box-shadow:0 8px 32px rgba(99,102,241,.5); }
+    .btn-brand:active { transform:translateY(0) scale(.98); }
+
+    .btn-ghost {
+        background: white;
+        color: var(--text);
+        font-weight: 600;
+        border-radius: 12px;
+        padding: 14px 28px;
+        border: 1.5px solid var(--border);
+        transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+    }
+    .btn-ghost:hover { transform:translateY(-2px); border-color:rgba(99,102,241,.4); box-shadow:0 4px 16px rgba(0,0,0,.06); }
+</style>
+
+{{-- =====================================================
+     HERO
+===================================================== --}}
+<section class="relative overflow-hidden dot-grid" style="background:#f7f7fc; min-height:100vh; display:flex; flex-direction:column; justify-content:center;">
+
+    {{-- Soft gradient blobs --}}
+    <div class="blob absolute -top-48 -left-48 w-[700px] h-[700px] rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(99,102,241,.12) 0%,transparent 70%); filter:blur(40px);"></div>
+    <div class="blob blob-2 absolute top-1/3 -right-48 w-[600px] h-[600px] rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(168,85,247,.10) 0%,transparent 70%); filter:blur(40px);"></div>
+    <div class="blob blob-3 absolute -bottom-32 left-1/4 w-[500px] h-[500px] rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(236,72,153,.08) 0%,transparent 70%); filter:blur(40px);"></div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <!-- Left Content -->
-            <div class="text-white space-y-8">
-                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
-                    <span class="relative flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+
+            {{-- Left --}}
+            <div class="space-y-8">
+                {{-- Badge --}}
+                <div class="animate-fade-up delay-1 inline-flex items-center gap-2.5 rounded-full px-4 py-2" style="background:#f0f0ff; border:1.5px solid rgba(99,102,241,.25)">
+                    <span class="relative flex h-2 w-2">
+                        <span class="ping-dot absolute inline-flex h-full w-full rounded-full bg-emerald-400"></span>
+                        <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
                     </span>
-                    <span class="text-sm font-medium">50,000+ Jobs | 10,000+ Companies | AI-Powered Matching</span>
+                    <span class="text-sm font-semibold" style="color:#6366f1">India's First Autonomous Career OS</span>
                 </div>
 
-                <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
-                    Your Career,
-                    <span class="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-                        Supercharged
-                    </span>
-                    by AI
-                </h1>
+                {{-- Headline --}}
+                <div class="animate-fade-up delay-2 space-y-2">
+                    <p class="text-xs font-bold tracking-[0.2em] uppercase" style="color:#9ca3af">AI-Powered</p>
+                    <h1 class="font-extrabold leading-[1.04] tracking-tight" style="font-size:clamp(3rem,7vw,5.5rem); color:#1a1a2e">
+                        Your Career.<br>
+                        <span class="grad-text">On Autopilot.</span>
+                    </h1>
+                </div>
 
-                <p class="text-xl md:text-2xl text-gray-200 leading-relaxed">
-                    Transform your job search with intelligent matching, automated applications, and personalized career guidance. 
-                    Let AI handle the heavy lifting while you focus on landing your dream role.
+                {{-- Sub --}}
+                <p class="animate-fade-up delay-3 text-xl leading-relaxed" style="color:#4b5563; max-width:480px">
+                    The AI that finds jobs, applies for you, and lands interviews � <strong style="color:#1a1a2e">while you sleep.</strong>
+                    StudAI Hire manages your entire career journey, end to end.
                 </p>
 
-                <div class="flex flex-col sm:flex-row gap-4">
-                    @guest
-                        <a href="{{ route('register') }}" class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
-                            <span>Get Started Free</span>
-                            <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                {{-- Search --}}
+                <div class="animate-fade-up delay-4" style="max-width:520px">
+                    <div class="flex items-center gap-0 rounded-2xl overflow-hidden" style="background:white; border:1.5px solid var(--border); box-shadow:0 4px 20px rgba(99,102,241,.08)">
+                        <div class="pl-5">
+                            <svg class="w-4.5 h-4.5" style="color:#9ca3af" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                             </svg>
-                        </a>
-                        <a href="{{ route('how-it-works') }}" class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-white/10 backdrop-blur-md rounded-xl border-2 border-white/20 hover:bg-white/20 transition-all duration-300">
-                            See How It Works
-                        </a>
-                    @else
-                        <a href="{{ route('dashboard') }}" class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
-                            <span>Go to Dashboard</span>
-                            <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                            </svg>
-                        </a>
-                    @endguest
+                        </div>
+                        <input type="text" placeholder="Search jobs, skills, companies, or ask AI anything..."
+                            class="flex-1 px-4 py-4 text-sm bg-transparent outline-none"
+                            style="color:#1a1a2e">
+                        <a href="{{ route('jobs.search') }}"
+                            class="m-1.5 px-5 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
+                            style="background:linear-gradient(135deg,#6366f1,#7c3aed)">Search</a>
+                    </div>
+                    <p class="text-xs mt-2.5 ml-1" style="color:#9ca3af">Try: <span style="color:#6366f1">"Find remote React jobs in Bangalore paying 20L+"</span></p>
                 </div>
 
-                <!-- Trust Badges -->
-                <div class="flex flex-wrap items-center gap-8 pt-8 border-t border-white/20">
-                    <div class="flex items-center gap-2">
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                        <span class="text-sm font-medium">4.9/5 Rating</span>
+                {{-- CTAs --}}
+                <div class="animate-fade-up delay-5 flex flex-wrap items-center gap-4">
+                    <a href="{{ route('register') }}" class="btn-brand">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        Start Free � No Credit Card
+                    </a>
+                    <a href="#demo" class="btn-ghost">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Watch Demo
+                    </a>
+                </div>
+
+                {{-- Social proof --}}
+                <div class="animate-fade-up flex items-center gap-3">
+                    <div class="flex -space-x-2">
+                        @foreach(['#6366f1','#a855f7','#f97316','#22c55e','#3b82f6'] as $c)
+                        <div class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold text-white" style="background:{{ $c }}">{{ chr(65 + $loop->index) }}</div>
+                        @endforeach
                     </div>
-                    <div class="flex items-center gap-2">
-                        <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span class="text-sm font-medium">ISO 27001 Certified</span>
+                    <p class="text-sm font-medium" style="color:#4b5563">Trusted by <strong style="color:#1a1a2e">50,000+</strong> professionals across India</p>
+                </div>
+            </div>
+
+            {{-- Right: Dashboard card --}}
+            <div class="hidden lg:block float-anim">
+                <div class="hero-card p-6 max-w-md ml-auto">
+                    {{-- Card header --}}
+                    <div class="flex items-center justify-between mb-5">
+                        <div>
+                            <div class="text-xs font-semibold uppercase tracking-widest" style="color:#9ca3af">app.studaipath.com/dashboard</div>
+                            <div class="text-base font-bold mt-0.5" style="color:#1a1a2e">Your AI Dashboard</div>
+                        </div>
+                        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">
+                            <span class="ping-dot w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
+                            Live
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
-                        <span class="text-sm font-medium">GDPR Compliant</span>
+
+                    {{-- Stats row --}}
+                    <div class="grid grid-cols-3 gap-3 mb-5">
+                        @foreach([['89%','AI Match Score','#6366f1'],['24','Applications Today','#a855f7'],['12','Interviews','#22c55e']] as $s)
+                        <div class="rounded-2xl p-3 text-center" style="background:#f7f7fc; border:1px solid var(--border)">
+                            <div class="text-xl font-extrabold" style="color:{{ $s[2] }}">{{ $s[0] }}</div>
+                            <div class="text-[10px] font-medium mt-0.5" style="color:#9ca3af">{{ $s[1] }}</div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                    {{-- Agent status --}}
+                    <div class="rounded-2xl p-4 mb-4" style="background:linear-gradient(135deg,#6366f1,#7c3aed)">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Autonomous Agent</div>
+                                <div class="flex items-center gap-1.5 mt-0.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    <span class="text-xs text-indigo-200">Active</span>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- Activity feed --}}
+                        @foreach([['Applied to 5 jobs at Google','Just now','#a5b4fc'],['Resume optimized for Microsoft roles','2 min ago','#c4b5fd']] as $act)
+                        <div class="flex items-start gap-2 mb-2 last:mb-0">
+                            <div class="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style="background:{{ $act[2] }}"></div>
+                            <div>
+                                <div class="text-xs text-white/90">{{ $act[0] }}</div>
+                                <div class="text-[10px] mt-0.5" style="color:{{ $act[2] }}">{{ $act[1] }}</div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                    {{-- Job match row --}}
+                    <div class="space-y-2">
+                        @foreach([['Google','Senior SWE � Remote','96%','#6366f1'],['Stripe','Lead ML Engineer � SF','91%','#a855f7']] as $j)
+                        <div class="flex items-center gap-3 rounded-xl p-3" style="background:#f7f7fc; border:1px solid var(--border)">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-white text-sm" style="background:{{ $j[3] }}">{{ substr($j[0],0,1) }}</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs font-semibold truncate" style="color:#1a1a2e">{{ $j[0] }}</div>
+                                <div class="text-[10px] truncate" style="color:#9ca3af">{{ $j[1] }}</div>
+                            </div>
+                            <span class="text-xs font-bold" style="color:{{ $j[3] }}">{{ $j[2] }}</span>
+                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
 
-            <!-- Right Visual -->
-            <div class="hidden lg:block relative">
-                <div class="relative w-full h-[600px]">
-                    <!-- Floating Cards Animation -->
-                    <div class="absolute top-0 left-0 w-80 bg-white rounded-2xl shadow-2xl p-6 transform rotate-3 hover:rotate-0 transition-transform duration-300">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-600"></div>
-                            <div>
-                                <h4 class="font-semibold text-gray-900">Senior Developer</h4>
-                                <p class="text-sm text-gray-500">TechCorp Inc.</p>
-                            </div>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-gray-600">Match Score</span>
-                                <span class="font-semibold text-emerald-600">94%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-gradient-to-r from-emerald-400 to-emerald-600 h-2 rounded-full" style="width: 94%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="absolute top-32 right-0 w-72 bg-white rounded-2xl shadow-2xl p-6 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
-                        <div class="flex items-center gap-3 mb-4">
-                            <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <div>
-                                <h4 class="font-semibold text-gray-900">Application Sent</h4>
-                                <p class="text-sm text-gray-500">2 minutes ago</p>
-                            </div>
-                        </div>
-                        <p class="text-sm text-gray-600">Your AI-optimized resume has been submitted to 5 matching positions.</p>
-                    </div>
-
-                    <div class="absolute bottom-0 left-12 w-64 bg-white rounded-2xl shadow-2xl p-6 transform rotate-2 hover:rotate-0 transition-transform duration-300">
-                        <h4 class="font-semibold text-gray-900 mb-3">Skills Analysis</h4>
-                        <div class="space-y-3">
-                            <div>
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="text-gray-600">React.js</span>
-                                    <span class="text-gray-900 font-medium">Expert</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                    <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-1.5 rounded-full" style="width: 95%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="text-gray-600">Node.js</span>
-                                    <span class="text-gray-900 font-medium">Advanced</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                    <div class="bg-gradient-to-r from-purple-400 to-purple-600 h-1.5 rounded-full" style="width: 85%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scroll Indicator -->
-    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-        <div class="animate-bounce">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-            </svg>
         </div>
     </div>
 </section>
 
-<!-- Stats Section -->
-<section class="py-20 bg-white">
+{{-- =====================================================
+     STATS TICKER
+===================================================== --}}
+<div class="relative overflow-hidden py-5" style="background:white; border-top:1px solid var(--border); border-bottom:1px solid var(--border)">
+    <div class="ticker-track flex items-center gap-16 whitespace-nowrap" style="width:max-content">
+        @php $stats = ['50K+ Careers Launched','2.5M Jobs Indexed','94% Interview Success','40% Avg. Salary Increase','12M+ AI Applications Sent','?8L Avg. Salary Hike','60% Faster Time-to-Hire','4.9? User Rating']; @endphp
+        @foreach(array_merge($stats, $stats) as $s)
+        <div class="flex items-center gap-2.5">
+            <div class="w-1.5 h-1.5 rounded-full" style="background:#6366f1"></div>
+            <span class="text-sm font-semibold" style="color:#4b5563">{{ $s }}</span>
+        </div>
+        @endforeach
+    </div>
+</div>
+
+{{-- =====================================================
+     STATS GRID
+===================================================== --}}
+<section class="py-20" style="background:#f7f7fc">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div class="text-center">
-                <div class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                    50K+
-                </div>
-                <div class="text-gray-600 font-medium">Active Job Listings</div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach([['50K+','Careers Launched','#6366f1'],['2.5M','Jobs Indexed','#a855f7'],['94%','Interview Success','#22c55e'],['40%','Avg. Salary Increase','#f97316']] as $s)
+            <div class="text-center rounded-2xl p-8" style="background:white; border:1px solid var(--border); box-shadow:0 1px 4px rgba(0,0,0,.04)">
+                <div class="stat-num">{{ $s[0] }}</div>
+                <div class="text-sm font-medium mt-1" style="color:#6b7280">{{ $s[1] }}</div>
             </div>
-            <div class="text-center">
-                <div class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
-                    10K+
-                </div>
-                <div class="text-gray-600 font-medium">Hiring Companies</div>
-            </div>
-            <div class="text-center">
-                <div class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent mb-2">
-                    95%
-                </div>
-                <div class="text-gray-600 font-medium">Match Accuracy</div>
-            </div>
-            <div class="text-center">
-                <div class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-pink-600 bg-clip-text text-transparent mb-2">
-                    2.5M+
-                </div>
-                <div class="text-gray-600 font-medium">Successful Placements</div>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
 
-<!-- Features Section -->
-<section class="py-24 bg-gradient-to-b from-gray-50 to-white">
+{{-- =====================================================
+     FEATURES
+===================================================== --}}
+<section class="py-24" style="background:white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {{-- Section header --}}
         <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                Powered by <span class="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Advanced AI</span>
-            </h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                Experience the future of career management with our intelligent platform designed to accelerate your professional growth.
-            </p>
+            <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-4 text-xs font-semibold uppercase tracking-widest" style="background:#f0f0ff; color:#6366f1; border:1px solid rgba(99,102,241,.2)">The Career OS</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#1a1a2e">One platform. Your entire career.</h2>
+            <p class="mt-4 text-xl max-w-2xl mx-auto" style="color:#6b7280">From job discovery to salary negotiation � every step automated.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Feature 1 -->
-            <div class="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-pink-200">
-                <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        {{-- Feature grid --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @php
+            $features = [
+                [
+                    'name'    => 'Autonomous Agent',
+                    'desc'    => 'Set your preferences. Our AI applies to 100+ matching jobs daily � while you sleep.',
+                    'cta'     => 'Activate Agent',
+                    'route'   => 'register',
+                    'grad'    => 'linear-gradient(135deg,#6366f1,#7c3aed)',
+                    'light'   => '#f0f0ff',
+                    'icon'    => 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+                    'badge'   => 'Most Popular',
+                ],
+                [
+                    'name'    => 'Smart Job Search',
+                    'desc'    => 'AI-powered matching. No endless scrolling. Just perfect-fit opportunities.',
+                    'cta'     => 'Find Jobs',
+                    'route'   => 'jobs.search',
+                    'grad'    => 'linear-gradient(135deg,#22c55e,#16a34a)',
+                    'light'   => '#f0fdf4',
+                    'icon'    => 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+                    'badge'   => null,
+                ],
+                [
+                    'name'    => 'Resume Studio',
+                    'desc'    => 'ATS-optimized resumes that actually get callbacks. Built in 5 minutes.',
+                    'cta'     => 'Build Resume',
+                    'route'   => 'resume.index',
+                    'grad'    => 'linear-gradient(135deg,#8b5cf6,#6366f1)',
+                    'light'   => '#faf5ff',
+                    'icon'    => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+                    'badge'   => null,
+                ],
+                [
+                    'name'    => 'Interview AI',
+                    'desc'    => 'Practice with AI interviewers. Get real-time feedback. Walk in confident.',
+                    'cta'     => 'Start Practice',
+                    'route'   => 'interview.index',
+                    'grad'    => 'linear-gradient(135deg,#f97316,#ef4444)',
+                    'light'   => '#fff7ed',
+                    'icon'    => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',
+                    'badge'   => null,
+                ],
+                [
+                    'name'    => 'For Employers: S.C.O.U.T. AI',
+                    'desc'    => 'Bias-free AI hiring. Find the best talent faster. Reduce time-to-hire by 60%.',
+                    'cta'     => 'For Employers',
+                    'route'   => 'employer.dashboard',
+                    'grad'    => 'linear-gradient(135deg,#14b8a6,#0d9488)',
+                    'light'   => '#f0fdfa',
+                    'icon'    => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
+                    'badge'   => 'Employer',
+                ],
+            ];
+            @endphp
+
+            @foreach($features as $f)
+            <div class="feat-card p-7 relative">
+                @if($f['badge'])
+                <span class="absolute top-5 right-5 text-[10px] font-bold px-2.5 py-1 rounded-full text-white" style="background:linear-gradient(135deg,#6366f1,#a855f7)">{{ $f['badge'] }}</span>
+                @endif
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-5" style="background:{{ $f['grad'] }}">
+                    <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="{{ $f['icon'] }}"/>
                     </svg>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">AI Job Matching</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Our proprietary algorithm analyzes your skills, experience, and preferences to match you with opportunities where you'll thrive. 95% accuracy rate.
-                </p>
-            </div>
-
-            <!-- Feature 2 -->
-            <div class="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-purple-200">
-                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Smart Resume Builder</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    AI-powered resume optimization that beats ATS systems. Automatic keyword insertion, formatting, and tailoring for each application.
-                </p>
-            </div>
-
-            <!-- Feature 3 -->
-            <div class="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-blue-200">
-                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Automated Applications</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Set it and forget it. Our AI agent applies to relevant positions on your behalf, tracks responses, and schedules interviews automatically.
-                </p>
-            </div>
-
-            <!-- Feature 4 -->
-            <div class="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-emerald-200">
-                <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Skill Gap Analysis</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Identify missing skills for your dream role. Get personalized learning paths with curated courses, certifications, and practice projects.
-                </p>
-            </div>
-
-            <!-- Feature 5 -->
-            <div class="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-orange-200">
-                <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Interview Prep AI</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Practice with our AI interviewer. Get real-time feedback on your answers, body language, and communication style. Company-specific prep included.
-                </p>
-            </div>
-
-            <!-- Feature 6 -->
-            <div class="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-indigo-200">
-                <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Career Trajectory</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Visualize your career path with AI predictions. See salary growth, skill development timelines, and optimal career moves based on market data.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- For Employers Section -->
-<section class="py-24 bg-gradient-to-br from-purple-900 via-pink-900 to-blue-900 text-white relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-0 left-0 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
-        <div class="absolute bottom-0 right-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
-    </div>
-
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-                <div class="inline-block bg-white/10 backdrop-blur-md px-4 py-2 rounded-full mb-6">
-                    <span class="text-sm font-medium">For Employers</span>
-                </div>
-                <h2 class="text-4xl md:text-5xl font-bold mb-6">
-                    Build Your <span class="text-pink-400">Dream Team</span> with AI Precision
-                </h2>
-                <p class="text-xl text-gray-200 mb-8 leading-relaxed">
-                    Stop sifting through hundreds of irrelevant resumes. Our AI-powered talent pipeline identifies, engages, and nurtures top candidates who perfectly match your company DNA.
-                </p>
-                <ul class="space-y-4 mb-8">
-                    <li class="flex items-start gap-3">
-                        <svg class="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span class="text-lg">AI-powered candidate matching reduces time-to-hire by 60%</span>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <svg class="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span class="text-lg">Automated screening and bias detection for fair hiring</span>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <svg class="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span class="text-lg">Predictive performance analytics for better hiring decisions</span>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <svg class="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span class="text-lg">Talent pipeline management with silver medalist tracking</span>
-                    </li>
-                </ul>
-                <a href="{{ route('register', ['account_type' => 'employer']) }}" class="inline-flex items-center gap-2 px-8 py-4 bg-white text-purple-900 font-semibold rounded-xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-xl">
-                    <span>Start Hiring Smarter</span>
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                    </svg>
+                <h3 class="text-lg font-bold mb-2" style="color:#1a1a2e">{{ $f['name'] }}</h3>
+                <p class="text-sm leading-relaxed mb-6" style="color:#6b7280">{{ $f['desc'] }}</p>
+                <a href="{{ route($f['route']) }}" class="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors hover:gap-2.5"
+                    style="color:#6366f1">
+                    {{ $f['cta'] }}
+                    <svg class="w-4 h-4 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </a>
             </div>
+            @endforeach
+        </div>
+    </div>
+</section>
 
-            <div class="hidden lg:block">
-                <div class="relative">
-                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
-                        <h4 class="text-2xl font-bold mb-6">Hiring Dashboard</h4>
-                        <div class="space-y-6">
-                            <div class="flex items-center justify-between">
-                                <span class="text-gray-300">Active Positions</span>
-                                <span class="text-3xl font-bold">24</span>
+{{-- =====================================================
+     WHY STUDAI
+===================================================== --}}
+<section class="py-24 dot-grid" style="background:#f7f7fc">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+            {{-- Left: visual --}}
+            <div class="relative">
+                <div class="hero-card p-8">
+                    <div class="text-xs font-bold uppercase tracking-widest mb-6" style="color:#9ca3af">Why StudAI Hire</div>
+                    <div class="space-y-5">
+                        @foreach([
+                            ['Zero Manual Applications','Our AI agent handles everything. From finding matches to submitting applications � fully autonomous.','#6366f1'],
+                            ['Interview-Ready in Hours','AI mock interviews tailored to your target role. Real questions. Real-time coaching.','#a855f7'],
+                            ['Salary Negotiation AI','Know your worth. Our AI analyzes market data and coaches you through negotiations.','#22c55e'],
+                            ['One Profile. Infinite Reach.','Apply across platforms, companies, and countries � with a single unified career profile.','#f97316'],
+                        ] as $w)
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center mt-0.5" style="background:{{ $w[2] }}20">
+                                <div class="w-3 h-3 rounded-full" style="background:{{ $w[2] }}"></div>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-gray-300">Qualified Candidates</span>
-                                <span class="text-3xl font-bold text-emerald-400">156</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-gray-300">Avg. Match Score</span>
-                                <span class="text-3xl font-bold text-pink-400">92%</span>
-                            </div>
-                            <div class="pt-4 border-t border-white/20">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm text-gray-300">Time to Hire</span>
-                                    <span class="text-sm font-semibold text-emerald-400">↓ 60% faster</span>
-                                </div>
-                                <div class="w-full bg-white/20 rounded-full h-2">
-                                    <div class="bg-gradient-to-r from-emerald-400 to-emerald-600 h-2 rounded-full" style="width: 75%"></div>
-                                </div>
+                            <div>
+                                <div class="font-bold text-sm mb-1" style="color:#1a1a2e">{{ $w[0] }}</div>
+                                <div class="text-sm leading-relaxed" style="color:#6b7280">{{ $w[1] }}</div>
                             </div>
                         </div>
+                        @endforeach
                     </div>
+                </div>
+            </div>
+
+            {{-- Right: text --}}
+            <div>
+                <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 text-xs font-semibold uppercase tracking-widest" style="background:#f0f0ff; color:#6366f1; border:1px solid rgba(99,102,241,.2)">Why StudAI Hire</div>
+                <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-6" style="color:#1a1a2e">
+                    Why 50,000+ Professionals Choose StudAI Hire
+                </h2>
+                <div class="space-y-4">
+                    @foreach([
+                        ['Zero Manual Applications','Our AI agent handles everything � fully autonomous.'],
+                        ['Interview-Ready in Hours','AI mock interviews tailored to your exact target role.'],
+                        ['Salary Negotiation AI','Know your worth. Coach yourself through the negotiation.'],
+                        ['One Profile. Infinite Reach.','Apply everywhere with a single unified career profile.'],
+                    ] as $reason)
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:#6366f1">
+                            <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-sm" style="color:#1a1a2e">{{ $reason[0] }}</span>
+                            <span class="text-sm" style="color:#6b7280"> � {{ $reason[1] }}</span>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                <div class="mt-10 flex gap-4">
+                    <a href="{{ route('register') }}" class="btn-brand">Get Started Free</a>
+                    <a href="{{ route('login') }}" class="btn-ghost">Sign In</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Testimonials Section -->
-<section class="py-24 bg-gray-50">
+{{-- =====================================================
+     TESTIMONIALS
+===================================================== --}}
+<section class="py-24" style="background:white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                Trusted by <span class="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Thousands</span>
-            </h2>
-            <p class="text-xl text-gray-600">Real stories from real people who transformed their careers</p>
+        <div class="text-center mb-14">
+            <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-4 text-xs font-semibold uppercase tracking-widest" style="background:#f0f0ff; color:#6366f1; border:1px solid rgba(99,102,241,.2)">Success Stories</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight" style="color:#1a1a2e">Careers Transformed</h2>
+            <p class="mt-4 text-lg" style="color:#6b7280">Real people. Real results. Real careers on autopilot.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white rounded-2xl p-8 shadow-lg">
-                <div class="flex items-center gap-1 mb-4">
-                    @for($i = 0; $i < 5; $i++)
-                        <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            @php
+            $testimonials = [
+                [
+                    'quote' => '"StudAI Hire got me 3 offers in 2 weeks. The autonomous agent is like having a full-time job search assistant. I didn\'t fill a single form myself."',
+                    'name'  => 'Priya Sharma',
+                    'title' => 'Senior Software Engineer at Google',
+                    'init'  => 'PS',
+                    'color' => '#6366f1',
+                    'stars' => 5,
+                ],
+                [
+                    'quote' => '"The interview AI helped me crack my Amazon SDE-2 interview. The behavioral prep was spot-on. It\'s like they knew exactly what Amazon would ask."',
+                    'name'  => 'Rahul Menon',
+                    'title' => 'SDE-2 at Amazon',
+                    'init'  => 'RM',
+                    'color' => '#a855f7',
+                    'stars' => 5,
+                ],
+                [
+                    'quote' => '"As a recruiter, S.C.O.U.T. changed how we hire. Time-to-hire dropped 60%. Quality went up. And our diversity metrics finally moved."',
+                    'name'  => 'Anjali Verma',
+                    'title' => 'Head of Talent at Razorpay',
+                    'init'  => 'AV',
+                    'color' => '#14b8a6',
+                    'stars' => 5,
+                ],
+            ];
+            @endphp
+            @foreach($testimonials as $t)
+            <div class="testi-card p-7 flex flex-col gap-5">
+                {{-- Stars --}}
+                <div class="flex gap-1">
+                    @for($i=0;$i<5;$i++)
+                    <svg class="w-4 h-4" style="color:#f59e0b" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                     @endfor
                 </div>
-                <p class="text-gray-700 mb-6 leading-relaxed">
-                    "StudAI Career found me the perfect role in just 2 weeks. The AI matching was spot-on, and the automated applications saved me countless hours. Best career decision I ever made!"
-                </p>
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-purple-600"></div>
+                <p class="text-sm leading-relaxed flex-1" style="color:#374151">{{ $t['quote'] }}</p>
+                <div class="flex items-center gap-3 pt-4 border-t" style="border-color:var(--border)">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:{{ $t['color'] }}">{{ $t['init'] }}</div>
                     <div>
-                        <div class="font-semibold text-gray-900">Priya Sharma</div>
-                        <div class="text-sm text-gray-500">Senior Software Engineer</div>
+                        <div class="text-sm font-bold" style="color:#1a1a2e">{{ $t['name'] }}</div>
+                        <div class="text-xs" style="color:#9ca3af">{{ $t['title'] }}</div>
                     </div>
                 </div>
             </div>
+            @endforeach
+        </div>
 
-            <div class="bg-white rounded-2xl p-8 shadow-lg">
-                <div class="flex items-center gap-1 mb-4">
-                    @for($i = 0; $i < 5; $i++)
-                        <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                    @endfor
-                </div>
-                <p class="text-gray-700 mb-6 leading-relaxed">
-                    "As an employer, this platform revolutionized our hiring process. We've reduced time-to-hire by 65% and the quality of candidates has never been better. The AI really works!"
-                </p>
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600"></div>
-                    <div>
-                        <div class="font-semibold text-gray-900">Rahul Mehta</div>
-                        <div class="text-sm text-gray-500">HR Director, TechVentures</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl p-8 shadow-lg">
-                <div class="flex items-center gap-1 mb-4">
-                    @for($i = 0; $i < 5; $i++)
-                        <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                    @endfor
-                </div>
-                <p class="text-gray-700 mb-6 leading-relaxed">
-                    "The career trajectory feature helped me plan my next 5 years. I got a 40% salary increase by following the AI's recommendations for skill development. Absolutely worth it!"
-                </p>
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600"></div>
-                    <div>
-                        <div class="font-semibold text-gray-900">Anjali Reddy</div>
-                        <div class="text-sm text-gray-500">Product Manager</div>
-                    </div>
-                </div>
+        {{-- Company logos --}}
+        <div class="mt-14">
+            <p class="text-center text-xs font-semibold uppercase tracking-widest mb-8" style="color:#9ca3af">Our users work at top companies</p>
+            <div class="flex flex-wrap items-center justify-center gap-8">
+                @foreach(['Google','Amazon','Microsoft','Razorpay','Flipkart','Swiggy','Zerodha','Meesho'] as $co)
+                <div class="px-5 py-2.5 rounded-xl text-sm font-bold" style="background:#f7f7fc; border:1px solid var(--border); color:#6b7280">{{ $co }}</div>
+                @endforeach
             </div>
         </div>
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="py-24 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 text-white relative overflow-hidden">
-    <div class="absolute inset-0 opacity-20">
-        <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-blob"></div>
-        <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-blob animation-delay-2000"></div>
+{{-- =====================================================
+     FAQ
+===================================================== --}}
+<section class="py-24 dot-grid" style="background:#f7f7fc">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-14">
+            <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-4 text-xs font-semibold uppercase tracking-widest" style="background:#f0f0ff; color:#6366f1; border:1px solid rgba(99,102,241,.2)">FAQ</div>
+            <h2 class="text-4xl font-extrabold tracking-tight" style="color:#1a1a2e">Questions? Answered.</h2>
+        </div>
+
+        <div class="space-y-3">
+            @php $faqs = [
+                ['What is an Autonomous Career OS?', 'StudAI Hire is a unified system that manages your entire career lifecycle � from job discovery to salary negotiation � using AI agents that work 24/7 on your behalf. Think of it as having a dedicated career team that never sleeps.'],
+                ['Is the autonomous job application really automatic?', 'Yes. Once you set your preferences (role, location, salary), our AI agent scans thousands of job boards, filters by your criteria, tailors your resume, and submits applications � all without any input from you. You only step in to confirm interviews.'],
+                ['How is this different from LinkedIn or Naukri?', 'LinkedIn and Naukri are job boards � you browse, you apply. StudAI Hire is an operating system. It applies for you, coaches you for interviews, analyzes salary data, and tracks your entire pipeline � all powered by AI agents running in the background.'],
+                ['What is S.C.O.U.T.?', 'S.C.O.U.T. (Smart Candidate Optimization & Unified Tracking) is our enterprise AI hiring tool for employers. It shortlists candidates based on skills and culture fit, eliminates bias, and reduces time-to-hire by up to 60%.'],
+                ['Is there a free plan?', 'Absolutely. You can start completely free � no credit card required. Free users get access to job search, resume analysis, and limited AI applications. Upgrade anytime to unlock unlimited autonomous applications and all premium features.'],
+            ]; @endphp
+
+            @foreach($faqs as $faq)
+            <details class="group rounded-2xl overflow-hidden" style="background:white; border:1px solid var(--border)">
+                <summary class="flex items-center justify-between px-6 py-5 cursor-pointer">
+                    <span class="font-semibold text-sm pr-4" style="color:#1a1a2e">{{ $faq[0] }}</span>
+                    <div class="faq-chevron flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background:#f0f0ff">
+                        <svg class="w-4 h-4" style="color:#6366f1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                </summary>
+                <div class="px-6 pb-5 text-sm leading-relaxed" style="color:#6b7280">{{ $faq[1] }}</div>
+            </details>
+            @endforeach
+        </div>
     </div>
+</section>
+
+{{-- =====================================================
+     CTA
+===================================================== --}}
+<section class="py-24 cta-section relative overflow-hidden">
+    {{-- Decorative orbs --}}
+    <div class="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
 
     <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-4xl md:text-5xl font-bold mb-6">
-            Ready to Transform Your Career?
+        <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
+            Ready to put your career on autopilot?
         </h2>
-        <p class="text-xl mb-10 text-gray-100">
-            Join thousands of professionals who've already accelerated their careers with AI-powered job matching and career guidance.
+        <p class="text-xl text-indigo-200 mb-10 max-w-xl mx-auto">
+            Join 50,000+ professionals who let AI manage their job search. Start free � no credit card required.
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            @guest
-                <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold bg-white text-purple-600 rounded-xl shadow-2xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
-                    <span>Start Free Trial</span>
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                    </svg>
-                </a>
-                <a href="{{ route('contact') }}" class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold bg-white/10 backdrop-blur-md border-2 border-white rounded-xl hover:bg-white/20 transition-all duration-300">
-                    Talk to Sales
-                </a>
-            @else
-                <a href="{{ route('dashboard') }}" class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold bg-white text-purple-600 rounded-xl shadow-2xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
-                    <span>Go to Dashboard</span>
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                    </svg>
-                </a>
-            @endguest
+        <div class="flex flex-wrap items-center justify-center gap-4">
+            <a href="{{ route('register') }}"
+                class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-base bg-white transition-all hover:-translate-y-1 hover:shadow-2xl active:scale-98"
+                style="color:#6366f1; box-shadow:0 4px 20px rgba(0,0,0,.2)">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                Start Free � No Credit Card
+            </a>
+            <a href="{{ route('login') }}"
+                class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-base text-white border-2 border-white/30 transition-all hover:border-white/60 hover:-translate-y-1">
+                View Pricing
+            </a>
         </div>
-        <p class="mt-6 text-sm text-gray-200">
-            No credit card required • Free 14-day trial • Cancel anytime
-        </p>
     </div>
 </section>
 
-{{-- 
-<style>
-@keyframes blob {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    25% { transform: translate(20px, -50px) scale(1.1); }
-    50% { transform: translate(-20px, 20px) scale(0.9); }
-    75% { transform: translate(50px, 50px) scale(1.05); }
-}
-
-.animate-blob {
-    animation: blob 7s infinite;
-}
-
-.animation-delay-2000 {
-    animation-delay: 2s;
-}
-
-.animation-delay-4000 {
-    animation-delay: 4s;
-}
-</style> 
---}}
 @endsection

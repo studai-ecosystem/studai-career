@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
-@section('title', 'Write a Review for ' . $company->name . ' | StudAI Career')
+@section('title', 'Write a Review for ' . $company->name . ' | StudAI Hire')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">

@@ -51,13 +51,19 @@ class CareerCoachController extends Controller
         // Get preferences
         $preferences = CareerCoachPreference::getOrCreate($user);
 
-        // Stats
-        $stats = [
-            'total_sessions' => CareerCoachSession::where('user_id', $user->id)->count(),
-            'active_goals' => $goals->count(),
-            'completed_goals' => CareerGoal::where('user_id', $user->id)->completed()->count(),
-            'checkins_completed' => CareerCoachCheckin::where('user_id', $user->id)->completed()->count(),
-        ];
+        // Stats — cached for 5 minutes, keyed per user
+        $stats = \Illuminate\Support\Facades\Cache::remember(
+            "career_coach_stats_{$user->id}",
+            300,
+            function () use ($user, $goals): array {
+                return [
+                    'total_sessions'      => CareerCoachSession::where('user_id', $user->id)->count(),
+                    'active_goals'        => $goals->count(),
+                    'completed_goals'     => CareerGoal::where('user_id', $user->id)->completed()->count(),
+                    'checkins_completed'  => CareerCoachCheckin::where('user_id', $user->id)->completed()->count(),
+                ];
+            }
+        );
 
         return view('career-coach.index', compact(
             'sessions',
@@ -95,7 +101,7 @@ class CareerCoachController extends Controller
                 'type' => $session->session_type,
                 'type_label' => $session->getTypeLabel(),
             ],
-            'redirect' => route('career-coach.session', $session),
+            'redirect' => route('career-coach.session.show', $session),
         ]);
     }
 
@@ -104,7 +110,7 @@ class CareerCoachController extends Controller
      */
     public function session(CareerCoachSession $session): View
     {
-        $this->authorize('view', $session);
+        abort_if($session->user_id !== auth()->id(), 403);
 
         $messages = $session->messages()
             ->whereIn('role', ['user', 'assistant'])
@@ -121,7 +127,7 @@ class CareerCoachController extends Controller
      */
     public function sendMessage(Request $request, CareerCoachSession $session): JsonResponse
     {
-        $this->authorize('update', $session);
+        abort_if($session->user_id !== auth()->id(), 403);
 
         $request->validate([
             'message' => 'required|string|max:5000',
@@ -136,6 +142,8 @@ class CareerCoachController extends Controller
             $request->input('message'),
             $request->boolean('is_voice')
         );
+
+        $user->deductAICredits(1, 'career_coach', 'Career Coach AI response');
 
         return response()->json([
             'success' => true,
@@ -154,7 +162,7 @@ class CareerCoachController extends Controller
      */
     public function endSession(CareerCoachSession $session): JsonResponse
     {
-        $this->authorize('update', $session);
+        abort_if($session->user_id !== auth()->id(), 403);
 
         $user = auth()->user();
         $this->coachService->forUser($user);
@@ -254,7 +262,7 @@ class CareerCoachController extends Controller
      */
     public function updateGoal(Request $request, CareerGoal $goal): JsonResponse
     {
-        $this->authorize('update', $goal);
+        abort_if($goal->user_id !== auth()->id(), 403);
 
         $request->validate([
             'title' => 'sometimes|string|max:255',
@@ -275,7 +283,7 @@ class CareerCoachController extends Controller
 
         return response()->json([
             'success' => true,
-            'goal' => $goal->fresh(),
+            'goal' => $goal,
         ]);
     }
 
@@ -284,7 +292,7 @@ class CareerCoachController extends Controller
      */
     public function updateProgress(Request $request, CareerGoal $goal): JsonResponse
     {
-        $this->authorize('update', $goal);
+        abort_if($goal->user_id !== auth()->id(), 403);
 
         $request->validate([
             'progress' => 'required|integer|min:0|max:100',
@@ -298,7 +306,7 @@ class CareerCoachController extends Controller
 
         return response()->json([
             'success' => true,
-            'goal' => $goal->fresh(),
+            'goal' => $goal,
         ]);
     }
 
@@ -307,7 +315,7 @@ class CareerCoachController extends Controller
      */
     public function deleteGoal(CareerGoal $goal): JsonResponse
     {
-        $this->authorize('delete', $goal);
+        abort_if($goal->user_id !== auth()->id(), 403);
 
         $goal->delete();
 
@@ -381,7 +389,7 @@ class CareerCoachController extends Controller
      */
     public function dismissSuggestion(CareerCoachSuggestion $suggestion): JsonResponse
     {
-        $this->authorize('update', $suggestion);
+        abort_if($suggestion->user_id !== auth()->id(), 403);
 
         $suggestion->dismiss();
 
@@ -393,7 +401,7 @@ class CareerCoachController extends Controller
      */
     public function actOnSuggestion(CareerCoachSuggestion $suggestion): JsonResponse
     {
-        $this->authorize('update', $suggestion);
+        abort_if($suggestion->user_id !== auth()->id(), 403);
 
         $suggestion->markActedUpon();
 
@@ -405,7 +413,7 @@ class CareerCoachController extends Controller
      */
     public function startCheckin(CareerCoachCheckin $checkin): JsonResponse
     {
-        $this->authorize('update', $checkin);
+        abort_if($checkin->user_id !== auth()->id(), 403);
 
         $user = auth()->user();
         $this->coachService->forUser($user);
@@ -414,7 +422,7 @@ class CareerCoachController extends Controller
 
         return response()->json([
             'success' => true,
-            'redirect' => route('career-coach.session', $session),
+            'redirect' => route('career-coach.session.show', $session),
         ]);
     }
 
@@ -423,7 +431,7 @@ class CareerCoachController extends Controller
      */
     public function skipCheckin(Request $request, CareerCoachCheckin $checkin): JsonResponse
     {
-        $this->authorize('update', $checkin);
+        abort_if($checkin->user_id !== auth()->id(), 403);
 
         $checkin->markSkipped($request->input('reason'));
 
@@ -523,5 +531,14 @@ class CareerCoachController extends Controller
             'success' => true,
             'result' => $result,
         ]);
+    }
+
+    /**
+     * Get active AI suggestions for the user.
+     */
+    public function suggestions(): \Illuminate\Http\JsonResponse
+    {
+        $suggestions = $this->coachService->getActiveSuggestions();
+        return response()->json(['suggestions' => $suggestions]);
     }
 }

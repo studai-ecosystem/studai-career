@@ -14,7 +14,7 @@ return [
 
     // Two-Factor Authentication
     'two_factor_enabled' => env('TWO_FACTOR_ENABLED', true),
-    'two_factor_issuer' => env('APP_NAME', 'StudAI Career'),
+    'two_factor_issuer' => env('APP_NAME', 'StudAI Hire'),
 
     // Password Security
     'password' => [

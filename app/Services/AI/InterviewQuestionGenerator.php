@@ -12,7 +12,12 @@ use OpenAI\Laravel\Facades\OpenAI;
 
 class InterviewQuestionGenerator
 {
-    protected string $model = 'gpt-5.1'; // Azure OpenAI GPT-5.1
+    protected string $model;
+
+    public function __construct()
+    {
+        $this->model = config('ai.azure.models.chat', 'gpt-4o');
+    }
 
     /**
      * Generate questions for a specific company and role
@@ -37,7 +42,7 @@ class InterviewQuestionGenerator
                         ['role' => 'user', 'content' => $prompt],
                     ],
                     'temperature' => 0.7,
-                    'max_tokens' => 3000,
+                    'max_completion_tokens' => 3000,
                 ]);
 
                 $processingTime = (microtime(true) - $startTime) * 1000;
@@ -108,7 +113,7 @@ EOT;
                         ['role' => 'user', 'content' => $prompt],
                     ],
                     'temperature' => 0.7,
-                    'max_tokens' => 2000,
+                    'max_completion_tokens' => 2000,
                 ]);
 
                 return json_decode($response->choices[0]->message->content, true) ?? [];
@@ -161,7 +166,7 @@ EOT;
                         ['role' => 'user', 'content' => $prompt],
                     ],
                     'temperature' => 0.8,
-                    'max_tokens' => 3000,
+                    'max_completion_tokens' => 3000,
                 ]);
 
                 return json_decode($response->choices[0]->message->content, true) ?? [];
@@ -216,13 +221,13 @@ Return ONLY a JSON array of follow-up question strings.
 EOT;
 
             $response = OpenAI::chat()->create([
-                'model' => 'gpt-5-mini', // Use faster model for follow-ups
+                'model' => config('ai.azure.models.chat_mini'), // Use faster model for follow-ups
                 'messages' => [
                     ['role' => 'system', 'content' => 'You are an experienced interviewer who asks insightful follow-up questions.'],
                     ['role' => 'user', 'content' => $prompt],
                 ],
                 'temperature' => 0.7,
-                'max_tokens' => 300,
+                'max_completion_tokens' => 300,
             ]);
 
             return json_decode($response->choices[0]->message->content, true) ?? [];

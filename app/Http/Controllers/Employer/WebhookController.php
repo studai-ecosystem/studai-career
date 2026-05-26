@@ -11,7 +11,7 @@ class WebhookController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:employer');
+        $this->middleware(['auth', 'employer']);
     }
     
     /**
@@ -19,7 +19,7 @@ class WebhookController extends Controller
      */
     public function index()
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         $webhooks = Webhook::where('company_id', $company->id)
             ->withCount(['deliveries', 'deliveries as successful_deliveries' => function ($q) {
@@ -47,7 +47,7 @@ class WebhookController extends Controller
             'timeout_seconds' => 'nullable|integer|min:5|max:60',
         ]);
         
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         // Generate webhook secret
         $secret = Str::random(32);
@@ -75,7 +75,7 @@ class WebhookController extends Controller
      */
     public function update(Request $request, Webhook $webhook)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         if ($webhook->company_id !== $company->id) {
             abort(403);
@@ -105,7 +105,7 @@ class WebhookController extends Controller
      */
     public function destroy(Webhook $webhook)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         if ($webhook->company_id !== $company->id) {
             abort(403);
@@ -124,7 +124,7 @@ class WebhookController extends Controller
      */
     public function deliveries(Webhook $webhook)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         if ($webhook->company_id !== $company->id) {
             abort(403);
@@ -142,7 +142,7 @@ class WebhookController extends Controller
      */
     public function test(Request $request, Webhook $webhook)
     {
-        $company = auth('employer')->user()->company;
+        $company = auth()->user()->company;
         
         if ($webhook->company_id !== $company->id) {
             abort(403);

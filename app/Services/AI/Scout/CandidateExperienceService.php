@@ -22,7 +22,7 @@ class CandidateExperienceService
     /**
      * OpenAI model for feedback generation
      */
-    protected string $model = 'gpt-5-mini';
+    protected string $model = 'gpt-5.4'; // Azure OpenAI deployment
 
     /**
      * Record candidate interaction
@@ -194,7 +194,7 @@ class CandidateExperienceService
                         ],
                     ],
                     'temperature' => 0.7,
-                    'max_tokens' => 300,
+                    'max_completion_tokens' => 300,
                 ]);
 
                 return $response->choices[0]->message->content;

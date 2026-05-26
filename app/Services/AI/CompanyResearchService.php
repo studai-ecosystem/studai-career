@@ -313,13 +313,13 @@ class CompanyResearchService
             $insights = $this->ai(
                 $prompt,
                 'You are an expert interview coach with deep knowledge of company cultures and hiring practices.',
-                ['temperature' => 0.7, 'model' => 'gpt-5-mini']
+                ['temperature' => 0.7, 'model' => config('ai.azure.models.chat_mini')]
             );
 
             return [
                 'summary' => $insights,
                 'generated_at' => now()->toIso8601String(),
-                'model' => 'gpt-5-mini',
+                'model' => config('ai.azure.models.chat_mini'),
             ];
 
         } catch (\Exception $e) {
@@ -458,7 +458,7 @@ class CompanyResearchService
             $content = $this->ai(
                 $prompt,
                 null,
-                ['temperature' => 0.3, 'model' => 'gpt-5-mini']
+                ['temperature' => 0.3, 'model' => config('ai.azure.models.chat_mini')]
             );
 
             // Parse JSON response
@@ -504,7 +504,7 @@ class CompanyResearchService
             $aiResponse = $this->ai(
                 $prompt,
                 null,
-                ['temperature' => 0.5, 'model' => 'gpt-5-mini']
+                ['temperature' => 0.5, 'model' => config('ai.azure.models.chat_mini')]
             );
 
             // Parse response

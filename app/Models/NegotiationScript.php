@@ -33,6 +33,8 @@ class NegotiationScript extends Model
         'reciprocity_elements',
         'includes_deadline',
         'includes_alternatives',
+        'formality_level',
+        'includes_data',
         'effectiveness_rating',
         'was_used',
         'used_at',

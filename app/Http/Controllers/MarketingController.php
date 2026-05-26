@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Cache;
 class MarketingController extends Controller
 {
     /**
-     * StudAI Path - India's First Autonomous Career OS
-     * All marketing pages updated with StudAI Path branding
+     * StudAI Hire - India's First Autonomous Career OS
+     * All marketing pages updated with StudAI Hire branding
      */
     
     public function home()
@@ -58,12 +58,12 @@ class MarketingController extends Controller
 
     public function privacy()
     {
-        return view('pages.privacy-studai-path');
+        return view('pages.privacy');
     }
 
     public function terms()
     {
-        return view('pages.terms-studai-path');
+        return view('pages.terms');
     }
 
     public function blog()
@@ -74,6 +74,16 @@ class MarketingController extends Controller
     public function refundPolicy()
     {
         return view('pages.refund-policy-studai-path');
+    }
+
+    public function cookiePolicy()
+    {
+        return view('pages.cookie-policy');
+    }
+
+    public function security()
+    {
+        return view('pages.security');
     }
 
     public function forEmployers()

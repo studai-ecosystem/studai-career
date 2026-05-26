@@ -1,11 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'Blog & Resources - StudAI Career | Career Insights, Industry Trends & Guides')
+@section('title', 'Blog & Resources - StudAI Hire | Career Insights, Industry Trends & Guides')
 
 @section('meta')
-<meta name="description" content="Discover career insights, industry trends, and comprehensive guides on AI-powered job search, hiring best practices, and professional development from StudAI Career experts.">
+<meta name="description" content="Discover career insights, industry trends, and comprehensive guides on AI-powered job search, hiring best practices, and professional development from StudAI Hire experts.">
 <meta name="keywords" content="career blog, job search tips, hiring trends, AI recruitment, career development, professional growth, industry insights">
-<meta property="og:title" content="Blog & Resources - StudAI Career">
+<meta property="og:title" content="Blog & Resources - StudAI Hire">
 <meta property="og:description" content="Expert insights on careers, AI recruitment, and professional development. Stay ahead with the latest trends and actionable advice.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ route('blog') }}">
@@ -339,12 +339,12 @@
 {!! json_encode([
     '@context' => 'https://schema.org',
     '@type' => 'Blog',
-    'name' => 'StudAI Career Blog',
+    'name' => 'StudAI Hire Blog',
     'description' => 'Career insights, industry trends, and expert guidance for professional growth',
     'url' => route('blog'),
     'publisher' => [
         '@type' => 'Organization',
-        'name' => 'StudAI Career',
+        'name' => 'StudAI Hire',
         'url' => url('/'),
         'logo' => asset('images/logo-dark.svg')
     ],

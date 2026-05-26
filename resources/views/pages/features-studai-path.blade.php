@@ -1,40 +1,53 @@
 {{--
-    StudAI Path — Features Page
+    StudAI Hire — Features Page
     Complete product modules showcase
 --}}
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'Features | StudAI Path — The Autonomous Career OS')
+@section('title', 'Features | StudAI Hire — The Autonomous Career OS')
 
 @section('meta')
-<meta name="description" content="Explore all features: Autonomous Agent, Resume AI, Interview Coach, Market Intelligence, Career Coach. Everything you need to automate your job search.">
-<meta property="og:title" content="Features — StudAI Path">
+<meta name="description" content="Explore all features: Autonomous Agent, Resume AI, Interview Coach, Career Coach. Everything you need to automate your job search.">
+<meta property="og:title" content="Features — StudAI Hire">
 <meta property="og:description" content="6 powerful AI modules. One platform. Zero manual work.">
 <link rel="canonical" href="{{ route('features') }}">
 @endsection
 
+@push('styles')
+<style>
+@keyframes orb1 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-20px) scale(1.05)} 66%{transform:translate(-20px,15px) scale(.97)} }
+@keyframes orb2 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-25px,20px) scale(1.04)} 66%{transform:translate(20px,-15px) scale(.98)} }
+@keyframes orb3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(15px,25px) scale(1.06)} }
+@keyframes orb4 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-20px,-10px) scale(1.08)} }
+</style>
+@endpush
+
 @section('content')
 {{-- Hero Section --}}
-<section class="relative overflow-hidden bg-gradient-to-br from-ink-primary via-slate-900 to-ink-primary text-white">
-    <div class="absolute inset-0 opacity-20">
-        <div class="absolute -top-40 -left-12 h-96 w-96 rounded-full bg-google-blue-500/30 blur-3xl"></div>
-        <div class="absolute top-20 right-0 h-[28rem] w-[28rem] rounded-full bg-purple-500/20 blur-3xl"></div>
+<section class="relative overflow-hidden" style="background:linear-gradient(135deg,#eef1ff 0%,#f5f0ff 30%,#eefff7 65%,#fff8ee 100%);">
+    {{-- Animated background orbs --}}
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute" style="width:600px;height:600px;top:-150px;right:-100px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.25),transparent 70%);filter:blur(70px);animation:orb2 12s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:500px;height:500px;bottom:-100px;left:-80px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.2),transparent 70%);filter:blur(60px);animation:orb1 14s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:350px;height:350px;top:30%;left:40%;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.15),transparent 70%);filter:blur(50px);animation:orb3 16s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:250px;height:250px;top:10%;left:20%;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.18),transparent 70%);filter:blur(45px);animation:orb4 11s ease-in-out infinite;"></div>
+        <div class="absolute inset-0" style="background-image:radial-gradient(circle,rgba(99,102,241,.15) 1px,transparent 1px);background-size:36px 36px;"></div>
     </div>
     <div class="relative mx-auto max-w-7xl px-6 py-24 lg:py-32 text-center">
-        <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2 text-sm font-semibold uppercase tracking-widest mb-6">
+        <span class="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-widest mb-6" style="background:rgba(99,102,241,.12);color:#6366f1;border:1px solid rgba(99,102,241,.25);backdrop-filter:blur(8px);">
             The Full Stack
         </span>
-        <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl max-w-4xl mx-auto">
-            6 AI Modules. One Career OS. Zero Manual Work.
+        <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl max-w-4xl mx-auto" style="color:#1a1a2e;line-height:1.15;">
+            6 AI Modules. One Career OS. <span style="background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Zero Manual Work.</span>
         </h1>
-        <p class="mt-6 text-lg text-slate-200 max-w-2xl mx-auto">
+        <p class="mt-6 text-lg max-w-2xl mx-auto" style="color:#4b5563;">
             Every tool you need to find, apply, prepare, negotiate, and land your dream job — all running on autopilot.
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
-            <a href="{{ route('register') }}" class="studai-btn bg-white text-google-blue-600 hover:bg-gray-100 studai-btn-xl">
+            <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#7c3aed);box-shadow:0 4px 18px rgba(99,102,241,.4);">
                 Start Free Today
             </a>
-            <a href="#modules" class="studai-btn border-2 border-white text-white hover:bg-white/10 studai-btn-xl">
+            <a href="#modules" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,.8);color:#6366f1;border:1.5px solid rgba(99,102,241,.25);backdrop-filter:blur(8px);">
                 Explore Modules
             </a>
         </div>
@@ -261,74 +274,6 @@
             </div>
         </div>
 
-        {{-- Module 4: Market Intelligence --}}
-        <div class="mb-16 rounded-3xl border border-surface-200 bg-surface-50 overflow-hidden">
-            <div class="grid lg:grid-cols-2 gap-0">
-                <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-10 lg:p-12 flex items-center justify-center order-2 lg:order-1">
-                    <div class="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full">
-                        <div class="mb-4">
-                            <span class="font-semibold text-ink-primary">Senior Product Manager</span>
-                            <span class="text-xs text-ink-muted block">Bangalore • Tech Industry</span>
-                        </div>
-                        <div class="space-y-4">
-                            <div>
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="text-ink-secondary">Market Salary Range</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-lg font-bold text-ink-primary">₹35L</span>
-                                    <span class="text-ink-muted">—</span>
-                                    <span class="text-lg font-bold text-ink-primary">₹60L</span>
-                                </div>
-                                <span class="text-xs text-google-green-600 font-medium">You're at 75th percentile</span>
-                            </div>
-                            <div class="pt-4 border-t border-surface-200">
-                                <div class="text-xs text-ink-muted mb-2">In-demand skills</div>
-                                <div class="flex flex-wrap gap-2">
-                                    <span class="px-2 py-1 bg-google-blue-50 text-google-blue-700 text-xs rounded-full">AI/ML</span>
-                                    <span class="px-2 py-1 bg-google-blue-50 text-google-blue-700 text-xs rounded-full">Data Analytics</span>
-                                    <span class="px-2 py-1 bg-google-blue-50 text-google-blue-700 text-xs rounded-full">Strategy</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-10 lg:p-12 order-1 lg:order-2">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 text-white mb-6">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-ink-primary mb-4">Market Intelligence</h3>
-                    <p class="text-lg text-ink-secondary mb-6">
-                        Know your worth. Get real-time salary data, skill trends, and industry insights to negotiate like a pro.
-                    </p>
-                    <ul class="space-y-3 mb-8">
-                        @foreach ([
-                            'Real-time salary benchmarks by role/city',
-                            'Skill demand trends & forecasts',
-                            'Company-level compensation insights',
-                            'Negotiation scripts backed by data',
-                            'Industry hiring trend reports',
-                        ] as $feature)
-                            <li class="flex items-start gap-3 text-ink-secondary">
-                                <svg class="w-5 h-5 text-google-green-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>{{ $feature }}</span>
-                            </li>
-                        @endforeach
-                    </ul>
-                    <a href="{{ route('market.overview') }}" class="inline-flex items-center gap-2 studai-btn studai-btn-primary">
-                        Explore Insights
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-
         {{-- Module 5 & 6 Grid --}}
         <div class="grid md:grid-cols-2 gap-8">
             {{-- Career Coach --}}
@@ -477,7 +422,7 @@
 <section class="py-20 bg-white">
     <div class="mx-auto max-w-5xl px-6">
         <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-ink-primary sm:text-4xl">Why StudAI Path?</h2>
+            <h2 class="text-3xl font-bold text-ink-primary sm:text-4xl">Why StudAI Hire?</h2>
             <p class="mt-4 text-lg text-ink-secondary">See how we stack up against traditional job boards.</p>
         </div>
         <div class="overflow-x-auto">
@@ -486,7 +431,7 @@
                     <tr class="border-b-2 border-surface-200">
                         <th class="text-left py-4 px-4 text-ink-secondary font-medium">Feature</th>
                         <th class="text-center py-4 px-4">
-                            <span class="text-google-blue-600 font-bold">StudAI Path</span>
+                            <span class="text-google-blue-600 font-bold">StudAI Hire</span>
                         </th>
                         <th class="text-center py-4 px-4 text-ink-muted">Traditional Job Boards</th>
                     </tr>
@@ -534,19 +479,25 @@
 </section>
 
 {{-- CTA Section --}}
-<section class="py-24 bg-gradient-to-br from-google-blue-600 to-purple-600">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6">
-            Ready to put your career on autopilot?
+<section class="py-24 relative overflow-hidden" style="background:linear-gradient(135deg,#eef1ff 0%,#fdf4ff 40%,#eefff7 100%);">
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute" style="width:500px;height:500px;top:-80px;right:-60px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.2),transparent 70%);filter:blur(60px);"></div>
+        <div class="absolute" style="width:400px;height:400px;bottom:-60px;left:-50px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.18),transparent 70%);filter:blur(55px);"></div>
+        <div class="absolute inset-0" style="background-image:radial-gradient(circle,rgba(99,102,241,.12) 1px,transparent 1px);background-size:40px 40px;"></div>
+    </div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+        <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold mb-6" style="background:rgba(99,102,241,.1);color:#6366f1;border:1px solid rgba(99,102,241,.2);">Join 50,000+ professionals</div>
+        <h2 class="text-3xl sm:text-4xl font-bold mb-6" style="color:#1a1a2e;">
+            Ready to put your career on <span style="background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">autopilot?</span>
         </h2>
-        <p class="text-lg text-white/80 mb-8">
+        <p class="text-lg mb-8" style="color:#4b5563;">
             Join 50,000+ professionals who let AI manage their job search.
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="{{ route('register') }}" class="studai-btn bg-white text-google-blue-600 hover:bg-gray-100 studai-btn-xl">
+            <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#7c3aed);box-shadow:0 4px 18px rgba(99,102,241,.4);">
                 Start Free Today
             </a>
-            <a href="{{ route('contact') }}" class="studai-btn border-2 border-white text-white hover:bg-white/10 studai-btn-xl">
+            <a href="{{ route('contact') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,.85);color:#6366f1;border:1.5px solid rgba(99,102,241,.25);">
                 Talk to Sales
             </a>
         </div>

@@ -35,7 +35,11 @@
                     </a>
                     <a href="{{ route('dashboard.applications', ['status' => 'shortlisted']) }}"
                        class="px-3.5 py-1.5 rounded-lg font-medium text-sm transition-colors {{ $status === 'shortlisted' ? 'bg-google-green-600 text-white' : 'bg-surface-100 text-ink-secondary hover:bg-surface-200' }}">
-                        Shortlisted ({{ $statusCounts['shortlisted'] }})
+                        ⭐ Shortlisted ({{ $statusCounts['shortlisted'] }})
+                    </a>
+                    <a href="{{ route('dashboard.applications', ['status' => 'hired']) }}"
+                       class="px-3.5 py-1.5 rounded-lg font-medium text-sm transition-colors {{ $status === 'hired' ? 'bg-yellow-500 text-white' : 'bg-surface-100 text-ink-secondary hover:bg-surface-200' }}">
+                        🎉 Hired ({{ $statusCounts['hired'] }})
                     </a>
                     <a href="{{ route('dashboard.applications', ['status' => 'rejected']) }}"
                        class="px-3.5 py-1.5 rounded-lg font-medium text-sm transition-colors {{ $status === 'rejected' ? 'bg-google-red-600 text-white' : 'bg-surface-100 text-ink-secondary hover:bg-surface-200' }}">
@@ -156,13 +160,24 @@
                                             Under Review
                                         </span>
                                     @elseif($application->status === 'shortlisted')
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-google-green-50 text-google-green-700">
-                                            Shortlisted
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-google-green-50 text-google-green-700 ring-1 ring-google-green-200">
+                                            ⭐ Shortlisted
+                                        </span>
+                                    @elseif($application->status === 'hired')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-50 text-yellow-700 ring-1 ring-yellow-300">
+                                            🎉 Hired!
                                         </span>
                                     @elseif($application->status === 'rejected')
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-google-red-50 text-google-red-700">
-                                            Rejected
-                                        </span>
+                                        <div>
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-google-red-50 text-google-red-700">
+                                                ✕ Not Selected
+                                            </span>
+                                            @if($application->rejection_reason)
+                                                <p class="text-xs text-ink-tertiary mt-1 max-w-xs leading-snug">
+                                                    {{ Str::limit($application->rejection_reason, 80) }}
+                                                </p>
+                                            @endif
+                                        </div>
                                     @else
                                         <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-surface-100 text-ink-secondary">
                                             {{ ucfirst($application->status) }}

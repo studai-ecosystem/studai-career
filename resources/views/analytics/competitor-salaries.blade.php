@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Competitor Salary Comparison')
 
@@ -7,8 +7,8 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-            <a href="{{ route('analytics.dashboard') }}" class="text-orange-600 hover:text-orange-800 text-sm mb-2 inline-block">← Back to Analytics</a>
-            <h1 class="text-3xl font-bold text-gray-900">🏢 Competitor Salary Comparison</h1>
+            <a href="{{ route('analytics.dashboard') }}" class="text-orange-600 hover:text-orange-800 text-sm mb-2 inline-block">â† Back to Analytics</a>
+            <h1 class="text-3xl font-bold text-gray-900">¢ Competitor Salary Comparison</h1>
             <p class="text-gray-600">Benchmark your compensation against market competitors</p>
         </div>
 
@@ -79,7 +79,7 @@
 
         <!-- Competitor Comparison Chart -->
         <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-orange-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-6">📊 Competitor Salary Ranges</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6">�Š Competitor Salary Ranges</h2>
             <div class="h-96">
                 <canvas id="competitor-chart"></canvas>
             </div>
@@ -87,7 +87,7 @@
 
         <!-- Detailed Competitor Table -->
         <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-orange-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-6">🏢 Detailed Comparison</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6">¢ Detailed Comparison</h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
@@ -113,13 +113,13 @@
         <!-- Compensation Breakdown -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-xl font-bold text-gray-900 mb-4">💰 Compensation Mix</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-4">�° Compensation Mix</h2>
                 <div class="h-64">
                     <canvas id="comp-mix-chart"></canvas>
                 </div>
             </div>
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-xl font-bold text-gray-900 mb-4">📈 Market Trends</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-4">�ˆ Market Trends</h2>
                 <div class="h-64">
                     <canvas id="trend-chart"></canvas>
                 </div>
@@ -128,20 +128,20 @@
 
         <!-- Insights -->
         <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-orange-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">💡 Market Insights</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">�¡ Market Insights</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="p-4 bg-blue-50 rounded-xl">
-                    <div class="text-2xl mb-2">📊</div>
+                    <div class="text-2xl mb-2">�Š</div>
                     <div class="font-medium text-blue-800">Salary Growth</div>
                     <div class="text-sm text-blue-600" id="insight-growth">+8.5% YoY average increase</div>
                 </div>
                 <div class="p-4 bg-green-50 rounded-xl">
-                    <div class="text-2xl mb-2">🎯</div>
+                    <div class="text-2xl mb-2">¯</div>
                     <div class="font-medium text-green-800">Hot Skills Premium</div>
                     <div class="text-sm text-green-600" id="insight-skills">AI/ML skills command +25% premium</div>
                 </div>
                 <div class="p-4 bg-purple-50 rounded-xl">
-                    <div class="text-2xl mb-2">🏠</div>
+                    <div class="text-2xl mb-2"> </div>
                     <div class="font-medium text-purple-800">Remote Adjustment</div>
                     <div class="text-sm text-purple-600" id="insight-remote">Remote roles average -10% vs on-site</div>
                 </div>
@@ -150,31 +150,31 @@
 
         <!-- Negotiation Tips -->
         <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-lg p-8 text-white">
-            <h2 class="text-xl font-bold mb-6">🎯 Negotiation Leverage Points</h2>
+            <h2 class="text-xl font-bold mb-6">¯ Negotiation Leverage Points</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="negotiation-tips">
                 <div class="flex items-start gap-3">
-                    <span class="text-2xl">1️⃣</span>
+                    <span class="text-2xl">1ï¸âƒ£</span>
                     <div>
                         <div class="font-medium">Market Rate Justification</div>
                         <div class="text-sm text-gray-300">Your skills are in the 75th percentile for this market</div>
                     </div>
                 </div>
                 <div class="flex items-start gap-3">
-                    <span class="text-2xl">2️⃣</span>
+                    <span class="text-2xl">2ï¸âƒ£</span>
                     <div>
                         <div class="font-medium">Competitor Reference</div>
                         <div class="text-sm text-gray-300">3 competitors pay 15% above market average</div>
                     </div>
                 </div>
                 <div class="flex items-start gap-3">
-                    <span class="text-2xl">3️⃣</span>
+                    <span class="text-2xl">3ï¸âƒ£</span>
                     <div>
                         <div class="font-medium">Skill Premium</div>
                         <div class="text-sm text-gray-300">Your specialized skills warrant additional compensation</div>
                     </div>
                 </div>
                 <div class="flex items-start gap-3">
-                    <span class="text-2xl">4️⃣</span>
+                    <span class="text-2xl">4ï¸âƒ£</span>
                     <div>
                         <div class="font-medium">Total Comp Focus</div>
                         <div class="text-sm text-gray-300">Consider negotiating equity or signing bonus if base is fixed</div>
@@ -224,13 +224,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function loadDemoData() {
         const competitors = [
-            { company: 'Google', base: 180000, bonus: 36000, equity: 50000, total: 266000, vs_avg: '+18%', benefits: '⭐⭐⭐⭐⭐' },
-            { company: 'Meta', base: 175000, bonus: 35000, equity: 60000, total: 270000, vs_avg: '+20%', benefits: '⭐⭐⭐⭐⭐' },
-            { company: 'Amazon', base: 165000, bonus: 20000, equity: 40000, total: 225000, vs_avg: '+0%', benefits: '⭐⭐⭐⭐' },
-            { company: 'Microsoft', base: 170000, bonus: 25000, equity: 35000, total: 230000, vs_avg: '+2%', benefits: '⭐⭐⭐⭐⭐' },
-            { company: 'Apple', base: 178000, bonus: 30000, equity: 45000, total: 253000, vs_avg: '+12%', benefits: '⭐⭐⭐⭐⭐' },
-            { company: 'Netflix', base: 200000, bonus: 0, equity: 20000, total: 220000, vs_avg: '-2%', benefits: '⭐⭐⭐⭐' },
-            { company: 'Stripe', base: 185000, bonus: 25000, equity: 55000, total: 265000, vs_avg: '+18%', benefits: '⭐⭐⭐⭐' }
+            { company: 'Google', base: 180000, bonus: 36000, equity: 50000, total: 266000, vs_avg: '+18%', benefits: 'â­â­â­â­â­' },
+            { company: 'Meta', base: 175000, bonus: 35000, equity: 60000, total: 270000, vs_avg: '+20%', benefits: 'â­â­â­â­â­' },
+            { company: 'Amazon', base: 165000, bonus: 20000, equity: 40000, total: 225000, vs_avg: '+0%', benefits: 'â­â­â­â­' },
+            { company: 'Microsoft', base: 170000, bonus: 25000, equity: 35000, total: 230000, vs_avg: '+2%', benefits: 'â­â­â­â­â­' },
+            { company: 'Apple', base: 178000, bonus: 30000, equity: 45000, total: 253000, vs_avg: '+12%', benefits: 'â­â­â­â­â­' },
+            { company: 'Netflix', base: 200000, bonus: 0, equity: 20000, total: 220000, vs_avg: '-2%', benefits: 'â­â­â­â­' },
+            { company: 'Stripe', base: 185000, bonus: 25000, equity: 55000, total: 265000, vs_avg: '+18%', benefits: 'â­â­â­â­' }
         ];
 
         updatePositionCard({

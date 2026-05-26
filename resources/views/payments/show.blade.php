@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
-@section('title', 'Transaction Details - StudAI Career')
+@section('title', 'Transaction Details - StudAI Hire')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-8">
@@ -25,7 +25,7 @@
                     </div>
                     <div class="text-right">
                         <p class="text-sm font-medium opacity-90">Amount</p>
-                        <p class="text-3xl font-bold mt-1">₹{{ number_format($transaction->amount, 2) }}</p>
+                        <p class="text-3xl font-bold mt-1">&#8377;{{ number_format($transaction->amount, 2) }}</p>
                     </div>
                 </div>
                 <div class="mt-6 flex items-center justify-between">

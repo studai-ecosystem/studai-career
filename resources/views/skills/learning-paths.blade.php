@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Learning Paths')
 
@@ -81,7 +81,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex-1">
                                     <p class="font-medium text-gray-900 text-sm">{{ $nextResource->title }}</p>
-                                    <p class="text-xs text-gray-500 mt-1">{{ $nextResource->typeBadge }} · {{ $nextResource->durationFormatted }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ $nextResource->typeBadge }} &middot; {{ $nextResource->durationFormatted }}</p>
                                 </div>
                                 <a href="{{ $nextResource->url }}" target="_blank" class="ml-3 inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors">
                                     Start
@@ -178,7 +178,7 @@
 
                         <div class="pt-4 border-t border-gray-200">
                             <a href="{{ route('skills.learning-path.show', $path->id) }}" class="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
-                                Review Path →
+                                Review Path â†’
                             </a>
                         </div>
                     </div>

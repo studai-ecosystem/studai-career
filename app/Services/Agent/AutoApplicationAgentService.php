@@ -201,6 +201,12 @@ class AutoApplicationAgentService
         try {
             $configuration->incrementApplicationsThisMonth();
             $configuration->updateRunSchedule();
+
+            // Also increment the user subscription counter so the dashboard reflects agent applications
+            $user = $configuration->user;
+            if ($user && $user->subscription) {
+                $user->subscription->increment('applications_used_this_month');
+            }
         } catch (\Throwable $exception) {
             Log::warning('Failed to update agent scheduling metrics', [
                 'configuration_id' => $configuration->id,

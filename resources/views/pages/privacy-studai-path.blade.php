@@ -1,14 +1,14 @@
 {{--
-    StudAI Path — Privacy Policy
+    StudAI Hire — Privacy Policy
     Data Protection & User Privacy
 --}}
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'Privacy Policy — StudAI Path | Your Data, Protected')
+@section('title', 'Privacy Policy — StudAI Hire | Your Data, Protected')
 
 @section('meta')
-<meta name="description" content="Learn how StudAI Path protects your personal data and privacy. Our policy covers data collection, AI processing, and your rights under GDPR and Indian data protection laws.">
-<meta property="og:title" content="Privacy Policy — StudAI Path">
+<meta name="description" content="Learn how StudAI Hire protects your personal data and privacy. Our policy covers data collection, AI processing, and your rights under GDPR and Indian data protection laws.">
+<meta property="og:title" content="Privacy Policy — StudAI Hire">
 <meta property="og:description" content="Your privacy matters. See how we protect your career data.">
 <link rel="canonical" href="{{ route('privacy') }}">
 @endsection
@@ -28,7 +28,7 @@
         </div>
         <h1 class="text-4xl font-bold sm:text-5xl">Privacy Policy</h1>
         <p class="mt-4 text-lg text-slate-200 max-w-2xl mx-auto">
-            Your privacy is fundamental to how we build StudAI Path. This policy explains what data we collect, why, and how we protect it.
+            Your privacy is fundamental to how we build StudAI Hire. This policy explains what data we collect, why, and how we protect it.
         </p>
     </div>
 </section>
@@ -84,7 +84,7 @@
             {{-- Introduction --}}
             <div class="bg-surface-50 rounded-2xl border border-surface-200 p-6 mb-12 not-prose">
                 <p class="text-ink-secondary">
-                    StudAI Path Technologies Private Limited ("we," "our," or "us") operates the StudAI Path platform (the "Services"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website, mobile apps, and AI-powered career tools.
+                    StudAI Hire Technologies Private Limited ("we," "our," or "us") operates the StudAI Hire platform (the "Services"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website, mobile apps, and AI-powered career tools.
                 </p>
                 <p class="text-ink-secondary mt-4">
                     By using our Services, you agree to this policy. If you disagree, please don't use our Services.
@@ -140,7 +140,7 @@
                 <div class="bg-google-blue-50 border border-google-blue-200 rounded-xl p-6 mt-4 not-prose">
                     <h4 class="font-semibold text-ink-primary mb-2">Important: How AI Uses Your Data</h4>
                     <p class="text-ink-secondary text-sm">
-                        StudAI Path uses AI models (including Azure OpenAI) to power features like resume optimization, job matching, and interview coaching. Here's how your data is handled:
+                        StudAI Hire uses AI models (including Azure OpenAI) to power features like resume optimization, job matching, and interview coaching. Here's how your data is handled:
                     </p>
                     <ul class="text-sm text-ink-secondary mt-3 space-y-2">
                         <li>🔹 Your data is processed but <strong>never used to train public AI models</strong></li>
@@ -238,7 +238,7 @@
                     <ul class="space-y-2 text-ink-secondary">
                         <li><strong>Email:</strong> <a href="mailto:privacy@studaipath.com" class="text-google-blue-600 hover:underline">privacy@studaipath.com</a></li>
                         <li><strong>Data Protection Officer:</strong> <a href="mailto:dpo@studaipath.com" class="text-google-blue-600 hover:underline">dpo@studaipath.com</a></li>
-                        <li><strong>Address:</strong> StudAI Path Technologies Pvt. Ltd., WeWork Prestige Atlanta, Koramangala, Bengaluru 560034, India</li>
+                        <li><strong>Address:</strong> StudAI Hire Technologies Pvt. Ltd., WeWork Prestige Atlanta, Koramangala, Bengaluru 560034, India</li>
                     </ul>
                 </div>
             </div>

@@ -55,13 +55,10 @@ class SocialAuthService
 
         $config = $provider->getSocialiteConfig();
 
-        // Build Socialite driver dynamically
-        $driver = Socialite::driver($slug);
+        // Override Laravel config at runtime so Socialite picks up DB credentials
+        config(["services.{$slug}" => $config]);
 
-        // Apply configuration
-        $driver->clientId = $config['client_id'];
-        $driver->clientSecret = $config['client_secret'];
-        $driver->redirectUrl = $config['redirect'];
+        $driver = Socialite::driver($slug);
 
         // Apply scopes if specified
         $scopes = $provider->getScopesArray();

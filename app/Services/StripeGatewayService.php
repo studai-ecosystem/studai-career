@@ -45,7 +45,7 @@ class StripeGatewayService
                             'currency' => config('payment.stripe.currency', 'usd'),
                             'product_data' => [
                                 'name' => $plan->name . ' Subscription',
-                                'description' => $plan->description ?? 'StudAI Career Subscription',
+                                'description' => $plan->description ?? 'StudAI Hire Subscription',
                             ],
                             'unit_amount' => (int) ($plan->price * 100),
                         ],

@@ -74,6 +74,19 @@ class MarketplaceProject extends Model
         });
     }
 
+    // Accessors
+    public function getSkillsRequiredAttribute(mixed $value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+        if (is_string($value) && $value !== '') {
+            $decoded = json_decode($value, true);
+            return is_array($decoded) ? $decoded : [];
+        }
+        return [];
+    }
+
     // Relationships
     public function employer(): BelongsTo
     {

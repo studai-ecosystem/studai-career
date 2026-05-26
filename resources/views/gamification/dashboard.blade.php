@@ -1,317 +1,218 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
-@section('title', 'Gamification Dashboard')
+@section('title', 'Achievements & Gamification')
+@section('page-title', 'Achievements')
+@section('page-description', 'Track your progress, earn rewards, level up')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50">
-    <!-- Hero Section with Level & Points -->
-    <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
-                <!-- Level Badge -->
-                <div class="flex items-center gap-6">
-                    <div class="relative">
-                        <div class="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border-4 border-white/30">
-                            <span class="text-4xl font-bold">{{ $profile['level'] }}</span>
-                        </div>
-                        <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 px-3 py-0.5 rounded-full text-xs font-semibold">
-                            LEVEL
-                        </div>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl lg:text-3xl font-bold">Welcome back, {{ auth()->user()->name }}!</h1>
-                        <p class="text-white/80 mt-1">Keep up the momentum – you're making great progress!</p>
-                    </div>
-                </div>
+<div class="space-y-6 animate-fade-in">
 
-                <!-- Quick Stats -->
-                <div class="flex flex-wrap gap-4">
-                    <div class="bg-white/20 backdrop-blur-sm rounded-xl px-5 py-3 text-center">
-                        <div class="text-3xl font-bold">{{ number_format($profile['total_points']) }}</div>
-                        <div class="text-white/80 text-sm">Total Points</div>
+    {{-- HERO --}}
+    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:linear-gradient(135deg,#ec4899 0%,#db2777 35%,#6366f1 70%,#8b5cf6 100%);box-shadow:0 8px 32px rgba(236,72,153,.3)">
+        <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 80% 50%,rgba(255,255,255,.4) 0%,transparent 60%);"></div>
+        <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+            <div class="flex items-center gap-5">
+                <div class="relative flex-shrink-0">
+                    <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center border-2 border-white/30">
+                        <span class="text-4xl font-bold">{{ $profile['level'] }}</span>
                     </div>
-                    <div class="bg-white/20 backdrop-blur-sm rounded-xl px-5 py-3 text-center">
-                        <div class="text-3xl font-bold flex items-center gap-1">
-                            <span>🔥</span>{{ $profile['current_streak'] }}
+                    <div class="absolute -bottom-2 -right-2 bg-amber-400 text-white px-2 py-0.5 rounded-full text-[10px] font-bold">LEVEL</div>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold">Welcome back, {{ auth()->user()->name }}!</h1>
+                    <p class="text-pink-100 text-sm mt-0.5">Keep up the momentum � you're making great progress!</p>
+                    <div class="mt-3">
+                        <div class="flex justify-between text-xs text-pink-200 mb-1">
+                            <span>Level {{ $profile['level'] }}</span>
+                            <span>{{ number_format($profile['xp_current']) }} / {{ number_format($profile['xp_required']) }} XP</span>
+                            <span>Level {{ $profile['level'] + 1 }}</span>
                         </div>
-                        <div class="text-white/80 text-sm">Day Streak</div>
-                    </div>
-                    <div class="bg-white/20 backdrop-blur-sm rounded-xl px-5 py-3 text-center">
-                        <div class="text-3xl font-bold">#{{ $profile['rank'] ?: '—' }}</div>
-                        <div class="text-white/80 text-sm">Global Rank</div>
+                        <div class="h-3 bg-white/20 rounded-full overflow-hidden w-64 max-w-full">
+                            <div class="h-full bg-gradient-to-r from-module-negotiation-400 to-module-negotiation-300 rounded-full" style="width:{{ $profile['xp_progress'] }}%"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- XP Progress Bar -->
-            <div class="mt-6">
-                <div class="flex justify-between text-sm mb-2">
-                    <span>Level {{ $profile['level'] }}</span>
-                    <span>{{ number_format($profile['xp_current']) }} / {{ number_format($profile['xp_required']) }} XP</span>
-                    <span>Level {{ $profile['level'] + 1 }}</span>
+            <div class="flex flex-wrap gap-3">
+                <div class="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 text-center">
+                    <div class="text-2xl font-bold">{{ number_format($profile['total_points']) }}</div>
+                    <div class="text-pink-200 text-xs mt-0.5">Total Points</div>
                 </div>
-                <div class="h-4 bg-white/20 rounded-full overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full transition-all duration-500"
-                         style="width: {{ $profile['xp_progress'] }}%"></div>
+                <div class="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 text-center">
+                    <div class="text-2xl font-bold flex items-center gap-1"><span>??</span>{{ $profile['current_streak'] }}</div>
+                    <div class="text-pink-200 text-xs mt-0.5">Day Streak</div>
+                </div>
+                <div class="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 text-center">
+                    <div class="text-2xl font-bold">#{{ $profile['rank'] ?: '�' }}</div>
+                    <div class="text-pink-200 text-xs mt-0.5">Global Rank</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Main Content -->
-            <div class="lg:col-span-2 space-y-8">
-                <!-- Profile Completion -->
-                @if($profileCompletion['percentage'] < 100)
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-xl font-bold text-gray-900">Complete Your Profile</h2>
-                        <span class="text-2xl font-bold text-indigo-600">{{ $profileCompletion['percentage'] }}%</span>
+    {{-- MAIN GRID --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {{-- Left: Challenges + Achievements --}}
+        <div class="lg:col-span-2 space-y-5">
+
+            {{-- Profile Completion --}}
+            @if($profileCompletion['percentage'] < 100)
+            <div class="bg-white rounded-2xl border border-pink-200 shadow-sm p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-base font-semibold text-gray-900">Complete Your Profile</h2>
+                    <span class="text-xl font-bold text-pink-600">{{ $profileCompletion['percentage'] }}%</span>
+                </div>
+                <div class="h-2.5 bg-pink-100 rounded-full overflow-hidden mb-4">
+                    <div class="h-full bg-gradient-to-r from-pink-500 to-rose-400 rounded-full" style="width:{{ $profileCompletion['percentage'] }}%"></div>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    @foreach($profileCompletion['sections'] as $section => $completed)
+                    <div class="flex items-center gap-1.5 p-2 rounded-lg text-xs font-medium {{ $completed ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-500' }}">
+                        @if($completed)<svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        @else<svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>@endif
+                        <span class="capitalize truncate">{{ str_replace('_', ' ', $section) }}</span>
                     </div>
-                    <div class="h-3 bg-gray-200 rounded-full overflow-hidden mb-4">
-                        <div class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
-                             style="width: {{ $profileCompletion['percentage'] }}%"></div>
-                    </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        @foreach($profileCompletion['sections'] as $section => $completed)
-                        <div class="flex items-center gap-2 p-2 rounded-lg {{ $completed ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-500' }}">
-                            @if($completed)
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                            @else
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <circle cx="12" cy="12" r="10" stroke-width="2"/>
-                                </svg>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            {{-- Daily Challenges --}}
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-base font-semibold text-gray-900">Daily Challenges</h2>
+                    <a href="{{ route('gamification.challenges') }}" class="text-sm font-medium text-pink-600 hover:underline">View All ?</a>
+                </div>
+                <div class="space-y-3">
+                    @forelse($challenges as $userChallenge)
+                    @php $challenge = $userChallenge->challenge; @endphp
+                    <div class="flex items-center gap-3 p-4 rounded-xl {{ $userChallenge->is_completed ? 'bg-green-50 border border-green-200' : 'bg-gray-50 border border-gray-100' }}">
+                        <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0 {{ $userChallenge->is_completed ? 'bg-green-100' : 'bg-pink-100' }}">
+                            @if($userChallenge->is_completed) ?
+                            @else @switch($challenge->difficulty) @case('easy') ?? @break @case('medium') ? @break @case('hard') ?? @break @endswitch
                             @endif
-                            <span class="text-sm font-medium capitalize">{{ str_replace('_', ' ', $section) }}</span>
                         </div>
-                        @endforeach
-                    </div>
-                </div>
-                @endif
-
-                <!-- Daily Challenges -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-bold text-gray-900">Daily Challenges</h2>
-                        <a href="{{ route('gamification.challenges') }}" class="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
-                            View All →
-                        </a>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        @forelse($challenges as $userChallenge)
-                        @php $challenge = $userChallenge->challenge; @endphp
-                        <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-xl {{ $userChallenge->is_completed ? 'border-2 border-green-200' : '' }}">
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl
-                                {{ $userChallenge->is_completed ? 'bg-green-100' : 'bg-indigo-100' }}">
-                                @if($userChallenge->is_completed)
-                                    ✅
-                                @else
-                                    @switch($challenge->difficulty)
-                                        @case('easy') 🎯 @break
-                                        @case('medium') ⚡ @break
-                                        @case('hard') 🔥 @break
-                                    @endswitch
-                                @endif
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-sm font-semibold text-gray-900">{{ $challenge->name }}</span>
+                                <span class="px-1.5 py-0.5 text-[10px] font-semibold rounded-full {{ $challenge->difficulty === 'easy' ? 'bg-green-100 text-green-700' : ($challenge->difficulty === 'medium' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700') }}">{{ ucfirst($challenge->difficulty) }}</span>
                             </div>
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2">
-                                    <h3 class="font-semibold text-gray-900">{{ $challenge->name }}</h3>
-                                    <span class="px-2 py-0.5 text-xs font-medium rounded-full
-                                        {{ $challenge->difficulty === 'easy' ? 'bg-green-100 text-green-700' : '' }}
-                                        {{ $challenge->difficulty === 'medium' ? 'bg-yellow-100 text-yellow-700' : '' }}
-                                        {{ $challenge->difficulty === 'hard' ? 'bg-red-100 text-red-700' : '' }}">
-                                        {{ ucfirst($challenge->difficulty) }}
-                                    </span>
+                            <div class="flex items-center gap-2 mt-1.5">
+                                <div class="flex-1 h-1.5 bg-gray-200 rounded-full max-w-[120px]">
+                                    <div class="h-full bg-pink-500 rounded-full" style="width:{{ $userChallenge->progress_percentage }}%"></div>
                                 </div>
-                                <p class="text-sm text-gray-600 mt-0.5">{{ $challenge->description }}</p>
-                                <div class="mt-2">
-                                    <div class="flex items-center gap-2 text-sm">
-                                        <span class="text-gray-500">Progress:</span>
-                                        <div class="flex-1 h-2 bg-gray-200 rounded-full max-w-[150px]">
-                                            <div class="h-full bg-indigo-500 rounded-full transition-all" 
-                                                 style="width: {{ $userChallenge->progress_percentage }}%"></div>
-                                        </div>
-                                        <span class="font-medium">{{ $userChallenge->progress }}/{{ $userChallenge->target }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-sm font-semibold text-indigo-600">+{{ $challenge->points_reward }} pts</div>
-                                <div class="text-xs text-gray-500">+{{ $challenge->xp_reward }} XP</div>
-                                @if($userChallenge->canClaim())
-                                <button onclick="claimChallenge({{ $userChallenge->id }})"
-                                        class="mt-2 px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition">
-                                    Claim!
-                                </button>
-                                @endif
+                                <span class="text-xs text-gray-500">{{ $userChallenge->progress }}/{{ $userChallenge->target }}</span>
                             </div>
                         </div>
-                        @empty
-                        <div class="text-center py-8 text-gray-500">
-                            <p>No challenges available today. Check back tomorrow!</p>
+                        <div class="text-right flex-shrink-0">
+                            <div class="text-xs font-bold text-pink-600">+{{ $challenge->points_reward }}pts</div>
+                            <div class="text-xs text-gray-500">+{{ $challenge->xp_reward }} XP</div>
+                            @if($userChallenge->canClaim())
+                            <button onclick="claimChallenge({{ $userChallenge->id }})" class="mt-1 px-2.5 py-1 bg-green-500 text-white text-xs font-semibold rounded-lg hover:bg-green-600 transition-colors">Claim!</button>
+                            @endif
                         </div>
-                        @endforelse
                     </div>
-                </div>
-
-                <!-- Recent Achievements -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-bold text-gray-900">Recent Achievements</h2>
-                        <a href="{{ route('gamification.achievements') }}" class="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
-                            View All →
-                        </a>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        @forelse($achievements as $userAchievement)
-                        @php $achievement = $userAchievement->achievement; @endphp
-                        <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border border-yellow-200">
-                            <div class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl"
-                                 style="background: {{ App\Models\Achievement::TIERS[$achievement->tier]['color'] ?? '#CD7F32' }}20">
-                                {{ $achievement->icon ?? '🏆' }}
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2">
-                                    <h3 class="font-semibold text-gray-900">{{ $achievement->name }}</h3>
-                                    <span class="text-xs px-2 py-0.5 rounded-full font-medium"
-                                          style="background: {{ App\Models\Achievement::TIERS[$achievement->tier]['color'] ?? '#CD7F32' }}20; 
-                                                 color: {{ App\Models\Achievement::TIERS[$achievement->tier]['color'] ?? '#CD7F32' }}">
-                                        {{ ucfirst($achievement->tier) }}
-                                    </span>
-                                </div>
-                                <p class="text-sm text-gray-600 mt-0.5 line-clamp-1">{{ $achievement->description }}</p>
-                                <p class="text-xs text-gray-400 mt-1">Unlocked {{ $userAchievement->unlocked_at->diffForHumans() }}</p>
-                            </div>
-                        </div>
-                        @empty
-                        <div class="col-span-2 text-center py-8 text-gray-500">
-                            <p class="text-3xl mb-2">🎯</p>
-                            <p>Complete activities to unlock achievements!</p>
-                        </div>
-                        @endforelse
-                    </div>
+                    @empty
+                    <div class="py-8 text-center text-gray-600 text-sm">No challenges today. Check back tomorrow!</div>
+                    @endforelse
                 </div>
             </div>
 
-            <!-- Sidebar -->
-            <div class="space-y-6">
-                <!-- Current Event Banner -->
-                @if($event)
-                <div class="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl shadow-lg p-6 text-white">
-                    <div class="flex items-center gap-2 mb-3">
-                        <span class="text-2xl">🎉</span>
-                        <span class="text-sm font-medium bg-white/20 px-2 py-0.5 rounded-full">LIVE EVENT</span>
+            {{-- Recent Achievements --}}
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-base font-semibold text-gray-900">Recent Achievements</h2>
+                    <a href="{{ route('gamification.achievements') }}" class="text-sm font-medium text-pink-600 hover:underline">View All ?</a>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    @forelse($achievements as $userAchievement)
+                    @php $achievement = $userAchievement->achievement; @endphp
+                    <div class="flex items-center gap-3 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-100">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 bg-white shadow-sm">{{ $achievement->icon ?? '??' }}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm font-semibold text-gray-900">{{ $achievement->name }}</div>
+                            <div class="text-xs text-gray-500 mt-0.5 line-clamp-1">{{ $achievement->description }}</div>
+                            <div class="text-xs text-amber-600 mt-1">{{ $userAchievement->unlocked_at->diffForHumans() }}</div>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">{{ $event->name }}</h3>
-                    <p class="text-white/80 text-sm mb-4">{{ Str::limit($event->description, 100) }}</p>
-                    <div class="flex items-center justify-between text-sm mb-3">
-                        <span>{{ $event->remaining_time }}</span>
-                        <span>{{ $event->xp_multiplier }}x XP Bonus</span>
+                    @empty
+                    <div class="col-span-2 text-center py-8">
+                        <div class="text-3xl mb-2">??</div>
+                        <div class="text-sm text-gray-600">Complete activities to unlock achievements!</div>
                     </div>
-                    <div class="h-2 bg-white/20 rounded-full">
-                        <div class="h-full bg-white rounded-full" style="width: {{ $event->progress_percentage }}%"></div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+        {{-- Right Sidebar --}}
+        <div class="space-y-5">
+            {{-- Live Event --}}
+            @if($event)
+            <div class="bg-gradient-to-br from-purple-600 to-rose-600 rounded-2xl p-5 text-white">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="text-2xl">??</span>
+                    <span class="text-xs font-semibold bg-white/20 px-2 py-0.5 rounded-full">LIVE EVENT</span>
+                </div>
+                <h3 class="text-base font-bold mb-1">{{ $event->name }}</h3>
+                <p class="text-purple-200 text-xs mb-3">{{ Str::limit($event->description, 100) }}</p>
+                <div class="flex items-center justify-between text-xs mb-2">
+                    <span>{{ $event->remaining_time }}</span>
+                    <span class="font-bold">{{ $event->xp_multiplier }}x XP Bonus</span>
+                </div>
+                <div class="h-1.5 bg-white/20 rounded-full"><div class="h-full bg-white rounded-full" style="width:{{ $event->progress_percentage }}%"></div></div>
+                <a href="{{ route('gamification.events') }}" class="block w-full mt-4 text-center py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-semibold transition-colors">View Event ?</a>
+            </div>
+            @endif
+
+            {{-- Badges --}}
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-semibold text-gray-900">Featured Badges</h3>
+                    <a href="{{ route('gamification.badges') }}" class="text-xs font-medium text-pink-600 hover:underline">View All</a>
+                </div>
+                <div class="grid grid-cols-4 gap-2">
+                    @forelse($badges as $userBadge)
+                    @php $badge = $userBadge->badge; @endphp
+                    <div class="relative group">
+                        <div class="aspect-square rounded-xl flex items-center justify-center text-2xl border-2 cursor-pointer hover:scale-110 transition-transform"
+                             style="background:{{ $badge->color }}15; border-color:{{ $badge->color }}">{{ $badge->icon }}</div>
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-ink-primary text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">{{ $badge->name }}</div>
                     </div>
-                    <a href="{{ route('gamification.events') }}" 
-                       class="block w-full mt-4 text-center py-2 bg-white/20 hover:bg-white/30 rounded-lg font-medium transition">
-                        View Event →
+                    @empty
+                    <div class="col-span-4 text-center py-4 text-gray-600 text-xs">Earn badges by completing activities!</div>
+                    @endforelse
+                </div>
+            </div>
+
+            {{-- Quick Links --}}
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+                <h3 class="text-sm font-semibold text-gray-900 mb-3">Explore</h3>
+                <div class="space-y-1.5">
+                    @foreach([
+                        ['route'=>'gamification.leaderboards', 'icon'=>'??', 'label'=>'Leaderboards', 'sub'=>'Compete globally'],
+                        ['route'=>'gamification.rewards',     'icon'=>'??', 'label'=>'Rewards Store',  'sub'=>number_format($profile['available_points'])."pts to spend"],
+                        ['route'=>'gamification.referrals',   'icon'=>'??', 'label'=>'Referrals',      'sub'=>'Invite friends, earn rewards'],
+                        ['route'=>'gamification.activity',    'icon'=>'??', 'label'=>'Activity Log',   'sub'=>'View your progress'],
+                    ] as $link)
+                    <a href="{{ route($link['route']) }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-pink-50 transition-colors group">
+                        <span class="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center text-sm group-hover:bg-pink-200 transition-colors">{{ $link['icon'] }}</span>
+                        <div><div class="text-sm font-semibold text-gray-900">{{ $link['label'] }}</div><div class="text-xs text-gray-500">{{ $link['sub'] }}</div></div>
                     </a>
+                    @endforeach
                 </div>
-                @endif
+            </div>
 
-                <!-- Featured Badges -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-gray-900">Featured Badges</h3>
-                        <a href="{{ route('gamification.badges') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
-                            View All
-                        </a>
+            {{-- Stats Summary --}}
+            <div class="bg-gradient-to-br from-pink-600 to-rose-600 rounded-2xl p-5 text-white">
+                <h3 class="text-sm font-semibold mb-3">Your Stats</h3>
+                <div class="space-y-2.5">
+                    @foreach(['Achievements'=>$profile['achievements_count'], 'Badges'=>$profile['badges_count'], 'Best Streak'=>$profile['longest_streak'].' days', 'Global Rank'=>'#'.($profile['rank'] ?: '�')] as $label => $val)
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-pink-200">{{ $label }}</span>
+                        <span class="font-bold">{{ $val }}</span>
                     </div>
-                    <div class="grid grid-cols-3 gap-3">
-                        @forelse($badges as $userBadge)
-                        @php $badge = $userBadge->badge; @endphp
-                        <div class="relative group">
-                            <div class="aspect-square rounded-xl flex items-center justify-center text-3xl border-2 cursor-pointer transition-all hover:scale-105"
-                                 style="background: {{ $badge->color }}15; border-color: {{ $badge->color }}">
-                                {{ $badge->icon }}
-                            </div>
-                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                                {{ $badge->name }}
-                            </div>
-                        </div>
-                        @empty
-                        <div class="col-span-3 text-center py-6 text-gray-500">
-                            <p class="text-3xl mb-2">🏅</p>
-                            <p class="text-sm">Earn badges by completing activities!</p>
-                        </div>
-                        @endforelse
-                    </div>
-                </div>
-
-                <!-- Quick Links -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Explore</h3>
-                    <div class="space-y-2">
-                        <a href="{{ route('gamification.leaderboards') }}" 
-                           class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition">
-                            <span class="text-2xl">🏆</span>
-                            <div>
-                                <div class="font-medium text-gray-900">Leaderboards</div>
-                                <div class="text-sm text-gray-500">Compete globally</div>
-                            </div>
-                        </a>
-                        <a href="{{ route('gamification.rewards') }}" 
-                           class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition">
-                            <span class="text-2xl">🎁</span>
-                            <div>
-                                <div class="font-medium text-gray-900">Rewards Store</div>
-                                <div class="text-sm text-gray-500">{{ number_format($profile['available_points']) }} points to spend</div>
-                            </div>
-                        </a>
-                        <a href="{{ route('gamification.referrals') }}" 
-                           class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition">
-                            <span class="text-2xl">👥</span>
-                            <div>
-                                <div class="font-medium text-gray-900">Referrals</div>
-                                <div class="text-sm text-gray-500">Invite friends, earn rewards</div>
-                            </div>
-                        </a>
-                        <a href="{{ route('gamification.activity') }}" 
-                           class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition">
-                            <span class="text-2xl">📊</span>
-                            <div>
-                                <div class="font-medium text-gray-900">Activity History</div>
-                                <div class="text-sm text-gray-500">View your progress</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Stats Summary -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Your Stats</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-600">Achievements</span>
-                            <span class="font-bold text-gray-900">{{ $profile['achievements_count'] }}</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-600">Badges</span>
-                            <span class="font-bold text-gray-900">{{ $profile['badges_count'] }}</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-600">Best Streak</span>
-                            <span class="font-bold text-gray-900">{{ $profile['longest_streak'] }} days</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-600">Global Rank</span>
-                            <span class="font-bold text-gray-900">#{{ $profile['rank'] ?: '—' }}</span>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -331,17 +232,13 @@ function claimChallenge(challengeId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Show success notification
             alert(`Claimed! +${data.points} points, +${data.xp} XP`);
             window.location.reload();
         } else {
             alert(data.message || 'Failed to claim reward');
         }
     })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred');
-    });
+    .catch(error => { console.error('Error:', error); alert('An error occurred'); });
 }
 </script>
 @endpush

@@ -26,7 +26,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('interview.start') }}" class="space-y-6">
+                    <form method="POST" action="{{ route('interview.start') }}" class="space-y-6" x-data="{ submitting: false }" @submit="submitting = true">
                         @csrf
 
                         @if($job)
@@ -113,9 +113,14 @@
                                class="flex-1 py-3 px-6 border border-gray-300 text-center rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition">
                                 Cancel
                             </a>
-                            <button type="submit" 
-                                    class="flex-1 py-3 px-6 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">
-                                <i class="fas fa-play mr-2"></i> Start Practice
+                            <button type="submit" :disabled="submitting"
+                                    class="flex-1 py-3 px-6 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-70 disabled:cursor-wait">
+                                <template x-if="!submitting">
+                                    <span><i class="fas fa-play mr-2"></i> Start Practice</span>
+                                </template>
+                                <template x-if="submitting">
+                                    <span><i class="fas fa-spinner fa-spin mr-2"></i> Generating questions with AI...</span>
+                                </template>
                             </button>
                         </div>
                     </form>

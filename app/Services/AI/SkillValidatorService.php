@@ -444,7 +444,7 @@ PROMPT;
             $content = $this->ai(
                 $prompt,
                 'You are a skill validation expert. Be critical but fair.',
-                ['temperature' => 0.3, 'model' => 'gpt-5-mini']
+                ['temperature' => 0.3, 'model' => config('ai.azure.models.chat_mini')]
             );
             
             // Parse validation result

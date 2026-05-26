@@ -40,4 +40,36 @@ return [
         'secret' => env('RAZORPAY_SECRET'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Social OAuth Providers
+    |--------------------------------------------------------------------------
+    | Credentials are stored encrypted in the social_providers database table
+    | and loaded dynamically at runtime. These env-based fallbacks allow
+    | Socialite driver registration without requiring DB access on boot.
+    */
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID', ''),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET', ''),
+        'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
+    ],
+
+    'github' => [
+        'client_id' => env('GITHUB_CLIENT_ID', ''),
+        'client_secret' => env('GITHUB_CLIENT_SECRET', ''),
+        'redirect' => env('GITHUB_REDIRECT_URI', '/auth/github/callback'),
+    ],
+
+    'linkedin-openid' => [
+        'client_id' => env('LINKEDIN_CLIENT_ID', ''),
+        'client_secret' => env('LINKEDIN_CLIENT_SECRET', ''),
+        'redirect' => env('LINKEDIN_REDIRECT_URI', '/auth/linkedin/callback'),
+    ],
+
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID', ''),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET', ''),
+        'redirect' => env('FACEBOOK_REDIRECT_URI', '/auth/facebook/callback'),
+    ],
+
 ];

@@ -10,11 +10,15 @@ use App\Http\Controllers\PaymentHistoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\PublicApplyController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Employer\EmployerDashboardController;
 use App\Http\Controllers\Employer\CompanyProfileController;
 use App\Http\Controllers\Employer\JobPostingController;
 use App\Http\Controllers\Employer\ApplicantTrackingController;
+use App\Http\Controllers\Employer\InterviewManagementController;
+use App\Http\Controllers\Employer\HiringTestManagerController;
+use App\Http\Controllers\HiringTestController;
 use App\Http\Controllers\Admin\ApplicationMonitorController;
 use App\Http\Controllers\SkillAnalyzerWebController;
 use App\Http\Controllers\InterviewController;
@@ -28,6 +32,92 @@ use Illuminate\Support\Facades\Route;
 
 // Marketing Pages
 Route::get('/', [MarketingController::class, 'home'])->name('home');
+
+// ── Email Preview (dev only) ────────────────────────────────────────────────
+if (app()->isLocal()) {
+    Route::get('/preview/email/{type}/{event}', function (string $type, string $event) {
+        // type = 'candidate' | 'hr'
+        // event = 'shortlisted' | 'hired' | 'rejected'
+        $allowedTypes  = ['candidate', 'hr'];
+        $allowedEvents = ['shortlisted', 'hired', 'rejected'];
+
+        if (!in_array($type, $allowedTypes) || !in_array($event, $allowedEvents)) {
+            abort(404, 'Invalid preview type or event. Use: candidate|hr and shortlisted|hired|rejected');
+        }
+
+        // Pick a real application to use as data
+        $statusMap   = ['shortlisted' => 'shortlisted', 'hired' => 'hired', 'rejected' => 'rejected'];
+        $application = \App\Models\Application::with(['user.profile', 'job.company'])
+            ->where('status', $statusMap[$event])
+            ->first()
+            ?? \App\Models\Application::with(['user.profile', 'job.company'])->first();
+
+        $service    = app(\App\Services\HiringEmailService::class);
+        $matchScore = (float) ($application->final_rank_score ?? $application->match_score ?? 85.0);
+
+        if ($type === 'candidate') {
+            $content = match ($event) {
+                'hired'    => $service->generateCandidateHiredEmail($application),
+                'rejected' => $service->generateCandidateRejectedEmail($application),
+                default    => $service->generateCandidateShortlistedEmail($application, $matchScore),
+            };
+
+            $mail = new \App\Mail\CandidateHiringMail(
+                emailSubject:  $content['subject'],
+                body:          $content['body'],
+                candidateName: $application->user->name ?? 'Candidate',
+                jobTitle:      $application->job->title ?? 'Position',
+                companyName:   $application->job->company->name ?? 'Company',
+                eventType:     $event,
+            );
+        } else {
+            $content = match ($event) {
+                'hired'    => $service->generateHRHiredEmail($application),
+                'rejected' => $service->generateHRRejectedEmail($application),
+                default    => $service->generateHRShortlistedEmail($application, $matchScore),
+            };
+
+            $profile  = $application->user->profile;
+            $profileData = [
+                'headline'             => $profile?->headline ?? '',
+                'summary'              => $profile?->summary ?? '',
+                'skills'               => is_array($profile?->skills)
+                                            ? implode(', ', $profile->skills)
+                                            : ($profile?->skills ?? ''),
+                'location'             => $profile?->current_location ?? '',
+                'work_preference'      => $profile?->work_preference ?? '',
+                'notice_period'        => $profile?->notice_period ?? '',
+                'expected_salary'      => $profile?->expected_salary_min && $profile?->expected_salary_max
+                                            ? '₹' . number_format((float)$profile->expected_salary_min) . ' – ₹' . number_format((float)$profile->expected_salary_max)
+                                            : '',
+                'profile_completeness' => $profile?->profile_completeness ?? 0,
+            ];
+
+            $mail = new \App\Mail\HRHiringMail(
+                emailSubject:      $content['subject'],
+                body:              $content['body'],
+                candidateName:     $application->user->name ?? 'Candidate',
+                candidateEmail:    $application->user->email ?? 'candidate@example.com',
+                jobTitle:          $application->job->title ?? 'Position',
+                companyName:       $application->job->company->name ?? 'Company',
+                eventType:         $event,
+                matchScore:        $matchScore,
+                profile:           $profileData,
+                coverLetter:       $application->cover_letter ?? '',
+                applicationNumber: $application->application_number ?? '',
+                appliedAt:         $application->submitted_at?->format('M d, Y') ?? '',
+                rejectionReason:   $application->rejection_reason ?? '',
+                linkedinUrl:       $application->linkedin_url ?? '',
+                githubUrl:         $application->github_url ?? '',
+                portfolioUrl:      $application->portfolio_url ?? '',
+                resumeUrl:         $application->resume_file ? asset('storage/' . $application->resume_file) : '',
+            );
+        }
+
+        return $mail->render();
+    })->name('preview.email');
+}
+// ────────────────────────────────────────────────────────────────────────────
 Route::get('/features', [MarketingController::class, 'features'])->name('features');
 Route::get('/pricing', [MarketingController::class, 'pricing'])->name('pricing');
 Route::get('/about', [MarketingController::class, 'about'])->name('about');
@@ -40,6 +130,8 @@ Route::get('/for-employers', [MarketingController::class, 'forEmployers'])->name
 Route::get('/privacy-policy', [MarketingController::class, 'privacy'])->name('privacy');
 Route::get('/terms-and-conditions', [MarketingController::class, 'terms'])->name('terms');
 Route::get('/refund-policy', [MarketingController::class, 'refundPolicy'])->name('refund-policy');
+Route::get('/cookie-policy', [MarketingController::class, 'cookiePolicy'])->name('cookie-policy');
+Route::get('/security', [MarketingController::class, 'security'])->name('security');
 
 // Newsletter
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
@@ -93,7 +185,24 @@ Route::middleware('auth')->group(function () {
     
     // Applications Tracking
     Route::get('/applications', [DashboardController::class, 'applications'])->name('dashboard.applications');
-    
+
+    // AI Credits History
+    Route::get('/ai-credits', [DashboardController::class, 'aiCredits'])->name('dashboard.ai-credits');
+
+    // Notifications
+    Route::get('/notifications', function () {
+        $notifications = auth()->user()->notifications()->latest()->paginate(20);
+        return view('notifications.index', compact('notifications'));
+    })->name('notifications.all');
+    Route::post('/notifications/mark-all-read', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back();
+    })->name('notifications.mark-all-read');
+    Route::post('/notifications/{id}/read', function (string $id) {
+        auth()->user()->notifications()->where('id', $id)->first()?->markAsRead();
+        return back();
+    })->name('notifications.read');
+
     // Payment History
     Route::get('/payments', [PaymentHistoryController::class, 'index'])->name('payments.index');
     Route::get('/payments/{id}', [PaymentHistoryController::class, 'show'])->name('payments.show');
@@ -102,11 +211,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/jobs/search', [JobController::class, 'search'])->name('jobs.search');
     Route::get('/jobs/saved', [JobController::class, 'saved'])->name('jobs.saved');
     Route::get('/jobs/{id}', [JobController::class, 'show'])->name('jobs.show');
-    
+
+    // Candidate Test Routes
+    Route::get('/jobs/{jobId}/rounds/{roundId}/test', [\App\Http\Controllers\CandidateTestController::class, 'show'])->name('candidate.test.show');
+    Route::post('/jobs/{jobId}/rounds/{roundId}/test', [\App\Http\Controllers\CandidateTestController::class, 'submit'])->name('candidate.test.submit');
+    Route::get('/jobs/{jobId}/rounds/{roundId}/result', [\App\Http\Controllers\CandidateTestController::class, 'result'])->name('candidate.test.result');
+
     // Job Actions API
     Route::post('/api/jobs/{id}/toggle-save', [JobController::class, 'toggleSave'])->name('api.jobs.toggle-save');
-    Route::post('/api/jobs/{id}/apply', [JobController::class, 'apply'])->name('api.jobs.apply');
-    Route::post('/api/ai/generate-cover-letter', [JobController::class, 'generateCoverLetter'])->name('api.ai.generate-cover-letter');
+    Route::post('/api/jobs/{id}/apply', [JobController::class, 'apply'])
+        ->middleware('throttle:20,1')
+        ->name('api.jobs.apply');
+    // AI generation: max 10 cover letters per minute per user
+    Route::post('/api/ai/generate-cover-letter', [JobController::class, 'generateCoverLetter'])
+        ->middleware('throttle:10,1')
+        ->name('api.ai.generate-cover-letter');
     
     // Account settings (Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -135,6 +254,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/session/{session}/answer', [InterviewController::class, 'submitAnswer'])->name('submit-answer');
         Route::post('/session/{session}/follow-up', [InterviewController::class, 'getFollowUp'])->name('follow-up');
         Route::get('/session/{session}/complete', [InterviewController::class, 'complete'])->name('complete');
+        Route::get('/session/{session}/pdf', [InterviewController::class, 'downloadPdf'])->name('pdf');
+        Route::get('/session/{session}/skill-map', [InterviewController::class, 'skillMap'])->name('skill-map');
 
         Route::get('/common-questions', [InterviewController::class, 'commonQuestions'])->name('common-questions');
         Route::get('/star-guide', [InterviewController::class, 'starGuide'])->name('star-guide');
@@ -213,18 +334,37 @@ Route::middleware('auth')->group(function () {
     // AI Career Coach Routes
     Route::prefix('career-coach')->name('career-coach.')->group(function () {
         Route::get('/', [CareerCoachController::class, 'index'])->name('index');
-        Route::post('/session', [CareerCoachController::class, 'newSession'])->name('session.create');
+
+        // Sessions
+        Route::post('/session', [CareerCoachController::class, 'startSession'])->name('session.create');
         Route::get('/session/{session}', [CareerCoachController::class, 'session'])->name('session.show');
+        Route::post('/session/{session}/message', [CareerCoachController::class, 'sendMessage'])->name('session.message');
+        Route::post('/session/{session}/end', [CareerCoachController::class, 'endSession'])->name('session.end');
+
+        // Goals
         Route::get('/goals', [CareerCoachController::class, 'goals'])->name('goals');
         Route::post('/goals', [CareerCoachController::class, 'createGoal'])->name('goals.create');
         Route::patch('/goals/{goal}', [CareerCoachController::class, 'updateGoal'])->name('goals.update');
+        Route::post('/goals/{goal}/progress', [CareerCoachController::class, 'updateProgress'])->name('goals.progress');
         Route::delete('/goals/{goal}', [CareerCoachController::class, 'deleteGoal'])->name('goals.delete');
+
+        // Preferences
         Route::get('/preferences', [CareerCoachController::class, 'preferences'])->name('preferences');
         Route::post('/preferences', [CareerCoachController::class, 'updatePreferences'])->name('preferences.update');
+
+        // History
         Route::get('/history', [CareerCoachController::class, 'history'])->name('history');
+
+        // Check-ins
         Route::get('/checkin', [CareerCoachController::class, 'checkin'])->name('checkin');
         Route::post('/checkin', [CareerCoachController::class, 'processCheckin'])->name('checkin.process');
+        Route::post('/checkins/{checkin}/start', [CareerCoachController::class, 'startCheckin'])->name('checkin.start');
+        Route::post('/checkins/{checkin}/skip', [CareerCoachController::class, 'skipCheckin'])->name('checkin.skip');
+
+        // Suggestions
         Route::get('/suggestions', [CareerCoachController::class, 'suggestions'])->name('suggestions');
+        Route::post('/suggestions/{suggestion}/dismiss', [CareerCoachController::class, 'dismissSuggestion'])->name('suggestions.dismiss');
+        Route::post('/suggestions/{suggestion}/act', [CareerCoachController::class, 'actOnSuggestion'])->name('suggestions.act');
     });
 
     // Resume Builder Routes
@@ -242,11 +382,53 @@ Route::middleware('auth')->group(function () {
         Route::post('/{resume}/set-default', [ResumeController::class, 'setDefault'])->name('set-default');
         Route::post('/{resume}/toggle-public', [ResumeController::class, 'togglePublic'])->name('toggle-public');
         
-        // AI-Powered Features
-        Route::post('/{resume}/ai/generate-summary', [ResumeController::class, 'generateSummary'])->name('ai.generate-summary');
-        Route::post('/{resume}/ai/extract-skills', [ResumeController::class, 'extractSkills'])->name('ai.extract-skills');
-        Route::post('/{resume}/ai/optimize-for-job', [ResumeController::class, 'optimizeForJob'])->name('ai.optimize-for-job');
-        Route::post('/{resume}/ai/analyze-ats', [ResumeController::class, 'analyzeATS'])->name('ai.analyze-ats');
+        // AI-Powered Features — rate limited to protect AI credit budget
+        Route::middleware('throttle:10,1')->group(function () {
+            Route::post('/{resume}/ai/generate-summary', [ResumeController::class, 'generateSummary'])->name('ai.generate-summary');
+            Route::post('/{resume}/ai/extract-skills', [ResumeController::class, 'extractSkills'])->name('ai.extract-skills');
+            Route::post('/{resume}/ai/optimize-for-job', [ResumeController::class, 'optimizeForJob'])->name('ai.optimize-for-job');
+            Route::post('/{resume}/ai/analyze-ats', [ResumeController::class, 'analyzeATS'])->name('ai.analyze-ats');
+        });
+
+        // Cover Letter
+        Route::get('/{resume}/cover-letter', [\App\Http\Controllers\CoverLetterController::class, 'show'])->name('cover-letter.show');
+        Route::post('/{resume}/cover-letter/generate', [\App\Http\Controllers\CoverLetterController::class, 'generate'])->name('cover-letter.generate');
+        Route::get('/{resume}/cover-letter/download/pdf', [\App\Http\Controllers\CoverLetterController::class, 'downloadPdf'])->name('cover-letter.pdf');
+        Route::get('/{resume}/cover-letter/download/docx', [\App\Http\Controllers\CoverLetterController::class, 'downloadDocx'])->name('cover-letter.docx');
+
+        // ATS Checker (full page)
+        Route::get('/{resume}/ats-check', [\App\Http\Controllers\ResumeATSController::class, 'show'])->name('ats.show');
+        Route::post('/{resume}/ats-check/run', [\App\Http\Controllers\ResumeATSController::class, 'run'])->name('ats.run');
+        Route::get('/{resume}/ats-check/resume', [\App\Http\Controllers\ResumeATSController::class, 'editor'])->name('ats.editor');
+        Route::post('/{resume}/ats-check/save', [\App\Http\Controllers\ResumeATSController::class, 'save'])->name('ats.save');
+        Route::post('/{resume}/ats-check/suggest', [\App\Http\Controllers\ResumeATSController::class, 'suggestImprovement'])->name('ats.suggest');
+
+        // AI skill suggestions for resume builder (no resume ID needed — pre-creation)
+        Route::post('/ai/suggest-skills', function (\Illuminate\Http\Request $request) {
+            $request->validate(['job_role' => 'required|string|max:100']);
+            try {
+                $jobRole = $request->job_role;
+                $prompt = "List exactly 20 relevant professional skills for a '{$jobRole}' role. Return ONLY a JSON array of skill name strings, no explanation, no markdown. Example: [\"JavaScript\",\"React\",\"Node.js\"]";
+                $response = \OpenAI\Laravel\Facades\OpenAI::chat()->create([
+                    'model' => config('openai.model', 'gpt-4o-mini'),
+                    'messages' => [['role' => 'user', 'content' => $prompt]],
+                    'max_tokens' => 400,
+                    'temperature' => 0.5,
+                ]);
+                $content = trim($response->choices[0]->message->content ?? '[]');
+                $content = preg_replace('/^```(?:json)?\s*/i', '', $content);
+                $content = preg_replace('/\s*```$/', '', $content);
+                $skills = json_decode($content, true);
+                if (!is_array($skills)) {
+                    $skills = array_map('trim', explode(',', strip_tags($content)));
+                }
+                $skills = array_values(array_filter(array_slice($skills, 0, 20)));
+                return response()->json(['skills' => $skills]);
+            } catch (\Exception $e) {
+                \Log::error('AI skill suggestion failed', ['error' => $e->getMessage()]);
+                return response()->json(['error' => 'AI service unavailable. Please try again.'], 500);
+            }
+        })->name('ai.suggest-skills');
         
         // Suggestions
         Route::post('/{resume}/suggestions/{suggestionId}/accept', [ResumeController::class, 'acceptSuggestion'])->name('suggestions.accept');
@@ -260,10 +442,45 @@ Route::get('/skills/certificate/{hash}', [SkillAnalyzerWebController::class, 'sh
 // Public Resume View (No Auth Required)
 Route::get('/r/{shareToken}', [ResumeController::class, 'publicView'])->name('resume.public');
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Orin™ Public Application Link — career.studai.one/apply/{token}
+// No authentication required. Supports guests and logged-in users.
+// ─────────────────────────────────────────────────────────────────────────────
+Route::prefix('apply')->name('apply.')->middleware('throttle:60,1')->group(function () {
+    // Landing / phase-aware page
+    Route::get('/{token}', [PublicApplyController::class, 'show'])->name('show');
+
+    // Application submission (rate limited tightly)
+    Route::post('/{token}/submit', [PublicApplyController::class, 'submit'])
+        ->middleware('throttle:10,1')
+        ->name('submit');
+
+    // Evaluation interface
+    Route::get('/{token}/evaluation', [PublicApplyController::class, 'evaluation'])->name('evaluation');
+
+    // Evaluation API endpoints
+    Route::post('/{token}/evaluation/question', [PublicApplyController::class, 'getQuestion'])->name('evaluation.question');
+    Route::post('/{token}/evaluation/answer', [PublicApplyController::class, 'submitAnswer'])
+        ->middleware('throttle:120,1')
+        ->name('evaluation.answer');
+
+    // Anti-cheat event recorder
+    Route::post('/{token}/evaluation/anticheat', function (\Illuminate\Http\Request $req, string $token) {
+        app(\App\Services\AI\OrinEvaluationService::class)->recordAntiCheatEvent(
+            $req->input('session_token', ''),
+            $req->input('event_type', 'tab_switch')
+        );
+        return response()->json(['ok' => true]);
+    })->middleware('throttle:200,1')->name('evaluation.anticheat');
+
+    // Results page
+    Route::get('/{token}/results', [PublicApplyController::class, 'results'])->name('results');
+});
+
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
-    // Autonomous Agent Routes (Job Seekers)
-    Route::prefix('agent')->name('agent.')->middleware(['verified', 'subscription'])->group(function () {
+    // Autonomous Agent Routes (Job Seekers only — employers are redirected)
+    Route::prefix('agent')->name('agent.')->middleware(['verified', 'subscription', 'jobseeker'])->group(function () {
         Route::get('/dashboard', function() {
             $user = Auth::user();
             $config = $user->agentConfiguration;
@@ -273,6 +490,10 @@ Route::middleware('auth')->group(function () {
             $stats = null;
             $recentApplications = collect();
             $upcomingTasks = collect();
+            $internalMatches = collect();
+            $internalStats = ['pending' => 0, 'applied' => 0, 'skipped' => 0];
+            $statistics = ['total_analyzed' => 0, 'total_applications' => 0, 'today_applications' => 0, 'success_rate' => 0, 'successful_applications' => 0, 'pending_applications' => 0];
+            $limits = ['daily_limit' => 10, 'daily_remaining' => 10];
             
             if ($configured && $config) {
                 $stats = [
@@ -290,9 +511,42 @@ Route::middleware('auth')->group(function () {
                     ->latest()
                     ->take(5)
                     ->get();
+
+                // Variables expected by the existing dashboard view
+                $dailyLimit   = $config->daily_application_limit ?? 10;
+                $appliedToday = $user->applications()->whereDate('created_at', today())->count();
+                $totalApps    = $user->applications()->count();
+                $pendingApps  = $user->applications()->where('status', 'pending')->count();
+                $statistics = [
+                    'total_analyzed'         => \App\Models\AgentInternalMatch::where('user_id', $user->id)->count(),
+                    'total_applications'     => $user->applications()->where('source', 'agent')->count(),
+                    'today_applications'     => $appliedToday,
+                    'success_rate'           => $totalApps > 0
+                        ? round(($user->applications()->whereNotIn('status', ['pending', 'applied'])->count() / $totalApps) * 100)
+                        : 0,
+                    'successful_applications'=> $user->applications()->where('status', 'interview')->count(),
+                    'pending_applications'   => $pendingApps,
+                ];
+                $limits = [
+                    'daily_limit'     => $dailyLimit,
+                    'daily_remaining' => max(0, $dailyLimit - $appliedToday),
+                ];
+
+                // Internal platform job matches
+                $internalMatches = \App\Models\AgentInternalMatch::where('user_id', $user->id)
+                    ->with('job.company')
+                    ->orderByDesc('match_score')
+                    ->take(20)
+                    ->get();
+
+                $internalStats = [
+                    'pending' => \App\Models\AgentInternalMatch::where('user_id', $user->id)->where('status', 'pending')->count(),
+                    'applied' => \App\Models\AgentInternalMatch::where('user_id', $user->id)->where('status', 'applied')->count(),
+                    'skipped' => \App\Models\AgentInternalMatch::where('user_id', $user->id)->where('status', 'skipped')->count(),
+                ];
             }
             
-            return view('agent.dashboard', compact('configured', 'config', 'stats', 'recentApplications', 'upcomingTasks'));
+            return view('agent.dashboard', compact('configured', 'config', 'stats', 'recentApplications', 'upcomingTasks', 'internalMatches', 'internalStats', 'statistics', 'limits'));
         })->name('dashboard');
         
         Route::get('/configure', function() {
@@ -304,11 +558,21 @@ Route::middleware('auth')->group(function () {
         Route::post('/configure', function(\Illuminate\Http\Request $request) {
             $user = Auth::user();
             
+            // Convert comma-separated keyword/location strings to arrays
+            $criteria = $request->input('job_search_criteria', []);
+            if (isset($criteria['keywords']) && is_string($criteria['keywords'])) {
+                $criteria['keywords'] = array_values(array_filter(array_map('trim', explode(',', $criteria['keywords']))));
+            }
+            if (isset($criteria['locations']) && is_string($criteria['locations'])) {
+                $criteria['locations'] = array_values(array_filter(array_map('trim', explode(',', $criteria['locations']))));
+            }
+            $request->merge(['job_search_criteria' => $criteria]);
+            
             // Validate the form data
             $validated = $request->validate([
                 'job_search_criteria' => 'required|array',
                 'job_search_criteria.keywords' => 'required|array|min:1',
-                'job_search_criteria.locations' => 'nullable|array',
+                'job_search_criteria.locations' => 'nullable',
                 'job_search_criteria.job_types' => 'nullable|array',
                 'job_search_criteria.experience_levels' => 'nullable|array',
                 'job_search_criteria.min_salary' => 'nullable|integer|min:0',
@@ -340,7 +604,7 @@ Route::middleware('auth')->group(function () {
                 ['user_id' => $user->id],
                 [
                     'target_roles' => $jobSearchCriteria['keywords'] ?? [],
-                    'preferred_locations' => $jobSearchCriteria['locations'] ?? [],
+                    'preferred_locations' => is_array($jobSearchCriteria['locations'] ?? []) ? ($jobSearchCriteria['locations'] ?? []) : [],
                     'employment_types' => $jobSearchCriteria['job_types'] ?? ['full_time'],
                     'min_experience_years' => null,
                     'max_experience_years' => null,
@@ -349,12 +613,12 @@ Route::middleware('auth')->group(function () {
                     'work_arrangements' => [$jobSearchCriteria['remote_preference'] ?? 'no_preference'],
                     'match_threshold_percentage' => $preferences['match_threshold'] ?? 70,
                     'daily_application_limit' => $validated['daily_application_limit'] ?? 10,
+                    'require_approval' => isset($validated['require_approval']),
                     'auto_follow_up' => isset($validated['auto_follow_up']),
                     'follow_up_days' => $validated['follow_up_days'] ?? 7,
                     'enable_learning' => isset($validated['enable_learning']),
                     'active_hours' => $activeHours,
                     'active_days' => $activeHours['days'] ?? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-                    'is_active' => false,
                 ]
             );
             
@@ -363,11 +627,59 @@ Route::middleware('auth')->group(function () {
         })->name('configure.store');
         
         Route::get('/applications', function() {
-            return view('agent.applications');
+            $user = Auth::user();
+            $query = $user->applications()->with('job.company')->latest();
+
+            if (request('status')) {
+                $query->where('status', request('status'));
+            }
+            if (request('from_date')) {
+                $query->whereDate('created_at', '>=', request('from_date'));
+            }
+            if (request('to_date')) {
+                $query->whereDate('created_at', '<=', request('to_date'));
+            }
+
+            $applications = $query->paginate(20);
+
+            // Count by status
+            $statusCounts = $user->applications()
+                ->selectRaw('status, count(*) as cnt')
+                ->groupBy('status')
+                ->pluck('cnt', 'status')
+                ->toArray();
+
+            // Outcome counts mapped from status values
+            $outcomeCounts = [
+                'interview_scheduled' => $user->applications()->where('status', 'interview')->count(),
+                'offer_received'      => $user->applications()->where('status', 'offer')->count(),
+                'accepted'            => $user->applications()->where('status', 'accepted')->count(),
+                'rejected'            => $user->applications()->where('status', 'rejected')->count(),
+                'withdrawn'           => $user->applications()->where('status', 'withdrawn')->count(),
+            ];
+            $pendingCount = $statusCounts['pending'] ?? 0;
+
+            return view('agent.applications', compact('applications', 'statusCounts', 'outcomeCounts', 'pendingCount'));
         })->name('applications');
-        
+
         Route::get('/metrics', function() {
-            return view('agent.metrics');
+            $user = Auth::user();
+            $total = $user->applications()->count();
+            $successful = $user->applications()->where('status', 'interview')->count();
+            $avgScore = $user->applications()->whereNotNull('evaluation_score')->avg('evaluation_score');
+            $avgDays  = 0;
+
+            $metrics = [
+                'total_applications'   => $total,
+                'success_rate'         => $total > 0 ? round(($successful / $total) * 100) : 0,
+                'successful_outcomes'  => $successful,
+                'avg_match_score'      => $avgScore ? round($avgScore) : 0,
+                'avg_successful_score' => $avgScore ? round($avgScore) : 0,
+                'response_rate'        => $total > 0 ? round(($user->applications()->whereNotIn('status', ['pending', 'submitted'])->count() / $total) * 100) : 0,
+                'avg_days_to_response' => $avgDays,
+            ];
+
+            return view('agent.metrics', compact('metrics'));
         })->name('metrics');
         
         // Agent action routes (proxy to API controller)
@@ -376,11 +688,73 @@ Route::middleware('auth')->group(function () {
         Route::post('/resume', [\App\Http\Controllers\API\AgentController::class, 'resume'])->name('resume');
         Route::post('/deactivate', [\App\Http\Controllers\API\AgentController::class, 'deactivate'])->name('deactivate');
         Route::get('/learning', [\App\Http\Controllers\API\AgentController::class, 'learning'])->name('learning');
+
+        // Internal platform job matches (auto-apply to jobs on this platform)
+        Route::post('/internal/{match}/approve', function (\App\Models\AgentInternalMatch $match) {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            abort_unless($match->user_id === $user->id, 403);
+            abort_unless($match->status === 'pending', 422, 'Match already processed.');
+
+            // Check daily limit
+            $config = $user->agentConfiguration;
+            $dailyLimit   = $config?->daily_application_limit ?? 10;
+            $appliedToday = $user->applications()->whereDate('created_at', today())->count();
+            if ($appliedToday >= $dailyLimit) {
+                return back()->with('error', "Daily application limit ({$dailyLimit}) reached. Try again tomorrow.");
+            }
+
+            $matcher = app(\App\Services\Agent\InternalJobMatcherService::class);
+            $application = $matcher->applyForMatch($match);
+
+            return back()->with('success', 'Applied to "' . $match->job->title . '"! Application #' . $application->application_number . ' submitted.');
+        })->name('internal.approve');
+
+        Route::post('/internal/{match}/skip', function (\App\Models\AgentInternalMatch $match) {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            abort_unless($match->user_id === $user->id, 403);
+            abort_unless($match->status === 'pending', 422, 'Match already processed.');
+
+            $match->update(['status' => 'skipped']);
+            return back()->with('success', 'Match skipped.');
+        })->name('internal.skip');
+
+        Route::post('/internal/scan', function () {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            $config = $user->agentConfiguration;
+            abort_unless($config?->is_active, 422, 'Agent is not active.');
+
+            \App\Jobs\Agent\ScanInternalJobsJob::dispatch();
+            return back()->with('success', 'Scan queued — new matches will appear shortly.');
+        })->name('internal.scan');
+
+        Route::post('/internal/rescore', function () {
+            /** @var \App\Models\User $user */
+            $user   = Auth::user();
+            $config = $user->agentConfiguration;
+            abort_unless($config !== null, 422, 'No agent configuration found.');
+
+            $service = app(\App\Services\Agent\InternalJobMatcherService::class);
+            $rescored = $service->rescoreExisting($user, $config);
+
+            return back()->with('success', "Rescored {$rescored} job matches with the latest AI scoring.");
+        })->name('internal.rescore');
     });
 });
 
+// Candidate hiring test routes (no auth — access via secure token link in email)
+Route::get('/hiring-test/{token}/{stage}', [HiringTestController::class, 'show'])->name('hiring-test.show');
+Route::post('/hiring-test/{token}/{stage}/submit', [HiringTestController::class, 'submit'])->name('hiring-test.submit');
+
 // Employer Dashboard & Features (Authenticated Employers)
 Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->group(function () {
+    // Onboarding / Corporate DNA Setup
+    Route::get('/onboarding', [\App\Http\Controllers\Employer\EmployerOnboardingController::class, 'show'])->name('onboarding');
+    Route::post('/onboarding', [\App\Http\Controllers\Employer\EmployerOnboardingController::class, 'save'])->name('onboarding.save');
+    Route::post('/onboarding/ai-suggest', [\App\Http\Controllers\Employer\EmployerOnboardingController::class, 'aiSuggest'])->name('onboarding.ai-suggest');
+
     // Dashboard & Analytics (canonical employer.dashboard is in routes/employer.php)
     Route::get('/', [EmployerDashboardController::class, 'index'])->name('home');
     Route::get('/analytics', [EmployerDashboardController::class, 'analytics'])->name('analytics');
@@ -392,15 +766,26 @@ Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->
     Route::patch('/jobs/{id}/close', [JobPostingController::class, 'close'])->name('jobs.close');
     Route::patch('/jobs/{id}/reopen', [JobPostingController::class, 'reopen'])->name('jobs.reopen');
     Route::post('/jobs/{id}/duplicate', [JobPostingController::class, 'duplicate'])->name('jobs.duplicate');
+    Route::post('/jobs/ai-generate', [JobPostingController::class, 'generateAIContent'])->name('jobs.ai-generate');
+    Route::post('/jobs/ai-suggest-rounds', [JobPostingController::class, 'generateRounds'])->name('jobs.ai-suggest-rounds');
     
     // Applicant Tracking System
     Route::get('/applicants', [ApplicantTrackingController::class, 'index'])->name('applicants.index');
     Route::get('/applicants/kanban', [ApplicantTrackingController::class, 'kanban'])->name('applicants.kanban');
+    Route::get('/applicants/{id}/ranked', [ApplicantTrackingController::class, 'ranked'])->name('applicants.ranked');
+    Route::get('/applicants/{id}/ranked/export', [ApplicantTrackingController::class, 'exportRanked'])->name('applicants.ranked.export');
     Route::get('/applicants/{id}', [ApplicantTrackingController::class, 'show'])->name('applicants.show');
     Route::patch('/applicants/{id}/status', [ApplicantTrackingController::class, 'updateStatus'])->name('applicants.updateStatus');
     Route::patch('/applicants/bulk-status', [ApplicantTrackingController::class, 'bulkUpdateStatus'])->name('applicants.bulkStatus');
     Route::post('/applicants/{id}/note', [ApplicantTrackingController::class, 'addNote'])->name('applicants.addNote');
+    Route::post('/applicants/{id}/pipeline-stage', [ApplicantTrackingController::class, 'setPipelineStage'])->name('applicants.setPipelineStage');
+    Route::patch('/jobs/{jobId}/evaluation-date', [ApplicantTrackingController::class, 'setJobEvaluationDate'])->name('jobs.setEvaluationDate');
     Route::post('/applicants/export', [ApplicantTrackingController::class, 'export'])->name('applicants.export');
+
+    // Hiring Test Management (employer creates/manages MCQ tests per stage)
+    Route::get('/jobs/{jobId}/tests/{stage}/create', [HiringTestManagerController::class, 'create'])->name('tests.create');
+    Route::post('/jobs/{jobId}/tests/{stage}', [HiringTestManagerController::class, 'store'])->name('tests.store');
+    Route::get('/jobs/{jobId}/tests/{stage}/results', [HiringTestManagerController::class, 'results'])->name('tests.results');
     
     // Company Profile Management
     Route::get('/profile', [CompanyProfileController::class, 'show'])->name('profile.show');
@@ -411,28 +796,251 @@ Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->
     
     // S.C.O.U.T. AI - Employer Intelligence Suite
     Route::prefix('scout')->name('scout.')->group(function () {
-        Route::get('/', fn() => view('scout.dna-dashboard'))->name('dashboard');
-        Route::get('/dna', fn() => view('scout.dna-dashboard'))->name('dna');
+        Route::get('/', function () {
+            $user = auth()->user();
+            $companyId = $user->company_id;
+            $dnaProfileData = null;
+            if ($companyId) {
+                $dnaProfile = \App\Models\CompanyDNAProfile::with(['cultureAnalysis'])
+                    ->where('company_id', $companyId)->first();
+                if ($dnaProfile) {
+                    $dnaProfileData = [
+                        'dna_profile' => $dnaProfile,
+                        'health_metrics' => [
+                            'dna_health_score'  => $dnaProfile->dnaHealthScore ?? 0,
+                            'completion_status' => $dnaProfile->completionStatus ?? '—',
+                            'confidence_level'  => $dnaProfile->confidenceLevel ?? '—',
+                            'data_quality'      => $dnaProfile->dataQualityBadge ?? '—',
+                        ],
+                        'cultural_insights' => [
+                            'archetypes'         => $dnaProfile->culturalArchetypes ?? [],
+                            'top_success_traits' => $dnaProfile->topSuccessTraits ?? [],
+                        ],
+                        'analysis_metadata' => [
+                            'last_analyzed'  => $dnaProfile->last_analyzed_at,
+                            'needs_refresh'  => $dnaProfile->needsAnalysis(),
+                            'can_generate_requirements' => $dnaProfile->canGenerateJobRequirements(),
+                        ],
+                    ];
+                }
+            }
+            return view('scout.dna-dashboard', compact('dnaProfileData'));
+        })->name('dashboard');
+        Route::get('/dna', fn() => redirect()->route('scout.dashboard'))->name('dna');
         Route::get('/analyze-culture', fn() => view('scout.analyze-culture'))->name('analyze-culture');
         Route::get('/hiring-insights', fn() => view('scout.hiring-insights'))->name('hiring-insights');
         Route::get('/candidate-matching', fn() => view('scout.candidate-matching'))->name('candidate-matching');
         Route::get('/team-compatibility', fn() => view('scout.team-compatibility'))->name('team-compatibility');
         Route::get('/resume-analysis', fn() => view('scout.resume-analysis'))->name('resume-analysis');
-        Route::get('/shortlisting', fn() => view('scout.automated-shortlisting'))->name('shortlisting');
+
+        // Candidate search endpoint (used by candidate-matching page)
+        Route::get('/search-candidates', function (\Illuminate\Http\Request $request) {
+            $q = trim($request->query('q', ''));
+            if (strlen($q) < 1) {
+                return response()->json(['data' => []]);
+            }
+            $candidates = \App\Models\User::where('account_type', 'job_seeker')
+                ->where(function ($query) use ($q) {
+                    $query->where('name', 'like', "%{$q}%")
+                          ->orWhere('email', 'like', "%{$q}%");
+                })
+                ->select('id', 'name', 'email')
+                ->limit(20)
+                ->get();
+            return response()->json(['data' => $candidates]);
+        })->name('search-candidates');
+        Route::get('/shortlisting', function () {
+            $user = auth()->user();
+            $company = $user->company;
+            $jobsQuery = \App\Models\Job::withCount(['applications as pending_count' => fn($q) => $q->whereIn('status', ['pending', 'reviewing'])]);
+            if ($company) {
+                $jobsQuery->where('company_id', $company->id);
+            } elseif ($user) {
+                // Fallback: show jobs posted by this user, or all jobs in dev
+                $jobs = $jobsQuery->where('posted_by', $user->id)->latest()->get(['id', 'title', 'status']);
+                if ($jobs->isEmpty()) {
+                    $jobs = $jobsQuery->latest()->get(['id', 'title', 'status']);
+                }
+                return view('scout.automated-shortlisting', compact('jobs'));
+            }
+            $jobs = $jobsQuery->latest()->get(['id', 'title', 'status']);
+            return view('scout.automated-shortlisting', compact('jobs'));
+        })->name('shortlisting');
+        // JSON endpoint: fetch pending application IDs for a job
+        Route::get('/jobs/{jobId}/applications', function (int $jobId) {
+            $applications = \App\Models\Application::where('job_id', $jobId)
+                ->whereIn('status', ['pending', 'reviewing'])
+                ->with('user:id,name,email')
+                ->get(['id', 'user_id', 'application_number', 'status']);
+            return response()->json(['applications' => $applications]);
+        })->name('job.applications');
+
+        // JSON endpoint: run the shortlisting pipeline
+        Route::post('/shortlist', function (\Illuminate\Http\Request $request) {
+            $request->validate([
+                'job_id'          => 'required|integer|exists:job_listings,id',
+                'application_ids' => 'required|array|min:1',
+                'application_ids.*' => 'integer',
+            ]);
+            try {
+                $service = app(\App\Services\AI\Scout\AutomatedShortlistingService::class);
+                $result  = $service->executeShortlistingPipeline(
+                    (int) $request->job_id,
+                    $request->application_ids
+                );
+
+                if ($result['success'] ?? false) {
+                    $data = $result['data'] ?? [];
+
+                    // Update shortlisted candidates → status = 'shortlisted' + send notification
+                    foreach ($data['shortlisted'] ?? [] as $candidate) {
+                        $application = \App\Models\Application::find($candidate['application_id']);
+                        if ($application) {
+                            $application->update([
+                                'status'            => 'shortlisted',
+                                'status_updated_at' => now(),
+                                'final_rank_score'  => $candidate['overall_score'] ?? null,
+                            ]);
+                            // Notify the candidate synchronously (bypasses queue — works without a worker)
+                            $matchScore = (float) ($candidate['overall_score'] ?? 0);
+                            if ($application->user) {
+                                try {
+                                    $application->user->notifyNow(
+                                        new \App\Notifications\CandidateShortlistedNotification(
+                                            $application,
+                                            $matchScore
+                                        )
+                                    );
+                                } catch (\Exception $e) {
+                                    \Log::warning('Shortlist notification failed', ['application_id' => $application->id, 'error' => $e->getMessage()]);
+                                }
+                            }
+                            // AI emails: candidate + HR (runs immediately without queue worker)
+                            try {
+                                \App\Jobs\SendHiringEmailsJob::dispatchSync($application, 'shortlisted', $matchScore);
+                            } catch (\Throwable $e) {
+                                \Log::warning('Shortlist hiring emails failed', ['application_id' => $application->id, 'error' => $e->getMessage()]);
+                            }
+                        }
+                    }
+
+                    // Reject all candidates that failed any round — store reason + notify
+                    $rejectedByRound = $data['rejected_by_round'] ?? [];
+                    foreach (['round_1', 'round_2', 'round_3', 'round_4'] as $round) {
+                        foreach ($rejectedByRound[$round] ?? [] as $rejected) {
+                            $application = \App\Models\Application::with('user', 'job')->find($rejected['application_id'] ?? null);
+                            if ($application && !in_array($application->status, ['shortlisted', 'hired', 'rejected'])) {
+                                // Build a human-readable rejection reason
+                                $concerns = $rejected['reason'] ?? ['Did not meet the minimum criteria for this role'];
+                                $reasonText = is_array($concerns)
+                                    ? implode('; ', array_filter($concerns))
+                                    : (string) $concerns;
+                                $roundLabel = 'Round ' . str_replace('round_', '', $round);
+                                $score = $rejected['score'] ?? 0;
+
+                                $application->update([
+                                    'status'           => 'rejected',
+                                    'status_updated_at' => now(),
+                                    'rejection_reason' => "Not selected after {$roundLabel} (score: {$score}). {$reasonText}",
+                                ]);
+
+                                // Notify the candidate
+                                if ($application->user) {
+                                    try {
+                                        $application->user->notifyNow(
+                                            new \App\Notifications\CandidateRejectedNotification($application)
+                                        );
+                                    } catch (\Exception $e) {
+                                        \Log::warning('Rejection notification failed', ['application_id' => $application->id, 'error' => $e->getMessage()]);
+                                    }
+                                }
+                                // AI rejection emails: candidate + HR
+                                try {
+                                    \App\Jobs\SendHiringEmailsJob::dispatchSync($application, 'rejected');
+                                } catch (\Throwable $e) {
+                                    \Log::warning('Rejection hiring emails failed', ['application_id' => $application->id, 'error' => $e->getMessage()]);
+                                }
+                            }
+                        }
+                    }
+
+                    // Also reject any remaining pending/reviewing apps for this job that weren't in the pipeline at all
+                    $processedIds = array_column($data['shortlisted'] ?? [], 'application_id');
+                    foreach (['round_1','round_2','round_3','round_4'] as $round) {
+                        foreach ($rejectedByRound[$round] ?? [] as $r) {
+                            $processedIds[] = $r['application_id'] ?? 0;
+                        }
+                    }
+                    if (!empty($processedIds)) {
+                        $remaining = \App\Models\Application::with('user','job')
+                            ->where('job_id', (int) $request->job_id)
+                            ->whereIn('status', ['pending', 'reviewing'])
+                            ->whereNotIn('id', $processedIds)
+                            ->get();
+                        foreach ($remaining as $application) {
+                            $application->update([
+                                'status'            => 'rejected',
+                                'status_updated_at' => now(),
+                                'rejection_reason'  => 'Application was not selected for further review.',
+                            ]);
+                            if ($application->user) {
+                                try {
+                                    $application->user->notifyNow(
+                                        new \App\Notifications\CandidateRejectedNotification($application)
+                                    );
+                                } catch (\Exception $e) {
+                                    \Log::warning('Remaining rejection notification failed', ['application_id' => $application->id, 'error' => $e->getMessage()]);
+                                }
+                            }
+                            // AI rejection emails for remaining apps
+                            try {
+                                \App\Jobs\SendHiringEmailsJob::dispatchSync($application, 'rejected');
+                            } catch (\Throwable $e) {
+                                \Log::warning('Remaining rejection hiring emails failed', ['application_id' => $application->id, 'error' => $e->getMessage()]);
+                            }
+                        }
+                    }
+                }
+
+                return response()->json($result);
+            } catch (\Exception $e) {
+                \Log::error('Shortlisting pipeline failed', ['error' => $e->getMessage()]);
+                return response()->json(['message' => 'Shortlisting failed: ' . $e->getMessage()], 500);
+            }
+        })->name('shortlist');
+
         Route::get('/assessment', fn() => view('scout.adaptive-assessment'))->name('assessment');
         Route::get('/behavioral', fn() => view('scout.behavioral-intelligence'))->name('behavioral');
         Route::get('/bias-elimination', fn() => view('scout.bias-elimination'))->name('bias-elimination');
         Route::get('/predictive', fn() => view('scout.predictive-analytics'))->name('predictive');
         Route::get('/learning', fn() => view('scout.continuous-learning'))->name('learning');
     });
-});
 
-// Market Intelligence Routes (Authenticated Job Seekers)
-Route::middleware(['auth', 'verified'])->prefix('market')->name('market.')->group(function () {
-    Route::get('/overview', fn() => view('market.overview'))->name('overview');
-    Route::get('/positioning', fn() => view('market.positioning'))->name('positioning');
-    Route::get('/salary-intelligence', fn() => view('market.salary-intelligence'))->name('salary-intelligence');
-    Route::get('/skill-trends', fn() => view('market.skill-trends'))->name('skill-trends');
+    // Interview Management — Full 5-Phase Pipeline
+    Route::prefix('interviews')->name('interviews.')->group(function () {
+        Route::get('/',                                 [InterviewManagementController::class, 'index'])->name('index');
+        Route::get('/schedule/{application}',           [InterviewManagementController::class, 'scheduleForm'])->name('schedule');
+        Route::post('/',                                [InterviewManagementController::class, 'store'])->name('store');
+        Route::get('/{id}',                             [InterviewManagementController::class, 'show'])->name('show');
+        Route::post('/{id}/scores',                     [InterviewManagementController::class, 'saveScore'])->name('scores');
+        Route::get('/{id}/evaluate',                    [InterviewManagementController::class, 'evaluate'])->name('evaluate');
+        Route::post('/{id}/evaluate',                   [InterviewManagementController::class, 'submitEvaluation'])->name('evaluate.submit');
+        Route::get('/{id}/decide',                      [InterviewManagementController::class, 'decideForm'])->name('decide');
+        Route::post('/{id}/decide',                     [InterviewManagementController::class, 'submitDecision'])->name('decide.submit');
+        Route::patch('/{id}/complete',                  [InterviewManagementController::class, 'complete'])->name('complete');
+        Route::patch('/{id}/cancel',                    [InterviewManagementController::class, 'cancel'])->name('cancel');
+    });
+
+    // ── Orin™ Conversational Employer Onboarding ──────────────────────────
+    Route::get('/orin-onboarding', [\App\Http\Controllers\Employer\OrinOnboardingController::class, 'show'])->name('orin-onboarding');
+    Route::post('/orin-onboarding/chat', [\App\Http\Controllers\Employer\OrinOnboardingController::class, 'chat'])->name('orin-onboarding.chat');
+    Route::post('/orin-onboarding/skip', [\App\Http\Controllers\Employer\OrinOnboardingController::class, 'skip'])->name('orin-onboarding.skip');
+
+    // ── Orin™ AI Job Creator ──────────────────────────────────────────────
+    Route::get('/create-job', [\App\Http\Controllers\Employer\OrinJobCreatorController::class, 'show'])->name('orin-job-creator');
+    Route::post('/create-job/chat', [\App\Http\Controllers\Employer\OrinJobCreatorController::class, 'chat'])->name('orin-job-creator.chat');
+    Route::post('/create-job/quick-post', [\App\Http\Controllers\Employer\OrinJobCreatorController::class, 'quickPost'])->name('orin-job-creator.quick-post');
+    Route::get('/create-job/my-jobs', [\App\Http\Controllers\Employer\OrinJobCreatorController::class, 'myJobs'])->name('orin-job-creator.my-jobs');
 });
 
 // AI Negotiation Strategist Routes (Authenticated Job Seekers)
@@ -477,13 +1085,18 @@ Route::middleware(['auth', 'verified'])->prefix('negotiation')->name('negotiatio
             ->latest()
             ->paginate(10);
         
+        $completedStrategiesCount = $completedStrategies->count();
+        $totalValueGained = '₹0';
+
         return view('negotiation.dashboard', compact(
             'activeStrategies',
             'totalSessions',
+            'completedStrategiesCount',
             'avgGainPercent',
             'successRate',
             'activeSessions',
-            'strategies'
+            'strategies',
+            'totalValueGained'
         ));
     })->name('dashboard');
     
@@ -499,36 +1112,62 @@ Route::middleware(['auth', 'verified'])->prefix('negotiation')->name('negotiatio
         
         // Calculate readiness score based on completed components
         $readinessScore = 0;
+
+        // Market Research — up to 20pts based on data completeness
+        $marketPts = 0;
+        if ($strategy->market_median)          $marketPts += 5;
+        if ($strategy->market_percentile_25)   $marketPts += 5;
+        if ($strategy->market_percentile_75)   $marketPts += 5;
+        if ($strategy->market_percentile_90)   $marketPts += 5;
+
+        // Negotiation Leverage — based on number of leverage points stored (4pts each, max 20)
+        $leverageItems = count($strategy->strongest_points ?? []) + count($strategy->value_propositions ?? []);
+        $leveragePts = min(20, $leverageItems * 4);
+
+        // Scenarios — 3+ = full score
+        $scenarioPts = min(20, (int) round(($strategy->scenarios->count() / 3) * 20));
+        $scenarioStatus = $strategy->scenarios->count() >= 3 ? 'complete' : ($strategy->scenarios->count() > 0 ? 'partial' : 'pending');
+
+        // Scripts — 3+ = full score
+        $scriptPts = min(20, (int) round(($strategy->scripts->count() / 3) * 20));
+        $scriptStatus = $strategy->scripts->count() >= 3 ? 'complete' : ($strategy->scripts->count() > 0 ? 'partial' : 'pending');
+
+        // Company Intelligence — culture + manager perspective + flexibility
+        $companyPts = 0;
+        if ($strategy->company_culture_analysis)         $companyPts += 10;
+        if ($strategy->hiring_manager_perspective)       $companyPts += 5;
+        if ($strategy->company_negotiation_flexibility)  $companyPts += 5;
+
         $readinessFactors = [
             [
                 'name' => 'Market Research',
-                'points' => $strategy->market_data ? 20 : 0,
+                'points' => $marketPts,
                 'max_points' => 20,
-                'status' => $strategy->market_data ? 'complete' : 'pending'
+                'status' => $marketPts >= 20 ? 'complete' : ($marketPts > 0 ? 'partial' : 'pending')
             ],
             [
                 'name' => 'Negotiation Leverage',
-                'points' => $strategy->leverage_points ? 20 : 0,
+                'points' => $leveragePts,
                 'max_points' => 20,
-                'status' => $strategy->leverage_points ? 'complete' : 'pending'
+                'status' => $leveragePts >= 20 ? 'complete' : ($leveragePts > 0 ? 'partial' : 'pending')
             ],
             [
                 'name' => 'Scenarios Prepared',
-                'points' => $strategy->scenarios->count() >= 3 ? 20 : ($strategy->scenarios->count() * 7),
+                'points' => $scenarioPts,
                 'max_points' => 20,
-                'status' => $strategy->scenarios->count() >= 3 ? 'complete' : ($strategy->scenarios->count() > 0 ? 'partial' : 'pending')
+                'status' => $scenarioStatus,
             ],
             [
                 'name' => 'Scripts Ready',
-                'points' => $strategy->scripts->count() >= 3 ? 20 : ($strategy->scripts->count() * 7),
+                'points' => $scriptPts,
                 'max_points' => 20,
-                'status' => $strategy->scripts->count() >= 3 ? 'complete' : ($strategy->scripts->count() > 0 ? 'partial' : 'pending')
+                'status' => $scriptStatus,
             ],
             [
                 'name' => 'Company Intelligence',
-                'points' => $strategy->company_culture_analysis ? 20 : 0,
+                'points' => $companyPts,
                 'max_points' => 20,
-                'status' => $strategy->company_culture_analysis ? 'complete' : 'pending'
+                'status' => $companyPts >= 20 ? 'complete' : ($companyPts > 0 ? 'partial' : 'pending')
             ]
         ];
         
@@ -539,7 +1178,7 @@ Route::middleware(['auth', 'verified'])->prefix('negotiation')->name('negotiatio
             'market_position' => min(100, ($strategy->market_position_percentile ?? 50) * 1.5),
             'experience' => min(100, ($strategy->experience_years ?? 0) * 5),
             'skills' => min(100, (count($strategy->skills ?? []) * 10)),
-            'alternatives' => $strategy->has_other_offers ? 80 : ($strategy->is_currently_employed ? 50 : 20)
+            'alternatives' => ($strategy->has_other_offers ?? false) ? 80 : (($strategy->is_currently_employed ?? false) ? 50 : 20)
         ];
         
         return view('negotiation.strategy', compact('strategy', 'readinessScore', 'readinessFactors', 'leverageAnalysis'));
@@ -568,8 +1207,25 @@ Route::middleware(['auth', 'verified'])->prefix('negotiation')->name('negotiatio
         }
 
         $strategy = $user->strategies()->findOrFail($id);
-        $scripts = $strategy->scripts()->orderBy('stage', 'asc')->get();
-        
+
+        // Auto-generate scripts if none exist and scenarios are available
+        if ($strategy->scripts()->count() === 0) {
+            $scenario = $strategy->scenarios()->first();
+            if ($scenario) {
+                try {
+                    $scriptService = app(\App\Services\AI\NegotiationScriptService::class);
+                    $scriptService->generateScripts($strategy, $scenario);
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Script auto-generation failed', [
+                        'strategy_id' => $strategy->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+        }
+
+        $scripts = $strategy->scripts()->orderBy('script_type', 'asc')->get();
+
         return view('negotiation.scripts', compact('strategy', 'scripts'));
     })->name('scripts');
     
@@ -608,9 +1264,96 @@ Route::middleware(['auth', 'verified'])->prefix('negotiation')->name('negotiatio
     // Tactics Library - Browse negotiation tactics and frameworks
     Route::get('/tactics', function() {
         $tactics = \App\Models\NegotiationTactic::orderBy('category')->orderBy('name')->get()->groupBy('category');
-        
         return view('negotiation.tactics', compact('tactics'));
     })->name('tactics');
+
+    // AI Salary Negotiation Chatbot
+    Route::get('/chatbot', function() {
+        return view('negotiation.chatbot');
+    })->name('chatbot');
+
+    // Chatbot API endpoint — POST /negotiation/chat
+    Route::post('/chat', function(\Illuminate\Http\Request $request) {
+        $request->validate(['message' => 'required|string|max:2000', 'history' => 'nullable|array']);
+
+        $history = $request->input('history', []);
+        $userMessage = $request->input('message');
+
+        $contextLines = '';
+        foreach (array_slice($history, -6) as $h) {
+            $role = $h['role'] === 'user' ? 'User' : 'Assistant';
+            $contextLines .= "{$role}: {$h['content']}\n";
+        }
+
+        $systemPrompt = <<<'SYSTEM'
+You are an expert AI Salary Negotiation Coach for the Indian job market. You are conversational, warm, and to-the-point.
+
+RESPONSE RULES — follow these strictly:
+1. Keep every reply SHORT — max 4-5 bullet points or 3-4 sentences. No long essays.
+2. Use LPA (Lakhs Per Annum) for all salary figures, never USD.
+3. Give ONE clear, actionable tip or script — not a list of everything possible.
+4. Be direct and specific — mention Indian cities, companies, and norms when relevant.
+
+FORMAT RULE: After your reply (after a blank line), always add this exact line:
+FOLLOWUPS: [question the user might ask you next 1?] | [question the user might ask you next 2?] | [question the user might ask you next 3?]
+
+The FOLLOWUPS must be questions the USER would ask YOU (the coach) — things like "How do I counter if they say budget is fixed?", "What exact script should I use?", "Should I mention a competing offer?" — NOT questions you are asking the user.
+SYSTEM;
+
+        $fullPrompt = $contextLines ? "Conversation so far:\n{$contextLines}\nUser: {$userMessage}" : $userMessage;
+
+        try {
+            set_time_limit(120);
+            $service = new class {
+                use \App\Traits\InteractsWithAI;
+                public function chat(string $prompt, string $system, array $options = []): string
+                {
+                    return $this->ai($prompt, $system, $options);
+                }
+            };
+            $raw = $service->chat($fullPrompt, $systemPrompt, [
+                'temperature' => 0.7,
+                'max_tokens'  => 250,
+                'timeout'     => 45,
+            ]);
+
+            // Parse follow-up questions out of the response
+            $followUps = [];
+            $reply = $raw;
+            if (preg_match('/FOLLOWUPS:\s*(.+)$/mi', $raw, $m)) {
+                $reply = trim(preg_replace('/[\n\r]*FOLLOWUPS:\s*.+$/mi', '', $raw));
+                $parsed = array_values(array_filter(array_map(function($q) {
+                    return trim(trim(trim($q), '[]'), '?') . '?';
+                }, explode('|', $m[1])), fn($q) => strlen($q) > 5));
+                if (count($parsed) >= 2) {
+                    $followUps = array_slice($parsed, 0, 3);
+                }
+            }
+
+            // Always provide follow-ups — generate topic-based fallbacks if AI didn't include them
+            if (empty($followUps)) {
+                $msg = strtolower($userMessage);
+                if (str_contains($msg, 'email') || str_contains($msg, 'script') || str_contains($msg, 'write')) {
+                    $followUps = ['Can you make it more assertive?', 'Add a deadline to this email?', 'Write a follow-up if they don\'t respond?'];
+                } elseif (str_contains($msg, 'salary') || str_contains($msg, 'lpa') || str_contains($msg, 'offer')) {
+                    $followUps = ['How much can I realistically push for?', 'What if they say the budget is fixed?', 'Should I mention a competing offer?'];
+                } elseif (str_contains($msg, 'counter') || str_contains($msg, 'pushback') || str_contains($msg, 'best offer')) {
+                    $followUps = ['What exact words should I use?', 'How many times can I counter?', 'When should I stop negotiating?'];
+                } elseif (str_contains($msg, 'benefit') || str_contains($msg, 'bonus') || str_contains($msg, 'equity')) {
+                    $followUps = ['How do I ask for a signing bonus?', 'Can I negotiate WFH days?', 'What if they won\'t move on salary but offer stock?'];
+                } elseif (str_contains($msg, 'ctc') || str_contains($msg, 'current') || str_contains($msg, 'package')) {
+                    $followUps = ['How do I justify a 30% hike?', 'Should I reveal my current CTC?', 'How do I handle the HR salary form?'];
+                } else {
+                    $followUps = ['How do I say this professionally?', 'What\'s the market rate for my role?', 'How do I handle their counter-offer?'];
+                }
+            }
+
+            return response()->json(['reply' => $reply, 'followUps' => $followUps]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Negotiation chatbot error', ['error' => $e->getMessage()]);
+            return response()->json(['reply' => 'I apologize, I\'m having trouble connecting right now. Please try again in a moment.', 'followUps' => []], 200);
+        }
+    })->name('chat');
 });
 
 // Company Reviews & Ratings Routes (Public & Authenticated)
@@ -796,7 +1539,7 @@ Route::middleware(['auth', 'verified'])->prefix('network')->name('network.')->gr
 // Calendar Integration Routes (Job Seekers & Employers)
 Route::middleware(['auth', 'verified'])->prefix('calendar')->name('calendar.')->group(function () {
     // Calendar Dashboard
-    Route::get('/', [\App\Http\Controllers\CalendarController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', [\App\Http\Controllers\CalendarController::class, 'index'])->name('dashboard');
     
     // Calendar Connections
     Route::get('/connect/{provider}', [\App\Http\Controllers\CalendarController::class, 'connect'])->name('connect')
@@ -1021,6 +1764,10 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
             Route::delete('/proposals/{proposal}', [FreelancerController::class, 'withdrawProposal'])->name('withdraw-proposal');
             Route::get('/saved-projects', [FreelancerController::class, 'savedProjects'])->name('saved-projects');
             Route::post('/projects/{project}/save', [FreelancerController::class, 'toggleSaveProject'])->name('toggle-save-project');
+            // Offers
+            Route::get('/offers', [FreelancerController::class, 'offers'])->name('offers');
+            Route::post('/offers/{proposal}/accept', [FreelancerController::class, 'acceptOffer'])->name('offer.accept');
+            Route::post('/offers/{proposal}/decline', [FreelancerController::class, 'declineOffer'])->name('offer.decline');
         });
 
         // Employer Dashboard & Project Management
@@ -1029,7 +1776,9 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
             Route::get('/projects', [MarketplaceEmployerController::class, 'projects'])->name('projects');
             Route::get('/projects/create', [MarketplaceEmployerController::class, 'createProject'])->name('create-project');
             Route::post('/projects', [MarketplaceEmployerController::class, 'storeProject'])->name('store-project');
+            Route::post('/projects/enhance', [MarketplaceEmployerController::class, 'enhanceProject'])->name('enhance-project');
             Route::get('/projects/{project}/manage', [MarketplaceEmployerController::class, 'manageProject'])->name('manage-project');
+            Route::get('/projects/{project}/edit', [MarketplaceEmployerController::class, 'editProject'])->name('edit-project');
             Route::put('/projects/{project}', [MarketplaceEmployerController::class, 'updateProject'])->name('update-project');
             Route::delete('/projects/{project}', [MarketplaceEmployerController::class, 'deleteProject'])->name('delete-project');
             Route::post('/projects/{project}/publish', [MarketplaceEmployerController::class, 'publishProject'])->name('publish-project');
@@ -1037,6 +1786,8 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
             Route::get('/projects/{project}/proposals', [MarketplaceEmployerController::class, 'reviewProposals'])->name('review-proposals');
             Route::post('/proposals/{proposal}/hire', [MarketplaceEmployerController::class, 'hireFreelancer'])->name('hire');
             Route::post('/proposals/{proposal}/reject', [MarketplaceEmployerController::class, 'rejectProposal'])->name('reject-proposal');
+            Route::post('/proposals/{proposal}/shortlist', [MarketplaceEmployerController::class, 'shortlistProposal'])->name('shortlist-proposal');
+            Route::post('/proposals/{proposal}/offer', [MarketplaceEmployerController::class, 'sendOffer'])->name('send-offer');
             Route::get('/freelancers/{profile}/invite', [MarketplaceEmployerController::class, 'showInviteForm'])->name('invite');
             Route::post('/freelancers/{profile}/invite', [MarketplaceEmployerController::class, 'sendInvitation'])->name('send-invitation');
             Route::get('/contracts', [MarketplaceEmployerController::class, 'contracts'])->name('contracts');
@@ -1068,8 +1819,32 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
             Route::post('/payu/failure', [ContractController::class, 'payuFailure'])->name('payu.failure');
         });
 
+        // AI Helpers
+        Route::post('/ai/cover-letter', [FreelancerController::class, 'generateCoverLetter'])->name('ai.cover-letter');
+
+        // Contact project owner
+        Route::post('/projects/{project}/contact', [MarketplaceController::class, 'contactProjectOwner'])->name('project.contact');
+
         // Messaging (between freelancer and employer)
         Route::get('/message/{profile}', [MarketplaceController::class, 'messageFreelancer'])->name('message');
+        Route::post('/message/{profile}', [MarketplaceController::class, 'sendMessageToFreelancer'])->name('message.send');
+
+        // ── GIG MARKETPLACE ───────────────────────────────────────────────
+        // Public: browse & view gigs (company / visitor side)
+        Route::get('/gigs', [\App\Http\Controllers\Marketplace\GigController::class, 'index'])->name('gigs');
+        Route::get('/gigs/{gig}', [\App\Http\Controllers\Marketplace\GigController::class, 'show'])->name('gig.show');
+        Route::post('/gigs/{gig}/order', [\App\Http\Controllers\Marketplace\GigController::class, 'placeOrder'])->name('gig.order');
+
+        // Freelancer: manage their own gigs
+        Route::prefix('freelancer')->name('freelancer.')->group(function () {
+            Route::get('/gigs', [\App\Http\Controllers\Marketplace\GigController::class, 'myGigs'])->name('gigs');
+            Route::get('/gigs/create', [\App\Http\Controllers\Marketplace\GigController::class, 'create'])->name('create-gig');
+            Route::post('/gigs', [\App\Http\Controllers\Marketplace\GigController::class, 'store'])->name('store-gig');
+            Route::get('/gigs/{gig}/edit', [\App\Http\Controllers\Marketplace\GigController::class, 'edit'])->name('edit-gig');
+            Route::put('/gigs/{gig}', [\App\Http\Controllers\Marketplace\GigController::class, 'update'])->name('update-gig');
+            Route::delete('/gigs/{gig}', [\App\Http\Controllers\Marketplace\GigController::class, 'destroy'])->name('delete-gig');
+            Route::post('/gigs/{gig}/toggle', [\App\Http\Controllers\Marketplace\GigController::class, 'toggleStatus'])->name('toggle-gig');
+        });
     });
 });
 
@@ -1104,8 +1879,13 @@ Route::middleware(['auth', 'verified'])->prefix('gamification')->name('gamificat
     // Daily Reward
     Route::post('/claim-daily', [GamificationController::class, 'claimDailyReward'])->name('claim-daily');
     
+    // Events & Referrals
+    Route::get('/events', [GamificationController::class, 'events'])->name('events');
+    Route::get('/referrals', [GamificationController::class, 'referrals'])->name('referrals');
+
     // History & Stats
     Route::get('/history', [GamificationController::class, 'history'])->name('history');
+    Route::get('/activity', [GamificationController::class, 'history'])->name('activity');
     Route::get('/stats', [GamificationController::class, 'stats'])->name('stats');
     
     // API Endpoints for AJAX

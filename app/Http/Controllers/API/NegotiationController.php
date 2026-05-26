@@ -60,34 +60,35 @@ class NegotiationController extends Controller
         }
 
         try {
+            set_time_limit(120); // Allow up to 2 min for AI call
             $user = Auth::user();
             $data = $request->all();
-            
-            // Generate comprehensive strategy
+            // Normalise key: API sends 'experience_years', service expects 'years_experience'
+            if (isset($data['experience_years']) && !isset($data['years_experience'])) {
+                $data['years_experience'] = $data['experience_years'];
+            }
+
+            // Generate strategy (1 AI call for insights)
             $strategy = $this->strategistService->generateStrategy($user, $data);
 
-            // Generate scenarios
+            // Generate scenarios (no AI calls — pure math)
             $scenarios = $this->scenarioService->generateScenarios($strategy);
 
-            // Generate scripts for recommended scenario
-            $recommendedScenario = $this->scenarioService->getRecommendedScenario($strategy);
-            $scripts = [];
-            if ($recommendedScenario) {
-                $scripts = $this->scriptService->generateScripts($strategy, $recommendedScenario);
-            }
+            // Skip script generation here — scripts are generated lazily when user opens a scenario
+            // This avoids 3 extra AI calls (email + phone + in-person scripts) that cause timeouts
 
             return response()->json([
                 'success' => true,
-                'strategy' => $strategy->load(['scenarios', 'scripts']),
-                'recommended_scenario' => $recommendedScenario,
+                'strategy' => $strategy->load(['scenarios']),
+                'recommended_scenario' => $this->scenarioService->getRecommendedScenario($strategy),
                 'readiness_score' => $this->calculateReadinessScore($strategy),
                 'next_steps' => $this->getNextSteps($strategy),
             ]);
         } catch (\Exception $e) {
+            Log::error('Strategy generation failed', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to generate strategy',
-                'error' => $e->getMessage()
+                'message' => 'Failed to generate strategy: ' . $e->getMessage(),
             ], 500);
         }
     }

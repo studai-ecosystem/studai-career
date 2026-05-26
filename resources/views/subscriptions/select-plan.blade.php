@@ -1,14 +1,16 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Confirm Plan Selection') }}
-        </h2>
-    </x-slot>
+<x-layouts.dashboard :title="'Confirm Plan'">
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
+    <div style="max-width:560px;margin:0 auto;padding:8px 0 40px">
+        <div class="rounded-2xl overflow-hidden" style="background:#fff;border:1px solid #ebebf4;box-shadow:0 4px 24px rgba(99,102,241,.10)">
+            <div style="background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:20px 24px">
+                <a href="{{ route('pricing') }}" class="inline-flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-white mb-3" style="text-decoration:none">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                    Back to Plans
+                </a>
+                <h1 class="text-xl font-bold text-white">{{ $plan->name }} Plan</h1>
+                <p class="text-sm text-white/70 mt-1">{{ $plan->description }}</p>
+            </div>
+            <div class="p-6">
                     <!-- Plan Details -->
                     <div class="mb-6">
                         <h3 class="text-2xl font-bold text-gray-900">{{ $plan->name }}</h3>
@@ -16,114 +18,85 @@
                     </div>
 
                     <!-- Pricing -->
-                    <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-                        <h4 class="font-semibold text-gray-900 mb-4">Select Billing Cycle</h4>
-                        
+                    <div class="mb-6">
+                        @php
+                            $planPrice    = (float) $plan->price;
+                            $isYearly     = $plan->billing_period === 'yearly';
+                            $displayPrice = $isYearly ? number_format($planPrice / 12) : number_format($planPrice);
+                            $billingLabel = $isYearly ? 'Billed ₹' . number_format($planPrice) . '/year · Cancel anytime' : 'Billed monthly · Cancel anytime';
+                        @endphp
+
+                        <!-- Price display -->
+                        <div class="p-5 rounded-2xl mb-4" style="background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:2px solid #a5b4fc">
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-4xl font-extrabold" style="color:#4f46e5">₹{{ $displayPrice }}</span>
+                                <span class="text-gray-500 font-medium">/{{ $isYearly ? 'mo' : 'month' }}</span>
+                            </div>
+                            <p class="text-sm mt-1" style="color:#6366f1">{{ $billingLabel }}</p>
+                        </div>
+
                         <form id="billing-form" method="POST" action="{{ route('subscriptions.subscribe') }}">
                             @csrf
                             <input type="hidden" name="plan_id" value="{{ $plan->id }}">
-                            
-                            <div class="space-y-3">
-                                <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                                    <input type="radio" name="billing_cycle" value="monthly" class="h-4 w-4 text-indigo-600" checked>
-                                    <div class="ml-3 flex-1">
-                                        <div class="flex justify-between items-baseline">
-                                            <span class="font-semibold text-gray-900">Monthly</span>
-                                            <span class="text-2xl font-bold text-gray-900">₹{{ number_format($plan->price_monthly) }}</span>
-                                        </div>
-                                        <p class="text-sm text-gray-500">Billed monthly, cancel anytime</p>
-                                    </div>
-                                </label>
-
-                                <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition relative">
-                                    <input type="radio" name="billing_cycle" value="yearly" class="h-4 w-4 text-indigo-600">
-                                    <div class="ml-3 flex-1">
-                                        <div class="flex justify-between items-baseline">
-                                            <div>
-                                                <span class="font-semibold text-gray-900">Yearly</span>
-                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                                                    Save 20%
-                                                </span>
-                                            </div>
-                                            <div class="text-right">
-                                                <span class="text-2xl font-bold text-gray-900">₹{{ number_format($plan->price_yearly / 12) }}</span>
-                                                <span class="text-gray-500">/month</span>
-                                            </div>
-                                        </div>
-                                        <p class="text-sm text-gray-500">₹{{ number_format($plan->price_yearly) }} billed annually</p>
-                                    </div>
-                                </label>
-                            </div>
-
-                            <!-- Payment Gateway Selection -->
-                            <div class="mt-6">
-                                <h4 class="font-semibold text-gray-900 mb-4">Select Payment Method</h4>
-                                <div class="space-y-3">
-                                    <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                                        <input type="radio" name="gateway" value="razorpay" class="h-4 w-4 text-indigo-600" checked>
-                                        <div class="ml-3">
-                                            <span class="font-semibold text-gray-900">Razorpay</span>
-                                            <p class="text-sm text-gray-500">Credit/Debit Card, UPI, Net Banking, Wallets</p>
-                                        </div>
-                                    </label>
-
-                                    <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                                        <input type="radio" name="gateway" value="payu" class="h-4 w-4 text-indigo-600">
-                                        <div class="ml-3">
-                                            <span class="font-semibold text-gray-900">PayU</span>
-                                            <p class="text-sm text-gray-500">All major payment methods supported</p>
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
+                            <input type="hidden" name="billing_cycle" value="{{ $plan->billing_period }}">
 
                             <!-- Features Summary -->
-                            <div class="mt-6 p-4 bg-indigo-50 rounded-lg">
+                            <div class="p-4 bg-indigo-50 rounded-xl mb-5">
                                 <h4 class="font-semibold text-indigo-900 mb-3">What's Included:</h4>
                                 <ul class="space-y-2 text-sm text-indigo-800">
-                                    <li class="flex items-center">
-                                        <svg class="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        {{ $plan->applications_limit == -1 ? 'Unlimited' : $plan->applications_limit }} job applications per month
+                                    <li class="flex items-center gap-2">
+                                        <svg class="h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                        <span><strong>{{ ($plan->applications_limit === null || $plan->applications_limit == -1) ? 'Unlimited' : number_format($plan->applications_limit) }}</strong> job applications/{{ $isYearly ? 'year' : 'month' }}</span>
                                     </li>
-                                    <li class="flex items-center">
-                                        <svg class="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        {{ $plan->ai_credits == -1 ? 'Unlimited' : $plan->ai_credits }} AI credits per month
+                                    <li class="flex items-center gap-2">
+                                        <svg class="h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                        <span><strong>{{ ($plan->ai_credits === null || $plan->ai_credits == -1) ? 'Unlimited' : number_format($plan->ai_credits) }}</strong> AI credits/{{ $isYearly ? 'year' : 'month' }}</span>
                                     </li>
-                                    <li class="flex items-center">
-                                        <svg class="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        {{ $plan->assessment_limit == -1 ? 'Unlimited' : $plan->assessment_limit }} skill assessments per month
+                                    @if($plan->priority_support)
+                                    <li class="flex items-center gap-2">
+                                        <svg class="h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                        <span>Priority customer support</span>
                                     </li>
-                                    @if($plan->has_priority_support)
-                                    <li class="flex items-center">
-                                        <svg class="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        Priority customer support
+                                    @endif
+                                    @if($plan->api_access)
+                                    <li class="flex items-center gap-2">
+                                        <svg class="h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                        <span>API access ({{ number_format($plan->api_calls_limit) }} calls/mo)</span>
                                     </li>
                                     @endif
                                 </ul>
                             </div>
 
-                            <!-- Submit Button -->
-                            <div class="mt-6 flex gap-4">
-                                <a href="{{ route('subscriptions.pricing') }}" 
-                                   class="flex-1 py-3 px-6 text-center border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition">
-                                    Cancel
+                            <!-- Payment Method -->
+                            <div class="mb-5">
+                                <h4 class="font-semibold text-gray-900 mb-3 text-sm">Payment Method</h4>
+                                <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer" style="border-color:#6366f1;background:#eef2ff">
+                                    <input type="radio" name="gateway" value="razorpay" class="h-4 w-4 text-indigo-600" checked>
+                                    <div class="ml-3">
+                                        <span class="font-semibold text-gray-900">Razorpay</span>
+                                        <p class="text-xs text-gray-500 mt-0.5">Card · UPI · Net Banking · Wallets</p>
+                                    </div>
+                                    <svg class="ml-auto w-8 h-8 opacity-70" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="8" fill="#072654"/><path d="M12 30l6-12h5l-4 8h6l-8 4h-5z" fill="#3395FF"/></svg>
+                                </label>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex gap-3">
+                                <a href="{{ route('pricing') }}"
+                                   class="flex-1 py-3.5 px-6 text-center border border-gray-300 rounded-xl font-semibold text-gray-700 hover:bg-gray-50 transition text-sm">
+                                    Back
                                 </a>
-                                @if($plan->price_monthly > 0)
-                                <button type="button" onclick="payNow({{ $plan->price_monthly }})"
-                                        class="flex-1 py-3 px-6 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">
-                                    Pay ₹{{ number_format($plan->price_monthly) }}
+                                @if($planPrice > 0)
+                                <button type="button" id="pay-btn"
+                                        onclick="payNow({{ $planPrice }}, {{ $plan->id }})"
+                                        class="flex-1 py-3.5 px-6 text-white rounded-xl font-bold text-sm transition hover:opacity-90 hover:-translate-y-0.5 hover:shadow-lg"
+                                        style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">
+                                    Pay ₹{{ number_format($planPrice) }}
                                 </button>
                                 @else
-                                <button type="submit" 
-                                        class="flex-1 py-3 px-6 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">
+                                <button type="submit"
+                                        class="flex-1 py-3.5 px-6 text-white rounded-xl font-bold text-sm transition"
+                                        style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">
                                     Activate Free Plan
                                 </button>
                                 @endif
@@ -131,12 +104,12 @@
                         </form>
                     </div>
 
-                    <!-- Terms -->
-                    <div class="mt-6 text-xs text-gray-500 text-center">
-                        By proceeding, you agree to our <a href="#" class="text-indigo-600 hover:underline">Terms of Service</a> and 
-                        <a href="#" class="text-indigo-600 hover:underline">Refund Policy</a>
+                                    <!-- Terms -->
+                    <div class="mt-5 text-xs text-gray-400 text-center">
+                        By proceeding, you agree to our <a href="#" class="text-indigo-500 hover:underline">Terms of Service</a> and
+                        <a href="#" class="text-indigo-500 hover:underline">Refund Policy</a>.
+                        Payments secured by Razorpay.
                     </div>
-                </div>
             </div>
         </div>
     </div>
@@ -144,7 +117,10 @@
     @push('scripts')
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
-    function payNow(amount) {
+    function payNow(amount, planId) {
+        var btn = document.getElementById('pay-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+
         fetch("{{ route('razorpay.create-order') }}", {
             method: "POST",
             headers: {
@@ -152,25 +128,24 @@
                 "X-CSRF-TOKEN": "{{ csrf_token() }}",
                 "Accept": "application/json"
             },
-            body: JSON.stringify({
-                amount: amount
-            })
+            body: JSON.stringify({ amount: amount })
         })
-        .then(res => res.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error);
-                return;
-            }
-
+        .then(function(res) {
+            return res.json().then(function(data) {
+                if (!res.ok) throw new Error(data.error || 'Order creation failed');
+                return data;
+            });
+        })
+        .then(function(data) {
             var options = {
-                "key": "{{ config('services.razorpay.key') }}",
-                "amount": amount * 100,
-                "currency": "INR",
-                "name": "StudAI",
-                "description": "Subscription Payment",
-                "order_id": data.order_id,
-                "handler": function (response) {
+                key:         "{{ config('services.razorpay.key') }}",
+                amount:      Math.round(amount * 100),
+                currency:    "INR",
+                name:        "StudAI Hire",
+                description: "{{ $plan->name }} Subscription",
+                image:       "{{ asset('assets/logo/icon.png') }}",
+                order_id:    data.order_id,
+                handler: function(response) {
                     fetch("{{ route('razorpay.verify-payment') }}", {
                         method: "POST",
                         headers: {
@@ -179,38 +154,49 @@
                             "Accept": "application/json"
                         },
                         body: JSON.stringify({
-                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_order_id:  response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_signature: response.razorpay_signature,
-                            amount: amount
+                            razorpay_signature:  response.razorpay_signature,
+                            amount:              amount,
+                            plan_id:             planId
                         })
                     })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            window.location.href = data.redirect_url;
+                    .then(function(r) { return r.json(); })
+                    .then(function(result) {
+                        if (result.status === 'success') {
+                            window.location.href = result.redirect_url || "{{ route('dashboard') }}";
                         } else {
-                            alert('Payment verification failed.');
-                            window.location.href = data.redirect_url;
+                            alert('Payment recorded but verification had an issue. Contact support with your payment ID: ' + response.razorpay_payment_id);
                         }
+                    })
+                    .catch(function() {
+                        alert('Network error during verification. Your payment ID is: ' + response.razorpay_payment_id + '. Please contact support.');
                     });
                 },
-                "prefill": {
-                    "name": "{{ auth()->user()->name }}",
-                    "email": "{{ auth()->user()->email }}"
+                prefill: {
+                    name:  "{{ auth()->user()->name }}",
+                    email: "{{ auth()->user()->email }}"
                 },
-                "theme": {
-                    "color": "#4F46E5"
+                notes: { plan_id: planId },
+                theme: { color: "#4F46E5" },
+                modal: {
+                    ondismiss: function() {
+                        if (btn) { btn.disabled = false; btn.textContent = 'Pay ₹{{ number_format((float)$plan->price) }}'; }
+                    }
                 }
             };
             var rzp = new Razorpay(options);
+            rzp.on('payment.failed', function(response) {
+                alert('Payment failed: ' + response.error.description);
+                if (btn) { btn.disabled = false; btn.textContent = 'Pay ₹{{ number_format((float)$plan->price) }}'; }
+            });
             rzp.open();
         })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while creating the order.');
+        .catch(function(err) {
+            alert('Could not initiate payment: ' + err.message);
+            if (btn) { btn.disabled = false; btn.textContent = 'Pay ₹{{ number_format((float)$plan->price) }}'; }
         });
     }
     </script>
     @endpush
-</x-app-layout>
+</x-layouts.dashboard>

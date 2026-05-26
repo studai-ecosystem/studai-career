@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
-@section('title', 'Payment History - StudAI Career')
+@section('title', 'Payment History - StudAI Hire')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-8">
@@ -88,7 +88,7 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                        ₹{{ number_format($transaction->amount, 2) }}
+                                        &#8377;{{ number_format($transaction->amount, 2) }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if($transaction->status === 'completed')
@@ -176,7 +176,7 @@
                         <div>
                             <p class="text-sm font-medium text-gray-600">Total Spent</p>
                             <p class="mt-2 text-3xl font-bold text-gray-900">
-                                ₹{{ number_format($transactions->where('status', 'completed')->sum('amount'), 2) }}
+                                &#8377;{{ number_format($transactions->where('status', 'completed')->sum('amount'), 2) }}
                             </p>
                         </div>
                         <div class="p-3 bg-green-100 rounded-full">

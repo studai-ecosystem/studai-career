@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Find Freelancers - Talent Marketplace')
 
@@ -38,7 +38,7 @@
 
                     <!-- Hourly Rate -->
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Hourly Rate (₹)</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Hourly Rate (&#8377;)</label>
                         <div class="flex gap-2">
                             <input type="number" name="rate_min" value="{{ request('rate_min') }}" 
                                    placeholder="Min"
@@ -157,7 +157,7 @@
                                     </div>
                                     <div class="text-right">
                                         <div class="text-lg font-bold text-gray-900">
-                                            ₹{{ number_format($profile->hourly_rate) }}/hr
+                                            &#8377;{{ number_format($profile->hourly_rate) }}/hr
                                         </div>
                                     </div>
                                 </div>
@@ -187,7 +187,7 @@
                                         @foreach($profile->badges->take(3) as $userBadge)
                                             <span class="inline-flex items-center px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs rounded-full" 
                                                   title="{{ $userBadge->badge->name }}">
-                                                {{ $userBadge->badge->icon ?? '🏆' }} {{ $userBadge->badge->name }}
+                                                {{ $userBadge->badge->icon ?? '†' }} {{ $userBadge->badge->name }}
                                             </span>
                                         @endforeach
                                     </div>
@@ -222,7 +222,7 @@
                         </div>
                     @empty
                         <div class="col-span-2 bg-white rounded-xl shadow-md p-12 text-center">
-                            <div class="text-gray-400 text-6xl mb-4">👥</div>
+                            <div class="text-gray-400 text-6xl mb-4">�¥</div>
                             <h3 class="text-lg font-medium text-gray-900 mb-2">No freelancers found</h3>
                             <p class="text-gray-500 mb-6">Try adjusting your filters or search query</p>
                             <a href="{{ route('marketplace.freelancers') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">

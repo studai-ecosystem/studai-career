@@ -1,65 +1,63 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Predictive Performance Analytics - S.C.O.U.T.')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="pa-page">
+        <a href="{{ route('employer.scout.dashboard') }}" class="pa-back-btn">
+            <svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            Back to Dashboard
+        </a>
         {{-- Header --}}
-        <div class="mb-10">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
-                <div>
-                    <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                        Predictive Performance Analytics
-                    </h1>
-                    <p class="mt-2 text-lg text-gray-600 max-w-3xl">
-                        Forecast candidate success, tenure, productivity, and career trajectory with AI-powered insights designed for proactive talent decisions.
-                    </p>
-                </div>
-                <div class="flex flex-wrap items-center gap-3">
-                    <div class="glass-card px-5 py-3 rounded-xl shadow-md flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Last Refreshed</p>
-                            <p id="last-refreshed" class="text-sm font-semibold text-gray-800">--</p>
-                        </div>
-                    </div>
-                    <button id="refresh-dashboard" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 4.5l3 3m0 0l-3 3m3-3H9a6 6 0 016 6v0m0 0l3-3m-3 3l3 3" />
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem">
+            <div>
+                <h1 class="pa-title">Predictive Performance Analytics</h1>
+                <p class="pa-subtitle">Forecast candidate success, tenure, productivity, and career trajectory with AI-powered insights.</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:.875rem;flex-wrap:wrap;flex-shrink:0">
+                <div class="pa-info-box">
+                    <div class="pa-info-icon">
+                        <svg style="width:1.1rem;height:1.1rem;color:#6366f1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span>Refresh Predictions</span>
-                    </button>
+                    </div>
+                    <div>
+                        <p style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#9ca3af;margin:0">Last Refreshed</p>
+                        <p id="last-refreshed" style="font-size:.8rem;font-weight:800;color:#1a1a2e;margin:0">--</p>
+                    </div>
                 </div>
+                <button id="refresh-dashboard" class="btn-pa-refresh">
+                    <svg style="width:1rem;height:1rem" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>Refresh Predictions</span>
+                </button>
             </div>
         </div>
 
         {{-- Application Selector --}}
-        <div class="glass-card rounded-2xl shadow-xl mb-10">
-            <div class="px-6 py-5 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="glass-card" style="border-radius:1.125rem;overflow:hidden;margin-bottom:1.25rem">
+            <div style="padding:1.25rem 1.5rem;border-bottom:1.5px solid rgba(139,92,246,.1);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
                 <div>
-                    <h2 class="text-xl font-semibold text-gray-800">Analyze Candidate Application</h2>
-                    <p class="text-sm text-gray-500">Enter an application ID to retrieve predictive insights for a specific candidate.</p>
+                    <h2 style="font-size:1.05rem;font-weight:800;color:#1a1a2e;margin:0 0 .2rem">Analyze Candidate Application</h2>
+                    <p style="font-size:.82rem;color:#6b7280;margin:0">Select an application from your company to run AI-powered predictive analytics.</p>
                 </div>
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-                    <input id="application-id-input" type="number" min="1" placeholder="Application ID"
-                        class="w-full sm:w-64 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
-                    <button id="load-application" class="px-5 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-blue-300 transition flex items-center justify-center space-x-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+                    <select id="application-id-input" class="pa-input" style="min-width:260px;max-width:360px">
+                        <option value="">Loading applications…</option>
+                    </select>
+                    <button id="load-application" class="btn-pa-load">
+                        <svg style="width:1rem;height:1rem" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
                         <span>Load Insights</span>
                     </button>
                 </div>
             </div>
-            <div class="px-6 py-5 bg-gradient-to-r from-blue-50 via-white to-purple-50">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div style="padding:1rem 1.5rem 1.25rem;background:linear-gradient(135deg,#fdf4ff,#f5f3ff,#eef2ff)">
+                <div class="metric-grid-4">
                     <div class="metric-card">
-                        <div class="metric-card__icon bg-blue-100 text-blue-500">
+                        <div class="metric-card__icon" style="background:rgba(99,102,241,.12);color:#6366f1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h4l3 8 4-16 3 8h4" />
                             </svg>
@@ -71,7 +69,7 @@
                         </div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-card__icon bg-purple-100 text-purple-500">
+                        <div class="metric-card__icon" style="background:rgba(168,85,247,.12);color:#a855f7">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
@@ -83,7 +81,7 @@
                         </div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-card__icon bg-pink-100 text-pink-500">
+                        <div class="metric-card__icon" style="background:rgba(236,72,153,.12);color:#ec4899">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -95,7 +93,7 @@
                         </div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-card__icon bg-amber-100 text-amber-500">
+                        <div class="metric-card__icon" style="background:rgba(245,158,11,.12);color:#f59e0b">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
                             </svg>
@@ -111,8 +109,8 @@
         </div>
 
         {{-- Tab Navigation --}}
-        <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-10">
-            <div class="flex flex-wrap border-b border-gray-100 divide-x divide-gray-100" role="tablist">
+        <div class="glass-card" style="border-radius:1.125rem;overflow:hidden;margin-bottom:1.5rem">
+            <div style="display:flex;flex-wrap:wrap;border-bottom:1.5px solid rgba(139,92,246,.1)" role="tablist">
                 <button data-tab="overview" class="tab-button active">
                     <span>Overview</span>
                 </button>
@@ -135,85 +133,75 @@
         </div>
 
         {{-- Tab Content --}}
-        <div id="tab-panels" class="space-y-10">
+        <div id="tab-panels" class="space-y-4">
             {{-- Overview Tab --}}
             <section id="panel-overview" class="tab-panel">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
-                    <div class="lg:col-span-2 glass-card rounded-2xl shadow-xl p-8">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-xl font-semibold text-gray-800">Predictive Overview</h3>
-                            <span id="overview-confidence" class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">Confidence: --</span>
+                {{-- Top row: Gauge + Flight Risk + AI Recommendations --}}
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+                    {{-- Success Gauge --}}
+                    <div class="glass-card rounded-2xl p-4 flex flex-col items-center justify-center">
+                        <div class="flex items-center justify-between w-full mb-2">
+                            <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wide">Success Gauge</h3>
+                            <span id="overview-confidence" class="px-2 py-0.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">Confidence: --</span>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="rounded-2xl border border-gray-100 p-6 bg-gradient-to-br from-white via-blue-50 to-white flex flex-col items-center justify-center">
-                                <h4 class="text-sm uppercase tracking-wide text-gray-500">Success Gauge</h4>
-                                <canvas id="overview-success-gauge" class="w-full max-w-xs h-56"></canvas>
-                                <p id="overview-success-insight" class="mt-4 text-sm text-gray-600 text-center">Awaiting prediction...</p>
-                            </div>
-                            <div class="rounded-2xl border border-gray-100 p-6 bg-gradient-to-br from-white via-purple-50 to-white">
-                                <h4 class="text-sm uppercase tracking-wide text-gray-500">Flight Risk Matrix</h4>
-                                <div class="relative h-56">
-                                    <canvas id="overview-flight-risk"></canvas>
-                                </div>
-                                <div class="mt-4 text-sm text-gray-600 space-y-2">
-                                    <div class="flex items-center justify-between">
-                                        <span>Risk Level</span>
-                                        <span id="overview-risk-label" class="font-semibold text-gray-800">--</span>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <span>Priority Score</span>
-                                        <span id="overview-priority-score" class="font-semibold text-gray-800">--</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <canvas id="overview-success-gauge" style="max-height:140px;max-width:240px;width:100%"></canvas>
+                        <p id="overview-success-insight" class="mt-2 text-xs text-gray-500 text-center">Awaiting prediction...</p>
+                    </div>
+
+                    {{-- Flight Risk Matrix --}}
+                    <div class="glass-card rounded-2xl p-4">
+                        <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Flight Risk Matrix</h3>
+                        <div style="height:130px;position:relative">
+                            <canvas id="overview-flight-risk"></canvas>
+                        </div>
+                        <div class="mt-2 flex items-center justify-between text-sm text-gray-600">
+                            <span>Risk Level: <strong id="overview-risk-label" class="text-gray-800">--</strong></span>
+                            <span>Priority: <strong id="overview-priority-score" class="text-gray-800">--</strong></span>
                         </div>
                     </div>
-                    <div class="glass-card rounded-2xl shadow-xl p-8">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-6">AI Recommendations</h3>
-                        <ul id="overview-recommendations" class="space-y-4">
-                            <li class="recommendation-item">Load a candidate to receive prioritized recommendations.</li>
+
+                    {{-- AI Recommendations --}}
+                    <div class="glass-card rounded-2xl p-4">
+                        <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3">AI Recommendations</h3>
+                        <ul id="overview-recommendations" class="space-y-2">
+                            <li class="recommendation-item text-xs">Load a candidate to receive prioritized recommendations.</li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="glass-card rounded-2xl shadow-xl p-8">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-6">Tenure Outlook</h3>
-                        <div class="h-64">
-                            <canvas id="overview-tenure-chart"></canvas>
-                        </div>
-                        <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-                            <div class="rounded-xl bg-blue-50 text-blue-600 px-4 py-3">
-                                <p class="font-semibold">Predicted Tenure</p>
-                                <p id="overview-tenure-value" class="text-2xl font-bold">--</p>
+                {{-- Bottom row: Tenure + Productivity as stat cards (no charts) --}}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div class="glass-card rounded-2xl p-4">
+                        <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3">Tenure Outlook</h3>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="rounded-xl bg-blue-50 text-blue-600 px-3 py-2 text-center">
+                                <p class="text-xs font-semibold">Predicted</p>
+                                <p id="overview-tenure-value" class="text-lg font-bold">--</p>
                             </div>
-                            <div class="rounded-xl bg-purple-50 text-purple-600 px-4 py-3">
-                                <p class="font-semibold">Confidence Range</p>
-                                <p id="overview-tenure-range" class="text-2xl font-bold">--</p>
+                            <div class="rounded-xl bg-purple-50 text-purple-600 px-3 py-2 text-center">
+                                <p class="text-xs font-semibold">Conf. Range</p>
+                                <p id="overview-tenure-range" class="text-lg font-bold">--</p>
                             </div>
-                            <div class="rounded-xl bg-amber-50 text-amber-600 px-4 py-3">
-                                <p class="font-semibold">Risk Alerts</p>
-                                <p id="overview-tenure-risks" class="text-2xl font-bold">--</p>
+                            <div class="rounded-xl bg-amber-50 text-amber-600 px-3 py-2 text-center">
+                                <p class="text-xs font-semibold">Risk Alerts</p>
+                                <p id="overview-tenure-risks" class="text-lg font-bold">--</p>
                             </div>
                         </div>
                     </div>
-                    <div class="glass-card rounded-2xl shadow-xl p-8">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-6">Productivity Ramp-Up</h3>
-                        <div class="h-64">
-                            <canvas id="overview-productivity-chart"></canvas>
-                        </div>
-                        <div class="mt-5 space-y-3 text-sm text-gray-600">
-                            <div class="flex items-center justify-between">
-                                <span>Estimated Full Productivity</span>
-                                <span id="overview-productivity-timeline" class="font-semibold text-gray-800">--</span>
+                    <div class="glass-card rounded-2xl p-4">
+                        <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3">Productivity Ramp-Up</h3>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="rounded-xl bg-pink-50 text-pink-600 px-3 py-2 text-center">
+                                <p class="text-xs font-semibold">Full Productivity</p>
+                                <p id="overview-productivity-timeline" class="text-lg font-bold">--</p>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <span>Support Level Required</span>
-                                <span id="overview-support-level" class="font-semibold text-gray-800">--</span>
+                            <div class="rounded-xl bg-indigo-50 text-indigo-600 px-3 py-2 text-center">
+                                <p class="text-xs font-semibold">Support Level</p>
+                                <p id="overview-support-level" class="text-lg font-bold">--</p>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <span>Current Milestone</span>
-                                <span id="overview-current-milestone" class="font-semibold text-gray-800">--</span>
+                            <div class="rounded-xl bg-teal-50 text-teal-600 px-3 py-2 text-center">
+                                <p class="text-xs font-semibold">Milestone</p>
+                                <p id="overview-current-milestone" class="text-lg font-bold">--</p>
                             </div>
                         </div>
                     </div>
@@ -443,8 +431,8 @@
                 <div class="glass-card rounded-2xl shadow-xl p-8">
                     <h3 class="text-xl font-semibold text-gray-800 mb-6">Comprehensive Report</h3>
                     <div class="flex flex-wrap items-center gap-3 mb-5">
-                        <button id="generate-report" class="px-5 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-xl shadow hover:shadow-lg transition flex items-center space-x-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button id="generate-report" class="btn-pa-report">
+                            <svg style="width:1rem;height:1rem" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v2h6v-2m3-6a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span>Generate AI Report</span>
@@ -468,16 +456,15 @@
                 </div>
             </section>
         </div>
-    </div>
 </div>
 
 {{-- Loading Overlay --}}
-<div id="predictive-loading" class="hidden fixed inset-0 z-40 bg-black bg-opacity-30 flex items-center justify-center">
-    <div class="bg-white rounded-2xl shadow-2xl px-8 py-6 flex items-center space-x-4">
-        <div class="w-10 h-10 rounded-full border-4 border-blue-100 border-t-blue-500 animate-spin"></div>
+<div id="predictive-loading" class="hidden fixed inset-0 z-40 flex items-center justify-center">
+    <div style="background:linear-gradient(135deg,#fdfcff,#f5f3ff);border:1.5px solid rgba(139,92,246,.2);border-radius:1.125rem;box-shadow:0 20px 60px rgba(124,58,237,.2);padding:1.75rem 2rem;display:flex;align-items:center;gap:1.25rem">
+        <div class="pa-spinner"></div>
         <div>
-            <p id="predictive-loading-message" class="text-sm font-semibold text-gray-800">Processing predictive models...</p>
-            <p class="text-xs text-gray-500">AI models running with caching optimizations.</p>
+            <p id="predictive-loading-message" style="font-size:.875rem;font-weight:800;color:#1a1a2e;margin:0 0 .2rem">Processing predictive models…</p>
+            <p style="font-size:.75rem;color:#9ca3af;margin:0">AI models running with caching optimizations.</p>
         </div>
     </div>
 </div>
@@ -485,64 +472,169 @@
 
 @push('styles')
 <style>
-    .glass-card {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-    }
+@keyframes paFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes paSlideIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes paSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 
-    .metric-card {
-        @apply bg-white border border-gray-100 rounded-2xl shadow-md px-4 py-4 flex items-center space-x-4;
-    }
+.pa-page {
+    background:linear-gradient(145deg,#fdf4ff 0%,#f5f3ff 30%,#eef2ff 60%,#eff6ff 100%);
+    margin:-28px -32px -32px;
+    padding:1.5rem 2rem 2.5rem;
+    min-height:calc(100vh - 64px);
+    overflow-x:hidden;
+}
+.metric-grid-4 {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:.875rem;
+}
+@media(min-width:900px){
+    .metric-grid-4 { grid-template-columns:repeat(4,1fr); }
+}
 
-    .metric-card__icon {
-        @apply w-12 h-12 rounded-2xl flex items-center justify-center;
-    }
+/* Hero header */
+.pa-back-btn {
+    display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:700;
+    color:#4c1d95;background:linear-gradient(135deg,#fdfcff,#f5f3ff);
+    border:1.5px solid rgba(139,92,246,.2);border-radius:.75rem;padding:.45rem 1rem;
+    text-decoration:none;transition:all .2s;margin-bottom:1.25rem;
+}
+.pa-back-btn:hover { border-color:#7c3aed;transform:translateX(-2px); }
 
-    .metric-card__content {
-        @apply flex-1;
-    }
+.pa-hero { animation:paSlideIn .5s ease both; }
+.pa-title {
+    font-size:clamp(1.5rem,4vw,2.25rem);font-weight:900;
+    background:linear-gradient(135deg,#7c3aed,#6366f1,#a855f7,#ec4899);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    margin:0 0 .5rem;
+}
+.pa-subtitle { color:#6b7280;font-size:.95rem;max-width:55ch; }
 
-    .metric-card__label {
-        @apply text-xs uppercase tracking-wide text-gray-500;
-    }
+/* Info box + refresh button */
+.pa-info-box {
+    display:flex;align-items:center;gap:.875rem;
+    background:linear-gradient(135deg,#fdfcff,#f5f3ff);
+    border:1.5px solid rgba(139,92,246,.15);border-radius:1rem;
+    padding:.875rem 1.25rem;box-shadow:0 2px 12px rgba(99,102,241,.06);
+}
+.pa-info-icon {
+    width:2.5rem;height:2.5rem;border-radius:50%;
+    background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.1));
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.btn-pa-refresh {
+    display:inline-flex;align-items:center;gap:.5rem;
+    padding:.75rem 1.5rem;border-radius:.875rem;border:none;cursor:pointer;
+    background:linear-gradient(135deg,#7c3aed,#a855f7);
+    color:#fff;font-weight:800;font-size:.875rem;
+    box-shadow:0 4px 16px rgba(124,58,237,.3);transition:all .2s;
+}
+.btn-pa-refresh:hover { transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.4); }
 
-    .metric-card__value {
-        @apply text-2xl font-bold text-gray-800;
-    }
+/* Glass cards */
+.glass-card {
+    background:linear-gradient(135deg,#fdfcff 0%,#f5f3ff 50%,#fdf4ff 100%);
+    border:1.5px solid rgba(139,92,246,.12);border-radius:1.125rem;
+    box-shadow:0 4px 24px rgba(99,102,241,.07);
+}
 
-    .metric-card__trend {
-        @apply text-xs font-medium text-gray-500;
-    }
+/* Metric cards */
+.metric-card {
+    background:#fff;border:1.5px solid rgba(139,92,246,.1);border-radius:1rem;
+    padding:1rem;display:flex;align-items:center;gap:1rem;
+    box-shadow:0 2px 10px rgba(99,102,241,.05);transition:transform .2s,box-shadow .2s;
+}
+.metric-card:hover { transform:translateY(-2px);box-shadow:0 6px 20px rgba(99,102,241,.1); }
+.metric-card__icon {
+    width:3rem;height:3rem;border-radius:.875rem;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.metric-card__content { flex:1;min-width:0; }
+.metric-card__label { font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9ca3af;margin:0 0 .2rem; }
+.metric-card__value { font-size:1.5rem;font-weight:900;color:#1a1a2e;line-height:1;margin:0 0 .15rem; }
+.metric-card__trend { font-size:.75rem;font-weight:600;color:#7c3aed; }
 
-    .tab-button {
-        @apply flex-1 px-5 py-4 text-sm font-semibold text-gray-500 transition-all duration-200 bg-white hover:bg-gray-50;
-    }
+/* App input */
+.pa-input {
+    padding:.65rem 1rem;border:1.5px solid rgba(139,92,246,.2);border-radius:.75rem;
+    font-size:.875rem;color:#1a1a2e;
+    background:linear-gradient(135deg,#fdfcff,#f5f3ff);
+    transition:border-color .2s,box-shadow .2s;width:100%;
+}
+.pa-input:focus { outline:none;border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.1); }
+.btn-pa-load {
+    display:inline-flex;align-items:center;gap:.5rem;
+    padding:.65rem 1.25rem;border-radius:.75rem;
+    border:1.5px solid rgba(139,92,246,.2);cursor:pointer;
+    background:linear-gradient(135deg,#fdfcff,#f5f3ff);
+    color:#7c3aed;font-weight:700;font-size:.875rem;
+    transition:all .2s;white-space:nowrap;
+}
+.btn-pa-load:hover { background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border-color:#7c3aed; }
 
-    .tab-button.active {
-        @apply text-blue-600 bg-blue-50;
-        box-shadow: inset 0 -2px 0 0 rgba(59,130,246,0.6);
-    }
+/* Tabs */
+.tab-button {
+    flex:1;padding:.875rem 1rem;font-size:.8rem;font-weight:700;
+    color:#9ca3af;background:#fff;border:none;cursor:pointer;
+    transition:all .2s;letter-spacing:.03em;text-transform:uppercase;
+}
+.tab-button:hover { color:#7c3aed;background:rgba(139,92,246,.04); }
+.tab-button.active {
+    color:#7c3aed;background:linear-gradient(180deg,rgba(139,92,246,.06),rgba(99,102,241,.04));
+    box-shadow:inset 0 -3px 0 0 #7c3aed;
+}
+.tab-panel { background:transparent; }
 
-    .tab-panel {
-        @apply bg-transparent;
-    }
+/* Recommendation & action cards */
+.recommendation-item {
+    padding:.75rem;border-radius:.75rem;font-size:.83rem;color:#374151;
+    background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+    border-left:3px solid #a855f7;
+}
+.action-card {
+    background:linear-gradient(135deg,#fdfcff,#f5f3ff);
+    border:1.5px solid rgba(139,92,246,.12);border-radius:1rem;
+    padding:1.25rem;font-size:.875rem;color:#374151;
+}
 
-    .action-card {
-        @apply rounded-2xl border border-gray-100 bg-white p-6 text-sm text-gray-600;
-    }
+/* Metric tiles */
+.metric-tile {
+    background:linear-gradient(135deg,#fdfcff,#f5f3ff);
+    border:1.5px solid rgba(139,92,246,.1);border-radius:.875rem;
+    padding:.875rem 1rem;
+}
+.metric-tile__label { font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9ca3af;margin:0 0 .25rem; }
+.metric-tile__value { font-size:1.1rem;font-weight:800;color:#1a1a2e; }
 
-    .metric-tile {
-        @apply bg-white border border-gray-100 rounded-2xl px-4 py-3 shadow-sm;
-    }
+/* Loading overlay */
+#predictive-loading {
+    background:rgba(245,243,255,.85);backdrop-filter:blur(8px);
+}
+.pa-spinner {
+    width:3rem;height:3rem;border:3px solid rgba(124,58,237,.15);
+    border-top-color:#7c3aed;border-radius:50%;animation:paSpin .8s linear infinite;
+}
 
-    .metric-tile__label {
-        @apply text-xs uppercase tracking-wide text-gray-500;
-    }
+/* Confidence badge */
+.conf-badge {
+    display:inline-flex;align-items:center;padding:.25rem .875rem;
+    border-radius:2rem;font-size:.72rem;font-weight:800;letter-spacing:.04em;
+    background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(139,92,246,.1));
+    border:1px solid rgba(99,102,241,.2);color:#4c1d95;
+}
 
-    .metric-tile__value {
-        @apply text-lg font-semibold text-gray-800;
-    }
+/* Section headers within cards */
+.pa-section-h { font-size:1rem;font-weight:800;color:#1a1a2e;margin:0 0 1rem; }
+
+/* Generate report button */
+.btn-pa-report {
+    display:inline-flex;align-items:center;gap:.5rem;
+    padding:.65rem 1.25rem;border-radius:.875rem;border:none;cursor:pointer;
+    background:linear-gradient(135deg,#10b981,#059669);
+    color:#fff;font-weight:800;font-size:.875rem;
+    box-shadow:0 4px 14px rgba(16,185,129,.25);transition:all .2s;
+}
+.btn-pa-report:hover { transform:translateY(-2px);box-shadow:0 8px 20px rgba(16,185,129,.35); }
 </style>
 @endpush
 
@@ -584,12 +676,13 @@
     });
 
     document.getElementById('load-application').addEventListener('click', async () => {
-        const input = document.getElementById('application-id-input').value.trim();
-        if (!input) {
-            showToast('Please enter a valid application ID.', 'warning');
+        const select = document.getElementById('application-id-input');
+        const val = select.value;
+        if (!val || val === '') {
+            showToast('Please select an application from the dropdown.', 'warning');
             return;
         }
-        predictiveState.applicationId = Number(input);
+        predictiveState.applicationId = Number(val);
         await refreshAnalytics();
     });
 
@@ -620,23 +713,26 @@
 
     async function refreshAnalytics() {
         showLoading('Generating predictive insights...');
-        try {
-            await Promise.all([
-                loadSuccessPrediction(),
-                loadTenureForecast(),
-                loadProductivityEstimate(),
-                loadDevelopmentPlan(),
-                loadCareerPath()
-            ]);
-            predictiveState.lastRefreshed = new Date();
-            updateRefreshTimestamp();
+        const results = await Promise.allSettled([
+            loadSuccessPrediction(),
+            loadTenureForecast(),
+            loadProductivityEstimate(),
+            loadDevelopmentPlan(),
+            loadCareerPath()
+        ]);
+        hideLoading();
+        predictiveState.lastRefreshed = new Date();
+        updateRefreshTimestamp();
+        const failed = results.filter(r => r.status === 'rejected');
+        const ok = results.filter(r => r.status === 'fulfilled').length;
+        if (failed.length === 0) {
             showToast('Predictive insights updated successfully.', 'success');
-        } catch (error) {
-            console.error('Error refreshing analytics:', error);
-            showToast(error.message || 'Failed to refresh analytics.', 'error');
-        } finally {
-            hideLoading();
+        } else if (ok > 0) {
+            showToast(`${ok} of ${results.length} insights loaded. Some predictions need more candidate data.`, 'warning');
+        } else {
+            showToast('Could not load predictions. Please ensure the candidate has sufficient profile data.', 'error');
         }
+        failed.forEach(f => console.warn('Prediction failed:', f.reason?.message || f.reason));
     }
 
     function updateRefreshTimestamp() {
@@ -711,7 +807,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="font-semibold text-gray-800">${profile.role || 'Similar Role'}</p>
-                        <p class="text-xs text-gray-500">${profile.department || 'Department'} · ${profile.tenure || '--'} tenure</p>
+                        <p class="text-xs text-gray-500">${profile.department || 'Department'} &middot; ${profile.tenure || '--'} tenure</p>
                     </div>
                     <span class="text-sm font-semibold text-blue-600">${profile.success_score ? `${profile.success_score}% match` : ''}</span>
                 </div>
@@ -805,8 +901,10 @@
         showLoading('Compiling comprehensive AI report...');
         try {
             const response = await fetch(`/api/scout/predictive/report/${predictiveState.applicationId}`, {
+                credentials: 'same-origin',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('api_token')}`
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
                 }
             });
             const result = await response.json();
@@ -908,7 +1006,9 @@
     }
 
     function renderTenureChart(data) {
-        const ctx = document.getElementById('overview-tenure-chart').getContext('2d');
+        const el = document.getElementById('overview-tenure-chart');
+        if (!el) return; // removed from overview — skip
+        const ctx = el.getContext('2d');
         if (predictiveState.charts['overview-tenure-chart']) {
             predictiveState.charts['overview-tenure-chart'].destroy();
         }
@@ -1113,15 +1213,24 @@
     async function postJson(url, payload) {
         const response = await fetch(url, {
             method: 'POST',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('api_token')}`
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
             },
             body: JSON.stringify(payload)
         });
-        const result = await response.json();
+        let result;
+        try {
+            result = await response.json();
+        } catch {
+            throw new Error(`Server error (${response.status}). Check logs.`);
+        }
         if (!result.success) {
-            throw new Error(result.message || 'Request failed');
+            // Strip raw PHP traces for cleaner UX
+            const msg = (result.message || 'Request failed').split('\n')[0].substring(0, 120);
+            throw new Error(msg);
         }
         return result;
     }
@@ -1137,13 +1246,51 @@
 
     function showToast(message, type = 'info') {
         console.log(`[${type.toUpperCase()}] ${message}`);
+        // Show visible notification
+        const existing = document.getElementById('pa-toast');
+        if (existing) existing.remove();
+        const colors = {
+            success: 'linear-gradient(135deg,#10b981,#059669)',
+            error:   'linear-gradient(135deg,#ef4444,#dc2626)',
+            warning: 'linear-gradient(135deg,#f59e0b,#d97706)',
+            info:    'linear-gradient(135deg,#6366f1,#7c3aed)',
+        };
+        const toast = document.createElement('div');
+        toast.id = 'pa-toast';
+        toast.style.cssText = `position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;padding:.875rem 1.5rem;border-radius:.875rem;color:#fff;font-size:.875rem;font-weight:700;background:${colors[type]||colors.info};box-shadow:0 8px 24px rgba(0,0,0,.15);max-width:360px;animation:paSlideIn .3s ease both`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 4500);
+    }
+
+    async function populateApplicationsDropdown() {
+        const select = document.getElementById('application-id-input');
+        try {
+            const resp = await fetch('/api/scout/predictive/applications', {
+                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content ?? '', 'Accept': 'application/json' },
+                credentials: 'same-origin'
+            });
+            const data = await resp.json();
+            if (data.success && data.applications && data.applications.length > 0) {
+                select.innerHTML = '<option value="">— Select a candidate application —</option>';
+                data.applications.forEach(app => {
+                    const opt = document.createElement('option');
+                    opt.value = app.id;
+                    opt.textContent = app.label;
+                    select.appendChild(opt);
+                });
+            } else {
+                select.innerHTML = '<option value="">No applications found for your company</option>';
+            }
+        } catch (e) {
+            select.innerHTML = '<option value="">Failed to load applications</option>';
+            console.error('Failed to load applications', e);
+        }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         switchTab('overview');
-        if (predictiveState.applicationId) {
-            refreshAnalytics();
-        }
+        populateApplicationsDropdown();
     });
 </script>
 @endpush

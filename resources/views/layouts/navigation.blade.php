@@ -1,100 +1,288 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
-    <!-- Primary Navigation Menu -->
+<style>
+/* ── Nav — Light Theme ──────────────────────────────── */
+@keyframes nav-shine   { to { background-position: -200% center; } }
+@keyframes nav-float   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2.5px)} }
+@keyframes nav-fadein  { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+@keyframes nav-dot     { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.6)} }
+@keyframes nav-bar-grad{ 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+@keyframes nav-particle{ 0%{transform:translateY(0) scale(1);opacity:.6} 100%{transform:translateY(-40px) scale(0);opacity:0} }
+@keyframes nav-ring    { 0%{transform:scale(1);opacity:.7} 100%{transform:scale(1.8);opacity:0} }
+@keyframes nav-slide-in{ from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
+
+/* Navbar shell */
+.nav-bar {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(99,102,241,.12);
+    box-shadow: 0 1px 0 rgba(99,102,241,.08), 0 4px 24px rgba(99,102,241,.07), 0 1px 3px rgba(0,0,0,.04);
+    position: relative;
+    animation: nav-fadein .4s ease both;
+}
+/* Animated gradient line at very bottom */
+.nav-bar::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899, #6366f1);
+    background-size: 300% auto;
+    animation: nav-bar-grad 4s linear infinite;
+}
+/* Subtle noise overlay */
+.nav-bar::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(168,85,247,.04) 0%, transparent 60%);
+}
+
+/* Floating particles inside nav */
+.nav-particle {
+    position: absolute; border-radius: 50%; pointer-events: none;
+    animation: nav-particle var(--dur,3s) ease-out var(--del,0s) infinite;
+    opacity: 0;
+}
+
+/* Logo */
+.nav-logo { animation: nav-fadein .5s ease both; text-decoration: none; }
+.nav-logo-img {
+    animation: nav-float 4s ease-in-out infinite;
+    transition: filter .3s, transform .3s;
+    filter: drop-shadow(0 2px 6px rgba(99,102,241,.25));
+}
+.nav-logo:hover .nav-logo-img { filter: drop-shadow(0 4px 14px rgba(99,102,241,.55)) brightness(1.05); }
+.nav-logo-text {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 40%, #a855f7 70%, #4f46e5 100%);
+    background-size: 200%;
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    animation: nav-shine 4s linear infinite;
+    font-size: .95rem; font-weight: 800; letter-spacing: -.5px;
+}
+
+/* Dashboard pill */
+.nav-pill {
+    display: inline-flex; align-items: center; gap: .45rem;
+    padding: .35rem .95rem; border-radius: 999px;
+    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+    border: 1.5px solid rgba(99,102,241,.2);
+    color: #4f46e5; font-size: .8rem; font-weight: 700;
+    text-decoration: none;
+    transition: all .25s cubic-bezier(.34,1.56,.64,1);
+    animation: nav-fadein .5s ease .1s both;
+    position: relative; overflow: hidden;
+}
+.nav-pill::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(99,102,241,.12), rgba(168,85,247,.12));
+    opacity: 0; transition: opacity .2s;
+}
+.nav-pill:hover { border-color: rgba(99,102,241,.5); transform: translateY(-2px) scale(1.03); box-shadow: 0 6px 20px rgba(99,102,241,.2); color: #3730a3; }
+.nav-pill:hover::before { opacity: 1; }
+.nav-dot { width: 6px; height: 6px; border-radius: 50%; background: #6366f1; animation: nav-dot 2s ease-in-out infinite; }
+
+/* Breadcrumb */
+.nav-breadcrumb { color: #a78bfa; font-size: .78rem; font-weight: 600; }
+.nav-sep { color: #c4b5fd; }
+
+/* Search icon */
+.nav-icon-btn {
+    width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    color: #6b7280; background: transparent; border: 1.5px solid #e5e7eb;
+    transition: all .2s cubic-bezier(.34,1.56,.64,1);
+}
+.nav-icon-btn:hover { color: #4f46e5; border-color: rgba(99,102,241,.4); background: #eef2ff; transform: scale(1.08); box-shadow: 0 4px 12px rgba(99,102,241,.15); }
+
+/* Avatar with animated ring */
+.nav-avatar-wrap { position: relative; }
+.nav-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed, #a855f7);
+    background-size: 200%; animation: nav-shine 3s linear infinite;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: .82rem; color: #fff;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 10px rgba(99,102,241,.35);
+    transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s;
+    z-index: 1; position: relative;
+}
+.nav-avatar-ring {
+    position: absolute; inset: -4px; border-radius: 50%;
+    border: 2px solid rgba(99,102,241,.5);
+    animation: nav-ring 2s ease-out infinite;
+}
+.nav-user-btn:hover .nav-avatar { transform: scale(1.1); box-shadow: 0 4px 20px rgba(99,102,241,.45); }
+.nav-username { font-size: .83rem; font-weight: 700; color: #374151; }
+.nav-chevron  { color: #9ca3af; transition: transform .2s, color .2s; }
+.nav-user-btn:hover .nav-chevron { transform: rotate(180deg); color: #6366f1; }
+
+/* Dropdown */
+.nav-dropdown {
+    background: #fff;
+    border: 1px solid rgba(99,102,241,.15);
+    border-radius: 1rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,.12), 0 4px 20px rgba(99,102,241,.1), 0 0 0 1px rgba(99,102,241,.05);
+    overflow: hidden; min-width: 200px;
+    animation: nav-fadein .15s ease both;
+}
+.nav-dropdown-header {
+    padding: .75rem 1rem;
+    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+    border-bottom: 1px solid rgba(99,102,241,.1);
+}
+.nav-dropdown-item {
+    display: flex; align-items: center; gap: .65rem;
+    padding: .6rem 1rem; color: #374151; font-size: .83rem; font-weight: 500;
+    transition: all .15s ease; text-decoration: none;
+    border: none; width: 100%; cursor: pointer; background: transparent; text-align: left;
+}
+.nav-dropdown-item:hover {
+    background: linear-gradient(90deg, #eef2ff, #f5f3ff);
+    color: #4f46e5;
+    padding-left: 1.25rem;
+}
+.nav-dropdown-item svg { transition: transform .2s; }
+.nav-dropdown-item:hover svg { transform: scale(1.15); color: #6366f1; }
+.nav-dropdown-divider { height: 1px; background: #f3f4f6; margin: .25rem 0; }
+.nav-dropdown-item.danger { color: #dc2626; }
+.nav-dropdown-item.danger:hover { background: #fff1f2; color: #b91c1c; padding-left: 1.25rem; }
+</style>
+
+<nav x-data="{ open: false }" class="nav-bar sticky top-0 z-40">
+
+    {{-- Floating particles (light, subtle) --}}
+    <div class="nav-particle" style="left:15%;bottom:0;width:4px;height:4px;background:#6366f1;--dur:4s;--del:0s;"></div>
+    <div class="nav-particle" style="left:35%;bottom:0;width:3px;height:3px;background:#a855f7;--dur:5s;--del:1.2s;"></div>
+    <div class="nav-particle" style="left:60%;bottom:0;width:4px;height:4px;background:#ec4899;--dur:3.5s;--del:.6s;"></div>
+    <div class="nav-particle" style="left:80%;bottom:0;width:3px;height:3px;background:#6366f1;--dur:4.5s;--del:2s;"></div>
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                    </a>
-                </div>
+        <div class="flex justify-between items-center h-16">
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+            {{-- LEFT --}}
+            <div class="flex items-center gap-5">
+                {{-- Logo --}}
+                <a href="{{ route('dashboard') }}" class="nav-logo flex items-center gap-2.5">
+                    <img src="/assets/logo/icon.png?v=3" alt="StudAI Hire" class="nav-logo-img" style="width:34px;height:34px;object-fit:contain;">
+                    <span class="nav-logo-text">Stud<span>AI</span> One</span>
+                </a>
+
+                {{-- Divider --}}
+                <div class="hidden sm:block w-px h-5" style="background:linear-gradient(180deg,transparent,#e0e7ff,transparent)"></div>
+
+                {{-- Dashboard pill --}}
+                <a href="{{ route('dashboard') }}" class="nav-pill hidden sm:inline-flex">
+                    <div class="nav-dot"></div>
+                    Dashboard
+                </a>
+
+                {{-- Breadcrumb for resume pages --}}
+                @if(request()->routeIs('resume.*'))
+                <div class="hidden md:flex items-center gap-1.5">
+                    <svg class="w-3 h-3 nav-sep" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                    <span class="nav-breadcrumb" style="animation:nav-slide-in .3s ease both">Resume Builder</span>
+                </div>
+                @elseif(request()->routeIs('jobs.*'))
+                <div class="hidden md:flex items-center gap-1.5">
+                    <svg class="w-3 h-3 nav-sep" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                    <span class="nav-breadcrumb" style="animation:nav-slide-in .3s ease both">Job Search</span>
+                </div>
+                @elseif(request()->routeIs('agent.*'))
+                <div class="hidden md:flex items-center gap-1.5">
+                    <svg class="w-3 h-3 nav-sep" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                    <span class="nav-breadcrumb" style="animation:nav-slide-in .3s ease both">AI Agent</span>
+                </div>
+                @endif
+            </div>
+
+            {{-- RIGHT --}}
+            <div class="flex items-center gap-2">
+                {{-- Search --}}
+                <a href="{{ route('jobs.search') }}" class="nav-icon-btn" title="Search Jobs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </a>
+
+                {{-- User dropdown --}}
+                <div class="relative" x-data="{ userMenu: false }">
+                    <button @click="userMenu = !userMenu" @click.outside="userMenu = false"
+                            class="nav-user-btn flex items-center gap-2 px-2 py-1 rounded-xl transition-all duration-200 hover:bg-indigo-50">
+                        <div class="nav-avatar-wrap">
+                            <div class="nav-avatar-ring"></div>
+                            <div class="nav-avatar">{{ strtoupper(substr(Auth::user()?->name ?? 'G', 0, 1)) }}</div>
+                        </div>
+                        <span class="nav-username hidden sm:block">{{ explode(' ', Auth::user()?->name ?? 'Guest')[0] }}</span>
+                        <svg class="nav-chevron w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+
+                    <div x-show="userMenu"
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
+                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         class="nav-dropdown absolute right-0 z-50"
+                         style="top:calc(100% + 10px)">
+
+                        <div class="nav-dropdown-header">
+                            <p class="text-xs font-bold text-indigo-900">{{ Auth::user()?->name ?? 'Guest' }}</p>
+                            <p class="text-xs mt-0.5 text-indigo-400">{{ Auth::user()?->email ?? '' }}</p>
+                        </div>
+
+                        <div class="py-1">
+                            <a href="{{ route('dashboard') }}" class="nav-dropdown-item">
+                                <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                                Dashboard
+                            </a>
+                            <a href="{{ route('profile.edit') }}" class="nav-dropdown-item">
+                                <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                Profile
+                            </a>
+                            <a href="{{ route('subscriptions.pricing') }}" class="nav-dropdown-item">
+                                <svg class="w-4 h-4 text-fuchsia-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                                Upgrade Plan
+                            </a>
+
+                            <div class="nav-dropdown-divider"></div>
+
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="nav-dropdown-item danger">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                    Log Out
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()?->name ?? 'Guest' }}</div>
-
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
-
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-
-            <!-- Hamburger -->
+            {{-- Mobile hamburger --}}
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <button @click="open = !open" class="nav-icon-btn">
+                    <svg class="h-5 w-5" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path :class="{'hidden': open, 'inline-flex': !open}" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        <path :class="{'hidden': !open, 'inline-flex': open}" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+    {{-- Mobile menu --}}
+    <div :class="{'block': open, 'hidden': !open}" class="hidden sm:hidden"
+         style="background:#fff;border-top:1px solid #eef2ff;box-shadow:0 8px 24px rgba(99,102,241,.1)">
+        <div class="px-4 py-3 space-y-1">
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-indigo-700 bg-indigo-50">Dashboard</a>
+            <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">Profile</a>
         </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()?->name ?? 'Guest' }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()?->email ?? '' }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
+        <div class="px-4 py-3" style="border-top:1px solid #eef2ff">
+            <p class="text-sm font-bold text-gray-800">{{ Auth::user()?->name ?? 'Guest' }}</p>
+            <p class="text-xs mt-0.5 text-gray-400">{{ Auth::user()?->email ?? '' }}</p>
+            <form method="POST" action="{{ route('logout') }}" class="mt-3">
+                @csrf
+                <button type="submit" class="text-sm font-semibold text-red-500">Log Out</button>
+            </form>
         </div>
     </div>
 </nav>
+

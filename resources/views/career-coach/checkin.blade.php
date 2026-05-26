@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Weekly Check-in - AI Career Coach')
 
@@ -50,35 +50,35 @@
                     <label class="cursor-pointer">
                         <input type="radio" name="mood" value="great" class="hidden peer" x-model="mood">
                         <div class="peer-checked:ring-2 peer-checked:ring-green-500 peer-checked:bg-green-50 rounded-xl p-4 text-center border border-slate-200 hover:border-slate-300 transition">
-                            <span class="text-3xl">🤩</span>
+                            <span class="text-3xl">©</span>
                             <p class="text-xs font-medium text-slate-600 mt-2">Great</p>
                         </div>
                     </label>
                     <label class="cursor-pointer">
                         <input type="radio" name="mood" value="good" class="hidden peer" x-model="mood">
                         <div class="peer-checked:ring-2 peer-checked:ring-blue-500 peer-checked:bg-blue-50 rounded-xl p-4 text-center border border-slate-200 hover:border-slate-300 transition">
-                            <span class="text-3xl">😊</span>
+                            <span class="text-3xl">Š</span>
                             <p class="text-xs font-medium text-slate-600 mt-2">Good</p>
                         </div>
                     </label>
                     <label class="cursor-pointer">
                         <input type="radio" name="mood" value="okay" class="hidden peer" x-model="mood">
                         <div class="peer-checked:ring-2 peer-checked:ring-yellow-500 peer-checked:bg-yellow-50 rounded-xl p-4 text-center border border-slate-200 hover:border-slate-300 transition">
-                            <span class="text-3xl">😐</span>
+                            <span class="text-3xl"></span>
                             <p class="text-xs font-medium text-slate-600 mt-2">Okay</p>
                         </div>
                     </label>
                     <label class="cursor-pointer">
                         <input type="radio" name="mood" value="struggling" class="hidden peer" x-model="mood">
                         <div class="peer-checked:ring-2 peer-checked:ring-orange-500 peer-checked:bg-orange-50 rounded-xl p-4 text-center border border-slate-200 hover:border-slate-300 transition">
-                            <span class="text-3xl">😔</span>
+                            <span class="text-3xl">”</span>
                             <p class="text-xs font-medium text-slate-600 mt-2">Struggling</p>
                         </div>
                     </label>
                     <label class="cursor-pointer">
                         <input type="radio" name="mood" value="difficult" class="hidden peer" x-model="mood">
                         <div class="peer-checked:ring-2 peer-checked:ring-red-500 peer-checked:bg-red-50 rounded-xl p-4 text-center border border-slate-200 hover:border-slate-300 transition">
-                            <span class="text-3xl">😣</span>
+                            <span class="text-3xl">£</span>
                             <p class="text-xs font-medium text-slate-600 mt-2">Difficult</p>
                         </div>
                     </label>
@@ -100,7 +100,7 @@
 
             <!-- Wins -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                <h2 class="text-lg font-semibold text-slate-900 mb-2">🎉 Wins & Celebrations</h2>
+                <h2 class="text-lg font-semibold text-slate-900 mb-2">‰ Wins & Celebrations</h2>
                 <p class="text-sm text-slate-500 mb-4">What went well? Celebrate your achievements, big or small!</p>
                 
                 <textarea 
@@ -113,7 +113,7 @@
 
             <!-- Challenges -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                <h2 class="text-lg font-semibold text-slate-900 mb-2">🤔 Challenges & Obstacles</h2>
+                <h2 class="text-lg font-semibold text-slate-900 mb-2">” Challenges & Obstacles</h2>
                 <p class="text-sm text-slate-500 mb-4">What challenges did you face? What's blocking your progress?</p>
                 
                 <textarea 
@@ -127,7 +127,7 @@
             <!-- Goal Updates -->
             @if($goals->count() > 0)
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                    <h2 class="text-lg font-semibold text-slate-900 mb-4">📊 Goal Progress</h2>
+                    <h2 class="text-lg font-semibold text-slate-900 mb-4">�Š Goal Progress</h2>
                     
                     <div class="space-y-4">
                         @foreach($goals as $goal)
@@ -160,7 +160,7 @@
 
             <!-- Focus Areas for Next Week -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                <h2 class="text-lg font-semibold text-slate-900 mb-2">🎯 Focus Areas for Next Week</h2>
+                <h2 class="text-lg font-semibold text-slate-900 mb-2">¯ Focus Areas for Next Week</h2>
                 <p class="text-sm text-slate-500 mb-4">What do you want to prioritize?</p>
                 
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-3">

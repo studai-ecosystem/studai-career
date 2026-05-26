@@ -54,7 +54,7 @@ class LimitReachedNotification extends Notification implements ShouldQueue
             ->line('• Adjust your job search criteria to be more selective')
             ->line('• Wait for the limit to reset ' . $resetText)
             ->action('View Dashboard', route('agent.dashboard'))
-            ->line('Thank you for using StudAI Career!');
+            ->line('Thank you for using StudAI Hire!');
     }
 
     /**

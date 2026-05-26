@@ -1,4 +1,4 @@
-@extends('layouts.employer')
+@extends('layouts.dashboard')
 
 @section('title', 'Synced Jobs - ' . $connection->name)
 

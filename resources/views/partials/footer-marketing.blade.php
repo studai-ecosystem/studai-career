@@ -1,4 +1,4 @@
-{{-- StudAI Path Marketing Footer --}}
+{{-- StudAI Hire Marketing Footer --}}
 <footer class="bg-gray-50 border-t border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -66,7 +66,7 @@
         <div class="border-t border-gray-200 mt-12 pt-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-sm text-gray-500">
-                    &copy; {{ date('Y') }} StudAI Career. All rights reserved.
+                    &copy; {{ date('Y') }} StudAI Hire. All rights reserved.
                 </p>
                 <div class="flex items-center gap-2 text-sm text-gray-500">
                     <span>Made with</span>

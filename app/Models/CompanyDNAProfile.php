@@ -13,6 +13,8 @@ class CompanyDNAProfile extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'company_dna_profiles';
+
     protected $fillable = [
         'company_id',
         'mission_statement',
@@ -61,7 +63,7 @@ class CompanyDNAProfile extends Model
 
     public function cultureAnalysis(): HasOne
     {
-        return $this->hasOne(CultureAnalysis::class);
+        return $this->hasOne(CultureAnalysis::class, 'company_dna_profile_id');
     }
 
     public function hiringPatterns(): HasMany

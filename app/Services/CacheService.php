@@ -1,28 +1,71 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
+/**
+ * Central cache manager for invalidating related caches on both sides.
+ *
+ * Student side: app_stats, job_recommendations
+ * Employer side: employer_app_counts, employer_status_counts, employer_weekly/monthly_trend, employer_job_counts
+ *
+ * Call CacheService::onApplicationChanged() any time an application is
+ * created, updated, or deleted so both dashboards reflect the change.
+ */
 class CacheService
 {
     /**
      * Cache durations in seconds
      */
     const CACHE_DURATIONS = [
-        'user_profile' => 3600,           // 1 hour
-        'company_profile' => 3600,        // 1 hour
-        'job_listing' => 1800,            // 30 minutes
-        'job_details' => 3600,            // 1 hour
-        'search_results' => 900,          // 15 minutes
-        'recommended_jobs' => 1800,       // 30 minutes
-        'application_count' => 300,       // 5 minutes
-        'statistics' => 600,              // 10 minutes
-        'ai_embeddings' => 86400,         // 24 hours
-        'ai_response' => 3600,            // 1 hour
-        'subscription_features' => 3600,  // 1 hour
+        'user_profile'          => 3600,
+        'company_profile'       => 3600,
+        'job_listing'           => 1800,
+        'job_details'           => 3600,
+        'search_results'        => 900,
+        'recommended_jobs'      => 1800,
+        'application_count'     => 300,
+        'statistics'            => 600,
+        'ai_embeddings'         => 86400,
+        'ai_response'           => 3600,
+        'subscription_features' => 3600,
     ];
+
+    // -----------------------------------------------------------------------
+    // Cross-side invalidation — call after any application create/update/delete
+    // -----------------------------------------------------------------------
+
+    public static function onApplicationChanged(int $userId, int $companyId): void
+    {
+        self::bustStudentCaches($userId);
+        self::bustEmployerCaches($companyId);
+    }
+
+    public static function bustStudentCaches(int $userId): void
+    {
+        Cache::forget("app_stats_{$userId}");
+        Cache::forget("job_recommendations_{$userId}");
+    }
+
+    public static function bustEmployerCaches(int $companyId): void
+    {
+        Cache::forget("employer_job_counts_{$companyId}");
+        Cache::forget("employer_app_counts_{$companyId}");
+        Cache::forget("employer_status_counts_{$companyId}");
+        Cache::forget("employer_weekly_trend_{$companyId}");
+        Cache::forget("employer_monthly_trend_{$companyId}");
+    }
+
+    public static function onJobChanged(int $companyId): void
+    {
+        Cache::forget("employer_job_counts_{$companyId}");
+        Cache::forget('job_locations');
+        Cache::forget('featured_jobs');
+    }
 
     /**
      * Get cached data or execute callback

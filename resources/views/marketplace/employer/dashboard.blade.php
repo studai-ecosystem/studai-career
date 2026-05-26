@@ -116,7 +116,7 @@
                             
                             <div class="flex items-center justify-between text-sm">
                                 <div class="flex items-center gap-4 text-gray-500">
-                                    <span class="font-medium text-gray-900">${{ number_format($project->budget_min ?? 0) }} - ${{ number_format($project->budget_max ?? 0) }}</span>
+                                    <span class="font-medium text-gray-900">₹{{ number_format($project->budget_min ?? 0) }} – ₹{{ number_format($project->budget_max ?? 0) }}</span>
                                     <span class="flex items-center gap-1">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -124,8 +124,8 @@
                                         {{ $project->proposals_count ?? 0 }} proposals
                                     </span>
                                 </div>
-                                <a href="{{ route('marketplace.employer.manage-project', $project) }}" class="text-studai-blue-600 hover:text-studai-blue-700 font-medium">
-                                    Manage →
+                                <a href="{{ route('marketplace.employer.review-proposals', $project) }}" class="text-studai-blue-600 hover:text-studai-blue-700 font-medium">
+                                    Review Proposals →
                                 </a>
                             </div>
                         </div>
@@ -228,8 +228,8 @@
                                     </div>
                                 </div>
                                 <div class="text-right">
-                                    <div class="font-semibold text-green-600">${{ number_format($proposal->bid_amount) }}</div>
-                                    <div class="text-gray-500 text-xs">{{ $proposal->estimated_days }} days</div>
+                                    <div class="font-semibold text-green-600">₹{{ number_format($proposal->proposed_amount) }}</div>
+                                    <div class="text-gray-500 text-xs">{{ $proposal->estimated_duration_days }} days</div>
                                 </div>
                             </div>
                             
@@ -289,6 +289,13 @@
                         </svg>
                         <span class="font-medium">Saved Freelancers</span>
                     </a>
+                    <a href="{{ route('marketplace.gigs') }}" 
+                       class="flex items-center gap-3 p-3 bg-green-50 text-green-700 rounded-xl hover:bg-green-100 transition-colors">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                        <span class="font-medium">Buy Student Services</span>
+                    </a>
                 </div>
             </div>
 
@@ -298,21 +305,21 @@
                 <div class="space-y-4">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500">This Month</span>
-                        <span class="font-semibold text-gray-900">${{ number_format($spending['this_month'] ?? 0) }}</span>
+                        <span class="font-semibold text-gray-900">₹{{ number_format($spending['this_month'] ?? 0) }}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500">Last Month</span>
-                        <span class="font-semibold text-gray-900">${{ number_format($spending['last_month'] ?? 0) }}</span>
+                        <span class="font-semibold text-gray-900">₹{{ number_format($spending['last_month'] ?? 0) }}</span>
                     </div>
                     <div class="pt-3 border-t border-gray-100">
                         <div class="flex justify-between items-center">
                             <span class="text-gray-500">Total All Time</span>
-                            <span class="font-semibold text-gray-900">${{ number_format($stats['total_spent'] ?? 0) }}</span>
+                            <span class="font-semibold text-gray-900">₹{{ number_format($stats['total_spent'] ?? 0) }}</span>
                         </div>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500">In Escrow</span>
-                        <span class="font-semibold text-studai-blue-600">${{ number_format($spending['in_escrow'] ?? 0) }}</span>
+                        <span class="font-semibold text-studai-blue-600">₹{{ number_format($spending['in_escrow'] ?? 0) }}</span>
                     </div>
                 </div>
             </div>
@@ -330,16 +337,18 @@
                     @forelse($savedFreelancers ?? [] as $saved)
                         <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
                             <div class="w-10 h-10 rounded-full bg-gradient-to-br from-studai-blue-500 to-studai-blue-600 flex items-center justify-center text-white font-semibold text-sm">
-                                {{ substr($saved->freelancer->user->name ?? 'F', 0, 1) }}
+                                {{ substr($saved->freelancerProfile?->user?->name ?? 'F', 0, 1) }}
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="font-medium text-gray-900 truncate">{{ $saved->freelancer->user->name ?? 'Freelancer' }}</p>
-                                <p class="text-gray-500 text-xs truncate">{{ $saved->freelancer->professional_title ?? '' }}</p>
+                                <p class="font-medium text-gray-900 truncate">{{ $saved->freelancerProfile?->user?->name ?? 'Freelancer' }}</p>
+                                <p class="text-gray-500 text-xs truncate">{{ $saved->freelancerProfile?->professional_title ?? '' }}</p>
                             </div>
-                            <a href="{{ route('marketplace.freelancer.show', $saved->freelancer) }}" 
-                               class="text-studai-blue-600 hover:text-studai-blue-700 text-sm font-medium">
-                                View
-                            </a>
+                            @if($saved->freelancerProfile)
+                                <a href="{{ route('marketplace.freelancer.show', $saved->freelancerProfile) }}" 
+                                   class="text-studai-blue-600 hover:text-studai-blue-700 text-sm font-medium">
+                                    View
+                                </a>
+                            @endif
                         </div>
                     @empty
                         <p class="text-gray-500 text-sm text-center py-4">No saved freelancers yet</p>

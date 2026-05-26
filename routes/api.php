@@ -10,7 +10,6 @@ use App\Http\Controllers\API\CompanyController as APICompanyController;
 use App\Http\Controllers\API\JobController as APIJobController;
 use App\Http\Controllers\API\AgentController;
 use App\Http\Controllers\API\InterviewSessionController;
-use App\Http\Controllers\API\MarketIntelligenceController;
 use App\Http\Controllers\API\NegotiationController;
 use App\Http\Controllers\API\SkillAnalyzerController;
 use App\Http\Controllers\Api\AIFormAssistantController;
@@ -124,8 +123,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/jobs/{job}/save', [JobMatchingController::class, 'save']);
     Route::delete('/jobs/{job}/unsave', [JobMatchingController::class, 'unsave']);
     
-    // One-Click Apply
-    Route::post('/jobs/{job}/apply', [JobMatchingController::class, 'apply']);
+    // One-Click AI Apply (separate endpoint to avoid conflict with web manual apply route)
+    Route::post('/jobs/{job}/ai-apply', [JobMatchingController::class, 'apply']);
     
     // Payment & Subscription Routes (with idempotency for POST/PUT)
     Route::prefix('payment')->group(function () {
@@ -221,20 +220,6 @@ Route::middleware('auth:sanctum')->group(function () {
                 ->name('api.agent.approvals.bulk-reject');
         });
     });
-});
-
-// Market Intelligence Routes (auth:sanctum required)
-Route::middleware('auth:sanctum')->prefix('market')->group(function () {
-    Route::get('/overview', [MarketIntelligenceController::class, 'overview']);
-    Route::get('/user-position', [MarketIntelligenceController::class, 'userPosition']);
-    Route::get('/salary-insights', [MarketIntelligenceController::class, 'salaryInsights']);
-    Route::post('/negotiation-insights', [MarketIntelligenceController::class, 'negotiationInsights']);
-    Route::get('/skill-trends', [MarketIntelligenceController::class, 'skillTrends']);
-    Route::get('/skill-combinations', [MarketIntelligenceController::class, 'skillCombinations']);
-    Route::get('/upskilling-roadmap', [MarketIntelligenceController::class, 'upskillingRoadmap']);
-    Route::get('/role-predictions', [MarketIntelligenceController::class, 'rolePredictions']);
-    Route::get('/competitive-analysis', [MarketIntelligenceController::class, 'competitiveAnalysis']);
-    Route::get('/recommendations', [MarketIntelligenceController::class, 'recommendations']);
 });
 
 /*
@@ -456,6 +441,9 @@ Route::prefix('scout')->middleware(['auth:sanctum', 'employer'])->group(function
         ->name('api.scout.learning.refine');
 
     // Predictive Analytics Routes (New)
+    Route::get('/predictive/applications', [App\Http\Controllers\ScoutController::class, 'getCompanyApplications'])
+        ->name('api.scout.predictive.applications');
+
     Route::post('/predictive/success', [App\Http\Controllers\ScoutController::class, 'predictSuccessProbability'])
         ->middleware('throttle:30,1') // Max 30 predictions per minute
         ->name('api.scout.predictive.success');

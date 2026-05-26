@@ -1,14 +1,14 @@
 {{--
-    StudAI Path — How It Works Page
+    StudAI Hire — How It Works Page
     The Career OS Workflow
 --}}
-@extends('layouts.app')
+@extends('layouts.marketing')
 
-@section('title', 'How It Works — StudAI Path | The Autonomous Career OS')
+@section('title', 'How It Works — StudAI Hire | The Autonomous Career OS')
 
 @section('meta')
-<meta name="description" content="See how StudAI Path automates your job search in 5 steps: from profile creation to offer negotiation. AI handles the work while you focus on what matters.">
-<meta property="og:title" content="How StudAI Path Works — Career on Autopilot">
+<meta name="description" content="See how StudAI Hire automates your job search in 5 steps: from profile creation to offer negotiation. AI handles the work while you focus on what matters.">
+<meta property="og:title" content="How StudAI Hire Works — Career on Autopilot">
 <meta property="og:description" content="Discover the 5-step workflow that helps job seekers land 3x more interviews with zero manual applications.">
 <link rel="canonical" href="{{ route('how-it-works') }}">
 @endsection
@@ -283,7 +283,7 @@
             @foreach ([
                 [
                     'question' => 'How is this different from regular job boards?',
-                    'answer' => 'Job boards just list openings. StudAI Path actually applies for you, customizes each application, and preps you for interviews. It\'s the difference between a search engine and a full-time career assistant.',
+                    'answer' => 'Job boards just list openings. StudAI Hire actually applies for you, customizes each application, and preps you for interviews. It\'s the difference between a search engine and a full-time career assistant.',
                 ],
                 [
                     'question' => 'Will employers know AI helped with my application?',
@@ -346,8 +346,8 @@
 {!! json_encode([
     '@context' => 'https://schema.org',
     '@type' => 'HowTo',
-    'name' => 'How StudAI Path Works',
-    'description' => 'Learn how StudAI Path automates your job search from profile creation to offer acceptance in 5 simple steps.',
+    'name' => 'How StudAI Hire Works',
+    'description' => 'Learn how StudAI Hire automates your job search from profile creation to offer acceptance in 5 simple steps.',
     'totalTime' => 'PT30M',
     'step' => [
         ['@type' => 'HowToStep', 'position' => 1, 'name' => 'Tell Us Your Goals', 'text' => 'Import your resume or LinkedIn profile for AI analysis.'],

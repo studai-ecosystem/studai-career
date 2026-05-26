@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Saved Jobs')
 
@@ -7,6 +7,14 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
+            <div class="flex items-center gap-3 mb-3">
+                <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Back to Dashboard
+                </a>
+            </div>
             <h1 class="text-3xl font-bold text-gray-900 mb-2">Saved Jobs</h1>
             <p class="text-gray-600">
                 You have saved {{ $jobs->total() }} {{ Str::plural('job', $jobs->total()) }}
@@ -79,14 +87,14 @@
                                         <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                         </svg>
-                                        ₹{{ number_format($job->salary_min / 100000, 1) }}L - ₹{{ number_format($job->salary_max / 100000, 1) }}L
+                                        &#8377;{{ number_format($job->salary_min / 100000, 1) }}L - &#8377;{{ number_format($job->salary_max / 100000, 1) }}L
                                     </div>
                                 @endif
                             </div>
 
                             @if($job->required_skills)
                                 <div class="flex flex-wrap gap-2 mb-3">
-                                    @foreach(array_slice(json_decode($job->required_skills, true) ?? [], 0, 5) as $skill)
+                                    @foreach(array_slice(is_array($job->required_skills) ? $job->required_skills : (json_decode($job->required_skills, true) ?? []), 0, 5) as $skill)
                                         <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
                                             {{ $skill }}
                                         </span>

@@ -42,7 +42,10 @@
         $allSuggestions = array_merge($allSuggestions, $answer['evaluation']['suggestions'] ?? []);
     }
 
-    $averageScore = $scoredCount > 0 ? round($scoreSum / $scoredCount) : 0;
+    // Use Vantage score from controller if available (0-100), fall back to per-question average
+    $averageScore = isset($vantageScore) && $vantageScore > 0
+        ? $vantageScore
+        : ($scoredCount > 0 ? round($scoreSum / $scoredCount) : 0);
     $gradeConfig = $grade ?? ['grade' => 'N/A', 'label' => 'Need more data', 'color' => 'gray'];
 
     $categoryAverages = collect($categoryStats)->map(function ($data) {
@@ -85,7 +88,8 @@
                         <span class="inline-flex items-center px-4 py-2 rounded-lg font-semibold bg-white/20 text-white">
                             {{ $gradeConfig['grade'] }} &middot; {{ $gradeConfig['label'] }}
                         </span>
-                        <span class="text-sm text-indigo-100">Completed at {{ now()->format('d M Y, h:i A') }}</span>
+                        <span class="text-sm text-indigo-100" id="completed-at-time">Completed at {{ now()->format('d M Y') }}</span>
+                        <script>document.addEventListener('DOMContentLoaded',function(){var el=document.getElementById('completed-at-time');if(el){var now=new Date();var opts={day:'2-digit',month:'short',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true};el.textContent='Completed at '+now.toLocaleString('en-GB',opts);}});</script>
                     </div>
                 </div>
 
@@ -199,7 +203,23 @@
                                             <p class="text-2xl font-bold text-indigo-600">{{ $score !== null ? $score : '—' }}</p>
                                         </div>
                                     </div>
-                                    <p class="text-sm text-gray-700 mt-3">{{ $answer['evaluation']['overall_feedback'] ?? 'Answer recorded. Add more detail and request AI feedback to unlock insights.' }}</p>
+                                    {{-- User's typed answer --}}
+                                    @if(!empty($answer['answer']))
+                                        <div class="mt-3 bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                            <p class="text-xs uppercase tracking-wide text-gray-400 mb-1">Your Answer</p>
+                                            <p class="text-sm text-gray-800 whitespace-pre-wrap">{{ $answer['answer'] }}</p>
+                                        </div>
+                                    @endif
+                                    {{-- AI feedback --}}
+                                    @if(!empty($answer['evaluation']['overall_feedback']))
+                                        @php
+                                            $sentences = preg_split('/(?<=[.!?])\s+/', trim($answer['evaluation']['overall_feedback']));
+                                            $short = implode(' ', array_slice($sentences, 0, 2));
+                                        @endphp
+                                        <p class="text-sm text-gray-700 mt-3">{{ $short }}</p>
+                                    @else
+                                        <p class="text-sm text-gray-400 italic mt-2">AI feedback will appear here after evaluation.</p>
+                                    @endif
                                 </div>
                             @empty
                                 <div class="p-6 text-center text-gray-500">
@@ -245,14 +265,26 @@
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Download & Share</h3>
                         <p class="text-sm text-gray-600 mb-4">Export your responses and AI feedback to review offline or share with your accountability partner.</p>
                         <div class="space-y-3">
-                            <button class="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-200 rounded-md text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">
-                                <i class="fas fa-file-pdf mr-2 text-red-500"></i> Download PDF Report (coming soon)
-                            </button>
-                            <button class="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-200 rounded-md text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">
-                                <i class="fas fa-share-alt mr-2 text-indigo-500"></i> Share with mentor (coming soon)
+                            <a href="{{ route('interview.skill-map', $sessionId) }}"
+                               class="w-full inline-flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-semibold hover:bg-indigo-700 transition">
+                                🧠 View Vantage Skill Map
+                            </a>
+                            <a href="{{ route('interview.pdf', $sessionId) }}" target="_blank"
+                               class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-md text-sm font-semibold hover:bg-red-700 transition">
+                                <i class="fas fa-file-pdf mr-2"></i> Download PDF Report
+                            </a>
+                            <button onclick="
+                                const url = '{{ route('interview.pdf', $sessionId) }}';
+                                if (navigator.share) {
+                                    navigator.share({ title: 'My Interview Report', url: url });
+                                } else {
+                                    navigator.clipboard.writeText(url).then(() => alert('Report link copied to clipboard!'));
+                                }
+                            " class="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-200 rounded-md text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">
+                                <i class="fas fa-share-alt mr-2 text-indigo-500"></i> Share with mentor
                             </button>
                         </div>
-                        <p class="text-xs text-gray-400 mt-3">Export options will automatically include new sessions as we release them.</p>
+                        <p class="text-xs text-gray-400 mt-3">PDF opens in a new tab — use your browser's Save as PDF option.</p>
                     </div>
                 </div>
             </div>

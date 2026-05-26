@@ -27,7 +27,7 @@ class AutomatedShortlistingService
                 'application_count' => count($applicationIds)
             ]);
 
-            $job = Job::with(['company.dnaProfile'])->findOrFail($jobId);
+            $job = Job::with(['company'])->findOrFail($jobId);
             $companyId = $job->company_id;
 
             // Load all applications with candidate data
@@ -135,7 +135,7 @@ class AutomatedShortlistingService
      */
     protected function evaluateCandidate(Application $application, Job $job): array
     {
-        $candidateProfile = $this->buildCandidateProfile($application->user);
+        $candidateProfile = $this->buildCandidateProfile($application->user, $application);
         
         // Round 1: Basic Qualification Screening
         $round1 = $this->executeRound1BasicQualification($candidateProfile, $job);
@@ -272,7 +272,11 @@ class AutomatedShortlistingService
                 $passed = false; // Hard fail if 3+ years short
             }
         } else {
-            $strengths[] = "{$yearsExp} years of experience (exceeds minimum)";
+            if ($yearsExp > 0) {
+                $strengths[] = "{$yearsExp} years of experience (meets or exceeds minimum)";
+            } else {
+                $strengths[] = "Meets basic qualification requirements";
+            }
         }
 
         // Check work authorization (if specified)
@@ -354,23 +358,44 @@ class AutomatedShortlistingService
     protected function executeRound2SkillsCompetency(array $candidate, Job $job): array
     {
         $candidateSkills = array_map('strtolower', $candidate['skills'] ?? []);
-        $requiredSkills = array_map('strtolower', $job->required_skills ?? []);
+        $requiredSkills  = array_map('strtolower', $job->required_skills ?? []);
         $preferredSkills = array_map('strtolower', $job->preferred_skills ?? []);
-        
+
+        // If candidate has no stored skills, extract from cover letter / resume text
+        if (empty($candidateSkills) && !empty($candidate['cover_letter_text'])) {
+            $text = strtolower($candidate['cover_letter_text']);
+            $candidateSkills = array_filter($requiredSkills, fn($s) => str_contains($text, $s));
+            $candidateSkills = array_merge($candidateSkills,
+                array_filter($preferredSkills, fn($s) => str_contains($text, $s)));
+        }
+
         // Get company success patterns for skill weighting
-        $companyDNA = CompanyDNAProfile::where('company_id', $job->company_id)->first();
+        try {
+            $companyDNA = CompanyDNAProfile::where('company_id', $job->company_id)->first();
+        } catch (\Exception $e) {
+            $companyDNA = null;
+        }
         $successTraits = $companyDNA ? ($companyDNA->success_traits ?? []) : [];
 
         $strengths = [];
-        $concerns = [];
-        
+        $concerns  = [];
+
         // Required skills match (60% of score)
+        // If no skills data at all, give a neutral baseline (60) — not penalise for empty profile
         $requiredMatches = array_intersect($candidateSkills, $requiredSkills);
-        $requiredScore = empty($requiredSkills) ? 100 : (count($requiredMatches) / count($requiredSkills)) * 100;
-        
+        if (empty($requiredSkills)) {
+            $requiredScore = 100;
+        } elseif (empty($candidateSkills)) {
+            // No skills data — assume moderate fit (60), flag as unverified
+            $requiredScore = 60;
+            $concerns[] = "Skill data not available in profile — assessed from application materials";
+        } else {
+            $requiredScore = (count($requiredMatches) / count($requiredSkills)) * 100;
+        }
+
         if ($requiredScore >= 80) {
             $strengths[] = "Strong match on required skills (" . count($requiredMatches) . "/" . count($requiredSkills) . ")";
-        } elseif ($requiredScore < 60) {
+        } elseif ($requiredScore < 40) {
             $missingSkills = array_diff($requiredSkills, $candidateSkills);
             $concerns[] = "Missing key skills: " . implode(', ', array_slice($missingSkills, 0, 5));
         }
@@ -379,7 +404,7 @@ class AutomatedShortlistingService
         $preferredMatches = array_intersect($candidateSkills, $preferredSkills);
         $preferredScore = empty($preferredSkills) ? 100 : (count($preferredMatches) / count($preferredSkills)) * 100;
         
-        if ($preferredScore >= 70) {
+        if ($preferredScore >= 70 && count($preferredMatches) > 0) {
             $strengths[] = "Has " . count($preferredMatches) . " preferred skills";
         }
 
@@ -403,8 +428,8 @@ class AutomatedShortlistingService
         // Overall Round 2 score
         $score = ($competencyScore * 0.70) + ($softSkillsScore * 0.30);
 
-        // Pass threshold: 65 points
-        $passed = $score >= 65;
+        // Pass threshold: 50 points (lenient when profile data is sparse)
+        $passed = $score >= 50;
 
         if (!$passed) {
             $concerns[] = "Overall skills competency below threshold";
@@ -439,9 +464,13 @@ class AutomatedShortlistingService
      */
     protected function executeRound3CulturalFit(array $candidate, Job $job, Application $application): array
     {
-        $companyDNA = CompanyDNAProfile::with('cultureAnalysis')
-            ->where('company_id', $job->company_id)
-            ->first();
+        try {
+            $companyDNA = CompanyDNAProfile::with('cultureAnalysis')
+                ->where('company_id', $job->company_id)
+                ->first();
+        } catch (\Exception $e) {
+            $companyDNA = null;
+        }
 
         if (!$companyDNA) {
             // If no DNA profile, use basic assessment
@@ -568,8 +597,8 @@ class AutomatedShortlistingService
             $potentialScore * 0.25
         );
 
-        // Pass threshold: 55 points (potential is bonus, not requirement)
-        $passed = $growthScore >= 55;
+        // Pass threshold: 45 points (growth is bonus, sparse profiles should not be auto-rejected)
+        $passed = $growthScore >= 45;
 
         if (!$passed) {
             $concerns[] = "Limited growth potential for long-term value";
@@ -590,23 +619,43 @@ class AutomatedShortlistingService
 
     // Helper methods
 
-    protected function buildCandidateProfile($user): array
+    protected function buildCandidateProfile($user, ?Application $application = null): array
     {
-        $profile = $user->profile;
-        
+        $profile = $user?->profile;
+
+        // Try to get skills from saved Resume model if profile has none
+        $skills = $profile?->skills ?? [];
+        if (empty($skills) && $user) {
+            $resume = \App\Models\Resume::where('user_id', $user->id)->latest()->first();
+            if ($resume) {
+                $rawSkills = $resume->skills ?? [];
+                if (is_array($rawSkills)) {
+                    foreach ($rawSkills as $category => $vals) {
+                        if (is_array($vals)) {
+                            $skills = array_merge($skills, $vals);
+                        } elseif (is_string($vals)) {
+                            $skills = array_merge($skills, array_map('trim', explode(',', $vals)));
+                        }
+                    }
+                    $skills = array_values(array_filter($skills));
+                }
+            }
+        }
+
         return [
-            'name' => $user->name,
-            'email' => $user->email,
-            'skills' => $profile->skills ?? [],
-            'experience' => $profile->experience ?? [],
-            'education' => $profile->education ?? [],
-            'years_of_experience' => $profile->years_of_experience ?? 0,
-            'values' => $profile->values ?? [],
-            'work_style' => $profile->work_style_preferences ?? [],
-            'certifications' => $profile->certifications ?? [],
-            'location' => $profile->location ?? null,
-            'work_authorized' => $profile->work_authorized ?? false,
-            'achievements' => $profile->achievements ?? []
+            'name'                => $user?->name ?? ($application?->guest_name ?? 'Unknown'),
+            'email'               => $user?->email ?? ($application?->guest_email ?? ''),
+            'skills'              => $skills,
+            'experience'          => $profile?->experience ?? [],
+            'education'           => $profile?->education ?? [],
+            'years_of_experience' => $profile?->years_of_experience ?? 0,
+            'values'              => $profile?->values ?? [],
+            'work_style'          => $profile?->work_style_preferences ?? [],
+            'certifications'      => $profile?->certifications ?? [],
+            'location'            => $profile?->location ?? null,
+            'work_authorized'     => $profile?->work_authorized ?? true,
+            'achievements'        => $profile?->achievements ?? [],
+            'cover_letter_text'   => $application?->cover_letter ?? '',
         ];
     }
 
@@ -780,7 +829,7 @@ class AutomatedShortlistingService
     protected function analyzeCareerTrajectory(array $experience): int
     {
         if (empty($experience)) {
-            return 40;
+            return 55; // Neutral — no data, don't penalise
         }
 
         $score = 50;

@@ -21,8 +21,6 @@ class UserSubscription extends Model
         'trial_ends_at',
         'current_period_start',
         'current_period_end',
-        'current_period_starts_at',
-        'current_period_ends_at',
         'applications_used_this_month',
         'ai_credits_used_this_month',
         'canceled_at',
@@ -37,8 +35,6 @@ class UserSubscription extends Model
         'trial_ends_at' => 'datetime',
         'current_period_start' => 'datetime',
         'current_period_end' => 'datetime',
-        'current_period_starts_at' => 'datetime',
-        'current_period_ends_at' => 'datetime',
         'canceled_at' => 'datetime',
         'grace_period_ends_at' => 'datetime',
         'last_retry_at' => 'datetime',
@@ -108,7 +104,16 @@ class UserSubscription extends Model
     {
         return $this->status === 'canceled' && $this->canceled_at !== null;
     }
-    
+
+    /**
+     * Alias accessor for next billing date.
+     * Maps to current_period_end which holds the subscription renewal date.
+     */
+    public function getNextBillingDateAttribute(): ?\Illuminate\Support\Carbon
+    {
+        return $this->current_period_end;
+    }
+
     /**
      * Reset monthly usage counters
      */

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Edit: ' . $template->name)
 
@@ -7,8 +7,8 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-            <a href="{{ route('email-templates.show', $template->id) }}" class="text-orange-600 hover:text-orange-800 text-sm mb-2 inline-block">← Back to Template</a>
-            <h1 class="text-3xl font-bold text-gray-900">✏️ Edit Template</h1>
+            <a href="{{ route('email-templates.show', $template->id) }}" class="text-orange-600 hover:text-orange-800 text-sm mb-2 inline-block">â† Back to Template</a>
+            <h1 class="text-3xl font-bold text-gray-900">ï¸ Edit Template</h1>
             <p class="text-gray-600">{{ $template->name }}</p>
         </div>
 
@@ -18,7 +18,7 @@
             
             <!-- Basic Info -->
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-lg font-bold text-gray-900 mb-4">📝 Basic Information</h2>
+                <h2 class="text-lg font-bold text-gray-900 mb-4">� Basic Information</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Template Name *</label>
@@ -55,7 +55,7 @@
 
             <!-- Subject Line -->
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-lg font-bold text-gray-900 mb-4">📬 Subject Line</h2>
+                <h2 class="text-lg font-bold text-gray-900 mb-4">�¬ Subject Line</h2>
                 <input type="text" name="subject" required value="{{ $template->subject }}"
                        class="w-full border-gray-200 rounded-lg focus:ring-orange-500 focus:border-orange-500">
                 <p class="text-xs text-gray-500 mt-2">Use @{{variable_name}} for dynamic content</p>
@@ -64,7 +64,7 @@
             <!-- Email Body -->
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-bold text-gray-900">📄 Email Body</h2>
+                    <h2 class="text-lg font-bold text-gray-900">�„ Email Body</h2>
                     <button type="button" onclick="insertVariable()" class="text-sm px-3 py-1 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200">
                         + Insert Variable
                     </button>
@@ -75,7 +75,7 @@
 
             <!-- Change Notes -->
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-lg font-bold text-gray-900 mb-4">📝 Change Notes</h2>
+                <h2 class="text-lg font-bold text-gray-900 mb-4">� Change Notes</h2>
                 <input type="text" name="change_notes" 
                        class="w-full border-gray-200 rounded-lg focus:ring-orange-500 focus:border-orange-500"
                        placeholder="Briefly describe what you changed (optional)">
@@ -83,7 +83,7 @@
 
             <!-- Variables Reference -->
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-lg font-bold text-gray-900 mb-4">📋 Available Variables</h2>
+                <h2 class="text-lg font-bold text-gray-900 mb-4">�‹ Available Variables</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
                     @foreach($availableVariables as $variable => $description)
                     <button type="button" onclick="insertVar('{{ $variable }}')" 
@@ -98,9 +98,9 @@
             <!-- Preview Section -->
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-bold text-gray-900">👁️ Preview</h2>
+                    <h2 class="text-lg font-bold text-gray-900">�ï¸ Preview</h2>
                     <button type="button" onclick="refreshPreview()" class="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
-                        🔄 Refresh Preview
+                        �„ Refresh Preview
                     </button>
                 </div>
                 <div id="preview-container" class="border border-gray-200 rounded-lg p-6 min-h-[200px]">
@@ -110,7 +110,7 @@
             <!-- Actions -->
             <div class="flex justify-between">
                 <button type="button" onclick="deleteTemplate()" class="px-6 py-3 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition">
-                    🗑️ Delete Template
+                    �‘ï¸ Delete Template
                 </button>
                 <div class="flex gap-4">
                     <a href="{{ route('email-templates.show', $template->id) }}" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
@@ -130,7 +130,7 @@
     <div class="bg-white rounded-2xl max-w-lg w-full max-h-[80vh] overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
             <h3 class="text-lg font-bold text-gray-900">Insert Variable</h3>
-            <button onclick="closeVariableModal()" class="p-2 hover:bg-gray-100 rounded-lg">✕</button>
+            <button onclick="closeVariableModal()" class="p-2 hover:bg-gray-100 rounded-lg">�</button>
         </div>
         <div class="p-6 max-h-[60vh] overflow-y-auto">
             <div class="space-y-2">
@@ -141,7 +141,7 @@
                         <code class="text-orange-600 font-mono">@{{{{ $variable }}}}</code>
                         <p class="text-sm text-gray-600">{{ $description }}</p>
                     </div>
-                    <span class="text-gray-400">→</span>
+                    <span class="text-gray-400">â†’</span>
                 </button>
                 @endforeach
             </div>

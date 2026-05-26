@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Career Path Visualization - Interactive Graph')
 
@@ -29,8 +29,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-            <a href="{{ route('analytics.dashboard') }}" class="text-pink-600 hover:text-pink-800 text-sm mb-2 inline-block">← Back to Analytics</a>
-            <h1 class="text-3xl font-bold text-gray-900">🛤️ Career Path Visualization</h1>
+            <a href="{{ route('analytics.dashboard') }}" class="text-pink-600 hover:text-pink-800 text-sm mb-2 inline-block">â† Back to Analytics</a>
+            <h1 class="text-3xl font-bold text-gray-900">�¤ï¸ Career Path Visualization</h1>
             <p class="text-gray-600">Explore possible career progressions with salary insights</p>
         </div>
 
@@ -84,21 +84,21 @@
             <h2 class="text-xl font-bold text-gray-900 mb-4" id="role-title">Role Details</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                    <h3 class="font-medium text-gray-600 mb-2">💰 Salary Range</h3>
+                    <h3 class="font-medium text-gray-600 mb-2">�° Salary Range</h3>
                     <div class="text-2xl font-bold text-green-600" id="role-salary">--</div>
                 </div>
                 <div>
-                    <h3 class="font-medium text-gray-600 mb-2">⏱️ Avg Experience</h3>
+                    <h3 class="font-medium text-gray-600 mb-2">â±ï¸ Avg Experience</h3>
                     <div class="text-2xl font-bold text-blue-600" id="role-experience">--</div>
                 </div>
                 <div>
-                    <h3 class="font-medium text-gray-600 mb-2">📈 Level</h3>
+                    <h3 class="font-medium text-gray-600 mb-2">�ˆ Level</h3>
                     <div class="text-2xl font-bold text-purple-600" id="role-level">--</div>
                 </div>
             </div>
             
             <div class="mt-6">
-                <h3 class="font-medium text-gray-600 mb-3">🎯 Next Career Steps</h3>
+                <h3 class="font-medium text-gray-600 mb-3">¯ Next Career Steps</h3>
                 <div id="next-roles" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
             </div>
         </div>
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
                         <div class="font-medium text-gray-900">${targetNode?.label || 'Unknown'}</div>
                         <div class="text-sm text-gray-600">
-                            ${edge.label || '2-3 years'} • 
+                            ${edge.label || '2-3 years'} â€¢ 
                             ${edge.salaryIncrease ? '+' + edge.salaryIncrease + '%' : ''} salary
                         </div>
                     </div>

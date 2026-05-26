@@ -45,7 +45,7 @@ class NotifyEmployer extends Notification implements ShouldQueue
             ->line('Applicant: ' . $applicant->name)
             ->line('Match Score: ' . $this->application->match_score . '%')
             ->action('View Application', url('/employer/applications/' . $this->application->id))
-            ->line('Thank you for using StudAI Career Platform!');
+            ->line('Thank you for using StudAI Hire Platform!');
     }
     
     /**
@@ -53,12 +53,19 @@ class NotifyEmployer extends Notification implements ShouldQueue
      */
     public function toArray($notifiable): array
     {
+        $job       = $this->application->job;
+        $applicant = $this->application->user;
+
         return [
             'application_id' => $this->application->id,
-            'job_id' => $this->application->job_id,
-            'applicant_name' => $this->application->user->name,
-            'job_title' => $this->application->job->title,
-            'match_score' => $this->application->match_score,
+            'job_id'         => $this->application->job_id,
+            'applicant_name' => $applicant?->name ?? 'A candidate',
+            'job_title'      => $job?->title ?? 'your job',
+            'match_score'    => $this->application->match_score,
+            // 'message' key is what the notification bell reads
+            'message' => ($applicant?->name ?? 'A candidate') . ' applied for "' . ($job?->title ?? 'your job') . '"',
+            'url'     => route('employer.applicants.show', $this->application->id),
+            'type'    => 'new_application',
         ];
     }
 }

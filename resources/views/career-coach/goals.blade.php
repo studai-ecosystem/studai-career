@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Career Goals - AI Career Coach')
 
@@ -15,7 +15,7 @@
                         <li class="text-gray-900 dark:text-white font-medium">Goals</li>
                     </ol>
                 </nav>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">🎯 Career Goals</h1>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">¯ Career Goals</h1>
                 <p class="mt-1 text-gray-600 dark:text-gray-400">Track and manage your career objectives</p>
             </div>
             <button onclick="openCreateModal()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2">
@@ -33,7 +33,7 @@
             @if($activeGoals->isEmpty())
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8 text-center">
                 <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                    <span class="text-3xl">🎯</span>
+                    <span class="text-3xl">¯</span>
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No active goals yet</h3>
                 <p class="text-gray-500 dark:text-gray-400 mb-4">Set your first career goal to start tracking progress</p>
@@ -141,7 +141,7 @@
         <!-- Completed Goals -->
         @if($completedGoals->isNotEmpty())
         <div>
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">🎉 Completed Goals ({{ $completedGoals->count() }})</h2>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">‰ Completed Goals ({{ $completedGoals->count() }})</h2>
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm divide-y divide-gray-200 dark:divide-gray-700">
                 @foreach($completedGoals as $goal)
                 <div class="p-4 flex items-center justify-between">
@@ -153,7 +153,7 @@
                         </div>
                         <div>
                             <h3 class="font-medium text-gray-900 dark:text-white">{{ $goal->title }}</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ $goal->getCategoryLabel() }} • Completed {{ $goal->completed_at->diffForHumans() }}</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ $goal->getCategoryLabel() }} â€¢ Completed {{ $goal->completed_at->diffForHumans() }}</p>
                         </div>
                     </div>
                 </div>
@@ -253,8 +253,13 @@ function closeCreateModal() {
     document.getElementById('createGoalForm').reset();
 }
 
+let goalSubmitting = false;
 async function submitGoal(event) {
     event.preventDefault();
+    if (goalSubmitting) return;
+    goalSubmitting = true;
+    const btn = event.target.querySelector('button[type=submit]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Creating...'; }
     const form = event.target;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
@@ -272,9 +277,14 @@ async function submitGoal(event) {
         const result = await response.json();
         if (result.success) {
             location.reload();
+        } else {
+            goalSubmitting = false;
+            if (btn) { btn.disabled = false; btn.textContent = 'Create Goal'; }
         }
     } catch (error) {
         console.error('Failed to create goal:', error);
+        goalSubmitting = false;
+        if (btn) { btn.disabled = false; btn.textContent = 'Create Goal'; }
     }
 }
 

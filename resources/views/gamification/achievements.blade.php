@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Achievements')
 
@@ -12,7 +12,7 @@
                 <p class="text-gray-600 mt-1">Complete activities to unlock achievements and earn rewards</p>
             </div>
             <a href="{{ route('gamification.dashboard') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">
-                ← Back to Dashboard
+                â† Back to Dashboard
             </a>
         </div>
 
@@ -94,7 +94,7 @@
                         <!-- Icon -->
                         <div class="w-16 h-16 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 {{ $isUnlocked ? '' : 'grayscale' }}"
                              style="background: {{ $tierColor }}15">
-                            {{ $achievement->icon ?? '🏆' }}
+                            {{ $achievement->icon ?? '†' }}
                         </div>
                         
                         <!-- Content -->
@@ -127,7 +127,7 @@
                             <span class="font-medium {{ $isUnlocked ? 'text-green-600' : 'text-gray-900' }}">
                                 {{ $progress['progress'] }}/{{ $progress['target'] }}
                                 @if($isUnlocked)
-                                    ✓
+                                    �
                                 @endif
                             </span>
                         </div>
@@ -171,7 +171,7 @@
             </div>
             @empty
             <div class="col-span-full text-center py-12">
-                <div class="text-6xl mb-4">🏆</div>
+                <div class="text-6xl mb-4">†</div>
                 <h3 class="text-xl font-bold text-gray-900 mb-2">No achievements found</h3>
                 <p class="text-gray-500">Try adjusting your filters</p>
             </div>

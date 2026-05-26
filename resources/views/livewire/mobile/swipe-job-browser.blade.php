@@ -318,7 +318,7 @@ function swipeHandler() {
         async saveJobToIndexedDB(job) {
             if (!('indexedDB' in window)) return;
 
-            const dbName = 'studai-career-offline';
+            const dbName = 'studai-hire-offline';
             const storeName = 'saved-jobs';
 
             const request = indexedDB.open(dbName, 1);

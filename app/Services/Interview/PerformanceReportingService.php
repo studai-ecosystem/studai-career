@@ -683,7 +683,7 @@ class PerformanceReportingService
             $prompt = $this->buildAIInsightsPrompt($report, $session);
             
             $aiResponse = $this->openAIService->generateCompletion($prompt, [
-                'max_tokens' => 500,
+                'max_completion_tokens' => 500,
                 'temperature' => 0.7,
             ]);
 

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Talent Pipeline Management')
 
@@ -71,7 +71,7 @@
                         </svg>
                     </div>
                 </div>
-                <p class="mt-3 text-sm text-gray-600">{{ __('Average weighted health score across pipelines (target ≥ 70).') }}</p>
+                <p class="mt-3 text-sm text-gray-600">{{ __('Average weighted health score across pipelines (target â‰¥ 70).') }}</p>
             </div>
             <div class="bg-white rounded-xl shadow-lg p-6 border border-pink-100">
                 <div class="flex items-center justify-between">
@@ -126,19 +126,19 @@
                     <div id="pipelineMeta" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="bg-gradient-to-br from-pink-50 to-purple-50 border border-pink-100 rounded-xl p-4">
                             <p class="text-xs uppercase text-gray-500 tracking-wide">Target Role</p>
-                            <p id="pipelineTargetRole" class="mt-2 text-sm font-semibold text-gray-900">—</p>
+                            <p id="pipelineTargetRole" class="mt-2 text-sm font-semibold text-gray-900">â€”</p>
                         </div>
                         <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-4">
                             <p class="text-xs uppercase text-gray-500 tracking-wide">Target Size</p>
-                            <p id="pipelineTargetSize" class="mt-2 text-sm font-semibold text-gray-900">—</p>
+                            <p id="pipelineTargetSize" class="mt-2 text-sm font-semibold text-gray-900">â€”</p>
                         </div>
                         <div class="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-100 rounded-xl p-4">
                             <p class="text-xs uppercase text-gray-500 tracking-wide">Current Size</p>
-                            <p id="pipelineCurrentSize" class="mt-2 text-sm font-semibold text-gray-900">—</p>
+                            <p id="pipelineCurrentSize" class="mt-2 text-sm font-semibold text-gray-900">â€”</p>
                         </div>
                         <div class="bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-100 rounded-xl p-4">
                             <p class="text-xs uppercase text-gray-500 tracking-wide">Next Hire Window</p>
-                            <p id="pipelineNextHire" class="mt-2 text-sm font-semibold text-gray-900">—</p>
+                            <p id="pipelineNextHire" class="mt-2 text-sm font-semibold text-gray-900">â€”</p>
                         </div>
                     </div>
 
@@ -146,7 +146,7 @@
                         <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-lg font-semibold text-gray-900">Pipeline Health</h3>
-                                <span id="pipelineHealthLabel" class="text-sm font-medium text-gray-600">—</span>
+                                <span id="pipelineHealthLabel" class="text-sm font-medium text-gray-600">â€”</span>
                             </div>
                             <div class="mt-4 flex items-center justify-center">
                                 <canvas id="pipelineHealthGauge" width="320" height="200"></canvas>
@@ -822,7 +822,7 @@
                 return;
             }
             selector.innerHTML = '<option value="">Select a pipeline</option>' + pipelines.map((pipeline) => `
-                <option value="${pipeline.id}">${pipeline.pipeline_name} · ${pipeline.target_role}</option>
+                <option value="${pipeline.id}">${pipeline.pipeline_name} &middot; ${pipeline.target_role}</option>
             `).join('');
         }
 
@@ -976,10 +976,10 @@
             if (!pipeline) return;
             elements.selectedPipelineTitle.textContent = pipeline.pipeline_name;
             elements.pipelineDescription.textContent = pipeline.role_description || 'No description provided for this pipeline yet.';
-            elements.pipelineTargetRole.textContent = pipeline.target_role || '—';
-            elements.pipelineTargetSize.textContent = pipeline.target_pipeline_size ? `${pipeline.target_pipeline_size} candidates` : '—';
-            elements.pipelineCurrentSize.textContent = pipeline.current_pipeline_size ? `${pipeline.current_pipeline_size} candidates` : '—';
-            elements.pipelineNextHire.textContent = formatDate(pipeline.next_projected_hire_date) || '—';
+            elements.pipelineTargetRole.textContent = pipeline.target_role || 'â€”';
+            elements.pipelineTargetSize.textContent = pipeline.target_pipeline_size ? `${pipeline.target_pipeline_size} candidates` : 'â€”';
+            elements.pipelineCurrentSize.textContent = pipeline.current_pipeline_size ? `${pipeline.current_pipeline_size} candidates` : 'â€”';
+            elements.pipelineNextHire.textContent = formatDate(pipeline.next_projected_hire_date) || 'â€”';
             const status = metrics.health_status || pipeline.health_status || 'fair';
             const statusStyle = statusStyles[status] || statusStyles.fair;
             elements.pipelineStatusBadge.textContent = statusStyle.label;
@@ -1040,8 +1040,8 @@
                             <span class="text-xs text-gray-500">${item.user?.current_title || 'Role unknown'}</span>
                         </div>
                     </td>
-                    <td class="px-4 py-4 text-sm text-gray-600">${item.job?.title || '—'}</td>
-                    <td class="px-4 py-4 text-sm text-gray-600 capitalize">${(item.silver_medal_reason || '—').replace(/_/g, ' ')}</td>
+                    <td class="px-4 py-4 text-sm text-gray-600">${item.job?.title || 'â€”'}</td>
+                    <td class="px-4 py-4 text-sm text-gray-600 capitalize">${(item.silver_medal_reason || 'â€”').replace(/_/g, ' ')}</td>
                     <td class="px-4 py-4">
                         <div class="flex flex-col">
                             <span class="text-sm font-semibold text-gray-900">${Math.round(item.overall_score || 0)}%</span>
@@ -1081,7 +1081,7 @@
         function openConvertModal(silverId) {
             elements.convertForm.setAttribute('data-silver-id', silverId);
             elements.convertPipelineSelect.innerHTML = state.pipelines.map((pipeline) => `
-                <option value="${pipeline.id}">${pipeline.pipeline_name} · ${pipeline.target_role}</option>
+                <option value="${pipeline.id}">${pipeline.pipeline_name} &middot; ${pipeline.target_role}</option>
             `).join('');
             elements.convertModal.classList.remove('hidden');
         }
@@ -1265,7 +1265,7 @@
                             <span class="text-xs text-gray-500">${formatDate(step.date)}</span>
                         </div>
                         <p class="mt-2 text-sm text-gray-600">${step.summary || 'No summary provided.'}</p>
-                        <p class="mt-1 text-xs text-gray-500">${step.automated ? 'Automated touchpoint' : 'Human touchpoint'} · Sentiment: ${step.sentiment || 'neutral'}</p>
+                        <p class="mt-1 text-xs text-gray-500">${step.automated ? 'Automated touchpoint' : 'Human touchpoint'} &middot; Sentiment: ${step.sentiment || 'neutral'}</p>
                     </div>
                 `;
                 elements.journeyTimeline.appendChild(item);

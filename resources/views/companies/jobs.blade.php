@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
-@section('title', 'Jobs at ' . $company->name . ' | StudAI Career')
+@section('title', 'Jobs at ' . $company->name . ' | StudAI Hire')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">

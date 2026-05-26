@@ -29,17 +29,24 @@ class MarketplaceProposal extends Model
         'boosted_at',
         'viewed_at',
         'responded_at',
+        'ai_match_score',
+        'ai_match_breakdown',
+        'offer_sent_at',
+        'offer_responded_at',
     ];
 
     protected $casts = [
-        'milestones' => 'array',
-        'attachments' => 'array',
-        'proposed_amount' => 'decimal:2',
-        'hourly_rate' => 'decimal:2',
-        'is_boosted' => 'boolean',
-        'boosted_at' => 'datetime',
-        'viewed_at' => 'datetime',
-        'responded_at' => 'datetime',
+        'milestones'         => 'array',
+        'attachments'        => 'array',
+        'ai_match_breakdown' => 'array',
+        'proposed_amount'    => 'decimal:2',
+        'hourly_rate'        => 'decimal:2',
+        'is_boosted'         => 'boolean',
+        'boosted_at'         => 'datetime',
+        'viewed_at'          => 'datetime',
+        'responded_at'       => 'datetime',
+        'offer_sent_at'      => 'datetime',
+        'offer_responded_at' => 'datetime',
     ];
 
     // Relationships
@@ -115,48 +122,78 @@ class MarketplaceProposal extends Model
     public function shortlist(): void
     {
         $this->update([
-            'status' => 'shortlisted',
+            'status'       => 'shortlisted',
             'responded_at' => now(),
+        ]);
+    }
+
+    public function sendOffer(): void
+    {
+        $this->update([
+            'status'        => 'shortlisted',
+            'offer_sent_at' => now(),
+        ]);
+    }
+
+    public function isOfferSent(): bool
+    {
+        return $this->offer_sent_at !== null && $this->status === 'shortlisted';
+    }
+
+    public function acceptOffer(): MarketplaceContract
+    {
+        $this->update(['offer_responded_at' => now()]);
+        return $this->accept();
+    }
+
+    public function declineOffer(): void
+    {
+        $this->update([
+            'status'             => 'rejected',
+            'responded_at'       => now(),
+            'offer_responded_at' => now(),
         ]);
     }
 
     public function accept(): MarketplaceContract
     {
-        $this->update([
-            'status' => 'accepted',
-            'responded_at' => now(),
-        ]);
+        return \Illuminate\Support\Facades\DB::transaction(function () {
+            $this->update([
+                'status' => 'accepted',
+                'responded_at' => now(),
+            ]);
 
-        // Reject other proposals
-        $this->project->proposals()
-            ->where('id', '!=', $this->id)
-            ->where('status', '!=', 'withdrawn')
-            ->update(['status' => 'rejected', 'responded_at' => now()]);
+            // Reject other proposals
+            $this->project->proposals()
+                ->where('id', '!=', $this->id)
+                ->where('status', '!=', 'withdrawn')
+                ->update(['status' => 'rejected', 'responded_at' => now()]);
 
-        // Update project status
-        $this->project->update(['status' => 'in_progress', 'started_at' => now()]);
+            // Update project status
+            $this->project->update(['status' => 'in_progress', 'started_at' => now()]);
 
-        // Create contract
-        $platformFeePercent = 10; // 10% platform fee
-        $platformFeeAmount = $this->proposed_amount * ($platformFeePercent / 100);
-        $freelancerAmount = $this->proposed_amount - $platformFeeAmount;
+            // Create contract
+            $platformFeePercent = 10;
+            $platformFeeAmount = $this->proposed_amount * ($platformFeePercent / 100);
+            $freelancerAmount = $this->proposed_amount - $platformFeeAmount;
 
-        return MarketplaceContract::create([
-            'contract_number' => 'CTR-' . strtoupper(uniqid()),
-            'project_id' => $this->project_id,
-            'proposal_id' => $this->id,
-            'employer_id' => $this->project->employer_id,
-            'freelancer_id' => $this->freelancer_id,
-            'terms' => $this->cover_letter,
-            'total_amount' => $this->proposed_amount,
-            'platform_fee_percent' => $platformFeePercent,
-            'platform_fee_amount' => $platformFeeAmount,
-            'freelancer_amount' => $freelancerAmount,
-            'currency' => $this->currency,
-            'payment_type' => $this->project->project_type,
-            'status' => 'pending',
-            'deadline' => $this->project->deadline,
-        ]);
+            return MarketplaceContract::create([
+                'contract_number'      => 'CTR-' . strtoupper(uniqid()),
+                'project_id'           => $this->project_id,
+                'proposal_id'          => $this->id,
+                'employer_id'          => $this->project->employer_id,
+                'freelancer_id'        => $this->freelancer_id,
+                'terms'                => $this->cover_letter,
+                'total_amount'         => $this->proposed_amount,
+                'platform_fee_percent' => $platformFeePercent,
+                'platform_fee_amount'  => $platformFeeAmount,
+                'freelancer_amount'    => $freelancerAmount,
+                'currency'             => $this->currency ?? 'INR',
+                'payment_type'         => $this->project->project_type === 'fixed_price' ? 'fixed' : ($this->project->project_type ?? 'fixed'),
+                'status'               => 'pending',
+                'deadline'             => $this->project->deadline,
+            ]);
+        });
     }
 
     public function reject(): void

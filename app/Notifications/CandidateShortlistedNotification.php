@@ -34,17 +34,18 @@ class CandidateShortlistedNotification extends Notification implements ShouldQue
             ->greeting("Congratulations {$notifiable->name}!")
             ->line("You've been shortlisted for {$jobTitle} at {$company}.")
             ->line('The employer has shown interest in your profile.')
-            ->action('View Application', url('/applications/' . $this->application->id))
+            ->action('View Application', url('/applications?status=shortlisted'))
             ->line('Prepare for the next steps in the hiring process.');
     }
 
     public function toArray(object $notifiable): array
     {
         return [
-            'type' => 'candidate_shortlisted',
+            'type'           => 'candidate_shortlisted',
             'application_id' => $this->application->id,
-            'match_score' => $this->matchScore,
-            'message' => "You've been shortlisted! Review your application.",
+            'match_score'    => $this->matchScore,
+            'message'        => "You've been shortlisted! Review your application.",
+            'url'            => url('/applications/' . $this->application->id),
         ];
     }
 }

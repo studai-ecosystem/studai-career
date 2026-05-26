@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Scheduling Links')
 
@@ -131,7 +131,7 @@
                             <!-- Actions -->
                             <div class="mt-4 flex items-center justify-between">
                                 <a href="{{ route('schedule.show', $link->slug) }}" target="_blank" class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
-                                    Preview →
+                                    Preview â†’
                                 </a>
                                 <div class="flex items-center space-x-2">
                                     <button onclick="editLink({{ $link->id }})" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition" title="Edit">

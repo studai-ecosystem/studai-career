@@ -4,6 +4,7 @@ namespace App\Services\AI;
 
 use App\Models\Resume;
 use App\Models\Job;
+use App\Models\User;
 use App\Models\AIResumeGeneration;
 use App\Models\ResumeAISuggestion;
 use App\Traits\InteractsWithAI;
@@ -14,6 +15,15 @@ class ResumeAIService
 {
     use InteractsWithAI;
     private const CACHE_TTL = 3600; // 1 hour
+
+    /**
+     * Set the user context for AI credit tracking.
+     */
+    public function forUser(User $user): self
+    {
+        $this->setAIUser($user);
+        return $this;
+    }
 
     /**
      * Generate professional summary based on user profile
@@ -190,82 +200,16 @@ class ResumeAIService
      */
     public function analyzeATSCompatibility(Resume $resume): array
     {
-        $analysis = [
-            'score' => 0,
-            'issues' => [],
-            'recommendations' => [],
-            'keyword_density' => 0,
-            'readability_score' => 0,
-        ];
+        // Use the comprehensive local engine (no network required).
+        // If AI becomes available later, it can be layered on top.
+        $analyzer = new \App\Services\ATSAnalyzerService();
+        return $analyzer->analyze($resume);
+    }
 
-        // Check formatting
-        if ($resume->template && !$resume->template->is_ats_friendly) {
-            $analysis['issues'][] = 'Template may not be ATS-friendly';
-            $analysis['recommendations'][] = 'Switch to an ATS-optimized template';
-        } else {
-            $analysis['score'] += 20;
-        }
-
-        // Check for contact information
-        $contactScore = 0;
-        if ($resume->email) $contactScore += 5;
-        if ($resume->phone) $contactScore += 5;
-        if ($resume->location) $contactScore += 5;
-        if ($resume->linkedin_url) $contactScore += 5;
-        
-        $analysis['score'] += $contactScore;
-
-        if ($contactScore < 15) {
-            $analysis['recommendations'][] = 'Add complete contact information (email, phone, location, LinkedIn)';
-        }
-
-        // Check for key sections
-        if (empty($resume->experience)) {
-            $analysis['issues'][] = 'Missing work experience section';
-        } else {
-            $analysis['score'] += 20;
-        }
-
-        if (empty($resume->education)) {
-            $analysis['issues'][] = 'Missing education section';
-        } else {
-            $analysis['score'] += 15;
-        }
-
-        if (empty($resume->skills)) {
-            $analysis['issues'][] = 'Missing skills section';
-        } else {
-            $analysis['score'] += 15;
-        }
-
-        // Check for quantified achievements
-        $hasMetrics = $this->hasQuantifiedAchievements($resume);
-        if ($hasMetrics) {
-            $analysis['score'] += 15;
-        } else {
-            $analysis['recommendations'][] = 'Quantify your achievements with numbers, percentages, or metrics';
-        }
-
-        // Check keyword density
-        if ($resume->target_job_id) {
-            $keywordAnalysis = $this->analyzeKeywordDensity($resume);
-            $analysis['keyword_density'] = $keywordAnalysis['density'];
-            $analysis['score'] += min(15, $keywordAnalysis['density']);
-            
-            if ($keywordAnalysis['density'] < 10) {
-                $analysis['recommendations'][] = 'Increase relevant keywords from job description';
-            }
-        }
-
-        // Readability check
-        $wordCount = $resume->getWordCount();
-        if ($wordCount > 1000) {
-            $analysis['issues'][] = 'Resume is too long (keep it under 1000 words for 1-2 pages)';
-        } else {
-            $analysis['score'] += 10;
-        }
-
-        return $analysis;
+    private function localATSFallback(Resume $resume): array
+    {
+        $analyzer = new \App\Services\ATSAnalyzerService();
+        return $analyzer->analyze($resume);
     }
 
     /**

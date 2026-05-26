@@ -145,7 +145,7 @@ Format as JSON: {\"score\": 0-100, \"alignment_points\": [], \"mismatches\": [],
             
             // Use public wrapper with explicit model & temperature overrides
             $response = $this->aiService->generateText($prompt, null, [
-                'model' => 'gpt-5',
+                'model' => config('ai.azure.models.chat'),
                 'temperature' => 0.3,
             ]);
             $analysis = json_decode($response, true);

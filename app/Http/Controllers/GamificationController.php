@@ -107,12 +107,17 @@ class GamificationController extends Controller
 
         $achievements = $query->orderBy('sort_order')->get();
 
+        // Preload all user achievements to avoid N+1 inside map()
+        $userUnlocked = \App\Models\UserAchievement::where('user_id', $user->id)
+            ->pluck('achievement_id')
+            ->flip();
+
         // Get user's progress for each
-        $achievementsWithProgress = $achievements->map(function ($achievement) use ($user) {
+        $achievementsWithProgress = $achievements->map(function ($achievement) use ($user, $userUnlocked) {
             return [
                 'achievement' => $achievement,
                 'progress' => $achievement->getProgressFor($user),
-                'is_unlocked' => $achievement->isUnlockedBy($user),
+                'is_unlocked' => $userUnlocked->has($achievement->id),
             ];
         });
 
@@ -161,10 +166,15 @@ class GamificationController extends Controller
 
         $badges = $query->get();
 
-        $badgesWithOwnership = $badges->map(function ($badge) use ($user) {
+        // Preload user's owned badge IDs to avoid N+1 inside map()
+        $ownedBadgeIds = \App\Models\UserBadge::where('user_id', $user->id)
+            ->pluck('badge_id')
+            ->flip();
+
+        $badgesWithOwnership = $badges->map(function ($badge) use ($ownedBadgeIds) {
             return [
                 'badge' => $badge,
-                'is_owned' => $badge->isOwnedBy($user),
+                'is_owned' => $ownedBadgeIds->has($badge->id),
                 'is_purchasable' => $badge->isPurchasable(),
             ];
         });

@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 // Employer Portal Routes
-Route::prefix('employer')->middleware(['auth:employer'])->name('employer.')->group(function () {
+Route::prefix('employer')->middleware(['auth', 'employer'])->name('employer.')->group(function () {
     
     // Dashboard
     Route::get('/dashboard', [App\Http\Controllers\Employer\EmployerDashboardController::class, 'index'])
@@ -33,24 +33,6 @@ Route::prefix('employer')->middleware(['auth:employer'])->name('employer.')->gro
             ->name('compare');
         Route::get('/export', [App\Http\Controllers\Employer\ApplicantTrackingController::class, 'export'])
             ->name('export');
-    });
-    
-    // Interviews
-    Route::prefix('interviews')->name('interviews.')->group(function () {
-        Route::get('/', [App\Http\Controllers\Employer\InterviewManagementController::class, 'index'])
-            ->name('index');
-        Route::get('/{interview}', [App\Http\Controllers\Employer\InterviewManagementController::class, 'show'])
-            ->name('show');
-        Route::post('/', [App\Http\Controllers\Employer\InterviewManagementController::class, 'store'])
-            ->name('store');
-        Route::patch('/{interview}', [App\Http\Controllers\Employer\InterviewManagementController::class, 'update'])
-            ->name('update');
-        Route::patch('/{interview}/complete', [App\Http\Controllers\Employer\InterviewManagementController::class, 'complete'])
-            ->name('complete');
-        Route::delete('/{interview}', [App\Http\Controllers\Employer\InterviewManagementController::class, 'cancel'])
-            ->name('cancel');
-        Route::get('/calendar/availability', [App\Http\Controllers\Employer\InterviewManagementController::class, 'availability'])
-            ->name('availability');
     });
     
     // Talent Pool

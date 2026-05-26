@@ -32,7 +32,7 @@ class BackgroundCheckPolicy
     {
         // Employers and HR can view background checks
         return $user->hasAnyRole(['employer', 'hr_manager', 'recruiter', 'admin'])
-            || $user->hasPermissionTo('view background checks');
+            || $this->safeHasPermission($user, 'view background checks');
     }
 
     /**
@@ -48,7 +48,7 @@ class BackgroundCheckPolicy
         // Company staff can view their company's checks
         if ($user->company_id === $backgroundCheck->company_id) {
             return $user->hasAnyRole(['employer', 'hr_manager', 'recruiter', 'admin'])
-                || $user->hasPermissionTo('view background checks');
+                || $this->safeHasPermission($user, 'view background checks');
         }
 
         return false;
@@ -60,7 +60,7 @@ class BackgroundCheckPolicy
     public function create(User $user): bool
     {
         return $user->hasAnyRole(['employer', 'hr_manager', 'recruiter', 'admin'])
-            || $user->hasPermissionTo('create background checks');
+            || $this->safeHasPermission($user, 'create background checks');
     }
 
     /**
@@ -79,7 +79,7 @@ class BackgroundCheckPolicy
         }
 
         return $user->hasAnyRole(['employer', 'hr_manager', 'admin'])
-            || $user->hasPermissionTo('edit background checks');
+            || $this->safeHasPermission($user, 'edit background checks');
     }
 
     /**
@@ -98,7 +98,7 @@ class BackgroundCheckPolicy
         }
 
         return $user->hasAnyRole(['employer', 'admin'])
-            || $user->hasPermissionTo('delete background checks');
+            || $this->safeHasPermission($user, 'delete background checks');
     }
 
     /**
@@ -107,7 +107,7 @@ class BackgroundCheckPolicy
     public function restore(User $user, BackgroundCheck $backgroundCheck): bool
     {
         return $user->hasRole('admin')
-            || $user->hasPermissionTo('restore background checks');
+            || $this->safeHasPermission($user, 'restore background checks');
     }
 
     /**
@@ -116,7 +116,7 @@ class BackgroundCheckPolicy
     public function forceDelete(User $user, BackgroundCheck $backgroundCheck): bool
     {
         return $user->hasRole('admin')
-            || $user->hasPermissionTo('force delete background checks');
+            || $this->safeHasPermission($user, 'force delete background checks');
     }
 
     /**
@@ -134,7 +134,7 @@ class BackgroundCheckPolicy
         }
 
         return $user->hasAnyRole(['employer', 'hr_manager', 'admin'])
-            || $user->hasPermissionTo('cancel background checks');
+            || $this->safeHasPermission($user, 'cancel background checks');
     }
 
     /**
@@ -157,7 +157,7 @@ class BackgroundCheckPolicy
         }
 
         return $user->hasAnyRole(['employer', 'hr_manager', 'admin'])
-            || $user->hasPermissionTo('initiate adverse action');
+            || $this->safeHasPermission($user, 'initiate adverse action');
     }
 
     /**
@@ -175,7 +175,7 @@ class BackgroundCheckPolicy
         }
 
         return $user->hasAnyRole(['employer', 'hr_manager', 'recruiter', 'admin'])
-            || $user->hasPermissionTo('send consent requests');
+            || $this->safeHasPermission($user, 'send consent requests');
     }
 
     /**
@@ -206,7 +206,7 @@ class BackgroundCheckPolicy
         // Company staff can download
         if ($user->company_id === $backgroundCheck->company_id) {
             return $user->hasAnyRole(['employer', 'hr_manager', 'recruiter', 'admin'])
-                || $user->hasPermissionTo('download background reports');
+                || $this->safeHasPermission($user, 'download background reports');
         }
 
         return false;
@@ -227,7 +227,7 @@ class BackgroundCheckPolicy
         }
 
         return $user->hasAnyRole(['employer', 'hr_manager', 'admin'])
-            || $user->hasPermissionTo('recheck background');
+            || $this->safeHasPermission($user, 'recheck background');
     }
 
     /**
@@ -241,6 +241,18 @@ class BackgroundCheckPolicy
         }
 
         return $user->hasAnyRole(['employer', 'admin'])
-            || $user->hasPermissionTo('view decrypted background reports');
+            || $this->safeHasPermission($user, 'view decrypted background reports');
+    }
+
+    /**
+     * Safely check a permission without throwing if it doesn't exist in the DB.
+     */
+    private function safeHasPermission(User $user, string $permission): bool
+    {
+        try {
+            return $user->hasPermissionTo($permission);
+        } catch (\Spatie\Permission\Exceptions\PermissionDoesNotExist) {
+            return false;
+        }
     }
 }
