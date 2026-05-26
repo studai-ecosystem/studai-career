@@ -2,13 +2,18 @@
 
 @php
     use App\Models\SocialProvider;
+    use Illuminate\Support\Collection;
     
     // Get providers from database if not passed
     if (empty($providers)) {
-        $providers = SocialProvider::enabled()
-            ->configured()
-            ->orderBy('sort_order')
-            ->get();
+        try {
+            $providers = SocialProvider::enabled()
+                ->configured()
+                ->orderBy('sort_order')
+                ->get();
+        } catch (\Throwable $e) {
+            $providers = new Collection();
+        }
     }
 @endphp
 

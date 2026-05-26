@@ -67,7 +67,7 @@ return [
                             : null)
                 ),
                 PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-            ]) : [],
+            ], fn ($v) => !is_null($v)) : [],
         ],
 
         'mariadb' => [
