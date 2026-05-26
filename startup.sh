@@ -73,76 +73,28 @@ if [ "$APP_ENV" = "production" ]; then
   # Set APP_URL to HTTPS if not already set by Azure App Settings
   export APP_URL="${APP_URL:-https://studai-app-prod.azurewebsites.net}"
 
-  echo "Running production optimizations..."
-  php artisan config:cache || echo "WARNING: config:cache failed"
-  php artisan route:cache || echo "WARNING: route:cache failed"
-  php artisan view:cache || echo "WARNING: view:cache failed"
-  php artisan event:cache || echo "WARNING: event:cache failed"
-
-  # ---- DB Connection Diagnostic ----
-  echo "Testing database connection..."
-  echo "  DB_HOST=${DB_HOST:-not set}"
-  echo "  DB_PORT=${DB_PORT:-3306}"
-  echo "  DB_DATABASE=${DB_DATABASE:-not set}"
-  echo "  DB_USERNAME=${DB_USERNAME:-not set}"
-  echo "  MYSQL_ATTR_SSL_CA=${MYSQL_ATTR_SSL_CA:-not set}"
-  CA_FILE="${MYSQL_ATTR_SSL_CA:-/home/site/ssl/azure-mysql-ca-bundle.pem}"
-  if [ -f "$CA_FILE" ]; then
-    echo "  CA file exists: $(wc -c < "$CA_FILE") bytes"
-    echo "  CA file head: $(head -1 "$CA_FILE")"
-  else
-    echo "  CA file NOT FOUND: $CA_FILE"
-  fi
-  echo "  PHP version: $(php -r 'echo PHP_VERSION;')"
-  echo "  mysqlnd: $(php -r 'echo extension_loaded("mysqlnd") ? "YES" : "NO";')"
-  echo "  openssl: $(php -r 'echo extension_loaded("openssl") ? OPENSSL_VERSION_TEXT : "NOT LOADED";')"
-  php -r "
-    \$ca = getenv('MYSQL_ATTR_SSL_CA') ?: '/home/site/ssl/azure-mysql-ca-bundle.pem';
-    \$dsn = 'mysql:host=' . getenv('DB_HOST') . ';port=' . (getenv('DB_PORT') ?: '3306') . ';dbname=' . getenv('DB_DATABASE');
-    // Attempt 1: SSL with cert + skip verify
-    try {
-      \$opts = [
-        PDO::MYSQL_ATTR_SSL_CA => \$ca,
-        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-      ];
-      \$pdo = new PDO(\$dsn, getenv('DB_USERNAME'), getenv('DB_PASSWORD'), \$opts);
-      echo 'DB connection OK (SSL + skip verify)' . PHP_EOL;
-    } catch (Exception \$e) {
-      echo 'DB FAILED (SSL + skip verify): ' . \$e->getMessage() . PHP_EOL;
-    }
-    // Attempt 2: SSL with just skip verify (no CA file)
-    try {
-      \$opts2 = [PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false];
-      \$pdo2 = new PDO(\$dsn, getenv('DB_USERNAME'), getenv('DB_PASSWORD'), \$opts2);
-      echo 'DB connection OK (SSL no CA + skip verify)' . PHP_EOL;
-    } catch (Exception \$e2) {
-      echo 'DB FAILED (SSL no CA + skip verify): ' . \$e2->getMessage() . PHP_EOL;
-    }
-    // Attempt 3: No SSL at all
-    try {
-      \$pdo3 = new PDO(\$dsn, getenv('DB_USERNAME'), getenv('DB_PASSWORD'));
-      echo 'DB connection OK (no SSL)' . PHP_EOL;
-    } catch (Exception \$e3) {
-      echo 'DB FAILED (no SSL): ' . \$e3->getMessage() . PHP_EOL;
-    }
-  " 2>&1 || echo "WARNING: DB diagnostic failed"
+  echo "Running production optimizations (with 60s timeout each)..."
+  timeout 60 php artisan config:cache || echo "WARNING: config:cache failed/timed-out"
+  timeout 60 php artisan route:cache  || echo "WARNING: route:cache failed/timed-out"
+  timeout 90 php artisan view:cache   || echo "WARNING: view:cache failed/timed-out"
+  timeout 60 php artisan event:cache  || echo "WARNING: event:cache failed/timed-out"
 
   echo "Running migrations..."
-  php artisan migrate --force --no-interaction || echo "WARNING: migrations failed"
+  timeout 120 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
 
   echo "Syncing Meilisearch indices..."
-  php artisan scout:sync-index-settings 2>/dev/null || true
+  timeout 30 php artisan scout:sync-index-settings 2>/dev/null || true
 else
   echo "Development mode - clearing caches..."
   php artisan optimize:clear 2>/dev/null || true
 
   echo "Running migrations..."
-  php artisan migrate --force --no-interaction || echo "WARNING: migrations failed"
+  timeout 120 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
 fi
 
-# ---- 5. Filament & Icon Cache ----
-php artisan filament:cache-components 2>/dev/null || true
-php artisan icons:cache 2>/dev/null || true
+# ---- 5. Filament & Icon Cache (with timeouts) ----
+timeout 60 php artisan filament:cache-components 2>/dev/null || true
+timeout 60 php artisan icons:cache 2>/dev/null || true
 
 echo "========================================"
 echo "Startup complete!"
