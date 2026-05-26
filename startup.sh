@@ -66,6 +66,10 @@ fi
 
 # ---- 4. Laravel Optimization ----
 if [ "$APP_ENV" = "production" ]; then
+  echo "Clearing stale caches..."
+  php artisan optimize:clear || true
+  rm -f bootstrap/cache/config.php bootstrap/cache/routes*.php bootstrap/cache/events.php
+
   echo "Running production optimizations..."
   php artisan config:cache || echo "WARNING: config:cache failed"
   php artisan route:cache || echo "WARNING: route:cache failed"
