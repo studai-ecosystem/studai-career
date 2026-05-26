@@ -18,7 +18,7 @@
     <meta property="og:description" content="India's first Autonomous Career OS. AI finds jobs, applies for you, preps interviews, and negotiates salaries.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url('/') }}">
-    <meta property="og:image" content="{{ asset('images/og-studai-path.jpg') }}">
+    <meta property="og:image" content="{{ asset('images/og-studai-path.svg') }}">
     
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
