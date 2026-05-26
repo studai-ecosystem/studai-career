@@ -33,6 +33,17 @@ use Illuminate\Support\Facades\Route;
 // Marketing Pages
 Route::get('/', [MarketingController::class, 'home'])->name('home');
 
+// ── Temporary Diagnostic (REMOVE AFTER USE) ────────────────────────────────
+Route::get('/diag-login-error-xk7q2', function () {
+    $logFile = storage_path('logs/laravel.log');
+    if (!file_exists($logFile)) {
+        return response('No log file', 200);
+    }
+    $lines = file($logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $last = array_slice($lines, -80);
+    return response('<pre>' . htmlspecialchars(implode("\n", $last)) . '</pre>');
+});
+
 // ── Email Preview (dev only) ────────────────────────────────────────────────
 if (app()->isLocal()) {
     Route::get('/preview/email/{type}/{event}', function (string $type, string $event) {
