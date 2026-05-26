@@ -547,7 +547,7 @@ Route::middleware('auth')->group(function () {
             }
             
             return view('agent.dashboard', compact('configured', 'config', 'stats', 'recentApplications', 'upcomingTasks', 'internalMatches', 'internalStats', 'statistics', 'limits'));
-        });
+        })->name('dashboard');
         
         Route::get('/configure', function() {
             $user = Auth::user();
@@ -1098,7 +1098,7 @@ Route::middleware(['auth', 'verified'])->prefix('negotiation')->name('negotiatio
             'strategies',
             'totalValueGained'
         ));
-    })->name('index');
+    })->name('dashboard');
     
     // Strategy Detail - Comprehensive strategy analysis with visualizations
     Route::get('/strategy/{id}', function($id) {
@@ -1753,7 +1753,7 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
     Route::middleware('auth')->group(function () {
         // Freelancer Dashboard & Profile
         Route::prefix('freelancer')->name('freelancer.')->group(function () {
-            Route::get('/dashboard', [FreelancerController::class, 'dashboard'])->name('index');
+            Route::get('/dashboard', [FreelancerController::class, 'dashboard'])->name('dashboard');
             Route::get('/profile', [FreelancerController::class, 'profile'])->name('profile');
             Route::post('/profile', [FreelancerController::class, 'updateProfile'])->name('profile.update');
             Route::get('/proposals', [FreelancerController::class, 'proposals'])->name('proposals');
@@ -1772,7 +1772,7 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
 
         // Employer Dashboard & Project Management
         Route::prefix('employer')->name('employer.')->group(function () {
-            Route::get('/dashboard', [MarketplaceEmployerController::class, 'dashboard'])->name('index');
+            Route::get('/dashboard', [MarketplaceEmployerController::class, 'dashboard'])->name('dashboard');
             Route::get('/projects', [MarketplaceEmployerController::class, 'projects'])->name('projects');
             Route::get('/projects/create', [MarketplaceEmployerController::class, 'createProject'])->name('create-project');
             Route::post('/projects', [MarketplaceEmployerController::class, 'storeProject'])->name('store-project');
@@ -1856,7 +1856,7 @@ use App\Http\Controllers\GamificationController;
 
 Route::middleware(['auth', 'verified'])->prefix('gamification')->name('gamification.')->group(function () {
     // Main Dashboard
-    Route::get('/', [GamificationController::class, 'dashboard'])->name('index');
+    Route::get('/', [GamificationController::class, 'dashboard'])->name('dashboard');
     
     // Achievements
     Route::get('/achievements', [GamificationController::class, 'achievements'])->name('achievements');
