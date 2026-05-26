@@ -139,7 +139,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $subscribe = [
         // Original gamification subscriber (now fixed with try-catch)
-        GamificationEventSubscriber::class,
+        // GamificationEventSubscriber::class,
 
         // Temporarily disabling others to identify login crash root cause
         // AwardGamificationPoints::class,
