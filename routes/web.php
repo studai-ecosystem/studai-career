@@ -41,13 +41,48 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
         abort(403);
     }
 
-    $DB   = \Illuminate\Support\Facades\DB::class;
-    $Hash = \Illuminate\Support\Facades\Hash::class;
-    $now  = now()->toDateTimeString();
+    $DB     = \Illuminate\Support\Facades\DB::class;
+    $Hash   = \Illuminate\Support\Facades\Hash::class;
+    $Schema = \Illuminate\Support\Facades\Schema::class;
+    $now    = now()->toDateTimeString();
 
-    // Optional: seed missing accounts when ?action=seed is passed.
+    // Optional: seed + fix schema when ?action=seed is passed.
     $seedLog = [];
     if ($request->query('action') === 'seed') {
+        // ── Step 1: add any missing columns to the users table ──────────────
+        try {
+            $Schema::table('users', function (\Illuminate\Database\Schema\Blueprint $table) use ($Schema, &$seedLog) {
+                if (! $Schema::hasColumn('users', 'deleted_at')) {
+                    $table->softDeletes();
+                    $seedLog[] = 'ADDED column: users.deleted_at';
+                }
+                if (! $Schema::hasColumn('users', 'account_type')) {
+                    $table->enum('account_type', ['job_seeker', 'employer', 'admin'])->default('job_seeker')->after('password');
+                    $seedLog[] = 'ADDED column: users.account_type';
+                }
+                if (! $Schema::hasColumn('users', 'is_active')) {
+                    $table->boolean('is_active')->default(true)->after('account_type');
+                    $seedLog[] = 'ADDED column: users.is_active';
+                }
+                if (! $Schema::hasColumn('users', 'timezone')) {
+                    $table->string('timezone')->default('UTC');
+                    $seedLog[] = 'ADDED column: users.timezone';
+                }
+                if (! $Schema::hasColumn('users', 'phone')) {
+                    $table->string('phone')->nullable();
+                    $seedLog[] = 'ADDED column: users.phone';
+                }
+            });
+        } catch (\Throwable $e) {
+            $seedLog[] = 'Schema fix ERROR: ' . $e->getMessage();
+        }
+
+        // ── Step 2: detect which columns exist and build insert/update safely ──
+        $hasSoftDelete   = $Schema::hasColumn('users', 'deleted_at');
+        $hasAccountType  = $Schema::hasColumn('users', 'account_type');
+        $hasIsActive     = $Schema::hasColumn('users', 'is_active');
+        $hasEmailVer     = $Schema::hasColumn('users', 'email_verified_at');
+
         $hashedPassword = $Hash::make('password');
         $accounts = [
             ['email' => 'admin@studai.com',     'name' => 'Admin',           'account_type' => 'admin'],
@@ -58,70 +93,85 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
             try {
                 $existing = $DB::table('users')->where('email', $acc['email'])->first();
                 if ($existing) {
-                    $DB::table('users')->where('email', $acc['email'])->update([
-                        'name' => $acc['name'], 'password' => $hashedPassword,
-                        'account_type' => $acc['account_type'], 'is_active' => 1,
-                        'email_verified_at' => $existing->email_verified_at ?? $now,
-                        'deleted_at' => null, 'updated_at' => $now,
-                    ]);
+                    $updateData = ['name' => $acc['name'], 'password' => $hashedPassword, 'updated_at' => $now];
+                    if ($hasAccountType) { $updateData['account_type'] = $acc['account_type']; }
+                    if ($hasIsActive)    { $updateData['is_active'] = 1; }
+                    if ($hasSoftDelete)  { $updateData['deleted_at'] = null; }
+                    if ($hasEmailVer)    { $updateData['email_verified_at'] = $existing->email_verified_at ?? $now; }
+                    $DB::table('users')->where('email', $acc['email'])->update($updateData);
                     $seedLog[] = "UPDATED: {$acc['email']}";
                 } else {
-                    $DB::table('users')->insert([
-                        'name' => $acc['name'], 'email' => $acc['email'],
-                        'password' => $hashedPassword, 'account_type' => $acc['account_type'],
-                        'is_active' => 1, 'email_verified_at' => $now,
-                        'created_at' => $now, 'updated_at' => $now, 'deleted_at' => null,
-                    ]);
+                    $insertData = ['name' => $acc['name'], 'email' => $acc['email'], 'password' => $hashedPassword, 'created_at' => $now, 'updated_at' => $now];
+                    if ($hasAccountType) { $insertData['account_type'] = $acc['account_type']; }
+                    if ($hasIsActive)    { $insertData['is_active'] = 1; }
+                    if ($hasSoftDelete)  { $insertData['deleted_at'] = null; }
+                    if ($hasEmailVer)    { $insertData['email_verified_at'] = $now; }
+                    $DB::table('users')->insert($insertData);
                     $seedLog[] = "INSERTED: {$acc['email']}";
                 }
             } catch (\Throwable $e) {
                 $seedLog[] = "ERROR {$acc['email']}: " . $e->getMessage();
             }
         }
-        // Ensure employer has a linked company.
+        // ── Step 3: ensure employer has a linked company ─────────────────────
         try {
-            $employer = $DB::table('users')->where('email', 'employer@studai.com')->first();
-            if ($employer && empty($employer->company_id)) {
-                $company = $DB::table('companies')->where('slug', 'studai-test-company')->first();
-                if (! $company) {
-                    $companyId = $DB::table('companies')->insertGetId([
-                        'name' => 'StudAI Test Company', 'slug' => 'studai-test-company',
-                        'description' => 'Test company for QA.', 'is_verified' => 1, 'is_featured' => 0,
-                        'created_at' => $now, 'updated_at' => $now,
-                    ]);
-                    $seedLog[] = "INSERTED company: studai-test-company (id=$companyId)";
-                } else {
-                    $companyId = $company->id;
-                    $seedLog[] = "Company exists: studai-test-company (id=$companyId)";
+            $hasCompanyId = $Schema::hasColumn('users', 'company_id');
+            if ($hasCompanyId) {
+                $employer = $DB::table('users')->where('email', 'employer@studai.com')->first();
+                if ($employer && empty($employer->company_id)) {
+                    $company = $DB::table('companies')->where('slug', 'studai-test-company')->first();
+                    if (! $company) {
+                        $companyId = $DB::table('companies')->insertGetId([
+                            'name' => 'StudAI Test Company', 'slug' => 'studai-test-company',
+                            'description' => 'Test company for QA.', 'is_verified' => 1, 'is_featured' => 0,
+                            'created_at' => $now, 'updated_at' => $now,
+                        ]);
+                        $seedLog[] = "INSERTED company id=$companyId";
+                    } else {
+                        $companyId = $company->id;
+                        $seedLog[] = "Company exists id=$companyId";
+                    }
+                    $DB::table('users')->where('email', 'employer@studai.com')->update(['company_id' => $companyId]);
+                    $seedLog[] = "Linked employer to company $companyId";
                 }
-                $DB::table('users')->where('email', 'employer@studai.com')->update(['company_id' => $companyId]);
-                $seedLog[] = "Linked employer to company $companyId";
+            } else {
+                $seedLog[] = "SKIP company_id: column not yet in users table";
             }
         } catch (\Throwable $e) {
-            $seedLog[] = "Company ERROR: " . $e->getMessage();
+            $seedLog[] = 'Company ERROR: ' . $e->getMessage();
         }
+    }
+
+    // ── Schema inspection ────────────────────────────────────────────────────
+    $colCheck = [];
+    foreach (['deleted_at','account_type','is_active','email_verified_at','company_id','timezone'] as $col) {
+        $colCheck[$col] = $Schema::hasColumn('users', $col);
     }
 
     $emails = ['admin@studai.com', 'jobseeker@studai.com', 'employer@studai.com'];
     $results = [];
     foreach ($emails as $email) {
-        $row = $DB::table('users')->where('email', $email)->first();
-        $results[$email] = [
-            'found'      => $row !== null,
-            'deleted_at' => $row?->deleted_at,
-            'is_active'  => $row?->is_active,
-            'hash_ok'    => $row ? $Hash::check('password', $row->password) : false,
-            'hash_prefix'=> $row ? substr($row->password, 0, 7) : null,
-        ];
+        try {
+            $row = $DB::table('users')->where('email', $email)->first();
+            $results[$email] = [
+                'found'      => $row !== null,
+                'deleted_at' => $row?->deleted_at ?? 'N/A',
+                'is_active'  => $row?->is_active ?? 'N/A',
+                'hash_ok'    => $row ? $Hash::check('password', $row->password) : false,
+                'hash_prefix'=> $row ? substr($row->password, 0, 7) : null,
+            ];
+        } catch (\Throwable $e) {
+            $results[$email] = ['error' => $e->getMessage()];
+        }
     }
-    // Also return total user count and last relevant log lines
-    $totalUsers = $DB::table('users')->count();
+    $totalUsers = 0;
+    try { $totalUsers = $DB::table('users')->count(); } catch (\Throwable $ignored) {}
     $logFile = storage_path('logs/laravel.log');
     $logLines = [];
     if (file_exists($logFile)) {
-        $lines = array_slice(file($logFile), -50);
+        $lines = array_slice(file($logFile), -60);
         foreach ($lines as $line) {
-            if (str_contains($line, 'AUTH_DIAG') || str_contains($line, 'Login attempt') || str_contains($line, 'Login event') || str_contains($line, 'seed')) {
+            if (str_contains($line, 'AUTH_DIAG') || str_contains($line, 'Login attempt') || str_contains($line, 'Login event')) {
                 $logLines[] = trim($line);
             }
         }
@@ -129,6 +179,7 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
     return response()->json([
         'users'         => $results,
         'total_users'   => $totalUsers,
+        'columns'       => $colCheck,
         'seed_log'      => $seedLog,
         'relevant_logs' => array_slice($logLines, -10),
     ]);
