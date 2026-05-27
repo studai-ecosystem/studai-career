@@ -76,6 +76,17 @@ class SeedTestAccounts extends Command
             $this->info("Linked employer@studai.com to company id={$companyId}");
         }
 
+        // Verify passwords match
+        $this->info('Verifying passwords...');
+        foreach ($accounts as $account) {
+            $row = DB::table('users')->where('email', $account['email'])->whereNull('deleted_at')->first();
+            if ($row && Hash::check($account['password'], $row->password)) {
+                $this->info("OK: {$account['email']} password verified");
+            } else {
+                $this->error("FAIL: {$account['email']} password check failed (row=" . ($row ? 'found' : 'missing') . ')');
+            }
+        }
+
         $this->info('Test accounts seeded successfully.');
 
         return Command::SUCCESS;
