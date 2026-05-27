@@ -16,7 +16,13 @@ use App\Services\GamificationService;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class GamificationEventSubscriber implements ShouldQueue
+// NOTE: ShouldQueue intentionally removed from GamificationEventSubscriber.
+// When ShouldQueue is present, the event dispatcher dispatches to the queue
+// (Redis by default) synchronously during SessionGuard::login() — BEFORE
+// setUser() is called. If the Redis dispatch fails, Auth::check() returns
+// false and login appears to fail. Running synchronously avoids this race
+// condition; handleUserLogin() already has full try-catch error handling.
+class GamificationEventSubscriber
 {
     public function __construct(
         protected GamificationService $gamificationService
