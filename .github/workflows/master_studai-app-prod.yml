@@ -113,6 +113,6 @@ jobs:
             "https://studai-app-prod.scm.azurewebsites.net/api/command" \
             --user "$KUDU_USER:$KUDU_PASS" \
             -H "Content-Type: application/json" \
-            -d '{"command":"php /home/site/wwwroot/reset-password.php","dir":"/home/site/wwwroot"}' \
+            -d '{"command":"php artisan studai:seed-test-accounts","dir":"/home/site/wwwroot"}' \
             --max-time 90)
           echo "Seeder result: $RESULT"
