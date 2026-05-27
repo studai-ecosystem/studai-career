@@ -73,19 +73,25 @@ if [ "$APP_ENV" = "production" ]; then
   # Set APP_URL to HTTPS if not already set by Azure App Settings
   export APP_URL="${APP_URL:-https://studai-app-prod.azurewebsites.net}"
 
+  # ---- Seed test accounts EARLY (before caching) so login works as soon as PHP-FPM is ready ----
+  # The migration 2026_11_08_000001_seed_qa_test_accounts.php seeds them idempotently at migrate
+  # time, but this artisan call ensures they are set even before migrate runs (e.g. after restart).
+  echo "Seeding test accounts (early, before cache rebuild)..."
+  timeout 60 php artisan studai:seed-test-accounts || echo "WARNING: early account seeder failed (will retry after migrate)"
+
   echo "Running production optimizations (with 60s timeout each)..."
   timeout 60 php artisan config:cache || echo "WARNING: config:cache failed/timed-out"
   timeout 60 php artisan route:cache  || echo "WARNING: route:cache failed/timed-out"
   timeout 90 php artisan view:cache   || echo "WARNING: view:cache failed/timed-out"
   timeout 60 php artisan event:cache  || echo "WARNING: event:cache failed/timed-out"
 
-  echo "Running migrations..."
+  echo "Running migrations (includes QA test-account seed migration)..."
   timeout 300 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
 
   echo "Syncing Meilisearch indices..."
   timeout 30 php artisan scout:sync-index-settings 2>/dev/null || true
 
-  echo "Seeding default test accounts..."
+  echo "Verifying test accounts after migrate..."
   timeout 60 php artisan studai:seed-test-accounts || echo "WARNING: account seeder failed (non-critical)"
 
   echo "Seeding subscription plans and resume templates..."
