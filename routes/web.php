@@ -192,38 +192,40 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
             $errorEntries = array_slice(array_unique($errorEntries), -20);
         }
     }
+    // Always check key table existence (lightweight, safe)
+    $keyTables = [
+        'subscription_plans', 'user_subscriptions', 'notifications',
+        'applications', 'job_listings', 'companies', 'users', 'migrations',
+        'resume_templates', 'permissions',
+    ];
+    $tableCheck = [];
+    foreach ($keyTables as $tbl) {
+        try {
+            $tableCheck[$tbl] = $Schema::hasTable($tbl);
+        } catch (\Throwable $e) {
+            $tableCheck[$tbl] = 'err:' . $e->getMessage();
+        }
+    }
+    $migrationCount = null;
+    $lastMigrations = [];
+    try {
+        $migrationCount = $DB::table('migrations')->count();
+        $lastMigrations = $DB::table('migrations')->orderByDesc('id')->limit(5)->pluck('migration')->toArray();
+    } catch (\Throwable) {}
+
     $output = [
-        'users'         => $results,
-        'total_users'   => $totalUsers,
-        'columns'       => $colCheck,
-        'seed_log'      => $seedLog,
-        'relevant_logs' => array_slice($logLines, -10),
+        'users'           => $results,
+        'total_users'     => $totalUsers,
+        'columns'         => $colCheck,
+        'table_exists'    => $tableCheck,
+        'migration_count' => $migrationCount,
+        'last_migrations' => $lastMigrations,
+        'seed_log'        => $seedLog,
+        'relevant_logs'   => array_slice($logLines, -10),
     ];
     if ($request->query('action') === 'logs') {
         $output['raw_logs'] = $rawLogLines;
         $output['error_entries'] = $errorEntries;
-    }
-    if ($request->query('action') === 'db-tables') {
-        $keyTables = [
-            'subscription_plans', 'user_subscriptions', 'notifications',
-            'applications', 'job_listings', 'companies', 'users', 'migrations',
-        ];
-        $tableCheck = [];
-        foreach ($keyTables as $tbl) {
-            try {
-                $tableCheck[$tbl] = $Schema::hasTable($tbl);
-            } catch (\Throwable) {
-                $tableCheck[$tbl] = 'error';
-            }
-        }
-        // Also get migration count
-        try {
-            $output['migration_count'] = $DB::table('migrations')->count();
-            $output['last_migrations'] = $DB::table('migrations')->orderByDesc('id')->limit(5)->pluck('migration')->toArray();
-        } catch (\Throwable $e) {
-            $output['migration_error'] = $e->getMessage();
-        }
-        $output['table_exists'] = $tableCheck;
     }
     return response()->json($output);
 })->name('auth.diag');
