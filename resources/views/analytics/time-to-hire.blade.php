@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Time-to-Hire Analytics')
 
@@ -7,8 +7,8 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-            <a href="{{ route('analytics.dashboard') }}" class="text-orange-600 hover:text-orange-800 text-sm mb-2 inline-block">â† Back to Analytics</a>
-            <h1 class="text-3xl font-bold text-gray-900">â±ï¸ Time-to-Hire Analytics</h1>
+            <a href="{{ route('analytics.analytics') }}" class="text-orange-600 hover:text-orange-800 text-sm mb-2 inline-block">← Back to Analytics</a>
+            <h1 class="text-3xl font-bold text-gray-900">⏱️ Time-to-Hire Analytics</h1>
             <p class="text-gray-600">Track and optimize your hiring speed across stages</p>
         </div>
 
@@ -34,7 +34,7 @@
 
         <!-- Time Breakdown Chart -->
         <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-orange-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-6">�Š Time Breakdown by Stage</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6">?� Time Breakdown by Stage</h2>
             <div class="h-80">
                 <canvas id="time-breakdown-chart"></canvas>
             </div>
@@ -42,7 +42,7 @@
 
         <!-- Trend Over Time -->
         <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-orange-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-6">�ˆ Time-to-Hire Trend</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6">?� Time-to-Hire Trend</h2>
             <div class="h-80">
                 <canvas id="trend-chart"></canvas>
             </div>
@@ -51,13 +51,13 @@
         <!-- By Department / Job Type -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-xl font-bold text-gray-900 mb-4">�‚ By Department</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-4">?� By Department</h2>
                 <div class="h-64">
                     <canvas id="dept-chart"></canvas>
                 </div>
             </div>
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-xl font-bold text-gray-900 mb-4">�¼ By Job Type</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-4">?� By Job Type</h2>
                 <div class="h-64">
                     <canvas id="job-type-chart"></canvas>
                 </div>
@@ -66,7 +66,7 @@
 
         <!-- Stage Analysis -->
         <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-orange-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-6">� Stage-by-Stage Analysis</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6">?� Stage-by-Stage Analysis</h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm" id="stage-table">
                     <thead>
@@ -90,10 +90,10 @@
 
         <!-- Bottleneck Alert -->
         <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-orange-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">âš ï¸ Bottleneck Detection</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">⚠️ Bottleneck Detection</h2>
             <div id="bottleneck-alert" class="p-4 rounded-xl bg-gray-100">
                 <div class="flex items-center gap-3">
-                    <div class="text-2xl" id="bottleneck-icon">â³</div>
+                    <div class="text-2xl" id="bottleneck-icon">⏳</div>
                     <div>
                         <div class="font-bold text-gray-800" id="bottleneck-title">Analyzing...</div>
                         <div class="text-sm text-gray-600" id="bottleneck-description">Identifying slowest stages</div>
@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         tbody.innerHTML = stages.map(s => {
-            const trendIcon = s.trend === 'up' ? '�ˆ' : s.trend === 'down' ? '�‰' : 'âž¡ï¸';
+            const trendIcon = s.trend === 'up' ? '?�' : s.trend === 'down' ? '?�' : '➡️';
             const trendColor = s.trend === 'up' ? 'text-red-600' : s.trend === 'down' ? 'text-green-600' : 'text-gray-600';
             return `
                 <tr class="border-b border-gray-100 hover:bg-orange-50">
@@ -346,14 +346,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('bottleneck-alert');
         if (!bottleneck) {
             container.className = 'p-4 rounded-xl bg-green-100';
-            document.getElementById('bottleneck-icon').textContent = '�';
+            document.getElementById('bottleneck-icon').textContent = '?';
             document.getElementById('bottleneck-title').textContent = 'No significant bottlenecks detected';
             document.getElementById('bottleneck-description').textContent = 'Your hiring process is running smoothly';
             return;
         }
 
         container.className = 'p-4 rounded-xl bg-red-100';
-        document.getElementById('bottleneck-icon').textContent = 'âš ï¸';
+        document.getElementById('bottleneck-icon').textContent = '⚠️';
         document.getElementById('bottleneck-title').textContent = `${bottleneck.stage} is taking ${bottleneck.days} days`;
         document.getElementById('bottleneck-description').textContent = 'Consider streamlining this stage to reduce overall time-to-hire';
     }

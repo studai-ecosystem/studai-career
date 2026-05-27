@@ -1,4 +1,4 @@
-Ôªø@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Source Attribution Analytics')
 
@@ -7,8 +7,8 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-            <a href="{{ route('analytics.dashboard') }}" class="text-orange-600 hover:text-orange-800 text-sm mb-2 inline-block">√¢‚Ä†¬ê Back to Analytics</a>
-            <h1 class="text-3xl font-bold text-gray-900">ú¬ç Source Attribution Analytics</h1>
+            <a href="{{ route('analytics.analytics') }}" class="text-orange-600 hover:text-orange-800 text-sm mb-2 inline-block">‚Üê Back to Analytics</a>
+            <h1 class="text-3xl font-bold text-gray-900">?ç Source Attribution Analytics</h1>
             <p class="text-gray-600">Track where your best candidates come from</p>
         </div>
 
@@ -39,13 +39,13 @@
         <!-- Source Distribution Chart -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-xl font-bold text-gray-900 mb-4">ú≈† Candidates by Source</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-4">?ä Candidates by Source</h2>
                 <div class="h-80">
                     <canvas id="source-pie-chart"></canvas>
                 </div>
             </div>
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-xl font-bold text-gray-900 mb-4">ô¬∞ Cost per Hire by Source</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-4">?∞ Cost per Hire by Source</h2>
                 <div class="h-80">
                     <canvas id="cost-chart"></canvas>
                 </div>
@@ -54,7 +54,7 @@
 
         <!-- Conversion Rates by Source -->
         <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-orange-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-6">úÀÜ Conversion Rates by Source</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6">?à Conversion Rates by Source</h2>
             <div class="space-y-4" id="conversion-bars">
                 <!-- Dynamic conversion bars -->
             </div>
@@ -63,7 +63,7 @@
         <!-- Source Performance Table -->
         <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-orange-100">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-gray-900">ú‚Äπ Detailed Source Performance</h2>
+                <h2 class="text-xl font-bold text-gray-900">?ã Detailed Source Performance</h2>
                 <select id="sort-by" class="border-gray-200 rounded-lg text-sm">
                     <option value="candidates">Sort by Candidates</option>
                     <option value="hires">Sort by Hires</option>
@@ -96,7 +96,7 @@
 
         <!-- Source Trends Over Time -->
         <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-orange-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-6">ú‚Ä¶ Source Trends Over Time</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6">?Ö Source Trends Over Time</h2>
             <div class="h-80">
                 <canvas id="trends-chart"></canvas>
             </div>
@@ -105,17 +105,17 @@
         <!-- ROI Analysis -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg p-6 text-white">
-                <div class="text-lg opacity-90 mb-2">‚Ä† Best ROI Source</div>
+                <div class="text-lg opacity-90 mb-2">Ü Best ROI Source</div>
                 <div class="text-3xl font-bold" id="best-roi-source">--</div>
                 <div class="text-sm opacity-75 mt-1" id="best-roi-value">--</div>
             </div>
             <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg p-6 text-white">
-                <div class="text-lg opacity-90 mb-2">√¢¬≠¬ê Highest Quality</div>
+                <div class="text-lg opacity-90 mb-2">‚≠ê Highest Quality</div>
                 <div class="text-3xl font-bold" id="best-quality-source">--</div>
                 <div class="text-sm opacity-75 mt-1" id="best-quality-value">--</div>
             </div>
             <div class="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl shadow-lg p-6 text-white">
-                <div class="text-lg opacity-90 mb-2">úÀÜ Fastest Growing</div>
+                <div class="text-lg opacity-90 mb-2">?à Fastest Growing</div>
                 <div class="text-3xl font-bold" id="fastest-growing">--</div>
                 <div class="text-sm opacity-75 mt-1" id="fastest-growing-value">--</div>
             </div>
@@ -123,14 +123,14 @@
 
         <!-- Recommendations -->
         <div class="bg-white rounded-2xl shadow-lg p-8 border border-orange-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">ô¬° Sourcing Recommendations</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">?° Sourcing Recommendations</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="recommendations">
                 <div class="p-4 bg-green-50 rounded-xl">
-                    <div class="font-medium text-green-700">¶ Increase Investment</div>
+                    <div class="font-medium text-green-700">? Increase Investment</div>
                     <div class="text-sm text-green-600" id="rec-increase">Analyzing...</div>
                 </div>
                 <div class="p-4 bg-red-50 rounded-xl">
-                    <div class="font-medium text-red-700">√¢≈°¬†√Ø¬∏¬è Review Effectiveness</div>
+                    <div class="font-medium text-red-700">‚ö†Ô∏è Review Effectiveness</div>
                     <div class="text-sm text-red-600" id="rec-review">Analyzing...</div>
                 </div>
             </div>
@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const tbody = document.getElementById('source-table-body');
         
         tbody.innerHTML = data.map(s => {
-            const trendIcon = s.trend === 'up' ? 'úÀÜ' : s.trend === 'down' ? 'ú‚Ä∞' : '√¢≈æ¬°√Ø¬∏¬è';
+            const trendIcon = s.trend === 'up' ? '?à' : s.trend === 'down' ? '?â' : '‚û°Ô∏è';
             const trendColor = s.trend === 'up' ? 'text-green-600' : s.trend === 'down' ? 'text-red-600' : 'text-gray-600';
             const qualityColor = s.quality_score >= 8.5 ? 'text-green-600' : s.quality_score >= 7 ? 'text-orange-600' : 'text-red-600';
             

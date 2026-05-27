@@ -210,34 +210,27 @@
                                                 </a>
                                             @endif
                                             @if($application->customized_resume_path)
-                                                <a href="{{ route('agent.download-resume', $application->id) }}" 
+                                                <a href="{{ asset('storage/' . $application->customized_resume_path) }}" 
                                                    class="text-blue-600 hover:text-blue-800" 
-                                                   title="Download Resume">
+                                                   title="Download Resume" target="_blank">
                                                     <i data-lucide="file-text" class="w-4 h-4"></i>
                                                 </a>
                                             @endif
                                             @if($application->cover_letter_path)
-                                                <a href="{{ route('agent.download-cover-letter', $application->id) }}" 
+                                                <a href="{{ asset('storage/' . $application->cover_letter_path) }}" 
                                                    class="text-green-600 hover:text-green-800" 
-                                                   title="Download Cover Letter">
+                                                   title="Download Cover Letter" target="_blank">
                                                     <i data-lucide="file" class="w-4 h-4"></i>
                                                 </a>
                                             @endif
                                             @if($application->status === 'pending_approval')
-                                                <form action="{{ route('agent.approve-application', $application->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" 
+                                                <form action="{{ route('agent.applications') }}" method="GET" class="inline">
+                                                    <input type="hidden" name="action" value="approve">
+                                                    <input type="hidden" name="id" value="{{ $application->id }}">
+                                                    <button type="button"
                                                             class="text-green-600 hover:text-green-800" 
-                                                            title="Approve">
+                                                            title="Contact support to approve">
                                                         <i data-lucide="check" class="w-4 h-4"></i>
-                                                    </button>
-                                                </form>
-                                                <form action="{{ route('agent.reject-application', $application->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" 
-                                                            class="text-red-600 hover:text-red-800" 
-                                                            title="Reject">
-                                                        <i data-lucide="x" class="w-4 h-4"></i>
                                                     </button>
                                                 </form>
                                             @endif

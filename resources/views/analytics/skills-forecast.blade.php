@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Skills Demand Forecast - Predictive Analytics')
 
@@ -7,8 +7,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-            <a href="{{ route('analytics.dashboard') }}" class="text-blue-600 hover:text-blue-800 text-sm mb-2 inline-block">â† Back to Analytics</a>
-            <h1 class="text-3xl font-bold text-gray-900">�ˆ Skills Demand Forecast</h1>
+            <a href="{{ route('analytics.analytics') }}" class="text-blue-600 hover:text-blue-800 text-sm mb-2 inline-block">← Back to Analytics</a>
+            <h1 class="text-3xl font-bold text-gray-900">?� Skills Demand Forecast</h1>
             <p class="text-gray-600">Predictive insights on skill trends to guide your career development</p>
         </div>
 
@@ -38,9 +38,9 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Trend Direction</label>
                     <select id="trend-filter" class="w-full border-gray-200 rounded-lg text-sm">
                         <option value="">All Trends</option>
-                        <option value="rising">�º Rising</option>
-                        <option value="falling">�» Falling</option>
-                        <option value="stable">âž¡ï¸ Stable</option>
+                        <option value="rising">?� Rising</option>
+                        <option value="falling">?� Falling</option>
+                        <option value="stable">➡️ Stable</option>
                     </select>
                 </div>
                 <div class="flex items-end">
@@ -54,7 +54,7 @@
         <!-- Trend Summary -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white shadow-lg">
-                <h3 class="text-lg font-semibold mb-2 opacity-90">�º Rising Skills</h3>
+                <h3 class="text-lg font-semibold mb-2 opacity-90">?� Rising Skills</h3>
                 <div class="text-4xl font-bold mb-4" id="rising-count">--</div>
                 <div class="space-y-2" id="top-rising">
                     <div class="animate-pulse h-6 bg-white/20 rounded"></div>
@@ -64,7 +64,7 @@
             </div>
             
             <div class="bg-gradient-to-br from-gray-500 to-gray-600 rounded-2xl p-6 text-white shadow-lg">
-                <h3 class="text-lg font-semibold mb-2 opacity-90">âž¡ï¸ Stable Skills</h3>
+                <h3 class="text-lg font-semibold mb-2 opacity-90">➡️ Stable Skills</h3>
                 <div class="text-4xl font-bold mb-4" id="stable-count">--</div>
                 <div class="space-y-2" id="top-stable">
                     <div class="animate-pulse h-6 bg-white/20 rounded"></div>
@@ -74,7 +74,7 @@
             </div>
             
             <div class="bg-gradient-to-br from-red-500 to-rose-600 rounded-2xl p-6 text-white shadow-lg">
-                <h3 class="text-lg font-semibold mb-2 opacity-90">�» Declining Skills</h3>
+                <h3 class="text-lg font-semibold mb-2 opacity-90">?� Declining Skills</h3>
                 <div class="text-4xl font-bold mb-4" id="declining-count">--</div>
                 <div class="space-y-2" id="top-declining">
                     <div class="animate-pulse h-6 bg-white/20 rounded"></div>
@@ -86,7 +86,7 @@
 
         <!-- Skills Table -->
         <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-blue-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">�Š Skills Demand Analysis</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">?� Skills Demand Analysis</h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
@@ -108,7 +108,7 @@
 
         <!-- Forecast Chart -->
         <div class="bg-white rounded-2xl shadow-lg p-6 border border-blue-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">�ˆ Top Skills Forecast Comparison</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">?� Top Skills Forecast Comparison</h2>
             <canvas id="forecastChart" height="120"></canvas>
         </div>
     </div>
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         tbody.innerHTML = skills.slice(0, 20).map(skill => {
             const trend = skill.trend || skill.trend_direction || 'stable';
-            const trendIcon = trend === 'rising' ? '�º' : (trend === 'falling' ? '�»' : 'âž¡ï¸');
+            const trendIcon = trend === 'rising' ? '?�' : (trend === 'falling' ? '?�' : '➡️');
             const trendClass = trend === 'rising' ? 'text-green-600' : (trend === 'falling' ? 'text-red-600' : 'text-gray-600');
             const growth = skill.growth_30d || skill.growth_rate_30d || 0;
             const growthClass = growth >= 0 ? 'text-green-600' : 'text-red-600';

@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Application Funnel Analytics')
 
@@ -7,8 +7,8 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-            <a href="{{ route('analytics.dashboard') }}" class="text-orange-600 hover:text-orange-800 text-sm mb-2 inline-block">â† Back to Analytics</a>
-            <h1 class="text-3xl font-bold text-gray-900">�„ Application Funnel Analytics</h1>
+            <a href="{{ route('analytics.analytics') }}" class="text-orange-600 hover:text-orange-800 text-sm mb-2 inline-block">← Back to Analytics</a>
+            <h1 class="text-3xl font-bold text-gray-900">?� Application Funnel Analytics</h1>
             <p class="text-gray-600">Track your hiring pipeline from view to hire</p>
         </div>
 
@@ -67,7 +67,7 @@
 
         <!-- Conversion Rates -->
         <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-orange-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-6">�Š Stage Conversion Rates</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6">?� Stage Conversion Rates</h2>
             <div class="space-y-6" id="conversion-rates">
                 <!-- Dynamic conversion rate bars -->
             </div>
@@ -76,7 +76,7 @@
         <!-- Dropoff Analysis -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-xl font-bold text-gray-900 mb-4">âš ï¸ Biggest Dropoff</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-4">⚠️ Biggest Dropoff</h2>
                 <div id="dropoff-analysis" class="p-4 bg-red-50 rounded-xl">
                     <div class="text-lg font-bold text-red-700" id="dropoff-stage">--</div>
                     <div class="text-sm text-red-600" id="dropoff-rate">--</div>
@@ -84,10 +84,10 @@
             </div>
             
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-xl font-bold text-gray-900 mb-4">�¡ Recommendations</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-4">?� Recommendations</h2>
                 <ul id="recommendations" class="space-y-2 text-sm text-gray-700">
                     <li class="flex items-start gap-2">
-                        <span>â€¢</span>
+                        <span>•</span>
                         <span>Loading recommendations...</span>
                     </li>
                 </ul>
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return `
                 <div class="space-y-2">
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-600">${conv.from} â†’ ${conv.to}</span>
+                        <span class="text-gray-600">${conv.from} → ${conv.to}</span>
                         <span class="font-medium">${conv.rate.toFixed(1)}%</span>
                     </div>
                     <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
@@ -222,13 +222,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateRecommendations(recommendations) {
         const container = document.getElementById('recommendations');
         if (!recommendations.length) {
-            container.innerHTML = '<li class="flex items-start gap-2"><span>�</span><span>Your hiring funnel looks healthy!</span></li>';
+            container.innerHTML = '<li class="flex items-start gap-2"><span>?</span><span>Your hiring funnel looks healthy!</span></li>';
             return;
         }
 
         container.innerHTML = recommendations.map(rec => `
             <li class="flex items-start gap-2">
-                <span>�¡</span>
+                <span>?�</span>
                 <span>${rec}</span>
             </li>
         `).join('');

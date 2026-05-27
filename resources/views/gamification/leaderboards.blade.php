@@ -51,7 +51,7 @@
                 <!-- Leaderboard Settings -->
                 <div class="bg-white rounded-2xl shadow-lg p-6">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Settings</h3>
-                    <form action="{{ route('gamification.leaderboards.settings') }}" method="POST">
+                    <form action="{{ route('gamification.leaderboards.toggle') }}" method="POST">
                         @csrf
                         <div class="space-y-4">
                             <div>

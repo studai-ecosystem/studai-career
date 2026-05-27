@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Job Market Heatmap - Interactive Analytics')
 
@@ -19,8 +19,8 @@
         <!-- Header -->
         <div class="flex items-center justify-between mb-6">
             <div>
-                <a href="{{ route('analytics.dashboard') }}" class="text-purple-600 hover:text-purple-800 text-sm mb-2 inline-block">â† Back to Analytics</a>
-                <h1 class="text-3xl font-bold text-gray-900">�ºï¸ Job Market Heatmap</h1>
+                <a href="{{ route('analytics.analytics') }}" class="text-purple-600 hover:text-purple-800 text-sm mb-2 inline-block">← Back to Analytics</a>
+                <h1 class="text-3xl font-bold text-gray-900">?�️ Job Market Heatmap</h1>
                 <p class="text-gray-600">Interactive visualization of job opportunities by location</p>
             </div>
         </div>
@@ -98,7 +98,7 @@
 
         <!-- Top Locations Table -->
         <div class="bg-white rounded-xl shadow-lg p-6 mt-6 border border-purple-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">� Top Job Locations</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">?� Top Job Locations</h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
