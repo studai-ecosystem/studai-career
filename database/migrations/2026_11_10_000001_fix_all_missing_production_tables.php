@@ -294,14 +294,60 @@ return new class extends Migration
             });
         }
 
-        // ── 8. Ensure users.company_id column exists ─────────────────────────
+        // ── 8. profiles (needed by DashboardController::calculateProfileCompletion) ─
+        if (! Schema::hasTable('profiles')) {
+            Schema::create('profiles', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained()->onDelete('cascade');
+                $table->string('headline')->nullable();
+                $table->text('bio')->nullable();
+                $table->text('summary')->nullable();
+                $table->text('career_goals')->nullable();
+                $table->string('phone')->nullable();
+                $table->string('location')->nullable();
+                $table->string('avatar')->nullable();
+                $table->string('resume_path')->nullable();
+                $table->json('experience')->nullable();
+                $table->json('education')->nullable();
+                $table->json('skills')->nullable();
+                $table->json('languages')->nullable();
+                $table->string('current_location')->nullable();
+                $table->json('preferred_locations')->nullable();
+                $table->decimal('expected_salary_min', 10, 2)->nullable();
+                $table->decimal('expected_salary_max', 10, 2)->nullable();
+                $table->string('notice_period')->nullable();
+                $table->enum('work_preference', ['remote', 'hybrid', 'onsite'])->nullable();
+                $table->json('social_links')->nullable();
+                $table->json('job_preferences')->nullable();
+                $table->integer('profile_completeness')->default(0);
+                $table->boolean('is_public')->default(true);
+                $table->boolean('open_to_opportunities')->default(true);
+                $table->timestamps();
+                $table->index(['user_id', 'is_public']);
+            });
+        }
+
+        // ── 9. saved_jobs (needed by DashboardController - $user->savedJobs()->count()) ─
+        if (! Schema::hasTable('saved_jobs')) {
+            Schema::create('saved_jobs', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained()->onDelete('cascade');
+                $table->foreignId('job_id')->constrained('job_listings')->onDelete('cascade');
+                $table->text('notes')->nullable();
+                $table->timestamps();
+                $table->unique(['user_id', 'job_id']);
+                $table->index('created_at');
+            });
+        }
+
+        // ── 11. Ensure users.company_id column exists ─────────────────────────
         if (! Schema::hasColumn('users', 'company_id')) {
             Schema::table('users', function (Blueprint $table) {
                 $table->unsignedBigInteger('company_id')->nullable()->after('id');
             });
         }
 
-        // ── 9. Ensure users.account_type column exists ───────────────────────
+        // ── 12. Ensure users.account_type column exists ───────────────────────
         if (! Schema::hasColumn('users', 'account_type')) {
             Schema::table('users', function (Blueprint $table) {
                 $table->enum('account_type', ['job_seeker', 'employer', 'admin'])
@@ -310,7 +356,7 @@ return new class extends Migration
             });
         }
 
-        // ── 10. Ensure users.is_active column exists ─────────────────────────
+        // ── 13. Ensure users.is_active column exists ─────────────────────────
         if (! Schema::hasColumn('users', 'is_active')) {
             Schema::table('users', function (Blueprint $table) {
                 $table->boolean('is_active')->default(true)->after('account_type');
