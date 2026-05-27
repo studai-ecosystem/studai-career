@@ -59,3 +59,33 @@ foreach ($accounts as $account) {
 }
 
 echo "\nDone. Test accounts ready.\n";
+
+// ---- Ensure test employer has a linked company ----
+try {
+    $employer = DB::table('users')->where('email', 'employer@studai.com')->first();
+    if ($employer && ! $employer->company_id) {
+        // Find or create the test company
+        $company = DB::table('companies')->where('slug', 'studai-test-company')->first();
+        if (! $company) {
+            $companyId = DB::table('companies')->insertGetId([
+                'name'        => 'StudAI Test Company',
+                'slug'        => 'studai-test-company',
+                'description' => 'Test company for QA and staging purposes.',
+                'is_verified' => 1,
+                'is_featured' => 0,
+                'created_at'  => $now,
+                'updated_at'  => $now,
+            ]);
+            echo "Created test company (id=$companyId)\n";
+        } else {
+            $companyId = $company->id;
+            echo "Test company already exists (id=$companyId)\n";
+        }
+        DB::table('users')->where('email', 'employer@studai.com')->update(['company_id' => $companyId]);
+        echo "Linked employer@studai.com to company id=$companyId\n";
+    } else {
+        echo "Employer already has company_id={$employer->company_id}\n";
+    }
+} catch (\Throwable $e) {
+    fwrite(STDERR, "ERROR seeding test company: " . $e->getMessage() . "\n");
+}

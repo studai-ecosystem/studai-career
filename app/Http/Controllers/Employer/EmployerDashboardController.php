@@ -22,7 +22,14 @@ class EmployerDashboardController extends Controller
     {
         $user    = auth()->user();
         $company = $user->company;
-        $cid     = $company->id;
+
+        // Guard: employer has no company linked yet — prompt them to complete onboarding
+        if (! $company) {
+            return redirect()->route('employer.onboarding')
+                ->with('info', 'Please complete your company profile to access the dashboard.');
+        }
+
+        $cid = $company->id;
 
         // ------------------------------------------------------------------
         // All base counts in a single batch â€” no N+1
