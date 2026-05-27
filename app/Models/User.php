@@ -12,8 +12,10 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\AICreditLog;
 use App\Models\FreelancerProfile;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens, TwoFactorAuthenticatable, HasRoles, SoftDeletes;
@@ -108,6 +110,11 @@ class User extends Authenticatable
      * Check if user is an admin
      */
     public function isAdmin(): bool
+    {
+        return $this->account_type === 'admin';
+    }
+
+    public function canAccessPanel(Panel $panel): bool
     {
         return $this->account_type === 'admin';
     }
