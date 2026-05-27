@@ -83,3 +83,36 @@ jobs:
           slot-name: 'Production'
           package: .
           startup-command: 'bash startup.sh'
+
+      - name: Wait for app to be ready then seed test accounts via Kudu
+        run: |
+          echo "Waiting for app to start (migrations + caches take ~3 min)..."
+          MAX_ATTEMPTS=20
+          ATTEMPT=0
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            STATUS=$(curl -sf -o /dev/null -w "%{http_code}" https://studai-app-prod.azurewebsites.net/up 2>/dev/null || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "App is up! (attempt $((ATTEMPT+1)))"
+              break
+            fi
+            echo "App not ready yet (attempt $((ATTEMPT+1))/$MAX_ATTEMPTS, status=$STATUS), waiting 30s..."
+            sleep 30
+            ATTEMPT=$((ATTEMPT + 1))
+          done
+
+          echo "Running test account seeder via Kudu API..."
+          CREDS=$(az webapp deployment list-publishing-credentials \
+            --name studai-app-prod \
+            --resource-group studai-career \
+            --query "{u:publishingUserName, p:publishingPassword}" \
+            --output json)
+          KUDU_USER=$(echo "$CREDS" | jq -r .u)
+          KUDU_PASS=$(echo "$CREDS" | jq -r .p)
+
+          RESULT=$(curl -s -X POST \
+            "https://studai-app-prod.scm.azurewebsites.net/api/command" \
+            --user "$KUDU_USER:$KUDU_PASS" \
+            -H "Content-Type: application/json" \
+            -d '{"command":"php /home/site/wwwroot/reset-password.php","dir":"/home/site/wwwroot"}' \
+            --max-time 90)
+          echo "Seeder result: $RESULT"

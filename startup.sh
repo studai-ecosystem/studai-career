@@ -86,7 +86,7 @@ if [ "$APP_ENV" = "production" ]; then
   timeout 30 php artisan scout:sync-index-settings 2>/dev/null || true
 
   echo "Seeding default test accounts..."
-  timeout 60 php /home/site/wwwroot/reset-password.php 2>/dev/null || echo "WARNING: account seeder failed (non-critical)"
+  timeout 60 php /home/site/wwwroot/reset-password.php || echo "WARNING: account seeder failed (non-critical)"
 else
   echo "Development mode - clearing caches..."
   php artisan optimize:clear 2>/dev/null || true
