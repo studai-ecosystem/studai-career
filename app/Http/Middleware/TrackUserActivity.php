@@ -23,9 +23,14 @@ class TrackUserActivity
             
             // Only update DB if more than 5 minutes since last update
             if (!$lastActivity || now()->diffInMinutes($lastActivity) > 5) {
-                $user->update([
-                    'last_login_at' => now(),
-                ]);
+                try {
+                    $user->update([
+                        'last_login_at' => now(),
+                    ]);
+                } catch (\Throwable $e) {
+                    // Silently ignore if column doesn't exist yet (migration pending)
+                    \Illuminate\Support\Facades\Log::debug('TrackUserActivity: ' . $e->getMessage());
+                }
                 
                 Cache::put($cacheKey, now(), 600); // Cache for 10 minutes
             }
