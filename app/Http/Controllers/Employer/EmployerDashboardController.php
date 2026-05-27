@@ -38,7 +38,7 @@ class EmployerDashboardController extends Controller
             return Job::where('company_id', $cid)
                 ->selectRaw("
                     COUNT(*) as total,
-                    SUM(CASE WHEN status = 'published' AND (expires_at IS NULL OR expires_at > datetime('now')) THEN 1 ELSE 0 END) as active
+                    SUM(CASE WHEN status = 'published' AND (expires_at IS NULL OR expires_at > NOW()) THEN 1 ELSE 0 END) as active
                 ")
                 ->first();
         });
@@ -50,7 +50,7 @@ class EmployerDashboardController extends Controller
         $appCounts = Cache::remember("employer_app_counts_{$cid}", 120, function () use ($cid) {
             return Application::join('job_listings', 'applications.job_id', '=', 'job_listings.id')
                 ->where('job_listings.company_id', $cid)
-                ->selectRaw("COUNT(*) as total, SUM(CASE WHEN applications.status = 'pending' AND applications.created_at >= datetime('now', '-7 days') THEN 1 ELSE 0 END) as new_pending")
+                ->selectRaw("COUNT(*) as total, SUM(CASE WHEN applications.status = 'pending' AND applications.created_at >= NOW() - INTERVAL 7 DAY THEN 1 ELSE 0 END) as new_pending")
                 ->first();
         });
 
@@ -91,8 +91,8 @@ class EmployerDashboardController extends Controller
             $rows = Application::join('job_listings', 'applications.job_id', '=', 'job_listings.id')
                 ->where('job_listings.company_id', $cid)
                 ->where('applications.created_at', '>=', now()->subWeeks(4)->startOfWeek())
-                ->selectRaw("strftime('%Y-%W', applications.created_at) as week_key, COUNT(*) as count")
-                ->groupByRaw("strftime('%Y-%W', applications.created_at)")
+                ->selectRaw("DATE_FORMAT(applications.created_at, '%Y-%u') as week_key, COUNT(*) as count")
+                ->groupByRaw("DATE_FORMAT(applications.created_at, '%Y-%u')")
                 ->orderBy('week_key')
                 ->pluck('count', 'week_key');
 
@@ -151,8 +151,8 @@ class EmployerDashboardController extends Controller
             return Application::join('job_listings', 'applications.job_id', '=', 'job_listings.id')
                 ->where('job_listings.company_id', $cid)
                 ->where('applications.created_at', '>=', now()->subMonths(12)->startOfMonth())
-                ->selectRaw("strftime('%Y-%m', applications.created_at) as month_key, COUNT(*) as count")
-                ->groupByRaw("strftime('%Y-%m', applications.created_at)")
+                ->selectRaw("DATE_FORMAT(applications.created_at, '%Y-%m') as month_key, COUNT(*) as count")
+                ->groupByRaw("DATE_FORMAT(applications.created_at, '%Y-%m')")
                 ->pluck('count', 'month_key');
         });
 
@@ -179,7 +179,7 @@ class EmployerDashboardController extends Controller
             ->where('job_listings.company_id', $cid)
             ->where('applications.status', 'hired')
             ->whereNotNull('applications.updated_at')
-            ->selectRaw("AVG(julianday(applications.updated_at) - julianday(applications.created_at)) as avg_days")
+            ->selectRaw("AVG(DATEDIFF(applications.updated_at, applications.created_at)) as avg_days")
             ->value('avg_days');
 
         // Conversion rates â€” single query with conditional counts

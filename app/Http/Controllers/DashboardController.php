@@ -184,8 +184,8 @@ class DashboardController extends Controller
         $aggRow = \App\Models\AICreditLog::where('user_id', $user->id)
             ->selectRaw("
                 SUM(credits_used) as total_used,
-                SUM(CASE WHEN strftime('%m', created_at) = ? AND strftime('%Y', created_at) = ? THEN credits_used ELSE 0 END) as this_month
-            ", [str_pad(now()->month, 2, '0', STR_PAD_LEFT), (string) now()->year])
+                SUM(CASE WHEN MONTH(created_at) = ? AND YEAR(created_at) = ? THEN credits_used ELSE 0 END) as this_month
+            ", [now()->month, now()->year])
             ->first();
 
         $totalUsed = (int) ($aggRow->total_used ?? 0);
