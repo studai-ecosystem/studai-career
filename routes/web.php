@@ -168,21 +168,30 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
     try { $totalUsers = $DB::table('users')->count(); } catch (\Throwable $ignored) {}
     $logFile = storage_path('logs/laravel.log');
     $logLines = [];
+    $rawLogLines = [];
     if (file_exists($logFile)) {
-        $lines = array_slice(file($logFile), -60);
+        $lines = array_slice(file($logFile), -100);
         foreach ($lines as $line) {
             if (str_contains($line, 'AUTH_DIAG') || str_contains($line, 'Login attempt') || str_contains($line, 'Login event')) {
                 $logLines[] = trim($line);
             }
         }
+        // When ?action=logs return raw last 80 lines for debugging
+        if ($request->query('action') === 'logs') {
+            $rawLogLines = array_map('trim', array_slice($lines, -80));
+        }
     }
-    return response()->json([
+    $output = [
         'users'         => $results,
         'total_users'   => $totalUsers,
         'columns'       => $colCheck,
         'seed_log'      => $seedLog,
         'relevant_logs' => array_slice($logLines, -10),
-    ]);
+    ];
+    if ($request->query('action') === 'logs') {
+        $output['raw_logs'] = $rawLogLines;
+    }
+    return response()->json($output);
 })->name('auth.diag');
 
 // ── Email Preview (dev only) ────────────────────────────────────────────────
