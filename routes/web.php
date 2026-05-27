@@ -33,6 +33,39 @@ use Illuminate\Support\Facades\Route;
 // Marketing Pages
 Route::get('/', [MarketingController::class, 'home'])->name('home');
 
+// ── Temporary Auth Diagnostic (remove after login is confirmed working) ─────
+Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
+    // Guard: only accessible with the correct token to prevent information exposure.
+    $expectedToken = env('AUTH_DIAG_TOKEN', '');
+    if (!$expectedToken || $request->query('token') !== $expectedToken) {
+        abort(403);
+    }
+    $emails = ['admin@studai.com', 'jobseeker@studai.com', 'employer@studai.com'];
+    $results = [];
+    foreach ($emails as $email) {
+        $row = \Illuminate\Support\Facades\DB::table('users')->where('email', $email)->first();
+        $results[$email] = [
+            'found'      => $row !== null,
+            'deleted_at' => $row?->deleted_at,
+            'is_active'  => $row?->is_active,
+            'hash_ok'    => $row ? \Illuminate\Support\Facades\Hash::check('password', $row->password) : false,
+            'hash_prefix'=> $row ? substr($row->password, 0, 7) : null,
+        ];
+    }
+    // Also log last few log lines
+    $logFile = storage_path('logs/laravel.log');
+    $logLines = [];
+    if (file_exists($logFile)) {
+        $lines = array_slice(file($logFile), -30);
+        foreach ($lines as $line) {
+            if (str_contains($line, 'AUTH_DIAG') || str_contains($line, 'Login attempt') || str_contains($line, 'Login event')) {
+                $logLines[] = trim($line);
+            }
+        }
+    }
+    return response()->json(['users' => $results, 'relevant_logs' => array_slice($logLines, -10)]);
+})->name('auth.diag');
+
 // ── Email Preview (dev only) ────────────────────────────────────────────────
 if (app()->isLocal()) {
     Route::get('/preview/email/{type}/{event}', function (string $type, string $event) {

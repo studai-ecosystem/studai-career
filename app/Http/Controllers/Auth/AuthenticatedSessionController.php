@@ -31,6 +31,24 @@ class AuthenticatedSessionController extends Controller
             'password' => ['required', 'string'],
         ]);
 
+        // --- Diagnostic logging (temporary) ---
+        // Log enough information to diagnose why auth fails without exposing passwords.
+        $email = $request->input('email');
+        try {
+            $row = \Illuminate\Support\Facades\DB::table('users')->where('email', $email)->first();
+            $hashOk = $row ? \Illuminate\Support\Facades\Hash::check($request->input('password'), $row->password) : false;
+            Log::info('AUTH_DIAG', [
+                'email'      => $email,
+                'row_found'  => $row !== null,
+                'deleted_at' => $row?->deleted_at,
+                'is_active'  => $row?->is_active,
+                'hash_ok'    => $hashOk,
+                'hash_prefix'=> $row ? substr($row->password, 0, 10) : null,
+            ]);
+        } catch (\Throwable $diagEx) {
+            Log::warning('AUTH_DIAG_FAILED', ['error' => $diagEx->getMessage()]);
+        }
+
         // Attempt authentication — wrap in try-catch so Redis queue dispatch
         // failures (from ShouldQueue event listeners like GamificationEventSubscriber)
         // do NOT crash the login flow.
