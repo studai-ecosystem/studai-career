@@ -23,12 +23,21 @@ class QueueMonitor extends Page
 
     public function getViewData(): array
     {
-        return [
-            'queueStats' => $this->getQueueStats(),
-            'failedJobs' => $this->getFailedJobs(),
-            'recentJobs' => $this->getRecentJobs(),
-            'queueSizes' => $this->getQueueSizes(),
-        ];
+        try {
+            return [
+                'queueStats' => $this->getQueueStats(),
+                'failedJobs' => $this->getFailedJobs(),
+                'recentJobs' => $this->getRecentJobs(),
+                'queueSizes' => $this->getQueueSizes(),
+            ];
+        } catch (\Throwable) {
+            return [
+                'queueStats' => ['failed' => 0, 'pending' => 0, 'processed' => 0, 'total' => 0],
+                'failedJobs' => [],
+                'recentJobs' => [],
+                'queueSizes' => [],
+            ];
+        }
     }
 
     protected function getQueueStats(): array

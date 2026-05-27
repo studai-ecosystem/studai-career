@@ -38,8 +38,13 @@ class AgentEmergencyControls extends Page implements HasTable
 
     public function mount(): void
     {
-        $this->globalKillSwitchActive = AgentConfiguration::isGlobalKillSwitchActive();
-        $this->killSwitchInfo = AgentConfiguration::getGlobalKillSwitchInfo();
+        try {
+            $this->globalKillSwitchActive = AgentConfiguration::isGlobalKillSwitchActive();
+            $this->killSwitchInfo = AgentConfiguration::getGlobalKillSwitchInfo();
+        } catch (\Throwable) {
+            $this->globalKillSwitchActive = false;
+            $this->killSwitchInfo = null;
+        }
     }
 
     protected function getHeaderActions(): array
