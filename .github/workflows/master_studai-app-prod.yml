@@ -66,14 +66,15 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4C1C0BFBE5FE4CA5B720B09861EDF023 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DD7C6727C7DB4E3F96EBCCC9731625B5 }}
 
-      - name: Set resilient App Settings (use DB for session/cache to avoid Redis failures)
+      - name: Set resilient App Settings (use DB for session/cache/queue to avoid Redis failures)
         run: |
           az webapp config appsettings set \
             --name studai-app-prod \
             --resource-group studai-career \
             --settings \
               SESSION_DRIVER=database \
-              CACHE_STORE=database
+              CACHE_STORE=database \
+              QUEUE_CONNECTION=database
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3

@@ -41,9 +41,24 @@ class AuthenticatedSessionController extends Controller
                 $request->boolean('remember')
             );
         } catch (\Predis\Connection\ConnectionException|\RedisException|\Exception $e) {
-            // Check if this is a connection/queue error (not an auth error).
-            // Auth itself may have succeeded; only the event dispatch failed.
-            if (Auth::check()) {
+            // Auth::attempt() calls SessionGuard::login() which fires the Login event
+            // BEFORE calling setUser(). If a ShouldQueue event listener (e.g.
+            // GamificationEventSubscriber) fails to dispatch (Redis down), the exception
+            // propagates here and Auth::check() returns false even though the session
+            // was already updated with the user's ID.
+            //
+            // Detect success by checking the session key directly, then restore the user.
+            $sessionKey = 'login_web_' . sha1(\Illuminate\Auth\SessionGuard::class);
+            $userId     = $request->session()->get($sessionKey);
+
+            if ($userId && $user = \App\Models\User::find($userId)) {
+                Auth::setUser($user);
+                $authenticated = true;
+                Log::warning('Login event dispatch failed after auth succeeded (queue/Redis unavailable); recovered from session', [
+                    'email' => $request->email,
+                    'error' => $e->getMessage(),
+                ]);
+            } elseif (Auth::check()) {
                 $authenticated = true;
                 Log::warning('Login event dispatch failed (Redis unavailable), auth succeeded', [
                     'email' => $request->email,
