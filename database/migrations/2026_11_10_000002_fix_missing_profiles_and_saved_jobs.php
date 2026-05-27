@@ -74,6 +74,35 @@ return new class extends Migration
                 $table->index('action');
             });
         }
+
+        // ── 4. company_intelligence_profiles (EmployerDashboardController::index) ──
+        if (! Schema::hasTable('company_intelligence_profiles')) {
+            Schema::create('company_intelligence_profiles', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('company_id')->unique();
+                $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+                $table->json('onboarding_conversation')->nullable();
+                $table->string('industry')->nullable();
+                $table->string('company_size')->nullable();
+                $table->unsignedInteger('headcount')->nullable();
+                $table->year('founded_year')->nullable();
+                $table->string('cin_gst')->nullable();
+                $table->string('website')->nullable();
+                $table->string('work_culture')->nullable();
+                $table->string('work_mode_preference')->nullable();
+                $table->json('top_performer_traits')->nullable();
+                $table->json('salary_bands')->nullable();
+                $table->string('compensation_philosophy')->nullable();
+                $table->json('pain_points')->nullable();
+                $table->string('preferred_candidate_communication')->nullable();
+                $table->string('hiring_frequency')->nullable();
+                $table->json('compliance_requirements')->nullable();
+                $table->boolean('onboarding_complete')->default(false);
+                $table->unsignedTinyInteger('completeness_score')->default(0);
+                $table->timestamp('last_enriched_at')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void
