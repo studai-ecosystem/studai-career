@@ -72,6 +72,14 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
                     $table->string('phone')->nullable();
                     $seedLog[] = 'ADDED column: users.phone';
                 }
+                if (! $Schema::hasColumn('users', 'last_login_at')) {
+                    $table->timestamp('last_login_at')->nullable();
+                    $seedLog[] = 'ADDED column: users.last_login_at';
+                }
+                if (! $Schema::hasColumn('users', 'profile_completed_at')) {
+                    $table->timestamp('profile_completed_at')->nullable();
+                    $seedLog[] = 'ADDED column: users.profile_completed_at';
+                }
             });
         } catch (\Throwable $e) {
             $seedLog[] = 'Schema fix ERROR: ' . $e->getMessage();
