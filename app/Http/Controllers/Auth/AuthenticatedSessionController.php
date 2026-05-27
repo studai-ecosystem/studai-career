@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -21,16 +22,60 @@ class AuthenticatedSessionController extends Controller
 
     /**
      * Handle an incoming authentication request.
+     * Uses plain Request (not LoginRequest) to avoid Redis rate-limiter dependency.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->validate([
+            'email'    => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+        ]);
 
-        $request->session()->regenerate();
+        // Attempt authentication — wrap in try-catch so Redis queue dispatch
+        // failures (from ShouldQueue event listeners like GamificationEventSubscriber)
+        // do NOT crash the login flow.
+        $authenticated = false;
+        try {
+            $authenticated = Auth::attempt(
+                $request->only('email', 'password'),
+                $request->boolean('remember')
+            );
+        } catch (\Predis\Connection\ConnectionException|\RedisException|\Exception $e) {
+            // Check if this is a connection/queue error (not an auth error).
+            // Auth itself may have succeeded; only the event dispatch failed.
+            if (Auth::check()) {
+                $authenticated = true;
+                Log::warning('Login event dispatch failed (Redis unavailable), auth succeeded', [
+                    'email' => $request->email,
+                    'error' => $e->getMessage(),
+                ]);
+            } else {
+                Log::error('Login attempt threw unexpected exception', [
+                    'email' => $request->email,
+                    'error' => $e->getMessage(),
+                ]);
+                throw ValidationException::withMessages([
+                    'email' => __('auth.failed'),
+                ]);
+            }
+        }
+
+        if (! $authenticated) {
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
+        }
+
+        try {
+            $request->session()->regenerate();
+        } catch (\Exception $e) {
+            Log::warning('Session regenerate failed after login', ['error' => $e->getMessage()]);
+            // Session failure is non-fatal — user is authenticated, continue
+        }
 
         $user = Auth::user();
 
-        // Role-based redirect after login
+        // Role-based redirect
         if ($user && $user->isAdmin()) {
             if (\Illuminate\Support\Facades\Route::has('filament.studai.pages.dashboard')) {
                 return redirect()->intended(route('filament.studai.pages.dashboard'));
