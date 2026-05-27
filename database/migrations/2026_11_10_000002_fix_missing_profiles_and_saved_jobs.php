@@ -103,6 +103,19 @@ return new class extends Migration
                 $table->timestamps();
             });
         }
+
+        // ── 5. company_blacklists (JobMatchingService::isCompanyBlacklisted) ──
+        if (! Schema::hasTable('company_blacklists')) {
+            Schema::create('company_blacklists', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained()->onDelete('cascade');
+                $table->string('company_name');
+                $table->string('reason')->nullable();
+                $table->text('notes')->nullable();
+                $table->timestamps();
+                $table->index(['user_id', 'company_name']);
+            });
+        }
     }
 
     public function down(): void
