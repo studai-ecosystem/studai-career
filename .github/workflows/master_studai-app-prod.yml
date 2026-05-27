@@ -68,10 +68,9 @@ jobs:
 
       - name: Set resilient App Settings (use DB for session/cache to avoid Redis failures)
         run: |
-          RG=$(az webapp show --name studai-app-prod --query resourceGroup -o tsv)
           az webapp config appsettings set \
             --name studai-app-prod \
-            --resource-group "$RG" \
+            --resource-group studai-career \
             --settings \
               SESSION_DRIVER=database \
               CACHE_STORE=database
