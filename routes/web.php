@@ -169,6 +169,7 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
     $logFile = storage_path('logs/laravel.log');
     $logLines = [];
     $rawLogLines = [];
+    $errorEntries = [];
     if (file_exists($logFile)) {
         $lines = array_slice(file($logFile), -100);
         foreach ($lines as $line) {
@@ -179,6 +180,16 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
         // When ?action=logs return raw last 80 lines for debugging
         if ($request->query('action') === 'logs') {
             $rawLogLines = array_map('trim', array_slice($lines, -80));
+
+            // Also extract the ERROR headlines (lines starting with [YYYY-MM-DD] local.ERROR:)
+            // Read more lines to catch error messages that may be deep in the file
+            $moreLines = array_slice(file($logFile), -500);
+            foreach ($moreLines as $line) {
+                if (preg_match('/\[(\d{4}-\d{2}-\d{2})[^\]]+\]\s+\w+\.ERROR:\s+(.+?)(\s+\{.*)?$/', trim($line), $m)) {
+                    $errorEntries[] = '[' . $m[1] . '] ERROR: ' . substr($m[2], 0, 300);
+                }
+            }
+            $errorEntries = array_slice(array_unique($errorEntries), -20);
         }
     }
     $output = [
@@ -190,6 +201,7 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
     ];
     if ($request->query('action') === 'logs') {
         $output['raw_logs'] = $rawLogLines;
+        $output['error_entries'] = $errorEntries;
     }
     return response()->json($output);
 })->name('auth.diag');

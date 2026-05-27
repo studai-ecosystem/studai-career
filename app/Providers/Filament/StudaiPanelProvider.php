@@ -23,7 +23,7 @@ class StudaiPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $panel = $panel
             ->default()
             ->id('studai')
             ->path('studai')
@@ -72,9 +72,18 @@ class StudaiPanelProvider extends PanelProvider
                 'Platform Health',
                 'Settings',
             ])
-            ->databaseNotifications()
-            ->databaseNotificationsPolling('30s')
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->maxContentWidth('full');
+
+        // Enable database notifications only if table exists (prevents 500 when migrations are incomplete)
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('notifications')) {
+                $panel->databaseNotifications()->databaseNotificationsPolling('30s');
+            }
+        } catch (\Throwable) {
+            // notifications table unavailable — skip silently
+        }
+
+        return $panel;
     }
 }
