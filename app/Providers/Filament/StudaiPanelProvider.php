@@ -10,8 +10,11 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Platform;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -73,7 +76,31 @@ class StudaiPanelProvider extends PanelProvider
                 'Settings',
             ])
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->maxContentWidth('full');
+            ->maxContentWidth('full')
+            ->renderHook(
+                PanelsRenderHook::STYLES_AFTER,
+                fn (): string => Blade::render(<<<'BLADE'
+                    <style>
+                        /* ── Mobile sidebar: narrow it so the close-overlay is large enough to tap ── */
+                        @media (max-width: 1023px) {
+                            .fi-sidebar {
+                                width: min(260px, 75vw) !important;
+                                max-width: min(260px, 75vw) !important;
+                            }
+                            /* Make the full overlay (including area beside sidebar) touchable */
+                            .fi-sidebar-close-overlay {
+                                cursor: pointer;
+                                /* Visual hint: show a subtle "tap to close" affordance */
+                            }
+                            /* Prevent sidebar group buttons from stealing pointer events
+                               outside the sidebar bounds */
+                            .fi-sidebar-group-btn {
+                                pointer-events: auto;
+                            }
+                        }
+                    </style>
+                BLADE)
+            );
 
         // Enable database notifications only if table exists (prevents 500 when migrations are incomplete)
         try {
