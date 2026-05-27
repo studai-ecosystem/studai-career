@@ -23,16 +23,29 @@ class AIUsageMonitoring extends Page
 
     public function getViewData(): array
     {
-        return [
-            'totalCreditsUsed' => $this->getTotalCreditsUsed(),
-            'creditsUsedThisMonth' => $this->getCreditsUsedThisMonth(),
-            'averageCreditsPerUser' => $this->getAverageCreditsPerUser(),
-            'topAIUsers' => $this->getTopAIUsers(),
-            'usageBySubscription' => $this->getUsageBySubscription(),
-            'dailyUsageTrend' => $this->getDailyUsageTrend(),
-            'usersNearLimit' => $this->getUsersNearLimit(),
-            'applicationUsageStats' => $this->getApplicationUsageStats(),
-        ];
+        try {
+            return [
+                'totalCreditsUsed' => $this->getTotalCreditsUsed(),
+                'creditsUsedThisMonth' => $this->getCreditsUsedThisMonth(),
+                'averageCreditsPerUser' => $this->getAverageCreditsPerUser(),
+                'topAIUsers' => $this->getTopAIUsers(),
+                'usageBySubscription' => $this->getUsageBySubscription(),
+                'dailyUsageTrend' => $this->getDailyUsageTrend(),
+                'usersNearLimit' => $this->getUsersNearLimit(),
+                'applicationUsageStats' => $this->getApplicationUsageStats(),
+            ];
+        } catch (\Throwable) {
+            return [
+                'totalCreditsUsed'      => ['total' => '0', 'thisMonth' => '0', 'lastMonth' => '0', 'growth' => 0],
+                'creditsUsedThisMonth'  => 0,
+                'averageCreditsPerUser' => ['average' => 0, 'activeUsers' => 0, 'totalCredits' => '0'],
+                'topAIUsers'            => [],
+                'usageBySubscription'   => [],
+                'dailyUsageTrend'       => [],
+                'usersNearLimit'        => [],
+                'applicationUsageStats' => [],
+            ];
+        }
     }
 
     protected function getTotalCreditsUsed(): array

@@ -23,16 +23,29 @@ class UserActivityTracking extends Page
 
     public function getViewData(): array
     {
-        return [
-            'userStats' => $this->getUserStats(),
-            'recentLogins' => $this->getRecentLogins(),
-            'activeUsersToday' => $this->getActiveUsersToday(),
-            'userGrowth' => $this->getUserGrowth(),
-            'usersByType' => $this->getUsersByType(),
-            'topActiveUsers' => $this->getTopActiveUsers(),
-            'inactiveUsers' => $this->getInactiveUsers(),
-            'newUsersThisWeek' => $this->getNewUsersThisWeek(),
-        ];
+        try {
+            return [
+                'userStats' => $this->getUserStats(),
+                'recentLogins' => $this->getRecentLogins(),
+                'activeUsersToday' => $this->getActiveUsersToday(),
+                'userGrowth' => $this->getUserGrowth(),
+                'usersByType' => $this->getUsersByType(),
+                'topActiveUsers' => $this->getTopActiveUsers(),
+                'inactiveUsers' => $this->getInactiveUsers(),
+                'newUsersThisWeek' => $this->getNewUsersThisWeek(),
+            ];
+        } catch (\Throwable) {
+            return [
+                'userStats'        => ['total' => 0, 'thisMonth' => 0, 'lastMonth' => 0, 'growth' => 0],
+                'recentLogins'     => [],
+                'activeUsersToday' => 0,
+                'userGrowth'       => [],
+                'usersByType'      => [],
+                'topActiveUsers'   => [],
+                'inactiveUsers'    => [],
+                'newUsersThisWeek' => 0,
+            ];
+        }
     }
 
     protected function getUserStats(): array

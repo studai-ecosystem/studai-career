@@ -25,16 +25,29 @@ class RevenueAnalytics extends Page
 
     public function getViewData(): array
     {
-        return [
-            'totalRevenue' => $this->getTotalRevenue(),
-            'monthlyRevenue' => $this->getMonthlyRevenue(),
-            'averageOrderValue' => $this->getAverageOrderValue(),
-            'subscriptionRevenue' => $this->getSubscriptionRevenue(),
-            'revenueByGateway' => $this->getRevenueByGateway(),
-            'revenueByPlan' => $this->getRevenueByPlan(),
-            'topPayingCustomers' => $this->getTopPayingCustomers(),
-            'monthlyComparison' => $this->getMonthlyComparison(),
-        ];
+        try {
+            return [
+                'totalRevenue' => $this->getTotalRevenue(),
+                'monthlyRevenue' => $this->getMonthlyRevenue(),
+                'averageOrderValue' => $this->getAverageOrderValue(),
+                'subscriptionRevenue' => $this->getSubscriptionRevenue(),
+                'revenueByGateway' => $this->getRevenueByGateway(),
+                'revenueByPlan' => $this->getRevenueByPlan(),
+                'topPayingCustomers' => $this->getTopPayingCustomers(),
+                'monthlyComparison' => $this->getMonthlyComparison(),
+            ];
+        } catch (\Throwable) {
+            return [
+                'totalRevenue'       => ['total' => '0.00', 'thisMonth' => '0.00', 'lastMonth' => '0.00', 'growth' => 0],
+                'monthlyRevenue'     => [],
+                'averageOrderValue'  => ['average' => '0.00', 'count' => 0, 'growth' => 0],
+                'subscriptionRevenue'=> ['mrr' => '0.00', 'arr' => '0.00', 'activeCount' => 0, 'growth' => 0],
+                'revenueByGateway'   => [],
+                'revenueByPlan'      => [],
+                'topPayingCustomers' => [],
+                'monthlyComparison'  => [],
+            ];
+        }
     }
 
     protected function getTotalRevenue(): array

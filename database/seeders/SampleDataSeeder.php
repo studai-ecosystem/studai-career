@@ -11,6 +11,7 @@ use App\Models\UserSubscription;
 use App\Models\SubscriptionPlan;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
@@ -24,9 +25,13 @@ class SampleDataSeeder extends Seeder
         $this->command->info('Seeding sample data...');
 
         // Create subscription plans first if they don't exist
-        $this->command->info('Creating subscription plans...');
-        $this->seedSubscriptionPlans();
-        $this->command->info('✓ Subscription plans created');
+        if (Schema::hasTable('subscription_plans')) {
+            $this->command->info('Creating subscription plans...');
+            $this->seedSubscriptionPlans();
+            $this->command->info('✓ Subscription plans created');
+        } else {
+            $this->command->warn('SKIP: subscription_plans table not found — run migrations first');
+        }
 
         // Create sample companies
         $this->command->info('Creating companies...');
