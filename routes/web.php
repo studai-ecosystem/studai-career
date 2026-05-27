@@ -196,7 +196,8 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
     $keyTables = [
         'subscription_plans', 'user_subscriptions', 'notifications',
         'applications', 'job_listings', 'companies', 'users', 'migrations',
-        'resume_templates', 'permissions',
+        'resume_templates', 'permissions', 'profiles', 'saved_jobs',
+        'ai_credit_logs', 'company_intelligence_profiles', 'company_blacklists',
     ];
     $tableCheck = [];
     foreach ($keyTables as $tbl) {
