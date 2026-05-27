@@ -176,7 +176,7 @@ class ResumeTemplateSeeder extends Seeder
         ];
 
         foreach ($templates as $template) {
-            ResumeTemplate::create($template);
+            ResumeTemplate::updateOrCreate(['slug' => $template['slug']], $template);
         }
 
         $this->command->info('Resume templates seeded successfully!');

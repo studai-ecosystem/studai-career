@@ -87,6 +87,10 @@ if [ "$APP_ENV" = "production" ]; then
 
   echo "Seeding default test accounts..."
   timeout 60 php /home/site/wwwroot/reset-password.php || echo "WARNING: account seeder failed (non-critical)"
+
+  echo "Seeding subscription plans and resume templates..."
+  timeout 30 php artisan db:seed --class=SubscriptionPlanSeeder --force 2>/dev/null || echo "WARNING: SubscriptionPlanSeeder failed (non-critical)"
+  timeout 30 php artisan db:seed --class=ResumeTemplateSeeder --force 2>/dev/null || echo "WARNING: ResumeTemplateSeeder failed (non-critical)"
 else
   echo "Development mode - clearing caches..."
   php artisan optimize:clear 2>/dev/null || true
