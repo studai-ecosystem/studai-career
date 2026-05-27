@@ -34,21 +34,20 @@ class CompanyResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        try { return (string) static::getModel()::count(); } catch (\Throwable) { return null; }
     }
 
     public static function getNavigationBadgeColor(): string
     {
-        $verifiedCount = static::getModel()::where('is_verified', true)->count();
-        $totalCount = static::getModel()::count();
-        
-        if ($totalCount === 0) return 'gray';
-        
-        $verificationRate = ($verifiedCount / $totalCount) * 100;
-        
-        if ($verificationRate >= 80) return 'success';
-        if ($verificationRate >= 50) return 'warning';
-        return 'danger';
+        try {
+            $verifiedCount = static::getModel()::where('is_verified', true)->count();
+            $totalCount = static::getModel()::count();
+            if ($totalCount === 0) return 'gray';
+            $verificationRate = ($verifiedCount / $totalCount) * 100;
+            if ($verificationRate >= 80) return 'success';
+            if ($verificationRate >= 50) return 'warning';
+            return 'danger';
+        } catch (\Throwable) { return 'gray'; }
     }
 
     public static function form(Schema $schema): Schema

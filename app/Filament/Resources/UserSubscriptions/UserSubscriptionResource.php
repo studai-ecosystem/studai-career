@@ -32,14 +32,16 @@ class UserSubscriptionResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $activeCount = static::getModel()::where('status', 'active')->count();
-        $trialCount = static::getModel()::where('status', 'trialing')->count();
-        
-        return $trialCount > 0 ? "{$activeCount} active / {$trialCount} trial" : (string) $activeCount;
+        try {
+            $activeCount = static::getModel()::where('status', 'active')->count();
+            $trialCount  = static::getModel()::where('status', 'trialing')->count();
+            return $trialCount > 0 ? "{$activeCount} active / {$trialCount} trial" : (string) $activeCount;
+        } catch (\Throwable) { return null; }
     }
 
     public static function getNavigationBadgeColor(): string|array|null
     {
+        try {
         $expiringCount = static::getModel()::where('status', 'active')
             ->where('ends_at', '<=', now()->addDays(7))
             ->count();
@@ -47,12 +49,13 @@ class UserSubscriptionResource extends Resource
         if ($expiringCount > 10) {
             return 'danger'; // Many subscriptions expiring soon
         }
-        
+
         if ($expiringCount > 5) {
             return 'warning'; // Some subscriptions expiring
         }
-        
+
         return 'success'; // Healthy subscription base
+        } catch (\Throwable) { return 'gray'; }
     }
 
     public static function getGloballySearchableAttributes(): array
