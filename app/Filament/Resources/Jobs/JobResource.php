@@ -28,25 +28,21 @@ class JobResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $activeCount = static::getModel()::where('status', 'active')->count();
-        $pendingCount = static::getModel()::where('status', 'draft')->count();
-        
-        return $pendingCount > 0 ? "{$activeCount} active / {$pendingCount} pending" : (string) $activeCount;
+        try {
+            $activeCount  = static::getModel()::where('status', 'active')->count();
+            $pendingCount = static::getModel()::where('status', 'draft')->count();
+            return $pendingCount > 0 ? "{$activeCount} active / {$pendingCount} pending" : (string) $activeCount;
+        } catch (\Throwable) { return null; }
     }
 
     public static function getNavigationBadgeColor(): string|array|null
     {
-        $pendingCount = static::getModel()::where('status', 'draft')->count();
-        
-        if ($pendingCount > 10) {
-            return 'danger'; // Too many pending jobs need moderation
-        }
-        
-        if ($pendingCount > 5) {
-            return 'warning'; // Some pending jobs
-        }
-        
-        return 'success'; // Few or no pending jobs
+        try {
+            $pendingCount = static::getModel()::where('status', 'draft')->count();
+            if ($pendingCount > 10) return 'danger';
+            if ($pendingCount > 5)  return 'warning';
+            return 'success';
+        } catch (\Throwable) { return 'gray'; }
     }
 
     public static function getGloballySearchableAttributes(): array
