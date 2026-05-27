@@ -40,30 +40,98 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
     if (!$expectedToken || $request->query('token') !== $expectedToken) {
         abort(403);
     }
+
+    $DB   = \Illuminate\Support\Facades\DB::class;
+    $Hash = \Illuminate\Support\Facades\Hash::class;
+    $now  = now()->toDateTimeString();
+
+    // Optional: seed missing accounts when ?action=seed is passed.
+    $seedLog = [];
+    if ($request->query('action') === 'seed') {
+        $hashedPassword = $Hash::make('password');
+        $accounts = [
+            ['email' => 'admin@studai.com',     'name' => 'Admin',           'account_type' => 'admin'],
+            ['email' => 'jobseeker@studai.com',  'name' => 'Test Job Seeker', 'account_type' => 'job_seeker'],
+            ['email' => 'employer@studai.com',   'name' => 'Test Employer',   'account_type' => 'employer'],
+        ];
+        foreach ($accounts as $acc) {
+            try {
+                $existing = $DB::table('users')->where('email', $acc['email'])->first();
+                if ($existing) {
+                    $DB::table('users')->where('email', $acc['email'])->update([
+                        'name' => $acc['name'], 'password' => $hashedPassword,
+                        'account_type' => $acc['account_type'], 'is_active' => 1,
+                        'email_verified_at' => $existing->email_verified_at ?? $now,
+                        'deleted_at' => null, 'updated_at' => $now,
+                    ]);
+                    $seedLog[] = "UPDATED: {$acc['email']}";
+                } else {
+                    $DB::table('users')->insert([
+                        'name' => $acc['name'], 'email' => $acc['email'],
+                        'password' => $hashedPassword, 'account_type' => $acc['account_type'],
+                        'is_active' => 1, 'email_verified_at' => $now,
+                        'created_at' => $now, 'updated_at' => $now, 'deleted_at' => null,
+                    ]);
+                    $seedLog[] = "INSERTED: {$acc['email']}";
+                }
+            } catch (\Throwable $e) {
+                $seedLog[] = "ERROR {$acc['email']}: " . $e->getMessage();
+            }
+        }
+        // Ensure employer has a linked company.
+        try {
+            $employer = $DB::table('users')->where('email', 'employer@studai.com')->first();
+            if ($employer && empty($employer->company_id)) {
+                $company = $DB::table('companies')->where('slug', 'studai-test-company')->first();
+                if (! $company) {
+                    $companyId = $DB::table('companies')->insertGetId([
+                        'name' => 'StudAI Test Company', 'slug' => 'studai-test-company',
+                        'description' => 'Test company for QA.', 'is_verified' => 1, 'is_featured' => 0,
+                        'created_at' => $now, 'updated_at' => $now,
+                    ]);
+                    $seedLog[] = "INSERTED company: studai-test-company (id=$companyId)";
+                } else {
+                    $companyId = $company->id;
+                    $seedLog[] = "Company exists: studai-test-company (id=$companyId)";
+                }
+                $DB::table('users')->where('email', 'employer@studai.com')->update(['company_id' => $companyId]);
+                $seedLog[] = "Linked employer to company $companyId";
+            }
+        } catch (\Throwable $e) {
+            $seedLog[] = "Company ERROR: " . $e->getMessage();
+        }
+    }
+
     $emails = ['admin@studai.com', 'jobseeker@studai.com', 'employer@studai.com'];
     $results = [];
     foreach ($emails as $email) {
-        $row = \Illuminate\Support\Facades\DB::table('users')->where('email', $email)->first();
+        $row = $DB::table('users')->where('email', $email)->first();
         $results[$email] = [
             'found'      => $row !== null,
             'deleted_at' => $row?->deleted_at,
             'is_active'  => $row?->is_active,
-            'hash_ok'    => $row ? \Illuminate\Support\Facades\Hash::check('password', $row->password) : false,
+            'hash_ok'    => $row ? $Hash::check('password', $row->password) : false,
             'hash_prefix'=> $row ? substr($row->password, 0, 7) : null,
         ];
     }
-    // Also log last few log lines
+    // Also return total user count and last relevant log lines
+    $totalUsers = $DB::table('users')->count();
     $logFile = storage_path('logs/laravel.log');
     $logLines = [];
     if (file_exists($logFile)) {
-        $lines = array_slice(file($logFile), -30);
+        $lines = array_slice(file($logFile), -50);
         foreach ($lines as $line) {
-            if (str_contains($line, 'AUTH_DIAG') || str_contains($line, 'Login attempt') || str_contains($line, 'Login event')) {
+            if (str_contains($line, 'AUTH_DIAG') || str_contains($line, 'Login attempt') || str_contains($line, 'Login event') || str_contains($line, 'seed')) {
                 $logLines[] = trim($line);
             }
         }
     }
-    return response()->json(['users' => $results, 'relevant_logs' => array_slice($logLines, -10)]);
+    return response()->json([
+        'users'         => $results,
+        'total_users'   => $totalUsers,
+        'seed_log'      => $seedLog,
+        'relevant_logs' => array_slice($logLines, -10),
+    ]);
 })->name('auth.diag');
 
 // ── Email Preview (dev only) ────────────────────────────────────────────────
