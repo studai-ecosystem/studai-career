@@ -91,6 +91,7 @@ if [ "$APP_ENV" = "production" ]; then
   echo "Seeding subscription plans and resume templates..."
   timeout 30 php artisan db:seed --class=SubscriptionPlanSeeder --force 2>/dev/null || echo "WARNING: SubscriptionPlanSeeder failed (non-critical)"
   timeout 30 php artisan db:seed --class=ResumeTemplateSeeder --force 2>/dev/null || echo "WARNING: ResumeTemplateSeeder failed (non-critical)"
+  timeout 120 php artisan db:seed --class=SampleDataSeeder --force 2>/dev/null || echo "WARNING: SampleDataSeeder failed (non-critical)"
 else
   echo "Development mode - clearing caches..."
   php artisan optimize:clear 2>/dev/null || true
