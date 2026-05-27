@@ -34,12 +34,12 @@ class InterviewExperienceResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) static::getModel()::where('status', 'pending')->count();
+        try { return (string) static::getModel()::where('status', 'pending')->count(); } catch (\Throwable) { return null; }
     }
 
     public static function getNavigationBadgeColor(): string
     {
-        return static::getModel()::where('status', 'pending')->count() > 0 ? 'warning' : 'success';
+        try { return static::getModel()::where('status', 'pending')->count() > 0 ? 'warning' : 'success'; } catch (\Throwable) { return 'gray'; }
     }
 
     public static function form(Schema $schema): Schema

@@ -38,13 +38,12 @@ class BackgroundCheckResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) static::getModel()::whereIn('status', ['pending', 'awaiting_consent', 'in_progress'])->count();
+        try { return (string) static::getModel()::whereIn('status', ['pending', 'awaiting_consent', 'in_progress'])->count(); } catch (\Throwable) { return null; }
     }
 
     public static function getNavigationBadgeColor(): string
     {
-        $pending = static::getModel()::whereIn('status', ['pending', 'awaiting_consent', 'in_progress'])->count();
-        return $pending > 0 ? 'warning' : 'success';
+        try { $pending = static::getModel()::whereIn('status', ['pending', 'awaiting_consent', 'in_progress'])->count(); return $pending > 0 ? 'warning' : 'success'; } catch (\Throwable) { return 'gray'; }
     }
 
     public static function form(Schema $schema): Schema

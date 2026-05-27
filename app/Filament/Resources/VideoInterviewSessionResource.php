@@ -33,7 +33,7 @@ class VideoInterviewSessionResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) static::getModel()::where('status', 'in_progress')->count();
+        try { return (string) static::getModel()::where('status', 'in_progress')->count(); } catch (\Throwable) { return null; }
     }
 
     public static function form(Schema $schema): Schema

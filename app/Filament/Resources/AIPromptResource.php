@@ -34,13 +34,12 @@ class AIPromptResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) static::getModel()::where('is_active', true)->count();
+        try { return (string) static::getModel()::where('is_active', true)->count(); } catch (\Throwable) { return null; }
     }
 
     public static function getNavigationBadgeColor(): string
     {
-        $count = static::getModel()::where('is_active', true)->count();
-        return $count > 0 ? 'success' : 'gray';
+        try { $count = static::getModel()::where('is_active', true)->count(); return $count > 0 ? 'success' : 'gray'; } catch (\Throwable) { return 'gray'; }
     }
 
     public static function form(Schema $schema): Schema
