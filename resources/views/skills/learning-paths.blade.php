@@ -12,7 +12,7 @@
                     <h1 class="text-4xl font-bold text-gray-900 mb-2">Learning Paths</h1>
                     <p class="text-lg text-gray-600">Personalized journeys to master your skill gaps</p>
                 </div>
-                <a href="{{ route('skills.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
+                <a href="{{ route('skills.analyzer') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
@@ -144,7 +144,7 @@
                 </svg>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">No Active Learning Paths</h3>
                 <p class="text-gray-500 mb-4">Generate personalized learning paths from your skill gaps</p>
-                <a href="{{ route('skills.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700">
+                <a href="{{ route('skills.analyzer') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700">
                     View Skill Gaps
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>

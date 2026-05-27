@@ -16,7 +16,7 @@
                     <h1 class="text-4xl font-bold text-gray-900 mb-2">Skill Assessments</h1>
                     <p class="text-lg text-gray-600">Test your skills with AI-generated assessments</p>
                 </div>
-                <a href="{{ route('skills.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                <a href="{{ route('skills.analyzer') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
@@ -79,7 +79,7 @@
         {{-- Active Assessments (In Progress) --}}
         @if($activeAssessments->count() > 0)
         <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">�¥ In Progress</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">�¥ In Progress</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($activeAssessments as $assessment)
                 <div class="bg-gradient-to-br from-orange-500 to-red-600 rounded-xl shadow-lg overflow-hidden text-white">
@@ -117,7 +117,7 @@
         {{-- Available Skills to Assess --}}
         <div class="mb-8">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-2xl font-bold text-gray-900">� Create New Assessment</h2>
+                <h2 class="text-2xl font-bold text-gray-900">� Create New Assessment</h2>
                 <div class="flex items-center space-x-2">
                     <label for="difficultyFilter" class="text-sm font-medium text-gray-700">Difficulty:</label>
                     <select id="difficultyFilter" onchange="filterSkills()" class="rounded-lg border-gray-300 text-sm">
@@ -160,7 +160,7 @@
         {{-- Graded Assessments --}}
         @if($gradedAssessments->count() > 0)
         <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">�Š Test Results</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">�Š Test Results</h2>
             
             {{-- Grade Distribution Chart --}}
             <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
@@ -242,7 +242,7 @@
                                     <div class="flex items-center space-x-2">
                                         @if($assessment->certificate_hash)
                                         <a href="{{ route('skills.certificate.public', $assessment->certificate_hash) }}" target="_blank" class="text-yellow-600 hover:text-yellow-700 font-medium">
-                                            �œ Certificate
+                                            �œ Certificate
                                         </a>
                                         @endif
                                         <button onclick="showResults({{ $assessment->id }})" class="text-blue-600 hover:text-blue-700 font-medium">

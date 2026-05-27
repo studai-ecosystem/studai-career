@@ -336,7 +336,7 @@
                         </li>
                     @endforeach
                 </ul>
-                <a href="{{ route('skills.dashboard') }}" class="text-google-blue-600 font-semibold text-sm hover:underline inline-flex items-center gap-1">
+                <a href="{{ route('skills.analyzer') }}" class="text-google-blue-600 font-semibold text-sm hover:underline inline-flex items-center gap-1">
                     Analyze your skills
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />

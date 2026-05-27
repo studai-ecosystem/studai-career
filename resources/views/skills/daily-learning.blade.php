@@ -13,10 +13,10 @@
         <div class="mb-8">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-4xl font-bold text-gray-900 mb-2">�š Today's Learning</h1>
+                    <h1 class="text-4xl font-bold text-gray-900 mb-2">�š Today's Learning</h1>
                     <p class="text-lg text-gray-600">{{ now()->format('l, F j, Y') }}</p>
                 </div>
-                <a href="{{ route('skills.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                <a href="{{ route('skills.analyzer') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
@@ -30,7 +30,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <div class="flex items-center mb-2">
-                        <span class="text-6xl mr-4">�¥</span>
+                        <span class="text-6xl mr-4">�¥</span>
                         <div>
                             <h2 class="text-4xl font-bold">{{ $learningStreak ?? 0 }} Day Streak</h2>
                             <p class="text-orange-100 text-lg">Keep the momentum going!</p>
@@ -44,7 +44,7 @@
                         @endif
                         @if(($learningStreak ?? 0) >= 90)
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white bg-opacity-20">
-                            �Ž 90 Day Master
+                            �Ž 90 Day Master
                         </span>
                         @endif
                         @if(($learningStreak ?? 0) >= 30)
@@ -216,7 +216,7 @@
                 </svg>
                 <p class="text-lg font-medium text-gray-900 mb-2">No Recommendations Today</p>
                 <p class="text-gray-500 mb-4">Start a learning path to get personalized recommendations</p>
-                <a href="{{ route('skills.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700">
+                <a href="{{ route('skills.analyzer') }}" class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700">
                     View Skill Gaps
                 </a>
             </div>
@@ -226,7 +226,7 @@
         {{-- Recent Activity Feed --}}
         @if(isset($recentActivity) && count($recentActivity) > 0)
         <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">�ˆ Recent Activity</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">�ˆ Recent Activity</h2>
             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                 <div class="divide-y divide-gray-200">
                     @foreach($recentActivity as $activity)

@@ -180,7 +180,7 @@
 
             @if($gaps->count() > 10)
             <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                <a href="{{ route('skills.dashboard') }}#skill-gaps" class="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
+                <a href="{{ route('skills.analyzer') }}#skill-gaps" class="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
                     View All {{ $gaps->count() }} Skill Gaps â†’
                 </a>
             </div>
