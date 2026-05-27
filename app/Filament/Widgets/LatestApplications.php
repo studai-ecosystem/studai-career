@@ -7,6 +7,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Schema;
 
 class LatestApplications extends TableWidget
 {
@@ -14,16 +15,20 @@ class LatestApplications extends TableWidget
 
     protected int | string | array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        try {
+            return Schema::hasTable('applications');
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
     public function table(Table $table): Table
     {
         return $table
             ->query(
-                fn (): Builder => 
-                    class_exists(Application::class) 
-                        ? Application::query()->latest()->limit(10)
-                        : (new class extends \Illuminate\Database\Eloquent\Model {
-                            protected $table = 'applications';
-                        })->query()->latest()->limit(10)
+                fn (): Builder => Application::query()->latest()->limit(10)
             )
             ->heading('Latest Job Applications')
             ->columns([

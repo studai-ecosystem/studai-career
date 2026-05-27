@@ -15,24 +15,31 @@ class StatsOverview extends StatsOverviewWidget
 
     protected function getStats(): array
     {
-        // Calculate statistics
-        $totalUsers = User::count();
-        $usersThisMonth = User::whereMonth('created_at', now()->month)->count();
-        $usersLastMonth = User::whereMonth('created_at', now()->subMonth()->month)->count();
+        try {
+            $totalUsers = User::count();
+            $usersThisMonth = User::whereMonth('created_at', now()->month)->count();
+            $usersLastMonth = User::whereMonth('created_at', now()->subMonth()->month)->count();
+        } catch (\Throwable) { $totalUsers = $usersThisMonth = $usersLastMonth = 0; }
         $usersGrowth = $usersLastMonth > 0 ? (($usersThisMonth - $usersLastMonth) / $usersLastMonth * 100) : 100;
 
-        $activeJobs = Job::where('status', 'active')->count();
-        $jobsThisMonth = Job::whereMonth('created_at', now()->month)->count();
-        $jobsLastMonth = Job::whereMonth('created_at', now()->subMonth()->month)->count();
+        try {
+            $activeJobs = Job::where('status', 'active')->count();
+            $jobsThisMonth = Job::whereMonth('created_at', now()->month)->count();
+            $jobsLastMonth = Job::whereMonth('created_at', now()->subMonth()->month)->count();
+        } catch (\Throwable) { $activeJobs = $jobsThisMonth = $jobsLastMonth = 0; }
         $jobsGrowth = $jobsLastMonth > 0 ? (($jobsThisMonth - $jobsLastMonth) / $jobsLastMonth * 100) : 100;
 
-        $verifiedCompanies = Company::where('is_verified', true)->count();
-        $totalCompanies = Company::count();
-        $companiesThisMonth = Company::whereMonth('created_at', now()->month)->count();
+        try {
+            $verifiedCompanies = Company::where('is_verified', true)->count();
+            $totalCompanies = Company::count();
+            $companiesThisMonth = Company::whereMonth('created_at', now()->month)->count();
+        } catch (\Throwable) { $verifiedCompanies = $totalCompanies = $companiesThisMonth = 0; }
 
-        $activeSubscriptions = UserSubscription::where('status', 'active')->count();
-        $subscriptionsThisMonth = UserSubscription::whereMonth('created_at', now()->month)->count();
-        $subscriptionsLastMonth = UserSubscription::whereMonth('created_at', now()->subMonth()->month)->count();
+        try {
+            $activeSubscriptions = UserSubscription::where('status', 'active')->count();
+            $subscriptionsThisMonth = UserSubscription::whereMonth('created_at', now()->month)->count();
+            $subscriptionsLastMonth = UserSubscription::whereMonth('created_at', now()->subMonth()->month)->count();
+        } catch (\Throwable) { $activeSubscriptions = $subscriptionsThisMonth = $subscriptionsLastMonth = 0; }
         $subscriptionsGrowth = $subscriptionsLastMonth > 0 ? (($subscriptionsThisMonth - $subscriptionsLastMonth) / $subscriptionsLastMonth * 100) : 100;
 
         return [
