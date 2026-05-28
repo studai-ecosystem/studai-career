@@ -202,8 +202,8 @@ class NegotiationScenarioService
                 'Threat to withdraw offer',
             ],
             
-            'recommendation' => count($strategy->strongest_points) >= 5 ? 'viable' : 'risky',
-            'recommendation_rationale' => count($strategy->strongest_points) >= 5 
+            'recommendation' => count($strategy->strongest_points ?? []) >= 5 ? 'viable' : 'risky',
+            'recommendation_rationale' => count($strategy->strongest_points ?? []) >= 5 
                 ? 'Viable for exceptionally strong candidates with proven leverage. High risk but potential for maximum compensation.'
                 : 'Not recommended without exceptional leverage. Risk outweighs potential benefit.',
             'confidence_score' => 40,
