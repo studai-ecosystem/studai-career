@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use OpenAI\Laravel\Facades\OpenAI;
+
 
 class ApplicationQualityScorerService
 {
@@ -55,18 +55,13 @@ class ApplicationQualityScorerService
         $structured = null;
 
         try {
-            $response = OpenAI::chat()->create([
-                'model' => self::MODEL,
-                'messages' => [
-                    ['role' => 'system', 'content' => 'You are an autonomous job application coach who evaluates submission readiness with evidence-backed reasoning.'],
-                    ['role' => 'user', 'content' => $prompt],
-                ],
-                'temperature' => 0.3,
-                'max_completion_tokens' => 2000,
-            ]);
+            $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                ['role' => 'system', 'content' => 'You are an autonomous job application coach who evaluates submission readiness with evidence-backed reasoning.'],
+                ['role' => 'user', 'content' => $prompt],
+            ], ['temperature' => 0.3, 'max_tokens' => 2000, 'skip_cache' => true]);
 
-            $usage = $response->usage ?? null;
-            $structured = $this->parseResponse($response->choices[0]->message->content);
+            $usage = null;
+            $structured = $this->parseResponse($rawContent);
         } catch (\Throwable $exception) {
             Log::error('Application quality scoring failed', [
                 'user_id' => $user->id,

@@ -7,7 +7,6 @@ use App\Models\Job;
 use App\Models\BehavioralAssessment;
 use App\Models\SituationalScenario;
 use App\Models\ScenarioResponse;
-use OpenAI\Laravel\Facades\OpenAI;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -182,11 +181,8 @@ class BehavioralIntelligenceService
                 $culturalData = $this->buildCulturalContext($job);
 
                 // Use AI to analyze and extract cultural values
-                $response = OpenAI::chat()->create([
-                    'model' => config('ai.azure.models.chat'),
-                    'temperature' => 0.4,
-                    'max_completion_tokens' => 2000,
-                    'messages' => [
+                $analysis = json_decode(
+                    app(\App\Services\AI\AIService::class)->callWithMessages([
                         [
                             'role' => 'system',
                             'content' => 'You are an expert organizational psychologist and culture analyst. Analyze company information and extract core cultural values, work environment characteristics, leadership style preferences, and behavioral expectations.'
@@ -206,10 +202,9 @@ class BehavioralIntelligenceService
                                         "8. Work-life balance philosophy\n\n" .
                                         "Return as structured JSON."
                         ]
-                    ]
-                ]);
-
-                $analysis = json_decode($response->choices[0]->message->content, true);
+                    ], ['temperature' => 0.4, 'max_tokens' => 2000, 'skip_cache' => true]),
+                    true
+                );
 
                 return [
                     'summary' => $analysis['summary'] ?? '',
@@ -290,11 +285,8 @@ class BehavioralIntelligenceService
             $focusAreas = $options['focus_areas'] ?? ['cultural_fit', 'emotional_intelligence', 'leadership'];
             $scenarioCategories = $this->determineScenarioCategories($focusAreas, $count);
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat'),
-                'temperature' => 0.8, // Higher for variety
-                'max_completion_tokens' => 4000,
-                'messages' => [
+            $scenarios = json_decode(
+                app(\App\Services\AI\AIService::class)->callWithMessages([
                     [
                         'role' => 'system',
                         'content' => 'You are an expert in behavioral assessment and situational judgment tests. Create realistic workplace scenarios that evaluate cultural fit, emotional intelligence, and leadership potential. Each scenario should have multiple valid approaches with different cultural alignments.'
@@ -326,10 +318,9 @@ class BehavioralIntelligenceService
                                     "Ensure multiple approaches are genuinely valid but differ in cultural fit.\n\n" .
                                     "Return as JSON array."
                     ]
-                ]
-            ]);
-
-            $scenarios = json_decode($response->choices[0]->message->content, true);
+                ], ['temperature' => 0.8, 'max_tokens' => 4000, 'skip_cache' => true]),
+                true
+            );
 
             if (!is_array($scenarios)) {
                 throw new \Exception("Invalid scenarios format from AI");
@@ -530,11 +521,8 @@ class BehavioralIntelligenceService
             $validApproaches = $scenario->valid_approaches;
             $selectedApproachData = $validApproaches[$selectedApproach] ?? null;
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat'),
-                'temperature' => 0.3,
-                'max_completion_tokens' => 1500,
-                'messages' => [
+            $evaluation = json_decode(
+                app(\App\Services\AI\AIService::class)->callWithMessages([
                     [
                         'role' => 'system',
                         'content' => 'You are an expert in behavioral assessment and organizational psychology. Evaluate situational judgment responses for cultural fit, emotional intelligence, leadership potential, and communication effectiveness.'
@@ -564,10 +552,9 @@ class BehavioralIntelligenceService
                                     "10. Feedback: Comprehensive evaluation message\n\n" .
                                     "Return as JSON."
                     ]
-                ]
-            ]);
-
-            $evaluation = json_decode($response->choices[0]->message->content, true);
+                ], ['temperature' => 0.3, 'max_tokens' => 1500, 'skip_cache' => true]),
+                true
+            );
 
             return [
                 'cultural_alignment_score' => $evaluation['cultural_alignment_score'] ?? 50,
@@ -1285,11 +1272,8 @@ class BehavioralIntelligenceService
         try {
             $companyCulture = $assessment->company_culture_context;
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat'),
-                'temperature' => 0.5,
-                'max_completion_tokens' => 2000,
-                'messages' => [
+            $insights = json_decode(
+                app(\App\Services\AI\AIService::class)->callWithMessages([
                     [
                         'role' => 'system',
                         'content' => 'You are an expert organizational psychologist and talent assessment specialist. Provide comprehensive, nuanced insights about candidate fit and potential based on behavioral assessment data.'
@@ -1315,10 +1299,9 @@ class BehavioralIntelligenceService
                                     "8. 90-Day Outlook: Predicted performance trajectory\n\n" .
                                     "Return as JSON."
                     ]
-                ]
-            ]);
-
-            $insights = json_decode($response->choices[0]->message->content, true);
+                ], ['temperature' => 0.5, 'max_tokens' => 2000, 'skip_cache' => true]),
+                true
+            );
 
             return [
                 'executive_summary' => $insights['executive_summary'] ?? 'Assessment completed successfully.',

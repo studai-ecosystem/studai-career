@@ -8,7 +8,7 @@ use App\Models\InterviewLiveFeedback;
 use App\Models\AIInterviewCalculation;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
+
 
 class AnswerEvaluationService
 {
@@ -146,17 +146,12 @@ Return ONLY a JSON object:
 }
 EOT;
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat_mini'),
-                'messages' => [
-                    ['role' => 'system', 'content' => 'You are an expert interview evaluator focused on content quality.'],
-                    ['role' => 'user', 'content' => $prompt],
-                ],
-                'temperature' => 0.3,
-                'max_completion_tokens' => 500,
-            ]);
+            $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                ['role' => 'system', 'content' => 'You are an expert interview evaluator focused on content quality.'],
+                ['role' => 'user', 'content' => $prompt],
+            ], ['temperature' => 0.3, 'max_tokens' => 500, 'skip_cache' => true]);
 
-            $result = json_decode($response->choices[0]->message->content, true);
+            $result = json_decode($rawContent, true);
             return $result ?? $this->getDefaultContentEvaluation();
 
         } catch (\Exception $e) {
@@ -208,17 +203,12 @@ Return ONLY a JSON object:
 }
 EOT;
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat_mini'),
-                'messages' => [
-                    ['role' => 'system', 'content' => 'You are an expert at analyzing STAR methodology in interview answers.'],
-                    ['role' => 'user', 'content' => $prompt],
-                ],
-                'temperature' => 0.2,
-                'max_completion_tokens' => 600,
-            ]);
+            $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                ['role' => 'system', 'content' => 'You are an expert at analyzing STAR methodology in interview answers.'],
+                ['role' => 'user', 'content' => $prompt],
+            ], ['temperature' => 0.2, 'max_tokens' => 600, 'skip_cache' => true]);
 
-            $analysis = json_decode($response->choices[0]->message->content, true);
+            $analysis = json_decode($rawContent, true);
 
             return [
                 'analysis' => $analysis ?? $this->getDefaultSTARAnalysis(),
@@ -263,17 +253,12 @@ Return ONLY a JSON object:
 }
 EOT;
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat_mini'),
-                'messages' => [
-                    ['role' => 'system', 'content' => 'You are an expert in evaluating communication clarity.'],
-                    ['role' => 'user', 'content' => $prompt],
-                ],
-                'temperature' => 0.3,
-                'max_completion_tokens' => 400,
-            ]);
+            $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                ['role' => 'system', 'content' => 'You are an expert in evaluating communication clarity.'],
+                ['role' => 'user', 'content' => $prompt],
+            ], ['temperature' => 0.3, 'max_tokens' => 400, 'skip_cache' => true]);
 
-            $result = json_decode($response->choices[0]->message->content, true);
+            $result = json_decode($rawContent, true);
             return $result ?? ['score' => 70];
 
         } catch (\Exception $e) {
@@ -332,17 +317,12 @@ Return ONLY a JSON object:
 }
 EOT;
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat_mini'),
-                'messages' => [
-                    ['role' => 'system', 'content' => 'You are an expert at detecting confidence levels in communication.'],
-                    ['role' => 'user', 'content' => $prompt],
-                ],
-                'temperature' => 0.3,
-                'max_completion_tokens' => 300,
-            ]);
+            $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                ['role' => 'system', 'content' => 'You are an expert at detecting confidence levels in communication.'],
+                ['role' => 'user', 'content' => $prompt],
+            ], ['temperature' => 0.3, 'max_tokens' => 300, 'skip_cache' => true]);
 
-            $aiResult = json_decode($response->choices[0]->message->content, true);
+            $aiResult = json_decode($rawContent, true);
 
             // Blend rule-based and AI scores
             $finalScore = $aiResult['score'] ?? $score;
@@ -441,17 +421,12 @@ Return ONLY a JSON object:
 }
 EOT;
 
-            $response = OpenAI::chat()->create([
-                'model' => $this->model,
-                'messages' => [
-                    ['role' => 'system', 'content' => 'You are a supportive interview coach providing constructive feedback.'],
-                    ['role' => 'user', 'content' => $prompt],
-                ],
-                'temperature' => 0.7,
-                'max_completion_tokens' => 800,
-            ]);
+            $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                ['role' => 'system', 'content' => 'You are a supportive interview coach providing constructive feedback.'],
+                ['role' => 'user', 'content' => $prompt],
+            ], ['temperature' => 0.7, 'max_tokens' => 800, 'skip_cache' => true]);
 
-            $feedback = json_decode($response->choices[0]->message->content, true);
+            $feedback = json_decode($rawContent, true);
             return $feedback ?? $this->getDefaultFeedback();
 
         } catch (\Exception $e) {

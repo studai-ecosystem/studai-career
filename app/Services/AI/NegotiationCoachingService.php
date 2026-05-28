@@ -10,7 +10,7 @@ use App\Models\NegotiationSession;
 use App\Models\NegotiationStrategy;
 use App\Services\VantageEvaluatorService;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
+
 
 class NegotiationCoachingService
 {
@@ -193,23 +193,16 @@ class NegotiationCoachingService
             
             $prompt = $this->buildCoachingPrompt($session, $employerMessage, $tone, $keyPhrases);
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat'),
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => 'You are an expert negotiation coach providing real-time tactical guidance. Be specific, actionable, and strategic.'
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => $prompt
-                    ],
+            $coaching = app(\App\Services\AI\AIService::class)->callWithMessages([
+                [
+                    'role' => 'system',
+                    'content' => 'You are an expert negotiation coach providing real-time tactical guidance. Be specific, actionable, and strategic.'
                 ],
-                'max_completion_tokens' => 500,
-                'temperature' => 0.7,
-            ]);
-
-            $coaching = $response->choices[0]->message->content;
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ],
+            ], ['max_tokens' => 500, 'temperature' => 0.7, 'skip_cache' => true]);
 
             // Parse coaching into structured format
             return [

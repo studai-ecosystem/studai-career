@@ -8,7 +8,6 @@ use App\Models\Application;
 use App\Models\SuccessIndicator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
 
 class HiringPatternAnalyzerService
 {
@@ -120,17 +119,12 @@ Return JSON ranking sources by effectiveness (0-100 score):
 }
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are a recruitment analytics expert specializing in hiring source optimization.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.3,
-            'max_completion_tokens' => 1200,
-        ]);
+        $content = app(\App\Services\AI\AIService::class)->callWithMessages([
+            ['role' => 'system', 'content' => 'You are a recruitment analytics expert specializing in hiring source optimization.'],
+            ['role' => 'user', 'content' => $prompt],
+        ], ['temperature' => 0.3, 'max_tokens' => 1200, 'skip_cache' => true]);
 
-        return json_decode($response->choices[0]->message->content, true) ?? [];
+        return json_decode($content, true) ?? [];
     }
 
     private function identifySuccessPatterns(array $hiringData): array
@@ -172,17 +166,12 @@ Return JSON with success characteristics and top traits:
 }
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are a talent assessment expert specializing in success pattern recognition.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.3,
-            'max_completion_tokens' => 1000,
-        ]);
+        $content = app(\App\Services\AI\AIService::class)->callWithMessages([
+            ['role' => 'system', 'content' => 'You are a talent assessment expert specializing in success pattern recognition.'],
+            ['role' => 'user', 'content' => $prompt],
+        ], ['temperature' => 0.3, 'max_tokens' => 1000, 'skip_cache' => true]);
 
-        return json_decode($response->choices[0]->message->content, true) ?? ['characteristics' => [], 'top_traits' => []];
+        return json_decode($content, true) ?? ['characteristics' => [], 'top_traits' => []];
     }
 
     private function identifyFailurePatterns(array $hiringData): array
@@ -229,17 +218,12 @@ Return JSON with failure patterns and departure indicators:
 }
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are an HR analytics expert specializing in turnover and performance issues.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.3,
-            'max_completion_tokens' => 1000,
-        ]);
+        $content = app(\App\Services\AI\AIService::class)->callWithMessages([
+            ['role' => 'system', 'content' => 'You are an HR analytics expert specializing in turnover and performance issues.'],
+            ['role' => 'user', 'content' => $prompt],
+        ], ['temperature' => 0.3, 'max_tokens' => 1000, 'skip_cache' => true]);
 
-        return json_decode($response->choices[0]->message->content, true) ?? ['patterns' => [], 'departure_indicators' => []];
+        return json_decode($content, true) ?? ['patterns' => [], 'departure_indicators' => []];
     }
 
     private function analyzeRetentionPatterns(array $hiringData): array
@@ -292,17 +276,12 @@ Provide 5-8 specific recommendations to improve hiring outcomes. Focus on:
 Return as a clear, bulleted text summary.
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are a strategic HR consultant providing actionable hiring recommendations.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.4,
-            'max_completion_tokens' => 800,
-        ]);
+        $content = app(\App\Services\AI\AIService::class)->callWithMessages([
+            ['role' => 'system', 'content' => 'You are a strategic HR consultant providing actionable hiring recommendations.'],
+            ['role' => 'user', 'content' => $prompt],
+        ], ['temperature' => 0.4, 'max_tokens' => 800, 'skip_cache' => true]);
 
-        return $response->choices[0]->message->content ?? 'No recommendations generated.';
+        return $content ?? 'No recommendations generated.';
     }
 
     private function calculateConfidenceScore(array $hiringData): int

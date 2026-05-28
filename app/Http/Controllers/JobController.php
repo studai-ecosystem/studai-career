@@ -8,7 +8,6 @@ use App\Services\AI\JobMatchingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use OpenAI\Laravel\Facades\OpenAI;
 
 class JobController extends Controller
 {
@@ -487,19 +486,12 @@ Requirements:
 
 Write only the cover letter body, starting with 'Dear Hiring Manager,' and ending with the applicant's name.";
 
-            // Try to use OpenAI
+            // Try to use AIService (Azure OpenAI with Anthropic fallback)
             try {
-                $response = OpenAI::chat()->create([
-                    'model' => config('ai.default_model', 'gpt-4o-mini'),
-                    'messages' => [
-                        ['role' => 'system', 'content' => 'You are a professional career advisor helping job seekers write compelling cover letters. Write natural, human-sounding letters that are tailored to the specific job and company.'],
-                        ['role' => 'user', 'content' => $prompt],
-                    ],
-                    'max_completion_tokens' => 800,
-                    'temperature' => 0.7,
-                ]);
-
-                $coverLetter = $response->choices[0]->message->content;
+                $coverLetter = app(\App\Services\AI\AIService::class)->callWithMessages([
+                    ['role' => 'system', 'content' => 'You are a professional career advisor helping job seekers write compelling cover letters. Write natural, human-sounding letters that are tailored to the specific job and company.'],
+                    ['role' => 'user', 'content' => $prompt],
+                ], ['max_tokens' => 800, 'temperature' => 0.7, 'skip_cache' => true]);
 
                 // Deduct 1 AI credit and log usage
                 $user->deductAICredits(1, 'cover_letter',

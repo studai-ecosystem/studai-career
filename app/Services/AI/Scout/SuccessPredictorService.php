@@ -8,7 +8,6 @@ use App\Models\HiringPattern;
 use App\Models\SuccessIndicator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
 
 class SuccessPredictorService
 {
@@ -356,17 +355,12 @@ Provide assessment in JSON:
 }
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are an expert hiring decision consultant providing holistic candidate assessments.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.3,
-            'max_completion_tokens' => 1000,
-        ]);
+        $content = app(\App\Services\AI\AIService::class)->callWithMessages([
+            ['role' => 'system', 'content' => 'You are an expert hiring decision consultant providing holistic candidate assessments.'],
+            ['role' => 'user', 'content' => $prompt],
+        ], ['temperature' => 0.3, 'max_tokens' => 1000, 'skip_cache' => true]);
 
-        return json_decode($response->choices[0]->message->content, true) ?? [];
+        return json_decode($content, true) ?? [];
     }
 
     private function calculateOverallSuccessScore(array $scores): int

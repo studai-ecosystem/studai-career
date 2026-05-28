@@ -13,7 +13,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use OpenAI\Laravel\Facades\OpenAI;
+
 
 class OfferLetterService
 {
@@ -465,23 +465,16 @@ class OfferLetterService
         try {
             $prompt = $this->buildOfferAnalysisPrompt($offer);
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.default_model', 'gpt-4'),
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => 'You are an expert career advisor specializing in job offer analysis and salary negotiation. Provide detailed, actionable insights.',
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => $prompt,
-                    ],
+            $content = app(\App\Services\AI\AIService::class)->callWithMessages([
+                [
+                    'role' => 'system',
+                    'content' => 'You are an expert career advisor specializing in job offer analysis and salary negotiation. Provide detailed, actionable insights.',
                 ],
-                'temperature' => 0.7,
-                'max_completion_tokens' => 1500,
-            ]);
-
-            $content = $response->choices[0]->message->content;
+                [
+                    'role' => 'user',
+                    'content' => $prompt,
+                ],
+            ], ['temperature' => 0.7, 'max_tokens' => 1500, 'skip_cache' => true]);
 
             return $this->parseAIResponse($content);
         } catch (\Exception $e) {
@@ -561,28 +554,23 @@ PROMPT;
     public function suggestCounterOffer(OfferLetter $offer): ?array
     {
         try {
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.default_model', 'gpt-4'),
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => 'You are an expert salary negotiation advisor. Provide specific, actionable counter-offer suggestions with realistic target amounts.',
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => "Based on this offer: {$offer->job_title} at {$offer->currency} " .
-                            number_format((float) $offer->base_salary) .
-                            " {$offer->salary_period}, suggest a reasonable counter-offer with justification. " .
-                            "Consider market rates and provide specific numbers.",
-                    ],
+            $suggestions = app(\App\Services\AI\AIService::class)->callWithMessages([
+                [
+                    'role' => 'system',
+                    'content' => 'You are an expert salary negotiation advisor. Provide specific, actionable counter-offer suggestions with realistic target amounts.',
                 ],
-                'temperature' => 0.7,
-                'max_completion_tokens' => 800,
-            ]);
+                [
+                    'role' => 'user',
+                    'content' => "Based on this offer: {$offer->job_title} at {$offer->currency} " .
+                        number_format((float) $offer->base_salary) .
+                        " {$offer->salary_period}, suggest a reasonable counter-offer with justification. " .
+                        "Consider market rates and provide specific numbers.",
+                ],
+            ], ['temperature' => 0.7, 'max_tokens' => 800, 'skip_cache' => true]);
 
             return [
-                'suggestions' => $response->choices[0]->message->content,
-                'recommended_salary' => (float) $offer->base_salary * 1.15, // 15% increase suggestion
+                'suggestions' => $suggestions,
+                'recommended_salary' => (float) $offer->base_salary * 1.15,
                 'recommended_signing_bonus' => (float) ($offer->signing_bonus ?? 0) * 1.2,
             ];
         } catch (\Exception $e) {

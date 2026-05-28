@@ -5,7 +5,7 @@ namespace App\Services\AI;
 use App\Models\NegotiationStrategy;
 use App\Models\NegotiationScenario;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
+
 
 class NegotiationScenarioService
 {
@@ -290,23 +290,16 @@ class NegotiationScenarioService
             $prompt .= "4. Potential pitfalls to avoid\n\n";
             $prompt .= "Be specific and actionable.";
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat'),
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => 'You are an expert negotiation analyst. Provide tactical, data-driven scenario analysis.'
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => $prompt
-                    ],
+            $analysis = app(\App\Services\AI\AIService::class)->callWithMessages([
+                [
+                    'role' => 'system',
+                    'content' => 'You are an expert negotiation analyst. Provide tactical, data-driven scenario analysis.'
                 ],
-                'max_completion_tokens' => 400,
-                'temperature' => 0.7,
-            ]);
-
-            $analysis = $response->choices[0]->message->content;
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ],
+            ], ['max_tokens' => 400, 'temperature' => 0.7, 'skip_cache' => true]);
 
             return [
                 'ai_analysis' => $analysis,

@@ -10,7 +10,7 @@ use App\Models\MarketDisruption;
 use App\Models\AITrajectoryCalculation;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use OpenAI\Laravel\Facades\OpenAI;
+
 
 class CareerTrajectoryService
 {
@@ -126,24 +126,17 @@ class CareerTrajectoryService
         $prompt = $this->buildTrajectoryPrompt($userData, $templatePaths);
         
         try {
-            $response = OpenAI::chat()->create([
-                'model' => self::MODEL,
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => 'You are an expert career counselor with access to millions of career progression data points. Analyze career trajectories and provide accurate predictions based on real market data, skill requirements, and success probabilities.'
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => $prompt
-                    ]
+            $content = app(\App\Services\AI\AIService::class)->callWithMessages([
+                [
+                    'role' => 'system',
+                    'content' => 'You are an expert career counselor with access to millions of career progression data points. Analyze career trajectories and provide accurate predictions based on real market data, skill requirements, and success probabilities.'
                 ],
-                'temperature' => 0.7,
-                'max_completion_tokens' => 4000,
-            ]);
-            
-            $content = $response->choices[0]->message->content;
-            
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ], ['temperature' => 0.7, 'max_tokens' => 4000, 'skip_cache' => true]);
+
             // Parse AI response into structured predictions
             return $this->parseAIPredictions($content, $userData);
             
@@ -330,19 +323,12 @@ Return valid JSON array.
 PROMPT;
 
             try {
-                $response = OpenAI::chat()->create([
-                    'model' => self::MODEL,
-                    'messages' => [
-                        ['role' => 'system', 'content' => 'You are a market analyst tracking industry disruptions.'],
-                        ['role' => 'user', 'content' => $prompt]
-                    ],
-                    'temperature' => 0.5,
-                    'max_completion_tokens' => 2000,
-                ]);
-                
-                $content = $response->choices[0]->message->content;
-                
-                if (preg_match('/\[[\s\S]*\]/', $content, $matches)) {
+                $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                    ['role' => 'system', 'content' => 'You are a market analyst tracking industry disruptions.'],
+                    ['role' => 'user', 'content' => $prompt]
+                ], ['temperature' => 0.5, 'max_tokens' => 2000, 'skip_cache' => true]);
+
+                if (preg_match('/\[[\s\S]*\]/', $rawContent, $matches)) {
                     return json_decode($matches[0], true) ?? [];
                 }
             } catch (\Exception $e) {

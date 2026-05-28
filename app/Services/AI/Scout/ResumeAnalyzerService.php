@@ -6,7 +6,6 @@ use App\Models\CompanyDNAProfile;
 use App\Models\Application;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
 use Exception;
 
 class ResumeAnalyzerService
@@ -56,9 +55,8 @@ class ResumeAnalyzerService
             }
 
             // Call Azure OpenAI GPT-5 for semantic analysis
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat', config('ai.azure.models.chat')),
-                'messages' => [
+            $analysisData = json_decode(
+                app(\App\Services\AI\AIService::class)->callWithMessages([
                     [
                         'role' => 'system',
                         'content' => 'You are an expert HR analyst specializing in resume evaluation and candidate assessment. You understand context, nuance, and can identify transferable skills and potential beyond explicit keywords. You provide fair, unbiased analysis that considers diverse career paths.'
@@ -67,13 +65,9 @@ class ResumeAnalyzerService
                         'role' => 'user',
                         'content' => $prompt
                     ]
-                ],
-                'temperature' => 0.7,
-                'max_completion_tokens' => 2500,
-                'response_format' => ['type' => 'json_object']
-            ]);
-
-            $analysisData = json_decode($response->choices[0]->message->content, true);
+                ], ['temperature' => 0.7, 'max_tokens' => 2500, 'skip_cache' => true]),
+                true
+            );
 
             // Enrich with additional analysis
             $enrichedAnalysis = $this->enrichAnalysis($analysisData, $resumeData, $dnaProfile);

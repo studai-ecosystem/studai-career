@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use OpenAI\Laravel\Facades\OpenAI;
 
 class CandidateExperienceService
 {
@@ -181,9 +180,7 @@ class CandidateExperienceService
             try {
                 $prompt = $this->buildFeedbackPrompt($application, $context);
                 
-                $response = OpenAI::chat()->create([
-                    'model' => $this->model,
-                    'messages' => [
+                return app(\App\Services\AI\AIService::class)->callWithMessages([
                         [
                             'role' => 'system',
                             'content' => 'You are an empathetic HR professional providing constructive, encouraging feedback to job candidates. Focus on growth opportunities and positive reinforcement while being honest about areas for development. Keep feedback professional, specific, and actionable.',
@@ -192,12 +189,7 @@ class CandidateExperienceService
                             'role' => 'user',
                             'content' => $prompt,
                         ],
-                    ],
-                    'temperature' => 0.7,
-                    'max_completion_tokens' => 300,
-                ]);
-
-                return $response->choices[0]->message->content;
+                    ], ['temperature' => 0.7, 'max_tokens' => 300, 'skip_cache' => true]);
 
             } catch (\Exception $e) {
                 Log::error('Failed to generate constructive feedback', [

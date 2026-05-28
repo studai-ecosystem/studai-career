@@ -15,7 +15,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
 
 class PassiveCandidateScoutService
 {
@@ -337,9 +336,7 @@ class PassiveCandidateScoutService
             try {
                 $prompt = $this->buildEngagementPrompt($profile, $user, $company);
                 
-                $response = OpenAI::chat()->create([
-                    'model' => $this->model,
-                    'messages' => [
+                $strategy = app(\App\Services\AI\AIService::class)->callWithMessages([
                         [
                             'role' => 'system',
                             'content' => 'You are an expert talent acquisition strategist specializing in passive candidate engagement. Provide specific, actionable strategies for reaching out to passive candidates based on their profile and engagement signals.',
@@ -348,12 +345,7 @@ class PassiveCandidateScoutService
                             'role' => 'user',
                             'content' => $prompt,
                         ],
-                    ],
-                    'temperature' => 0.7,
-                    'max_completion_tokens' => 500,
-                ]);
-
-                $strategy = $response->choices[0]->message->content;
+                    ], ['temperature' => 0.7, 'max_tokens' => 500, 'skip_cache' => true]);
 
                 return [
                     'strategy' => $strategy,

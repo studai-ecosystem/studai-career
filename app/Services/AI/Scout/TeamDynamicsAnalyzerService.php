@@ -7,7 +7,6 @@ use App\Models\TeamDynamic;
 use App\Models\SuccessIndicator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
 
 class TeamDynamicsAnalyzerService
 {
@@ -113,17 +112,12 @@ Return JSON analysis:
 }
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are an organizational psychology expert specializing in team collaboration.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.3,
-            'max_completion_tokens' => 1200,
-        ]);
+        $content = app(\App\Services\AI\AIService::class)->callWithMessages([
+            ['role' => 'system', 'content' => 'You are an organizational psychology expert specializing in team collaboration.'],
+            ['role' => 'user', 'content' => $prompt],
+        ], ['temperature' => 0.3, 'max_tokens' => 1200, 'skip_cache' => true]);
 
-        return json_decode($response->choices[0]->message->content, true) ?? [];
+        return json_decode($content, true) ?? [];
     }
 
     private function assessPsychologicalSafety(array $teamData): array
@@ -151,17 +145,12 @@ Return JSON:
 }
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are a team psychology expert specializing in psychological safety assessment.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.3,
-            'max_completion_tokens' => 1000,
-        ]);
+        $content = app(\App\Services\AI\AIService::class)->callWithMessages([
+            ['role' => 'system', 'content' => 'You are a team psychology expert specializing in psychological safety assessment.'],
+            ['role' => 'user', 'content' => $prompt],
+        ], ['temperature' => 0.3, 'max_tokens' => 1000, 'skip_cache' => true]);
 
-        return json_decode($response->choices[0]->message->content, true) ?? [];
+        return json_decode($content, true) ?? [];
     }
 
     private function identifyCompatibilityPatterns(array $teamData): array
@@ -189,17 +178,12 @@ Return JSON with compatibility insights:
 }
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are a team composition expert analyzing compatibility patterns.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.4,
-            'max_completion_tokens' => 1000,
-        ]);
+        $content = app(\App\Services\AI\AIService::class)->callWithMessages([
+            ['role' => 'system', 'content' => 'You are a team composition expert analyzing compatibility patterns.'],
+            ['role' => 'user', 'content' => $prompt],
+        ], ['temperature' => 0.4, 'max_tokens' => 1000, 'skip_cache' => true]);
 
-        return json_decode($response->choices[0]->message->content, true) ?? [];
+        return json_decode($content, true) ?? [];
     }
 
     private function generateIdealHireProfile(array $teamData): array
@@ -224,17 +208,12 @@ Return JSON with ideal new hire profile:
 }
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are a team building expert recommending ideal candidate profiles.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.4,
-            'max_completion_tokens' => 1000,
-        ]);
+        $content = app(\App\Services\AI\AIService::class)->callWithMessages([
+            ['role' => 'system', 'content' => 'You are a team building expert recommending ideal candidate profiles.'],
+            ['role' => 'user', 'content' => $prompt],
+        ], ['temperature' => 0.4, 'max_tokens' => 1000, 'skip_cache' => true]);
 
-        return json_decode($response->choices[0]->message->content, true) ?? [];
+        return json_decode($content, true) ?? [];
     }
 
     public function assessCandidateTeamFit(int $companyId, array $candidateProfile, ?string $department = null): array
@@ -283,17 +262,12 @@ Return JSON with fit assessment:
 }
 PROMPT;
 
-        $response = OpenAI::chat()->create([
-            'model' => self::MODEL,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are a team integration expert assessing candidate-team compatibility.'],
-                ['role' => 'user', 'content' => $prompt],
-            ],
-            'temperature' => 0.3,
-            'max_completion_tokens' => 1000,
-        ]);
+        $content = app(\App\Services\AI\AIService::class)->callWithMessages([
+            ['role' => 'system', 'content' => 'You are a team integration expert assessing candidate-team compatibility.'],
+            ['role' => 'user', 'content' => $prompt],
+        ], ['temperature' => 0.3, 'max_tokens' => 1000, 'skip_cache' => true]);
 
-        $fitAssessment = json_decode($response->choices[0]->message->content, true) ?? [];
+        $fitAssessment = json_decode($content, true) ?? [];
 
         return array_merge(['success' => true], $fitAssessment);
     }

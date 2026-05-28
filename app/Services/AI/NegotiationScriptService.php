@@ -7,7 +7,7 @@ use App\Models\NegotiationScenario;
 use App\Models\NegotiationScript;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
-use OpenAI\Laravel\Facades\OpenAI;
+
 
 class NegotiationScriptService
 {
@@ -171,30 +171,23 @@ class NegotiationScriptService
         try {
             $prompt = $this->buildScriptPrompt($strategy, $scenario, $type, $stage, $tone);
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat'),
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => 'You are an expert negotiation coach. Generate professional, persuasive negotiation scripts that are tactful, data-driven, and relationship-preserving.'
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => $prompt
-                    ],
+            $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                [
+                    'role' => 'system',
+                    'content' => 'You are an expert negotiation coach. Generate professional, persuasive negotiation scripts that are tactful, data-driven, and relationship-preserving.'
                 ],
-                'max_completion_tokens' => 800,
-                'temperature' => 0.7,
-            ]);
-
-            $content = $response->choices[0]->message->content;
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ],
+            ], ['max_tokens' => 800, 'temperature' => 0.7, 'skip_cache' => true]);
 
             // Parse AI response
             return [
-                'subject_line' => $this->extractSection($content, 'Subject:', 'Opening:'),
-                'opening' => $this->extractSection($content, 'Opening:', 'Body:'),
-                'body' => $this->extractSection($content, 'Body:', 'Closing:'),
-                'closing' => $this->extractSection($content, 'Closing:', null),
+                'subject_line' => $this->extractSection($rawContent, 'Subject:', 'Opening:'),
+                'opening' => $this->extractSection($rawContent, 'Opening:', 'Body:'),
+                'body' => $this->extractSection($rawContent, 'Body:', 'Closing:'),
+                'closing' => $this->extractSection($rawContent, 'Closing:', null),
             ];
         } catch (\Exception $e) {
             Log::error('Script AI generation failed', ['error' => $e->getMessage()]);

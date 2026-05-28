@@ -11,7 +11,6 @@ use App\Models\Job;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
 
 /**
  * Matches a user's agent configuration against internal platform job listings
@@ -546,14 +545,12 @@ Instructions:
 - Return ONLY the body paragraphs
 PROMPT;
 
-            $response = OpenAI::chat()->create([
-                'model'      => config('ai.azure.models.chat', 'gpt-5.4'),
-                'messages'   => [['role' => 'user', 'content' => $prompt]],
-                'max_tokens' => 400,
-                'temperature'=> 0.7,
-            ]);
+            $content = app(\App\Services\AI\AIService::class)->callWithMessages(
+                [['role' => 'user', 'content' => $prompt]],
+                ['temperature' => 0.7, 'max_tokens' => 400, 'skip_cache' => true]
+            );
 
-            return trim($response->choices[0]->message->content ?? '');
+            return trim($content);
         } catch (\Throwable $e) {
             Log::warning('InternalJobMatcherService: cover letter generation failed', [
                 'job_id' => $job->id,

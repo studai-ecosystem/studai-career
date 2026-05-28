@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use OpenAI\Laravel\Facades\OpenAI;
+
 
 class ResumeCustomizationService
 {
@@ -60,18 +60,13 @@ class ResumeCustomizationService
         $usage = null;
 
         try {
-            $response = OpenAI::chat()->create([
-                'model' => self::MODEL,
-                'messages' => [
-                    ['role' => 'system', 'content' => 'You are a world-class technical resume optimizer who tailors resumes for ATS systems and human recruiters.'],
-                    ['role' => 'user', 'content' => $prompt],
-                ],
-                'temperature' => 0.35,
-                'max_completion_tokens' => 3500,
-            ]);
+            $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                ['role' => 'system', 'content' => 'You are a world-class technical resume optimizer who tailors resumes for ATS systems and human recruiters.'],
+                ['role' => 'user', 'content' => $prompt],
+            ], ['temperature' => 0.35, 'max_tokens' => 3500, 'skip_cache' => true]);
 
-            $usage = $response->usage ?? null;
-            $structured = $this->parseResponse($response->choices[0]->message->content);
+            $usage = null;
+            $structured = $this->parseResponse($rawContent);
         } catch (\Throwable $exception) {
             Log::error('Resume customization failed', [
                 'user_id' => $user->id,

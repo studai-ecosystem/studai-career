@@ -693,6 +693,59 @@ class AIService
     }
 
     /**
+     * Call AI with a pre-built messages array (bypasses prompt-to-messages conversion).
+     * Supports circuit breaker, Anthropic fallback, and response caching.
+     * Use when services already construct their own message arrays.
+     *
+     * @param array  $messages  OpenAI-format messages: [['role'=>'system','content'=>'...'], ...]
+     * @param array  $options   Supports: temperature, max_tokens, skip_cache, cache_hours
+     */
+    public function callWithMessages(array $messages, array $options = []): string
+    {
+        $skipCache = $options['skip_cache'] ?? false;
+        $cacheHours = $options['cache_hours'] ?? 1;
+        $cacheKey = null;
+
+        if (!$skipCache && $cacheHours > 0) {
+            $cacheKey = 'ai_msgs_' . md5(serialize($messages));
+            $cached = Cache::get($cacheKey);
+            if ($cached !== null) {
+                return $cached;
+            }
+        }
+
+        $openAICircuit  = CircuitBreakerService::forAzureOpenAI();
+        $anthropicCircuit = CircuitBreakerService::forAzureAnthropic();
+        $firstException = null;
+        $content        = '';
+
+        try {
+            $content = $openAICircuit->execute(fn () => $this->callAzureOpenAI($messages, $options));
+        } catch (\Throwable $e) {
+            $firstException = $e;
+            Log::warning('AIService::callWithMessages Azure OpenAI failed, trying Anthropic', [
+                'error' => $e->getMessage(),
+            ]);
+
+            try {
+                $content = $anthropicCircuit->execute(fn () => $this->callAzureAnthropic($messages, $options));
+            } catch (\Throwable $e2) {
+                Log::error('AIService::callWithMessages both providers failed', [
+                    'primary_error'  => $firstException->getMessage(),
+                    'fallback_error' => $e2->getMessage(),
+                ]);
+                throw new \Exception('AI service unavailable: ' . $e2->getMessage(), 0, $e2);
+            }
+        }
+
+        if ($cacheKey && $cacheHours > 0 && $content !== '') {
+            Cache::put($cacheKey, $content, now()->addHours($cacheHours));
+        }
+
+        return $content;
+    }
+
+    /**
      * Get token usage statistics for the current user.
      */
     public function getUsageStats(): array

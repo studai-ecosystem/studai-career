@@ -8,7 +8,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use OpenAI\Laravel\Facades\OpenAI;
 
 class ATSOptimizerService
 {
@@ -47,18 +46,11 @@ class ATSOptimizerService
         $structured = null;
 
         try {
-            $response = OpenAI::chat()->create([
-                'model' => self::MODEL,
-                'messages' => [
-                    ['role' => 'system', 'content' => 'You are an Applicant Tracking System expert who evaluates resumes for alignment with job postings. Provide actionable, concise recommendations.'],
-                    ['role' => 'user', 'content' => $prompt],
-                ],
-                'temperature' => 0.25,
-                'max_completion_tokens' => 2200,
-            ]);
-
-            $usage = $response->usage ?? null;
-            $structured = $this->parseResponse($response->choices[0]->message->content);
+            $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                ['role' => 'system', 'content' => 'You are an Applicant Tracking System expert who evaluates resumes for alignment with job postings. Provide actionable, concise recommendations.'],
+                ['role' => 'user', 'content' => $prompt],
+            ], ['temperature' => 0.25, 'max_tokens' => 2200, 'skip_cache' => true]);
+            $structured = $this->parseResponse($rawContent);
         } catch (\Throwable $exception) {
             Log::error('ATS optimization failed', [
                 'job_id' => $job->id,

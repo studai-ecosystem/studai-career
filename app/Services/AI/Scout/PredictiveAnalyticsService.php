@@ -17,7 +17,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use OpenAI\Laravel\Facades\OpenAI;
 
 class PredictiveAnalyticsService
 {
@@ -698,18 +697,13 @@ class PredictiveAnalyticsService
                 "Cultural Fit: " . round(($factors['cultural_fit'] ?? 0) * 100, 1) . "%\n" .
                 "Team Compatibility: " . round(($factors['team_compatibility'] ?? 0) * 100, 1) . "%";
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat_mini'),
-                'messages' => [
+            $content = app(\App\Services\AI\AIService::class)->callWithMessages([
                     ['role' => 'system', 'content' => $prompt],
                     ['role' => 'user', 'content' => $message],
-                ],
-                'max_completion_tokens' => 350,
-                'temperature' => 0.4,
-            ]);
+                ], ['temperature' => 0.4, 'max_tokens' => 350, 'skip_cache' => true]);
 
             return [
-                'summary' => trim($response->choices[0]->message->content ?? ''),
+                'summary' => trim($content ?? ''),
                 'generated_at' => Carbon::now()->toIso8601String(),
             ];
         } catch (Exception $exception) {
@@ -919,18 +913,13 @@ class PredictiveAnalyticsService
                 "Role Stability Score: " . round($stability * 100, 0) . "%\n" .
                 "Growth Opportunities Score: " . round($growth * 100, 0) . "%";
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat_mini'),
-                'messages' => [
+            $content = app(\App\Services\AI\AIService::class)->callWithMessages([
                     ['role' => 'system', 'content' => $prompt],
                     ['role' => 'user', 'content' => $message],
-                ],
-                'max_completion_tokens' => 280,
-                'temperature' => 0.4,
-            ]);
+                ], ['temperature' => 0.4, 'max_tokens' => 280, 'skip_cache' => true]);
 
             return [
-                'summary' => trim($response->choices[0]->message->content ?? ''),
+                'summary' => trim($content ?? ''),
                 'generated_at' => Carbon::now()->toIso8601String(),
             ];
         } catch (Exception $exception) {

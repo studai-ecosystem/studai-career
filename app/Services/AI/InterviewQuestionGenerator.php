@@ -8,7 +8,7 @@ use App\Models\InterviewerProfile;
 use App\Models\AIInterviewCalculation;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
+
 
 class InterviewQuestionGenerator
 {
@@ -35,27 +35,22 @@ class InterviewQuestionGenerator
                 $prompt = $this->buildQuestionGenerationPrompt($company, $role, $count, $interviewStage);
 
                 $startTime = microtime(true);
-                $response = OpenAI::chat()->create([
-                    'model' => $this->model,
-                    'messages' => [
-                        ['role' => 'system', 'content' => 'You are an expert interview preparation coach who generates realistic, company-specific interview questions based on deep industry knowledge and company research.'],
-                        ['role' => 'user', 'content' => $prompt],
-                    ],
-                    'temperature' => 0.7,
-                    'max_completion_tokens' => 3000,
-                ]);
+                $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                    ['role' => 'system', 'content' => 'You are an expert interview preparation coach who generates realistic, company-specific interview questions based on deep industry knowledge and company research.'],
+                    ['role' => 'user', 'content' => $prompt],
+                ], ['temperature' => 0.7, 'max_tokens' => 3000, 'skip_cache' => true]);
 
                 $processingTime = (microtime(true) - $startTime) * 1000;
-                $questions = $this->parseQuestionResponse($response->choices[0]->message->content);
+                $questions = $this->parseQuestionResponse($rawContent);
 
-                // Track AI usage
+                // Track AI usage (tokens tracked internally by AIService)
                 AIInterviewCalculation::create([
                     'user_id' => auth()->id(),
                     'calculation_type' => 'question_generation',
                     'input_data' => ['company' => $company->company_name, 'role' => $role, 'count' => $count],
                     'output_data' => ['questions_generated' => count($questions)],
-                    'tokens_used' => $response->usage->totalTokens,
-                    'cost' => $this->calculateCost($response->usage->totalTokens),
+                    'tokens_used' => 0,
+                    'cost' => 0,
                     'processing_time_ms' => $processingTime,
                     'model_version' => $this->model,
                 ]);
@@ -106,17 +101,12 @@ Return ONLY a JSON array of objects with this structure:
 ]
 EOT;
 
-                $response = OpenAI::chat()->create([
-                    'model' => $this->model,
-                    'messages' => [
-                        ['role' => 'system', 'content' => 'You are an expert at creating STAR methodology behavioral interview questions.'],
-                        ['role' => 'user', 'content' => $prompt],
-                    ],
-                    'temperature' => 0.7,
-                    'max_completion_tokens' => 2000,
-                ]);
+                $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                    ['role' => 'system', 'content' => 'You are an expert at creating STAR methodology behavioral interview questions.'],
+                    ['role' => 'user', 'content' => $prompt],
+                ], ['temperature' => 0.7, 'max_tokens' => 2000, 'skip_cache' => true]);
 
-                return json_decode($response->choices[0]->message->content, true) ?? [];
+                return json_decode($rawContent, true) ?? [];
 
             } catch (\Exception $e) {
                 Log::error('Failed to generate behavioral questions', ['error' => $e->getMessage()]);
@@ -159,17 +149,12 @@ Return ONLY a JSON array of objects with this structure:
 ]
 EOT;
 
-                $response = OpenAI::chat()->create([
-                    'model' => $this->model,
-                    'messages' => [
-                        ['role' => 'system', 'content' => 'You are an expert technical interviewer with deep knowledge across various technology stacks.'],
-                        ['role' => 'user', 'content' => $prompt],
-                    ],
-                    'temperature' => 0.8,
-                    'max_completion_tokens' => 3000,
-                ]);
+                $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                    ['role' => 'system', 'content' => 'You are an expert technical interviewer with deep knowledge across various technology stacks.'],
+                    ['role' => 'user', 'content' => $prompt],
+                ], ['temperature' => 0.8, 'max_tokens' => 3000, 'skip_cache' => true]);
 
-                return json_decode($response->choices[0]->message->content, true) ?? [];
+                return json_decode($rawContent, true) ?? [];
 
             } catch (\Exception $e) {
                 Log::error('Failed to generate technical questions', ['error' => $e->getMessage()]);
@@ -220,17 +205,12 @@ Generate 3 relevant follow-up questions that:
 Return ONLY a JSON array of follow-up question strings.
 EOT;
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat_mini'), // Use faster model for follow-ups
-                'messages' => [
-                    ['role' => 'system', 'content' => 'You are an experienced interviewer who asks insightful follow-up questions.'],
-                    ['role' => 'user', 'content' => $prompt],
-                ],
-                'temperature' => 0.7,
-                'max_completion_tokens' => 300,
-            ]);
+            $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                ['role' => 'system', 'content' => 'You are an experienced interviewer who asks insightful follow-up questions.'],
+                ['role' => 'user', 'content' => $prompt],
+            ], ['temperature' => 0.7, 'max_tokens' => 300, 'skip_cache' => true]);
 
-            return json_decode($response->choices[0]->message->content, true) ?? [];
+            return json_decode($rawContent, true) ?? [];
 
         } catch (\Exception $e) {
             Log::error('Failed to generate follow-up questions', ['error' => $e->getMessage()]);

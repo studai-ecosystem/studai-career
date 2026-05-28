@@ -12,7 +12,6 @@ use App\Models\TalentNeedPrediction;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
 use Exception;
 
 class ContinuousLearningService
@@ -609,9 +608,7 @@ class ContinuousLearningService
         try {
             $prompt = $this->buildRefinementPrompt($company, $performanceData, $correlationAnalysis);
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat'),
-                'messages' => [
+            $aiAnalysis = app(\App\Services\AI\AIService::class)->callWithMessages([
                     [
                         'role' => 'system',
                         'content' => 'You are an expert talent assessment analyst specializing in refining hiring criteria based on actual performance data. Analyze the data and provide refined assessment criteria that will better predict success in this specific organization.'
@@ -620,12 +617,7 @@ class ContinuousLearningService
                         'role' => 'user',
                         'content' => $prompt
                     ]
-                ],
-                'temperature' => 0.4,
-                'max_completion_tokens' => 2000
-            ]);
-
-            $aiAnalysis = $response->choices[0]->message->content;
+                ], ['temperature' => 0.4, 'max_tokens' => 2000, 'skip_cache' => true]);
 
             // Extract structured data from AI response
             return $this->parseRefinementResponse($aiAnalysis, $correlationAnalysis);
@@ -744,9 +736,7 @@ class ContinuousLearningService
             $prompt .= "KEY DIFFERENTIATORS:\n" . json_encode($differentiators, JSON_PRETTY_PRINT) . "\n\n";
             $prompt .= "Provide actionable insights about what makes candidates succeed or fail in this organization.";
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat'),
-                'messages' => [
+            return app(\App\Services\AI\AIService::class)->callWithMessages([
                     [
                         'role' => 'system',
                         'content' => 'You are an expert talent analyst. Provide clear, actionable insights based on hiring pattern data.'
@@ -755,12 +745,7 @@ class ContinuousLearningService
                         'role' => 'user',
                         'content' => $prompt
                     ]
-                ],
-                'temperature' => 0.5,
-                'max_completion_tokens' => 1000
-            ]);
-
-            return $response->choices[0]->message->content;
+                ], ['temperature' => 0.5, 'max_tokens' => 1000, 'skip_cache' => true]);
 
         } catch (Exception $e) {
             Log::error('Failed to generate pattern insights', [
@@ -843,9 +828,7 @@ class ContinuousLearningService
                          "Focus on: 1) Emerging skills in demand, 2) Roles becoming more critical, " .
                          "3) Technology shifts affecting talent needs, 4) Market competition for talent.";
 
-                $response = OpenAI::chat()->create([
-                    'model' => config('ai.azure.models.chat'),
-                    'messages' => [
+                $analysis = app(\App\Services\AI\AIService::class)->callWithMessages([
                         [
                             'role' => 'system',
                             'content' => 'You are an industry talent analyst. Provide data-driven insights about current hiring trends.'
@@ -854,12 +837,7 @@ class ContinuousLearningService
                             'role' => 'user',
                             'content' => $prompt
                         ]
-                    ],
-                    'temperature' => 0.6,
-                    'max_completion_tokens' => 1500
-                ]);
-
-                $analysis = $response->choices[0]->message->content;
+                    ], ['temperature' => 0.6, 'max_tokens' => 1500, 'skip_cache' => true]);
 
                 return [
                     'industry' => $company->industry,
@@ -938,9 +916,7 @@ class ContinuousLearningService
         try {
             $prompt = $this->buildPredictionPrompt($company, $historicalData, $growthTrends, $industryTrends, $emergingSkills, $timeHorizon);
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat'),
-                'messages' => [
+            $aiAnalysis = app(\App\Services\AI\AIService::class)->callWithMessages([
                     [
                         'role' => 'system',
                         'content' => 'You are an expert talent forecasting analyst. Provide realistic, data-driven predictions about future hiring needs.'
@@ -949,12 +925,7 @@ class ContinuousLearningService
                         'role' => 'user',
                         'content' => $prompt
                     ]
-                ],
-                'temperature' => 0.5,
-                'max_completion_tokens' => 2000
-            ]);
-
-            $aiAnalysis = $response->choices[0]->message->content;
+                ], ['temperature' => 0.5, 'max_tokens' => 2000, 'skip_cache' => true]);
 
             // Parse AI response into structured data
             return $this->parsePredictionResponse($aiAnalysis, $historicalData, $growthTrends);

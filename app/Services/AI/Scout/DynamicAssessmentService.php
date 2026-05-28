@@ -9,7 +9,6 @@ use App\Models\AssessmentQuestion;
 use App\Models\AssessmentResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
 use Exception;
 
 class DynamicAssessmentService
@@ -334,9 +333,7 @@ class DynamicAssessmentService
 
         try {
             // No caching for assessments - each must be unique
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat'),
-                'messages' => [
+            $content = app(\App\Services\AI\AIService::class)->callWithMessages([
                     [
                         'role' => 'system',
                         'content' => "You are an expert technical interviewer and assessment designer. You create unique, challenging, and fair assessment questions tailored to individual candidates and roles. Your questions are designed to accurately gauge competency across multiple dimensions while preventing memorization or unfair advantages."
@@ -345,13 +342,7 @@ class DynamicAssessmentService
                         'role' => 'user',
                         'content' => $prompt
                     ]
-                ],
-                'temperature' => 0.9, // Higher temperature for variety
-                'max_completion_tokens' => 3000,
-                'response_format' => ['type' => 'json_object']
-            ]);
-
-            $content = $response->choices[0]->message->content;
+                ], ['temperature' => 0.9, 'max_tokens' => 3000, 'skip_cache' => true]);
             $questionData = json_decode($content, true);
 
             return [
@@ -497,9 +488,7 @@ class DynamicAssessmentService
         try {
             $evaluationPrompt = $this->buildEvaluationPrompt($question, $answer);
 
-            $response = OpenAI::chat()->create([
-                'model' => config('ai.azure.models.chat'),
-                'messages' => [
+            $content = app(\App\Services\AI\AIService::class)->callWithMessages([
                     [
                         'role' => 'system',
                         'content' => "You are an expert technical evaluator. Assess candidate responses fairly and objectively based on the provided criteria. Provide constructive feedback."
@@ -508,13 +497,8 @@ class DynamicAssessmentService
                         'role' => 'user',
                         'content' => $evaluationPrompt
                     ]
-                ],
-                'temperature' => 0.3,
-                'max_completion_tokens' => 1000,
-                'response_format' => ['type' => 'json_object']
-            ]);
+                ], ['temperature' => 0.3, 'max_tokens' => 1000, 'skip_cache' => true]);
 
-            $content = $response->choices[0]->message->content;
             $evaluation = json_decode($content, true);
 
             return [
