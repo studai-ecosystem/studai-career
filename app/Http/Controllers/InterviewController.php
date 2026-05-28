@@ -105,16 +105,22 @@ class InterviewController extends Controller
         Cache::put("interview_session_{$sessionId}", $sessionData, 86400);
 
         // Persist to DB so the session survives cache flushes (e.g. container restarts)
-        InterviewSession::create([
-            'user_id'         => Auth::id(),
-            'cache_key'       => $sessionId,
-            'job_title'       => $validated['job_title'],
-            'experience_level' => $validated['experience_level'],
-            'company_name'    => $company?->name,
-            'status'          => 'in_progress',
-            'session_data'    => $sessionData,
-            'started_at'      => now(),
-        ]);
+        // Wrapped in try-catch: if the migration hasn't run yet (e.g. during deployment),
+        // the interview still works via cache — DB persistence is a durability bonus.
+        try {
+            InterviewSession::create([
+                'user_id'          => Auth::id(),
+                'cache_key'        => $sessionId,
+                'job_title'        => $validated['job_title'],
+                'experience_level' => $validated['experience_level'],
+                'company_name'     => $company?->name,
+                'status'           => 'in_progress',
+                'session_data'     => $sessionData,
+                'started_at'       => now(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('InterviewSession DB persist failed (migration pending?): ' . $e->getMessage());
+        }
 
         return redirect()->route('interview.session', ['session' => $sessionId]);
     }
@@ -176,12 +182,16 @@ class InterviewController extends Controller
         Cache::put("interview_session_{$sessionId}", $session, 86400);
 
         // Keep DB copy in sync so answers survive future cache flushes
-        InterviewSession::where('cache_key', $sessionId)
-            ->where('user_id', Auth::id())
-            ->update([
-                'session_data'      => $session,
-                'questions_answered' => count($session['answers']),
-            ]);
+        try {
+            InterviewSession::where('cache_key', $sessionId)
+                ->where('user_id', Auth::id())
+                ->update([
+                    'session_data'       => $session,
+                    'questions_answered' => count($session['answers']),
+                ]);
+        } catch (\Throwable $e) {
+            Log::warning('InterviewSession DB sync failed: ' . $e->getMessage());
+        }
 
         return response()->json(['success' => true]);
     }
