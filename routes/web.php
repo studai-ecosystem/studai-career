@@ -244,6 +244,27 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
         $output['raw_logs'] = $rawLogLines;
         $output['error_entries'] = $errorEntries;
     }
+    if ($request->query('action') === 'migrate') {
+        $migrateOutput = [];
+        try {
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true, '--no-interaction' => true]);
+            $migrateOutput = explode("\n", trim(\Illuminate\Support\Facades\Artisan::output()));
+        } catch (\Throwable $e) {
+            $migrateOutput = ['ERROR: ' . $e->getMessage()];
+        }
+        $output['migrate_output'] = $migrateOutput;
+        // refresh migration count after running
+        try {
+            $output['migration_count'] = $DB::table('migrations')->count();
+            $output['last_migrations'] = $DB::table('migrations')->orderByDesc('id')->limit(5)->pluck('migration')->toArray();
+        } catch (\Throwable) {}
+        // refresh table checks
+        $newCheck = [];
+        foreach ($keyTables as $tbl) {
+            try { $newCheck[$tbl] = $Schema::hasTable($tbl); } catch (\Throwable) { $newCheck[$tbl] = false; }
+        }
+        $output['table_exists'] = $newCheck;
+    }
     return response()->json($output);
 })->name('auth.diag');
 
