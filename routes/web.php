@@ -202,10 +202,18 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
     }
     // Always check key table existence (lightweight, safe)
     $keyTables = [
+        // Core
         'subscription_plans', 'user_subscriptions', 'notifications',
         'applications', 'job_listings', 'companies', 'users', 'migrations',
         'resume_templates', 'permissions', 'profiles', 'saved_jobs',
         'ai_credit_logs', 'company_intelligence_profiles', 'company_blacklists',
+        // Screening pipeline
+        'question_banks', 'evaluation_sessions', 'evaluation_answers',
+        'hiring_tests', 'hiring_test_attempts', 'hiring_rounds',
+        'interviews', 'interview_panelists', 'interview_panel_scores',
+        'background_checks', 'background_check_packages',
+        'video_interview_sessions', 'video_interview_recordings',
+        'company_reviews', 'agent_internal_matches',
     ];
     $tableCheck = [];
     foreach ($keyTables as $tbl) {
