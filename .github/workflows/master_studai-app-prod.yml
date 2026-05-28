@@ -31,6 +31,9 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-reqs --optimize-autoloader
 
+      - name: Patch HtmlSanitizer for Azure PHP 8.4 (Dom\ namespace unavailable)
+        run: php scripts/patch-html-sanitizer.php
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
