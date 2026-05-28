@@ -76,13 +76,13 @@ class JobsTable
                     ->color(fn (string $state): string => match ($state) {
                         'remote' => 'success',
                         'hybrid' => 'warning',
-                        'onsite' => 'info',
+                        'onsite', 'on-site' => 'info',
                         default => 'gray',
                     })
                     ->icon(fn (string $state): string => match ($state) {
                         'remote' => 'heroicon-o-globe-alt',
                         'hybrid' => 'heroicon-o-building-office',
-                        'onsite' => 'heroicon-o-map-pin',
+                        'onsite', 'on-site' => 'heroicon-o-map-pin',
                         default => 'heroicon-o-briefcase',
                     })
                     ->formatStateUsing(fn (string $state): string => ucfirst($state))
