@@ -78,14 +78,7 @@ jobs:
 
       - name: Set resilient App Settings (use DB for session/cache/queue to avoid Redis failures)
         run: |
-          # Read Azure OpenAI credentials from the committed .env file
-          AZURE_KEY=$(grep -m1 "^AZURE_OPENAI_API_KEY=" .env | cut -d'=' -f2-)
-          AZURE_EP=$(grep -m1 "^AZURE_OPENAI_ENDPOINT=" .env | cut -d'=' -f2-)
-          AZURE_DEP=$(grep -m1 "^AZURE_OPENAI_DEPLOYMENT_ID=" .env | cut -d'=' -f2-)
-          AZURE_VER=$(grep -m1 "^AZURE_OPENAI_API_VERSION=" .env | cut -d'=' -f2-)
-          AZURE_MODEL=$(grep -m1 "^AZURE_OPENAI_MODEL=" .env | cut -d'=' -f2-)
-          ANTH_KEY=$(grep -m1 "^AZURE_ANTHROPIC_API_KEY=" .env | cut -d'=' -f2-)
-          ANTH_EP=$(grep -m1 "^AZURE_ANTHROPIC_ENDPOINT=" .env | cut -d'=' -f2-)
+          # Set non-sensitive driver/connection settings (always safe to set)
           az webapp config appsettings set \
             --name studai-app-prod \
             --resource-group studai-career \
@@ -93,14 +86,39 @@ jobs:
               SESSION_DRIVER=database \
               CACHE_STORE=database \
               QUEUE_CONNECTION=database \
-              AUTH_DIAG_TOKEN=studai-diag-2024 \
-              AZURE_OPENAI_API_KEY="${AZURE_KEY}" \
-              AZURE_OPENAI_ENDPOINT="${AZURE_EP}" \
-              AZURE_OPENAI_DEPLOYMENT_ID="${AZURE_DEP}" \
-              AZURE_OPENAI_API_VERSION="${AZURE_VER}" \
-              AZURE_OPENAI_MODEL="${AZURE_MODEL}" \
-              AZURE_ANTHROPIC_API_KEY="${ANTH_KEY}" \
-              AZURE_ANTHROPIC_ENDPOINT="${ANTH_EP}"
+              AUTH_DIAG_TOKEN=studai-diag-2024
+
+          # Set Azure OpenAI credentials from GitHub Secrets (if configured)
+          # NOTE: .env is NOT in git so we never read from it here.
+          # Credentials are hardcoded as PHP fallbacks in AIService.php and can also
+          # be set once in Azure Portal → Configuration → Application Settings.
+          AZURE_KEY="${{ secrets.AZURE_OPENAI_API_KEY }}"
+          AZURE_EP="${{ secrets.AZURE_OPENAI_ENDPOINT }}"
+          AZURE_DEP="${{ secrets.AZURE_OPENAI_DEPLOYMENT_ID }}"
+          AZURE_VER="${{ secrets.AZURE_OPENAI_API_VERSION }}"
+          ANTH_KEY="${{ secrets.AZURE_ANTHROPIC_API_KEY }}"
+          ANTH_EP="${{ secrets.AZURE_ANTHROPIC_ENDPOINT }}"
+
+          # Only update AI credentials if GitHub Secrets are actually configured
+          # (non-empty). This prevents overwriting manually set Azure Portal values.
+          AI_SETTINGS=""
+          [ -n "$AZURE_KEY" ] && AI_SETTINGS="$AI_SETTINGS AZURE_OPENAI_API_KEY=${AZURE_KEY}"
+          [ -n "$AZURE_EP"  ] && AI_SETTINGS="$AI_SETTINGS AZURE_OPENAI_ENDPOINT=${AZURE_EP}"
+          [ -n "$AZURE_DEP" ] && AI_SETTINGS="$AI_SETTINGS AZURE_OPENAI_DEPLOYMENT_ID=${AZURE_DEP}"
+          [ -n "$AZURE_VER" ] && AI_SETTINGS="$AI_SETTINGS AZURE_OPENAI_API_VERSION=${AZURE_VER}"
+          [ -n "$ANTH_KEY"  ] && AI_SETTINGS="$AI_SETTINGS AZURE_ANTHROPIC_API_KEY=${ANTH_KEY}"
+          [ -n "$ANTH_EP"   ] && AI_SETTINGS="$AI_SETTINGS AZURE_ANTHROPIC_ENDPOINT=${ANTH_EP}"
+
+          if [ -n "$AI_SETTINGS" ]; then
+            echo "Updating AI credential App Settings from GitHub Secrets..."
+            az webapp config appsettings set \
+              --name studai-app-prod \
+              --resource-group studai-career \
+              --settings $AI_SETTINGS
+          else
+            echo "No AI GitHub Secrets configured — Azure Portal App Settings preserved as-is."
+            echo "TIP: Add AZURE_OPENAI_API_KEY etc. as GitHub Secrets to automate credential management."
+          fi
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
