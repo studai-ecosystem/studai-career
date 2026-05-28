@@ -56,13 +56,15 @@ class NegotiationCoachingService
         $guidance .= "- Confidence Level: " . $strategy->confidence_level . "\n\n";
         
         $guidance .= "**Key Strengths to Emphasize:**\n";
-        foreach (array_slice($strategy->strongest_points, 0, 3) as $point) {
-            $guidance .= "• {$point}\n";
+        foreach (array_slice($strategy->strongest_points ?? [], 0, 3) as $point) {
+            $label = is_array($point) ? ($point['label'] ?? 'Strong candidate') : (string) $point;
+            $guidance .= "• {$label}\n";
         }
         
         $guidance .= "\n**Recommended Approach:**\n";
-        $guidance .= "• Tone: " . ucfirst($strategy->recommended_tone) . "\n";
-        $guidance .= "• Timing: " . str_replace('_', ' ', $strategy->recommended_timing) . "\n\n";
+        $guidance .= "• Tone: " . ucfirst((string) ($strategy->recommended_tone ?? 'professional')) . "\n";
+        $timing = $strategy->recommended_timing ?? 'within_48_hours';
+        $guidance .= "• Timing: " . str_replace('_', ' ', (string) $timing) . "\n\n";
         
         $guidance .= "I'll provide real-time coaching as you communicate with the employer. Share employer messages and I'll help you craft strategic responses.";
 
