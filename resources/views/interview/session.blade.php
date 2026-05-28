@@ -494,21 +494,64 @@
 
                 {{-- Start Interview overlay -- requires user gesture for fullscreen + camera --}}
                 <template x-if="!sessionStarted">
-                    <div class="fixed inset-0 z-[60] flex items-center justify-center p-4" style="background:rgba(17,24,39,0.96);">
+                    <div class="fixed inset-0 z-[60] flex items-center justify-center p-4" style="background:rgba(17,24,39,0.96);"
+                         x-data="{ permState: 'checking', permGranting: false,
+                             async checkPerms() {
+                                 try {
+                                     const cam = await navigator.permissions.query({ name: 'camera' });
+                                     const mic = await navigator.permissions.query({ name: 'microphone' });
+                                     if (cam.state === 'denied' || mic.state === 'denied') { this.permState = 'denied'; }
+                                     else if (cam.state === 'granted' && mic.state === 'granted') { this.permState = 'granted'; }
+                                     else { this.permState = 'prompt'; }
+                                     cam.onchange = () => this.checkPerms();
+                                     mic.onchange = () => this.checkPerms();
+                                 } catch(e) { this.permState = 'prompt'; }
+                             },
+                             async grantPerms() {
+                                 this.permGranting = true;
+                                 try {
+                                     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                                     stream.getTracks().forEach(t => t.stop());
+                                     this.permState = 'granted';
+                                 } catch(e) {
+                                     this.permState = 'denied';
+                                 } finally { this.permGranting = false; }
+                             }
+                         }"
+                         x-init="checkPerms()">
                         <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 text-center space-y-5">
                             <div class="text-5xl">&#127919;</div>
                             <h2 class="text-2xl font-bold text-gray-900">Ready to Start Your Interview?</h2>
+
+                            {{-- Permission status card --}}
+                            <div class="text-left rounded-xl p-4 border-2 transition-colors"
+                                 :class="permState === 'granted' ? 'bg-green-50 border-green-400' : permState === 'denied' ? 'bg-red-50 border-red-400' : 'bg-amber-50 border-amber-400'">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-2xl" x-text="permState === 'granted' ? '✅' : permState === 'denied' ? '🚫' : '🎥'"></span>
+                                    <div class="flex-1">
+                                        <p class="font-semibold text-sm"
+                                           x-text="permState === 'granted' ? 'Camera & Microphone: Ready' : permState === 'denied' ? 'Camera or Mic: Blocked by browser' : 'Camera & Microphone permission needed'"></p>
+                                        <p class="text-xs mt-1 text-gray-600"
+                                           x-text="permState === 'granted' ? 'Great — permissions granted. You can start now.' : permState === 'denied' ? 'Your browser blocked access. Click the 🔒 lock icon in the address bar → set Camera & Microphone to Allow → refresh this page.' : 'Click the button below — your browser will ask Allow/Block. Click Allow.'"></p>
+                                        <button x-show="permState === 'prompt'" @click="grantPerms()" :disabled="permGranting"
+                                            class="mt-2 px-4 py-2 text-sm font-bold rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition disabled:opacity-60">
+                                            <span x-text="permGranting ? 'Requesting…' : '🎥 Allow Camera & Microphone'"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="text-sm text-gray-600 text-left bg-gray-50 rounded-xl p-4 space-y-2">
                                 <p class="font-semibold text-gray-800 mb-1">What happens when you click Start:</p>
                                 <ul class="list-disc list-inside space-y-1">
-                                    <li>Your browser will <strong>ask to allow camera &amp; microphone</strong> &mdash; click Allow</li>
                                     <li>The session enters <strong>fullscreen mode</strong> for integrity</li>
                                     <li>Tab switching is monitored (3 warnings = auto-submit)</li>
                                     <li>You have <strong>{{ count($flattenedQuestions) }} questions</strong> to answer</li>
                                 </ul>
-                                <p class="text-xs text-gray-400 pt-1">Camera is optional &mdash; you can complete the interview without it.</p>
+                                <p class="text-xs text-gray-400 pt-1">Camera is optional &mdash; you can still complete the interview without it.</p>
                             </div>
-                            <button @click="startSession()" class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:bg-indigo-700 active:scale-95 transition-all shadow-lg">
+                            <button @click="startSession()" class="w-full py-4 text-white rounded-xl font-bold text-lg active:scale-95 transition-all shadow-lg"
+                                    :class="permState === 'denied' ? 'bg-gray-500 hover:bg-gray-600' : 'bg-indigo-600 hover:bg-indigo-700'">
                                 &#128640; Start Interview
                             </button>
                         </div>

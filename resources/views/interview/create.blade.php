@@ -91,6 +91,88 @@
                             <p class="mt-2 text-xs text-gray-500">We'll still cover all question types, but emphasize the focus you choose.</p>
                         </div>
 
+                        <!-- Camera & Mic Permission Pre-Check -->
+                        <div x-data="permCheck()" x-init="init()" class="p-4 rounded-lg border" :class="statusClass">
+                            <div class="flex items-start gap-3">
+                                <span class="text-xl mt-0.5" x-text="statusIcon"></span>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold text-sm" x-text="statusTitle"></p>
+                                    <p class="text-xs mt-0.5" x-text="statusMsg"></p>
+                                    <button x-show="showGrantBtn" @click="grant()"
+                                        class="mt-2 px-4 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition">
+                                        🎥 Allow Camera &amp; Microphone
+                                    </button>
+                                    <p x-show="showResetTip" class="mt-1 text-xs font-medium text-red-700">
+                                        Click the 🔒 lock icon in your browser address bar → Camera → Allow → refresh this page.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                        function permCheck() {
+                            return {
+                                state: 'checking',
+                                showGrantBtn: false,
+                                showResetTip: false,
+                                get statusClass() {
+                                    if (this.state === 'granted')  return 'bg-green-50 border-green-300';
+                                    if (this.state === 'denied')   return 'bg-red-50 border-red-300';
+                                    return 'bg-amber-50 border-amber-300';
+                                },
+                                get statusIcon() {
+                                    if (this.state === 'granted') return '✅';
+                                    if (this.state === 'denied')  return '🚫';
+                                    return '🎥';
+                                },
+                                get statusTitle() {
+                                    if (this.state === 'granted') return 'Camera & Microphone: Ready';
+                                    if (this.state === 'denied')  return 'Camera or Microphone: Blocked';
+                                    return 'Camera & Microphone Required';
+                                },
+                                get statusMsg() {
+                                    if (this.state === 'granted') return 'Permissions granted. You\'re all set to start your interview.';
+                                    if (this.state === 'denied')  return 'Your browser has blocked camera/mic access for this site. Follow the instructions below to fix it.';
+                                    return 'Click "Allow Camera & Microphone" below so your browser asks for permission now.';
+                                },
+                                async init() {
+                                    try {
+                                        const cam = await navigator.permissions.query({ name: 'camera' });
+                                        const mic = await navigator.permissions.query({ name: 'microphone' });
+                                        if (cam.state === 'denied' || mic.state === 'denied') {
+                                            this.state = 'denied';
+                                            this.showResetTip = true;
+                                        } else if (cam.state === 'granted' && mic.state === 'granted') {
+                                            this.state = 'granted';
+                                        } else {
+                                            this.state = 'prompt';
+                                            this.showGrantBtn = true;
+                                        }
+                                        // Listen for changes
+                                        cam.onchange = () => this.init();
+                                        mic.onchange = () => this.init();
+                                    } catch (e) {
+                                        // permissions API not supported; show grant button anyway
+                                        this.state = 'prompt';
+                                        this.showGrantBtn = true;
+                                    }
+                                },
+                                async grant() {
+                                    try {
+                                        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                                        stream.getTracks().forEach(t => t.stop()); // stop immediately, just needed the grant
+                                        this.state = 'granted';
+                                        this.showGrantBtn = false;
+                                        this.showResetTip = false;
+                                    } catch (e) {
+                                        this.state = 'denied';
+                                        this.showGrantBtn = false;
+                                        this.showResetTip = true;
+                                    }
+                                },
+                            };
+                        }
+                        </script>
+
                         <!-- Info Box -->
                         <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                             <div class="flex">
