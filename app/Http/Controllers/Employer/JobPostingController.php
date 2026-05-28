@@ -274,9 +274,14 @@ PROMPT;
         $validated['employment_type'] = $validated['job_type'];
         unset($validated['job_type']);
 
-        $validated['company_id']   = $company->id;
-        $validated['company_name'] = $company->name ?? null;
-        $validated['slug']         = Str::slug($validated['title']) . '-' . Str::random(8);
+        $validated['company_id'] = $company->id;
+        $validated['slug']       = Str::slug($validated['title']) . '-' . Str::random(8);
+
+        // Convert free-text responsibilities and qualifications to the qualifications text column
+        // (responsibilities column is JSON/array format used by the admin form Repeater)
+        if (isset($validated['qualifications'])) {
+            // Keep qualifications as a plain string in its own column
+        }
 
         $rounds = $validated['rounds'] ?? [];
         unset($validated['rounds']);

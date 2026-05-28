@@ -34,6 +34,7 @@ class Job extends Model
         'preferred_skills',
         'requirements',
         'responsibilities',
+        'qualifications',
         'benefits',
         'application_method',
         'external_url',
