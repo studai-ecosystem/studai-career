@@ -279,7 +279,7 @@ class LinkedInPartnerService
                         'title' => $job['title'] ?? 'Position',
                         'description' => $job['description'] ?? '',
                         'location' => $job['location'] ?? '',
-                        'job_type' => $this->mapEmploymentType($job['employmentType'] ?? ''),
+                        'employment_type' => $this->mapEmploymentType($job['employmentType'] ?? ''),
                         'url' => $job['applyUrl'] ?? "https://www.linkedin.com/jobs/view/{$job['id']}",
                         'source' => 'linkedin',
                         'external_id' => $job['id'] ?? Str::uuid()->toString(),

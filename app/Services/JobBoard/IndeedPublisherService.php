@@ -129,7 +129,7 @@ class IndeedPublisherService
                         'title' => $job['title'],
                         'description' => $job['description'],
                         'location' => $job['location'],
-                        'job_type' => $job['job_type'],
+                        'employment_type' => $job['job_type'],
                         'url' => $job['url'],
                         'source' => 'indeed',
                         'external_id' => $job['external_id'],

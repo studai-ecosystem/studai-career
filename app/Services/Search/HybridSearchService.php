@@ -146,7 +146,7 @@ class HybridSearchService
             }
 
             if (!empty($filters['job_type'])) {
-                $builder->where('job_type', $filters['job_type']);
+                $builder->where('employment_type', $filters['job_type']);
             }
 
             if (!empty($filters['experience_level'])) {
@@ -204,7 +204,7 @@ class HybridSearchService
         }
 
         if (!empty($filters['job_type'])) {
-            $builder->where('job_type', $filters['job_type']);
+            $builder->where('employment_type', $filters['job_type']);
         }
 
         if (!empty($filters['is_remote'])) {
