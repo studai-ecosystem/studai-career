@@ -470,14 +470,14 @@
                             <svg style="width:.875rem;height:.875rem;color:#22c55e" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
-                            Posted {{ $job->created_at->diffForHumans() }}
+                            Posted {{ $job->created_at?->diffForHumans() ?? 'recently' }}
                         </span>
                         <span class="job-meta-sep">&bull;</span>
-                        <span class="job-meta-item" style="color:{{ $job->expires_at < now() ? '#ef4444' : '#9ca3af' }}">
+                        <span class="job-meta-item" style="color:{{ $job->expires_at && $job->expires_at < now() ? '#ef4444' : '#9ca3af' }}">
                             <svg style="width:.875rem;height:.875rem" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            Expires {{ $job->expires_at->diffForHumans() }}
+                            Expires {{ $job->expires_at?->diffForHumans() ?? 'N/A' }}
                         </span>
                     </div>
                 </div>
