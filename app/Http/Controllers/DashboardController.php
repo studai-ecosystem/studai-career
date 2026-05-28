@@ -6,19 +6,11 @@ use App\Models\Job;
 use App\Models\Application;
 use App\Models\UserSubscription;
 use App\Models\SubscriptionPlan;
-use App\Services\AI\JobMatchingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
-    protected $jobMatchingService;
-
-    public function __construct(JobMatchingService $jobMatchingService)
-    {
-        $this->jobMatchingService = $jobMatchingService;
-    }
-
     /**
      * Display the user dashboard
      */
@@ -85,22 +77,21 @@ class DashboardController extends Controller
         // Get profile completion percentage
         $profileCompletion = $this->calculateProfileCompletion($user);
 
-        // Get job recommendations (cached for 1 hour)
+        // Get job recommendations — use a simple DB query to avoid AI API calls on
+        // the dashboard page load. AI-based matching is too expensive to run
+        // synchronously here (it calls embeddings + analysis for every active job,
+        // causing PHP-FPM OOM on cold start). Keep this fast and non-blocking.
         $recommendedJobs = Cache::remember(
             "job_recommendations_{$user->id}",
             3600,
-            function () use ($user) {
-                try {
-                    $recommendations = $this->jobMatchingService->getRecommendations($user, [], 6);
-                    return collect($recommendations)->pluck('job');
-                } catch (\Exception $e) {
-                    // Fallback to recent jobs if AI matching fails
-                    return Job::where('status', 'published')
-                        ->where('expires_at', '>', now())
-                        ->latest()
-                        ->take(6)
-                        ->get();
-                }
+            function () {
+                return Job::where('status', 'published')
+                    ->where(function ($q) {
+                        $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+                    })
+                    ->latest()
+                    ->take(6)
+                    ->get();
             }
         );
 
