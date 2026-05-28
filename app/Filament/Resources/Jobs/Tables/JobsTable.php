@@ -375,7 +375,7 @@ class JobsTable
                     ->label('Applications')
                     ->icon('heroicon-o-document-text')
                     ->color('info')
-                    ->url(fn ($record): string => route('filament.studai.resources.applications.index', ['job_id' => $record->id]))
+                    ->url(fn ($record): string => route('filament.studai.resources.jobs.view', ['record' => $record]) . '#applications')
                     ->visible(fn ($record): bool => $record->applications_count > 0),
             ])
             ->toolbarActions([
