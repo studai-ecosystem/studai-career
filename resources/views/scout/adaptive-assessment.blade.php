@@ -486,7 +486,7 @@
             </div>
             
             <div>
-                <h3 class="font-bold text-lg mb-2">�Š Difficulty Levels</h3>
+                <h3 class="font-bold text-lg mb-2">�Š Difficulty Levels</h3>
                 <div class="space-y-2">
                     <div class="difficulty-easy px-3 py-2 rounded">
                         <strong>Easy:</strong> Basic concepts (80%+ pass rate)
@@ -536,7 +536,7 @@
             </div>
             
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                <p class="font-semibold text-blue-900">�¡ Pro Tip:</p>
+                <p class="font-semibold text-blue-900">�¡ Pro Tip:</p>
                 <p class="text-blue-800">No two candidates receive identical assessments. Questions are AI-generated based on the candidate's resume, experience, and the specific job requirements.</p>
             </div>
         </div>
@@ -553,7 +553,8 @@
 
 @endsection
 
-@section('scripts')
+@push('scripts')
+<script src="https://unpkg.com/lucide@latest"></script>
 <script>
 // Initialize Lucide icons
 lucide.createIcons();
@@ -948,7 +949,7 @@ async function submitAnswer() {
 // Show answer feedback
 function showAnswerFeedback(evaluation) {
     const message = evaluation.is_correct 
-        ? `� Correct! Score: ${evaluation.score}/${evaluation.max_score}`
+        ? `� Correct! Score: ${evaluation.score}/${evaluation.max_score}`
         : `âŒ Incorrect. Score: ${evaluation.score}/${evaluation.max_score}`;
     
     const feedbackDiv = document.createElement('div');
@@ -1285,4 +1286,4 @@ function formatCategory(category) {
     return category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 </script>
-@endsection
+@endpush

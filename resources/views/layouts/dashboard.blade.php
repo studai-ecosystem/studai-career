@@ -28,6 +28,7 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icons/icon-192x192.svg">
     <meta name="theme-color" content="#6366f1">
+    @yield('head')
     @stack('styles')
 
     <style>
@@ -1032,6 +1033,7 @@
     <x-ui.toast-container position="bottom-right" :max-toasts="5" :default-duration="4000" />
 
     @stack('scripts')
+    @yield('scripts')
     @livewireScripts
 </body>
 </html>
