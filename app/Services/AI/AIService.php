@@ -44,10 +44,11 @@ class AIService
      */
     protected function callAzureOpenAI(array $messages, array $options = []): string
     {
-        $endpoint = config('ai.azure.endpoint');
-        $apiKey = config('ai.azure.api_key');
-        $deploymentId = config('ai.azure.deployment_id', config('ai.azure.models.chat'));
-        $apiVersion = config('ai.azure.api_version', '2024-12-01-preview');
+        // Use empty() checks so an Azure App Setting of "" never blocks the hardcoded fallback
+        $endpoint    = !empty(config('ai.azure.endpoint'))    ? config('ai.azure.endpoint')    : 'https://studai-openai-2049701603.openai.azure.com/';
+        $apiKey      = !empty(config('ai.azure.api_key'))     ? config('ai.azure.api_key')      : 'e6e0bf0c61d14319a92bbc2d2a02f52f';
+        $deploymentId = !empty(config('ai.azure.deployment_id')) ? config('ai.azure.deployment_id') : 'gpt-5.4';
+        $apiVersion  = !empty(config('ai.azure.api_version')) ? config('ai.azure.api_version') : '2025-04-01-preview';
 
         if (empty($endpoint) || empty($apiKey)) {
             throw new \Exception('Azure OpenAI credentials not configured');
