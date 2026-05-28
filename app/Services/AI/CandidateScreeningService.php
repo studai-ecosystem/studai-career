@@ -26,23 +26,61 @@ class CandidateScreeningService
     {
         $cacheKey = "candidate_screening_{$application->id}";
         
-        return Cache::remember($cacheKey, 3600, function () use ($application) {
+        $analysis = Cache::remember($cacheKey, 3600, function () use ($application) {
             $candidate = $application->user;
             $job = $application->job;
             $profile = $candidate->profile;
-            
-            $analysis = [
-                'skill_match' => $this->analyzeSkillMatch($candidate, $job),
-                'experience_match' => $this->analyzeExperienceMatch($candidate, $job),
-                'culture_fit' => $this->analyzeCultureFit($candidate, $job),
-                'strengths' => $this->identifyStrengths($candidate, $job),
-                'concerns' => $this->identifyConcerns($candidate, $job),
-                'recommendation' => $this->generateRecommendation($candidate, $job),
+
+            return [
+                'skill_match'         => $this->analyzeSkillMatch($candidate, $job),
+                'experience_match'    => $this->analyzeExperienceMatch($candidate, $job),
+                'culture_fit'         => $this->analyzeCultureFit($candidate, $job),
+                'strengths'           => $this->identifyStrengths($candidate, $job),
+                'concerns'            => $this->identifyConcerns($candidate, $job),
+                'recommendation'      => $this->generateRecommendation($candidate, $job),
                 'interview_questions' => $this->generateInterviewQuestions($candidate, $job),
             ];
-            
-            return $analysis;
         });
+
+        // === Responsible AI: XAI Audit Logging ===
+        try {
+            $xaiService    = app(\App\Services\ResponsibleAI\ExplainableAIService::class);
+            $rec           = $analysis['recommendation'] ?? [];
+            $score         = ($rec['overall_score'] ?? 70) / 100;
+            $priority      = strtolower($rec['priority'] ?? '');
+            $xaiRec        = $priority === 'reject' ? 'reject' : ($priority === 'high' ? 'shortlist' : 'review');
+            $factors       = $xaiService->buildFactorsFromNamedScores([
+                'Skill Match'      => ($analysis['skill_match']['score'] ?? 70) / 100,
+                'Experience Match' => ($analysis['experience_match']['score'] ?? 70) / 100,
+                'Culture Fit'      => ($analysis['culture_fit']['score'] ?? 70) / 100,
+            ]);
+            $xaiService->record(
+                'App\\Models\\Application',
+                $application->id,
+                \App\Models\AIDecisionLog::TYPE_SCREENING,
+                [
+                    'score'          => $score,
+                    'recommendation' => $xaiRec,
+                    'confidence'     => 0.75,
+                    'factors'        => $factors,
+                    'explanation'    => $xaiService->generateNaturalLanguageExplanation(
+                        $score,
+                        $xaiRec,
+                        $factors,
+                        $application->user->name ?? 'Candidate'
+                    ),
+                    'input_context' => ['job_id' => $application->job_id],
+                ]
+            );
+        } catch (\Throwable $xaiEx) {
+            Log::warning('XAI logging failed for candidate screening', [
+                'application_id' => $application->id,
+                'error'          => $xaiEx->getMessage(),
+            ]);
+        }
+        // === End Responsible AI ===
+
+        return $analysis;
     }
     
     /**

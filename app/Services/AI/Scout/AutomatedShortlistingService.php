@@ -55,7 +55,60 @@ class AutomatedShortlistingService
 
             foreach ($applications as $application) {
                 $candidateResult = $this->evaluateCandidate($application, $job);
-                
+
+                // === Responsible AI: XAI Audit Logging ===
+                try {
+                    $xaiService = app(\App\Services\ResponsibleAI\ExplainableAIService::class);
+                    $xaiRec     = str_contains(strtolower($candidateResult['recommendation'] ?? ''), 'reject') ? 'reject' : 'shortlist';
+                    $xaiScore   = ($candidateResult['overall_score'] ?? 0) / 100;
+                    $xaiFactors = $xaiService->buildFactorsFromRounds(
+                        [
+                            'round_1' => $candidateResult['round_1']['score'] ?? 0,
+                            'round_2' => $candidateResult['round_2']['score'] ?? 0,
+                            'round_3' => $candidateResult['round_3']['score'] ?? 0,
+                            'round_4' => $candidateResult['round_4']['score'] ?? 0,
+                        ],
+                        [
+                            'round_1' => $candidateResult['round_1'],
+                            'round_2' => $candidateResult['round_2'],
+                            'round_3' => $candidateResult['round_3'],
+                            'round_4' => $candidateResult['round_4'],
+                        ]
+                    );
+                    $xaiService->record(
+                        'App\\Models\\Application',
+                        $application->id,
+                        \App\Models\AIDecisionLog::TYPE_SHORTLIST,
+                        [
+                            'score'          => $xaiScore,
+                            'recommendation' => $xaiRec,
+                            'confidence'     => min(0.95, $xaiScore + 0.1),
+                            'factors'        => $xaiFactors,
+                            'explanation'    => $xaiService->generateNaturalLanguageExplanation(
+                                $xaiScore,
+                                $xaiRec,
+                                $xaiFactors,
+                                $application->user->name ?? 'Candidate'
+                            ),
+                            'evidence' => [
+                                'strengths' => $candidateResult['strengths'] ?? [],
+                                'concerns'  => $candidateResult['concerns'] ?? [],
+                            ],
+                            'input_context' => [
+                                'job_id'     => $job->id,
+                                'company_id' => $job->company_id,
+                                'pipeline'   => 'automated_shortlisting',
+                            ],
+                        ]
+                    );
+                } catch (\Throwable $xaiEx) {
+                    Log::warning('XAI logging failed for shortlisting', [
+                        'application_id' => $application->id,
+                        'error'          => $xaiEx->getMessage(),
+                    ]);
+                }
+                // === End Responsible AI ===
+
                 // Track progression through rounds
                 if ($candidateResult['round_1']['passed']) {
                     $results['round_1_passed']++;

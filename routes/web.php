@@ -438,6 +438,21 @@ Route::middleware('auth')->group(function () {
         return back();
     })->name('notifications.read');
 
+    // Responsible AI — Disclaimer Acknowledgment
+    Route::post('/ai-disclaimers/{id}/acknowledge', function (int $id, \Illuminate\Http\Request $request) {
+        $service = app(\App\Services\ResponsibleAI\AIDisclaimerService::class);
+        try {
+            $service->acknowledge(
+                $id,
+                $request->input('subject_type') ?: null,
+                $request->input('subject_id') ? (int) $request->input('subject_id') : null
+            );
+            return response()->json(['ok' => true]);
+        } catch (\Throwable $e) {
+            return response()->json(['ok' => false, 'message' => $e->getMessage()], 422);
+        }
+    })->name('ai-disclaimer.acknowledge');
+
     // Payment History
     Route::get('/payments', [PaymentHistoryController::class, 'index'])->name('payments.index');
     Route::get('/payments/{id}', [PaymentHistoryController::class, 'show'])->name('payments.show');

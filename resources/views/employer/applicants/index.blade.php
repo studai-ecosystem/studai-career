@@ -190,6 +190,10 @@
 @section('content')
 <div class="app-page">
 <div class="space-y-5">
+
+    {{-- Responsible AI Disclaimer --}}
+    <x-ai-disclaimer context="employer_screening" />
+
     {{-- Back + Hero Row --}}
     <div class="flex items-center gap-4 mb-1">
         <a href="{{ route('employer.home') }}" class="app-back-btn">

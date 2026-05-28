@@ -309,6 +309,18 @@ Schedule::call(function () {
 
 
 // ===============================================
+// RESPONSIBLE AI — BIAS DETECTION SCHEDULING
+// ===============================================
+
+// Run global bias analysis daily at 3 AM (30-day rolling window)
+Schedule::command('ai:run-bias-analysis global 0 --days=30')
+    ->dailyAt('03:00')
+    ->name('Responsible AI: Daily Bias Analysis')
+    ->onOneServer()
+    ->withoutOverlapping()
+    ->emailOutputOnFailure(config('mail.admin_email'));
+
+// ===============================================
 // FAILED JOBS MONITORING
 // ===============================================
 
