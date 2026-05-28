@@ -234,8 +234,14 @@
                                             if (vid) { vid.srcObject = stream; vid.play(); }
                                         })
                                         .catch(function (err) {
-                                            camSelf.cameraError = 'Camera/microphone access was denied (' + err.name + '). Your session has been flagged for review.';
-                                            console.warn('Camera/mic denied:', err.name);
+                                            if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                                                camSelf.cameraError = 'Camera/microphone access is blocked. To enable it: click the camera icon in your browser address bar, choose "Allow", then refresh this page. You can still complete the interview without camera access.';
+                                            } else if (err.name === 'NotFoundError') {
+                                                camSelf.cameraError = 'No camera or microphone detected. You can still complete the interview by typing your answers.';
+                                            } else {
+                                                camSelf.cameraError = 'Camera/microphone could not be started (' + err.name + '). You can still complete the interview by typing your answers.';
+                                            }
+                                            console.warn('Camera/mic error:', err.name);
                                         });
                                 } else {
                                     this.cameraError = 'This browser does not support camera access. Please use Chrome or Edge.';
@@ -336,6 +342,7 @@
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json',
+                                            'Accept': 'application/json',
                                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                                         },
                                         body: JSON.stringify({
@@ -344,7 +351,16 @@
                                             answer: this.answerText,
                                         })
                                     });
-                                    if (!response.ok) { throw new Error('Failed to save answer.'); }
+                                    if (!response.ok) {
+                                        var errBody = null;
+                                        try { errBody = await response.json(); } catch (_) {}
+                                        if (response.status === 404 && errBody && errBody.error) {
+                                            alert(errBody.error + ' Please start a new interview session.');
+                                        } else {
+                                            throw new Error('Server returned ' + response.status);
+                                        }
+                                        return;
+                                    }
                                     var data = await response.json();
                                     if (data.success) {
                                         this.answers[this.currentIndex] = {

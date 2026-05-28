@@ -16,6 +16,7 @@ class InterviewSession extends Model
         'user_id',
         'cache_key',
         'job_title',
+        'experience_level',
         'discovered_job_id',
         'company_name',
         'role_title',

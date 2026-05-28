@@ -66,8 +66,14 @@ fi
 
 # ---- 4. Laravel Optimization ----
 if [ "$APP_ENV" = "production" ]; then
-  echo "Clearing stale caches..."
-  php artisan optimize:clear || true
+  echo "Clearing stale compiled caches (NOT application data cache)..."
+  # NOTE: We deliberately do NOT run optimize:clear or cache:clear here.
+  # cache:clear wipes the application data cache (interview sessions, job recs, etc.)
+  # which causes in-progress user sessions to be destroyed on every container restart.
+  php artisan config:clear || true
+  php artisan route:clear  || true
+  php artisan view:clear   || true
+  php artisan event:clear  || true
   rm -f bootstrap/cache/config.php bootstrap/cache/routes*.php bootstrap/cache/events.php
 
   # Set APP_URL to HTTPS if not already set by Azure App Settings

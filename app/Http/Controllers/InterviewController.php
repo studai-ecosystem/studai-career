@@ -92,17 +92,30 @@ class InterviewController extends Controller
             $validated['question_count'] ?? 10
         );
         
-        // Store session in cache for 2 hours
+        // Store session in cache for 24 hours
         $sessionId = uniqid('interview_', true);
-        Cache::put("interview_session_{$sessionId}", [
-            'job_title' => $validated['job_title'],
+        $sessionData = [
+            'job_title'        => $validated['job_title'],
             'experience_level' => $validated['experience_level'],
-            'company' => $company?->name,
-            'questions' => $questions,
-            'answers' => [],
-            'started_at' => now(),
-        ], 7200);
-        
+            'company'          => $company?->name,
+            'questions'        => $questions,
+            'answers'          => [],
+            'started_at'       => now()->toDateTimeString(),
+        ];
+        Cache::put("interview_session_{$sessionId}", $sessionData, 86400);
+
+        // Persist to DB so the session survives cache flushes (e.g. container restarts)
+        InterviewSession::create([
+            'user_id'         => Auth::id(),
+            'cache_key'       => $sessionId,
+            'job_title'       => $validated['job_title'],
+            'experience_level' => $validated['experience_level'],
+            'company_name'    => $company?->name,
+            'status'          => 'in_progress',
+            'session_data'    => $sessionData,
+            'started_at'      => now(),
+        ]);
+
         return redirect()->route('interview.session', ['session' => $sessionId]);
     }
     
@@ -134,11 +147,23 @@ class InterviewController extends Controller
             'question' => 'required|string',
             'answer' => 'required|string|max:5000',
         ]);
-        
+
         $session = Cache::get("interview_session_{$sessionId}");
 
+        // If cache was cleared (e.g. container restart), recover session from DB
         if (!$session) {
-            return response()->json(['error' => 'Session expired'], 404);
+            $dbRecord = InterviewSession::where('user_id', Auth::id())
+                ->where('cache_key', $sessionId)
+                ->where('status', 'in_progress')
+                ->first();
+
+            if ($dbRecord && !empty($dbRecord->session_data)) {
+                $session = $dbRecord->session_data;
+                // Re-prime the cache so subsequent requests are fast
+                Cache::put("interview_session_{$sessionId}", $session, 86400);
+            } else {
+                return response()->json(['error' => 'Session expired. Please start a new interview.'], 404);
+            }
         }
 
         // Store raw answer — evaluation happens once at the end (no AI call per question)
@@ -148,7 +173,15 @@ class InterviewController extends Controller
             'answered_at' => now()->toDateTimeString(),
         ];
 
-        Cache::put("interview_session_{$sessionId}", $session, 7200);
+        Cache::put("interview_session_{$sessionId}", $session, 86400);
+
+        // Keep DB copy in sync so answers survive future cache flushes
+        InterviewSession::where('cache_key', $sessionId)
+            ->where('user_id', Auth::id())
+            ->update([
+                'session_data'      => $session,
+                'questions_answered' => count($session['answers']),
+            ]);
 
         return response()->json(['success' => true]);
     }
