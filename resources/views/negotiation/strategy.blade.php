@@ -380,7 +380,7 @@ new Chart(document.getElementById('leverageChart').getContext('2d'), {
 
 async function startCoachingSession() {
     try {
-        const r = await fetch('/api/negotiation/session', {method:'POST',headers:{'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}'},body:JSON.stringify({strategy_id:{{ $strategy->id }},session_type:'live_coaching',communication_mode:'email'})});
+        const r = await fetch('/api/negotiation/session', {method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}'},body:JSON.stringify({strategy_id:{{ $strategy->id }},session_type:'live_coaching',communication_mode:'email'})});
         const d = await r.json();
         if(d.success) window.location.href='/negotiation/coaching/'+d.session.id;
         else alert('Could not start: '+d.message);
