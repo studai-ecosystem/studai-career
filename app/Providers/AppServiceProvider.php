@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerInterface;
+use Symfony\Component\HtmlSanitizer\Parser\MastermindsParser;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +31,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // ── Force MastermindsParser for HTML sanitization ─────────────────────────────
+        // Fixes "Class Dom\HTMLDocument not found" on servers where PHP 8.4 dom API is
+        // unavailable (Azure App Service PHP runtime). Override Filament's default which
+        // auto-selects NativeParser on PHP >= 8.4, but Azure's build lacks Dom\namespace.
+        $this->app->scoped(
+            HtmlSanitizerInterface::class,
+            fn (): HtmlSanitizer => new HtmlSanitizer(
+                $this->app->make(HtmlSanitizerConfig::class),
+                new MastermindsParser(),
+            ),
+        );
+
         // ── Force HTTPS on Azure App Service (HTTPS terminated at load balancer) ──────
         if (app()->isProduction()) {
             URL::forceScheme('https');
