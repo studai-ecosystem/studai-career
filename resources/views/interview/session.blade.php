@@ -122,6 +122,9 @@
                             micActive: false,
                             mediaStream: null,
                             cameraError: null,
+                            sessionStarted: false,
+                            finishing: false,
+                            requestingCamera: false,
 
                             init() {
                                 // Normalize question field names (AI sometimes returns 'text' instead of 'question')
@@ -145,16 +148,12 @@
                                 // ── Proctoring ──────────────────────────────────────────
                                 var acSelf = this;
 
-                                // 1. Force fullscreen
-                                (function requestFS() {
-                                    var el = document.documentElement;
-                                    if (el.requestFullscreen) el.requestFullscreen();
-                                    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-                                    else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
-                                })();
+                                // NOTE: Fullscreen + camera are triggered in startSession() via user gesture button.
+                                // Browsers block requestFullscreen() and getUserMedia() without a user gesture.
 
-                                // 2. Detect fullscreen exit
+                                // 1. Detect fullscreen exit (only after session started, not during Finish navigation)
                                 document.addEventListener('fullscreenchange', function () {
+                                    if (!acSelf.sessionStarted || acSelf.finishing) return;
                                     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
                                         acSelf.fsViolations = (acSelf.fsViolations || 0) + 1;
                                         if (acSelf.fsViolations >= 3) {
@@ -172,7 +171,7 @@
                                     document.dispatchEvent(new Event('fullscreenchange'));
                                 });
 
-                                // 3. Restore fullscreen when user dismisses warning
+                                // 2. Restore fullscreen when user dismisses warning
                                 acSelf._restoreFS = function () {
                                     var el = document.documentElement;
                                     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
@@ -181,8 +180,9 @@
                                     }
                                 };
 
-                                // 4. Detect tab / window switching
+                                // 3. Detect tab / window switching (only after session started)
                                 document.addEventListener('visibilitychange', function () {
+                                    if (!acSelf.sessionStarted || acSelf.finishing) return;
                                     if (document.hidden) { acSelf.handleTabSwitch(); }
                                 });
 
@@ -211,8 +211,9 @@
                                     }
                                 });
 
-                                // 7. Split-screen detection via window resize
+                                // 7. Split-screen detection via window resize (only after session started)
                                 window.addEventListener('resize', function () {
+                                    if (!acSelf.sessionStarted || acSelf.finishing) return;
                                     var ratio = window.innerWidth / window.screen.width;
                                     if (ratio < 0.75) {
                                         acSelf.antiCheatMessage = 'Split-screen detected. Please return to fullscreen to continue your assessment.';
@@ -222,30 +223,7 @@
                                 });
                                 // ── End Proctoring ───────────────────────────────────────
 
-                                // Request camera + microphone access
-                                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                                    var camSelf = this;
-                                    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-                                        .then(function (stream) {
-                                            camSelf.mediaStream = stream;
-                                            camSelf.cameraActive = true;
-                                            camSelf.micActive    = true;
-                                            var vid = document.getElementById('camera-preview');
-                                            if (vid) { vid.srcObject = stream; vid.play(); }
-                                        })
-                                        .catch(function (err) {
-                                            if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                                                camSelf.cameraError = 'Camera/microphone access is blocked. To enable it: click the camera icon in your browser address bar, choose "Allow", then refresh this page. You can still complete the interview without camera access.';
-                                            } else if (err.name === 'NotFoundError') {
-                                                camSelf.cameraError = 'No camera or microphone detected. You can still complete the interview by typing your answers.';
-                                            } else {
-                                                camSelf.cameraError = 'Camera/microphone could not be started (' + err.name + '). You can still complete the interview by typing your answers.';
-                                            }
-                                            console.warn('Camera/mic error:', err.name);
-                                        });
-                                } else {
-                                    this.cameraError = 'This browser does not support camera access. Please use Chrome or Edge.';
-                                }
+                                // Camera/mic is requested in startSession() triggered by the user clicking "Start Interview".
                             },
 
                             get currentQuestion() {
@@ -419,6 +397,7 @@
                             toggleFeedback() { this.showFeedback = !this.showFeedback; },
 
                             handleTabSwitch() {
+                                if (!this.sessionStarted || this.finishing) return;
                                 this.tabSwitchCount++;
                                 if (this.tabSwitchCount >= 3) {
                                     this.antiCheatMessage = 'You have switched tabs 3 times. Your assessment is being submitted automatically.';
@@ -440,13 +419,64 @@
                             dismissAntiCheat() { this.antiCheatVisible = false; this._restoreFS && this._restoreFS(); },
 
                             finishSession() {
-                                if (!this.cameraActive) {
-                                    if (!confirm('Camera/microphone access was not granted. Your session will be flagged for review. Finish anyway?')) { return; }
-                                }
                                 if (this.answeredCount === 0) {
                                     if (!confirm('You have not saved any answers yet. Are you sure you want to finish?')) { return; }
                                 }
-                                window.location.href = this.completeUrl;
+                                // Set finishing flag FIRST so anti-cheat listeners ignore the navigation events
+                                this.finishing = true;
+                                var dest = this.completeUrl;
+                                var doNav = function () { window.location.href = dest; };
+                                // Exit fullscreen cleanly before navigating (avoids spurious fullscreenchange violation)
+                                if (document.fullscreenElement || document.webkitFullscreenElement) {
+                                    var exitP = document.exitFullscreen ? document.exitFullscreen() : Promise.resolve();
+                                    exitP.then(doNav).catch(doNav);
+                                } else {
+                                    doNav();
+                                }
+                            },
+
+                            startSession() {
+                                this.sessionStarted = true;
+                                // Request fullscreen via user gesture (required by browsers)
+                                var el = document.documentElement;
+                                var fsPromise = el.requestFullscreen
+                                    ? el.requestFullscreen()
+                                    : (el.webkitRequestFullscreen ? Promise.resolve(el.webkitRequestFullscreen()) : Promise.resolve());
+                                if (fsPromise && fsPromise.catch) {
+                                    fsPromise.catch(function (e) { console.warn('Fullscreen denied:', e && e.message); });
+                                }
+                                // Request camera + mic via user gesture
+                                this.requestCamera();
+                            },
+
+                            requestCamera() {
+                                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                                    this.cameraError = 'This browser does not support camera access. You can still complete the interview.';
+                                    return;
+                                }
+                                this.requestingCamera = true;
+                                this.cameraError = null;
+                                var self = this;
+                                navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                                    .then(function (stream) {
+                                        self.mediaStream = stream;
+                                        self.cameraActive = true;
+                                        self.micActive    = true;
+                                        self.requestingCamera = false;
+                                        var vid = document.getElementById('camera-preview');
+                                        if (vid) { vid.srcObject = stream; vid.play(); }
+                                    })
+                                    .catch(function (err) {
+                                        self.requestingCamera = false;
+                                        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                                            self.cameraError = 'Camera access blocked. Click the lock icon in the browser address bar, set Camera to "Allow", then click Enable Camera below.';
+                                        } else if (err.name === 'NotFoundError') {
+                                            self.cameraError = 'No camera or microphone found. You can still complete the interview.';
+                                        } else {
+                                            self.cameraError = 'Could not start camera (' + err.name + '). You can still complete the interview.';
+                                        }
+                                        console.warn('Camera/mic error:', err.name, err);
+                                    });
                             },
 
                             beforeDestroy() {
@@ -461,6 +491,29 @@
             </script>
 
             <div x-data="interviewSession(window.__interviewConfig)" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                {{-- Start Interview overlay -- requires user gesture for fullscreen + camera --}}
+                <template x-if="!sessionStarted">
+                    <div class="fixed inset-0 z-[60] flex items-center justify-center p-4" style="background:rgba(17,24,39,0.96);">
+                        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 text-center space-y-5">
+                            <div class="text-5xl">&#127919;</div>
+                            <h2 class="text-2xl font-bold text-gray-900">Ready to Start Your Interview?</h2>
+                            <div class="text-sm text-gray-600 text-left bg-gray-50 rounded-xl p-4 space-y-2">
+                                <p class="font-semibold text-gray-800 mb-1">What happens when you click Start:</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Your browser will <strong>ask to allow camera &amp; microphone</strong> &mdash; click Allow</li>
+                                    <li>The session enters <strong>fullscreen mode</strong> for integrity</li>
+                                    <li>Tab switching is monitored (3 warnings = auto-submit)</li>
+                                    <li>You have <strong>{{ count($flattenedQuestions) }} questions</strong> to answer</li>
+                                </ul>
+                                <p class="text-xs text-gray-400 pt-1">Camera is optional &mdash; you can complete the interview without it.</p>
+                            </div>
+                            <button @click="startSession()" class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:bg-indigo-700 active:scale-95 transition-all shadow-lg">
+                                &#128640; Start Interview
+                            </button>
+                        </div>
+                    </div>
+                </template>
 
                 {{-- Anti-cheat warning overlay --}}
                 <template x-if="antiCheatVisible">
@@ -599,16 +652,25 @@
                         <video id="camera-preview" autoplay muted playsinline x-show="cameraActive"
                                class="w-full rounded-lg bg-gray-900 aspect-video object-cover"
                                style="transform:scaleX(-1);"></video>
-                        <template x-if="!cameraActive && !cameraError">
+                        <template x-if="!cameraActive && !cameraError && !requestingCamera">
+                            <div class="aspect-video rounded-lg bg-gray-100 flex flex-col items-center justify-center text-gray-400 text-sm gap-2">
+                                <i class="fas fa-video text-2xl"></i>
+                                <span>Camera will start with the interview</span>
+                            </div>
+                        </template>
+                        <template x-if="requestingCamera">
                             <div class="aspect-video rounded-lg bg-gray-100 flex flex-col items-center justify-center text-gray-400 text-sm gap-2">
                                 <i class="fas fa-spinner fa-spin text-2xl"></i>
                                 <span>Requesting camera access&hellip;</span>
                             </div>
                         </template>
                         <template x-if="cameraError">
-                            <div class="aspect-video rounded-lg bg-red-50 flex flex-col items-center justify-center text-red-700 text-xs gap-2 p-3 text-center">
+                            <div class="rounded-lg bg-red-50 flex flex-col items-center justify-center text-red-700 text-xs gap-2 p-3 text-center py-4">
                                 <i class="fas fa-video-slash text-2xl"></i>
                                 <span x-text="cameraError"></span>
+                                <button @click="requestCamera()" class="mt-1 px-4 py-1.5 bg-red-600 text-white rounded text-xs font-semibold hover:bg-red-700 transition">
+                                    <i class="fas fa-redo mr-1"></i> Enable Camera
+                                </button>
                             </div>
                         </template>
                     </div>
