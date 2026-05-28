@@ -64,11 +64,18 @@ class Job extends Model
         'requires_github',
         'requires_work_sample',
         'mandatory_screening_questions',
+        'nice_to_have',
+        'ai_insights',
+        'quality_score',
     ];
 
     protected $casts = [
         'required_skills' => 'array',
         'preferred_skills' => 'array',
+        'requirements' => 'array',
+        'responsibilities' => 'array',
+        'nice_to_have' => 'array',
+        'ai_insights' => 'array',
         'benefits' => 'array',
         'ai_embeddings' => 'array',
         'is_featured' => 'boolean',

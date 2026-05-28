@@ -70,6 +70,15 @@
                     <p class="mt-3 text-xs text-purple-400">Press Enter or click the button. Takes about 10&mdash;15 seconds.</p>
                 </div>
 
+                {{-- Skip AI option --}}
+                <div class="mt-6">
+                    <button type="button" @click="skipAI()"
+                        class="inline-flex items-center gap-2 text-sm text-purple-400 hover:text-purple-200 underline underline-offset-2 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        Skip AI — Fill job details manually instead
+                    </button>
+                </div>
+
                 {{-- Quick options --}}
                 <div class="flex flex-wrap justify-center gap-4 mt-8">
                     <div>
@@ -550,6 +559,14 @@ window.jobCreator = function() {
             this.aiSuccess = false;
             this.aiError = null;
             this.$nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        },
+
+        skipAI() {
+            this.aiError = null;
+            this.aiSuccess = true;
+            this.$nextTick(() => {
+                document.getElementById('edit-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
         },
 
         async generateWithAI() {
