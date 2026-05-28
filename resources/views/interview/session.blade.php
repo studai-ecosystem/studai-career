@@ -437,16 +437,20 @@
 
                             startSession() {
                                 this.sessionStarted = true;
-                                // Request fullscreen via user gesture (required by browsers)
+                                var self = this;
                                 var el = document.documentElement;
+                                // Request fullscreen first, then camera AFTER transition completes.
+                                // Chrome blocks getUserMedia() during fullscreen transitions — calling
+                                // both simultaneously causes NotAllowedError even with granted permissions.
                                 var fsPromise = el.requestFullscreen
                                     ? el.requestFullscreen()
                                     : (el.webkitRequestFullscreen ? Promise.resolve(el.webkitRequestFullscreen()) : Promise.resolve());
-                                if (fsPromise && fsPromise.catch) {
-                                    fsPromise.catch(function (e) { console.warn('Fullscreen denied:', e && e.message); });
-                                }
-                                // Request camera + mic via user gesture
-                                this.requestCamera();
+                                (fsPromise || Promise.resolve())
+                                    .catch(function(e) { console.warn('Fullscreen denied:', e && e.message); })
+                                    .finally(function() {
+                                        // Small delay so the fullscreen transition fully completes
+                                        setTimeout(function() { self.requestCamera(); }, 300);
+                                    });
                             },
 
                             requestCamera() {
@@ -468,8 +472,25 @@
                                     })
                                     .catch(function (err) {
                                         self.requestingCamera = false;
+                                        // Check actual permission state before showing "blocked" message
                                         if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                                            self.cameraError = 'Camera access blocked. Click the lock icon in the browser address bar, set Camera to "Allow", then click Enable Camera below.';
+                                            navigator.permissions && navigator.permissions.query({ name: 'camera' })
+                                                .then(function(status) {
+                                                    if (status.state === 'granted') {
+                                                        // Permission IS granted — likely a timing conflict with
+                                                        // fullscreen. Auto-retry after a short delay.
+                                                        self.cameraError = 'Starting camera\u2026';
+                                                        setTimeout(function() {
+                                                            self.cameraError = null;
+                                                            self.requestCamera();
+                                                        }, 800);
+                                                    } else {
+                                                        self.cameraError = 'Camera access was denied. Please click the lock icon in your address bar, set Camera & Microphone to \u201cAllow\u201d, then click Enable Camera.';
+                                                    }
+                                                })
+                                                .catch(function() {
+                                                    self.cameraError = 'Camera access was denied. Please click the lock icon in your address bar, set Camera & Microphone to \u201cAllow\u201d, then click Enable Camera.';
+                                                });
                                         } else if (err.name === 'NotFoundError') {
                                             self.cameraError = 'No camera or microphone found. You can still complete the interview.';
                                         } else {
