@@ -396,7 +396,7 @@ class JobForm
                                 Section::make('Statistics')
                                     ->description('Job performance metrics')
                                     ->schema([
-                                        TextInput::make('views')
+                                        TextInput::make('views_count')
                                             ->label('Total Views')
                                             ->numeric()
                                             ->default(0)
