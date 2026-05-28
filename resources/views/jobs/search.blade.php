@@ -377,7 +377,7 @@
                                             {{ $job->location }}
                                         </span>
                                         <span class="text-gray-300 dark:text-gray-600">&middot;</span>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ ucwords(str_replace('-', ' ', $job->job_type)) }}</span>
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ ucwords(str_replace('-', ' ', $job->employment_type)) }}</span>
                                         @if($job->salary_min && $job->salary_max)
                                             <span class="text-gray-300 dark:text-gray-600">&middot;</span>
                                             <span class="text-xs font-semibold" style="color:{{ $c['accent'] }}">

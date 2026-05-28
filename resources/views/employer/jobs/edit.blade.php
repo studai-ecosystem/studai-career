@@ -41,11 +41,11 @@
                                     <select name="job_type" id="job_type" required
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                         <option value="">Select Type</option>
-                                        <option value="full_time" {{ old('job_type', $job->job_type) === 'full_time' ? 'selected' : '' }}>Full Time</option>
-                                        <option value="part_time" {{ old('job_type', $job->job_type) === 'part_time' ? 'selected' : '' }}>Part Time</option>
-                                        <option value="contract" {{ old('job_type', $job->job_type) === 'contract' ? 'selected' : '' }}>Contract</option>
-                                        <option value="internship" {{ old('job_type', $job->job_type) === 'internship' ? 'selected' : '' }}>Internship</option>
-                                        <option value="remote" {{ old('job_type', $job->job_type) === 'remote' ? 'selected' : '' }}>Remote</option>
+                                        <option value="full-time" {{ old('job_type', $job->employment_type) === 'full-time' ? 'selected' : '' }}>Full Time</option>
+                                        <option value="part-time" {{ old('job_type', $job->employment_type) === 'part-time' ? 'selected' : '' }}>Part Time</option>
+                                        <option value="contract" {{ old('job_type', $job->employment_type) === 'contract' ? 'selected' : '' }}>Contract</option>
+                                        <option value="internship" {{ old('job_type', $job->employment_type) === 'internship' ? 'selected' : '' }}>Internship</option>
+                                        <option value="remote" {{ old('job_type', $job->employment_type) === 'remote' ? 'selected' : '' }}>Remote</option>
                                     </select>
                                     @error('job_type')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -57,9 +57,10 @@
                                     <select name="experience_level" id="experience_level" required
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                         <option value="">Select Level</option>
-                                        <option value="entry_level" {{ old('experience_level', $job->experience_level) === 'entry_level' ? 'selected' : '' }}>Entry Level</option>
-                                        <option value="mid_level" {{ old('experience_level', $job->experience_level) === 'mid_level' ? 'selected' : '' }}>Mid Level</option>
-                                        <option value="senior_level" {{ old('experience_level', $job->experience_level) === 'senior_level' ? 'selected' : '' }}>Senior Level</option>
+                                        <option value="entry" {{ old('experience_level', $job->experience_level) === 'entry' ? 'selected' : '' }}>Entry Level</option>
+                                        <option value="mid" {{ old('experience_level', $job->experience_level) === 'mid' ? 'selected' : '' }}>Mid Level</option>
+                                        <option value="senior" {{ old('experience_level', $job->experience_level) === 'senior' ? 'selected' : '' }}>Senior Level</option>
+                                        <option value="lead" {{ old('experience_level', $job->experience_level) === 'lead' ? 'selected' : '' }}>Lead</option>
                                         <option value="executive" {{ old('experience_level', $job->experience_level) === 'executive' ? 'selected' : '' }}>Executive</option>
                                     </select>
                                     @error('experience_level')
