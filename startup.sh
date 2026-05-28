@@ -102,20 +102,21 @@ if [ "$APP_ENV" = "production" ]; then
   fi
 
   echo "Running production optimizations..."
-  timeout 60 php artisan config:cache || echo "WARNING: config:cache failed/timed-out"
-  timeout 60 php artisan route:cache  || echo "WARNING: route:cache failed/timed-out"
-  timeout 90 php artisan view:cache   || echo "WARNING: view:cache failed/timed-out"
-  timeout 60 php artisan event:cache  || echo "WARNING: event:cache failed/timed-out"
+  # NOTE: view:cache REMOVED — compiling all Blade templates in startup uses too much
+  # memory on the 512MB container and causes PHP-FPM OOM crashes. Views compile
+  # on-demand instead (slight first-request overhead, but server stays stable).
+  timeout 30 php artisan config:cache || echo "WARNING: config:cache failed/timed-out"
+  timeout 30 php artisan route:cache  || echo "WARNING: route:cache failed/timed-out"
+  timeout 30 php artisan event:cache  || echo "WARNING: event:cache failed/timed-out"
 
   echo "Running migrations..."
-  # NOTE: Timeout set to 120s to stay within Azure App Service 230s startup window
-  timeout 120 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
+  timeout 60 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
 
   echo "Syncing Meilisearch indices..."
-  timeout 30 php artisan scout:sync-index-settings 2>/dev/null || true
+  timeout 15 php artisan scout:sync-index-settings 2>/dev/null || true
 
   # Seed test accounts once (idempotent - skips if already seeded)
-  timeout 30 php artisan studai:seed-test-accounts 2>/dev/null || echo "WARNING: account seeder failed (non-critical)"
+  timeout 20 php artisan studai:seed-test-accounts 2>/dev/null || echo "WARNING: account seeder failed (non-critical)"
 
 else
   echo "Development mode - clearing caches..."
@@ -126,8 +127,9 @@ else
 fi
 
 # ---- 5. Filament & Icon Cache (with timeouts) ----
-timeout 30 php artisan filament:cache-components 2>/dev/null || true
-timeout 30 php artisan icons:cache 2>/dev/null || true
+# Reduced timeouts — these are non-critical, skip quickly if they hang
+timeout 15 php artisan filament:cache-components 2>/dev/null || true
+timeout 15 php artisan icons:cache 2>/dev/null || true
 
 # ---- 6. PHP-FPM Warmup ----
 # Pre-warm OPcache and Laravel bootstrap so first real user request is fast.
