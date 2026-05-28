@@ -648,10 +648,12 @@ return new class extends Migration
         if (! Schema::hasTable('interview_sessions')) {
             Schema::create('interview_sessions', function (Blueprint $table) {
                 $table->id();
+                $table->string('cache_key')->nullable()->unique();
                 $table->foreignId('user_id')->constrained()->onDelete('cascade');
                 $table->unsignedBigInteger('discovered_job_id')->nullable();
-                $table->string('company_name');
-                $table->string('role_title');
+                $table->string('company_name')->nullable();
+                $table->string('role_title')->nullable();
+                $table->string('job_title')->nullable();
                 $table->string('interview_type');
                 $table->enum('status', ['in_progress', 'completed', 'abandoned'])->default('in_progress');
                 $table->integer('total_questions')->default(0);
@@ -660,9 +662,12 @@ return new class extends Migration
                 $table->decimal('overall_score', 5, 2)->nullable();
                 $table->json('performance_metrics')->nullable();
                 $table->json('ai_insights')->nullable();
+                $table->json('session_data')->nullable();
                 $table->json('interviewer_style')->nullable();
-                $table->string('company_name_nullable')->nullable();
-                $table->string('cache_key')->nullable();
+                $table->json('skill_map')->nullable();
+                $table->string('focus_skill')->nullable();
+                $table->decimal('vantage_score', 3, 2)->nullable();
+                $table->timestamp('evaluator_ran_at')->nullable();
                 $table->timestamp('started_at');
                 $table->timestamp('completed_at')->nullable();
                 $table->timestamps();
