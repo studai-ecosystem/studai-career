@@ -64,7 +64,7 @@
                         <div class="p-4 bg-gray-50 rounded-lg mb-6">
                             <h3 class="text-sm font-medium text-gray-700 mb-2">Applied for</h3>
                             <p class="text-lg font-semibold text-gray-900">{{ $application->job->title }}</p>
-                            <p class="text-gray-600">{{ $application->job->location }} • {{ ucfirst(str_replace('_', ' ', $application->job->job_type)) }}</p>
+                            <p class="text-gray-600">{{ $application->job->location }} • {{ ucfirst(str_replace(['_', '-'], ' ', $application->job->employment_type ?? '')) }}</p>
                         </div>
 
                         <!-- Status Timeline -->
