@@ -659,13 +659,12 @@ Route::middleware('auth')->group(function () {
             try {
                 $jobRole = $request->job_role;
                 $prompt = "List exactly 20 relevant professional skills for a '{$jobRole}' role. Return ONLY a JSON array of skill name strings, no explanation, no markdown. Example: [\"JavaScript\",\"React\",\"Node.js\"]";
-                $response = \OpenAI\Laravel\Facades\OpenAI::chat()->create([
-                    'model' => config('ai.azure.models.chat', 'gpt-5.4'),
-                    'messages' => [['role' => 'user', 'content' => $prompt]],
-                    'max_tokens' => 400,
+                $aiService = app(\App\Services\AI\AIService::class);
+                $content = trim($aiService->generateText($prompt, null, [
                     'temperature' => 0.5,
-                ]);
-                $content = trim($response->choices[0]->message->content ?? '[]');
+                    'max_tokens' => 400,
+                    'skip_cache' => true,
+                ]));
                 $content = preg_replace('/^```(?:json)?\s*/i', '', $content);
                 $content = preg_replace('/\s*```$/', '', $content);
                 $skills = json_decode($content, true);
