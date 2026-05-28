@@ -73,31 +73,22 @@ if [ "$APP_ENV" = "production" ]; then
   # Set APP_URL to HTTPS if not already set by Azure App Settings
   export APP_URL="${APP_URL:-https://studai-app-prod.azurewebsites.net}"
 
-  # ---- Seed test accounts EARLY (before caching) so login works as soon as PHP-FPM is ready ----
-  # The migration 2026_11_08_000001_seed_qa_test_accounts.php seeds them idempotently at migrate
-  # time, but this artisan call ensures they are set even before migrate runs (e.g. after restart).
-  echo "Seeding test accounts (early, before cache rebuild)..."
-  timeout 60 php artisan studai:seed-test-accounts || echo "WARNING: early account seeder failed (will retry after migrate)"
-
-  echo "Running production optimizations (with 60s timeout each)..."
+  echo "Running production optimizations..."
   timeout 60 php artisan config:cache || echo "WARNING: config:cache failed/timed-out"
   timeout 60 php artisan route:cache  || echo "WARNING: route:cache failed/timed-out"
   timeout 90 php artisan view:cache   || echo "WARNING: view:cache failed/timed-out"
   timeout 60 php artisan event:cache  || echo "WARNING: event:cache failed/timed-out"
 
-  echo "Running migrations (includes QA test-account seed migration)..."
-  timeout 300 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
+  echo "Running migrations..."
+  # NOTE: Timeout set to 120s to stay within Azure App Service 230s startup window
+  timeout 120 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
 
   echo "Syncing Meilisearch indices..."
   timeout 30 php artisan scout:sync-index-settings 2>/dev/null || true
 
-  echo "Verifying test accounts after migrate..."
-  timeout 60 php artisan studai:seed-test-accounts || echo "WARNING: account seeder failed (non-critical)"
+  # Seed test accounts once (idempotent - skips if already seeded)
+  timeout 30 php artisan studai:seed-test-accounts 2>/dev/null || echo "WARNING: account seeder failed (non-critical)"
 
-  echo "Seeding subscription plans and resume templates..."
-  timeout 30 php artisan db:seed --class=SubscriptionPlanSeeder --force 2>/dev/null || echo "WARNING: SubscriptionPlanSeeder failed (non-critical)"
-  timeout 30 php artisan db:seed --class=ResumeTemplateSeeder --force 2>/dev/null || echo "WARNING: ResumeTemplateSeeder failed (non-critical)"
-  timeout 120 php artisan db:seed --class=SampleDataSeeder --force 2>/dev/null || echo "WARNING: SampleDataSeeder failed (non-critical)"
 else
   echo "Development mode - clearing caches..."
   php artisan optimize:clear 2>/dev/null || true
@@ -107,23 +98,8 @@ else
 fi
 
 # ---- 5. Filament & Icon Cache (with timeouts) ----
-timeout 60 php artisan filament:cache-components 2>/dev/null || true
-timeout 60 php artisan icons:cache 2>/dev/null || true
-
-# ---- 6. PHP-FPM Opcache Pre-warming ----
-# Send HTTP requests to warm up PHP-FPM opcache so first user requests are fast
-# This avoids the 5-8 second cold start on first requests after deployment
-if [ "$APP_ENV" = "production" ]; then
-  echo "Pre-warming PHP-FPM opcache (avoids cold-start timeouts for users)..."
-  # Wait for PHP-FPM/nginx to be fully ready
-  sleep 5
-  # Make multiple requests to warm different PHP-FPM workers
-  for i in 1 2 3; do
-    timeout 30 curl -sf http://127.0.0.1:8080/ > /dev/null 2>&1 && echo "Warmup request $i done" || echo "Warmup request $i skipped (non-critical)"
-    sleep 1
-  done
-  echo "Opcache pre-warming complete"
-fi
+timeout 30 php artisan filament:cache-components 2>/dev/null || true
+timeout 30 php artisan icons:cache 2>/dev/null || true
 
 echo "========================================"
 echo "Startup complete!"
