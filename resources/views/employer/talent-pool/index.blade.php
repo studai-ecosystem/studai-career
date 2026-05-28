@@ -84,7 +84,7 @@
                         </div>
                     @endif
                     <div class="text-xs text-gray-400">
-                        Added {{ $entry->created_at->diffForHumans() }}
+                        Added {{ $entry->created_at?->diffForHumans() ?? 'recently' }}
                         @if($entry->last_contacted_at)
                             · Contacted {{ $entry->last_contacted_at->diffForHumans() }}
                         @endif
