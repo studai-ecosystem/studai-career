@@ -48,14 +48,14 @@ class JobInfolist
                 TextEntry::make('benefits')
                     ->placeholder('-')
                     ->columnSpanFull(),
-                TextEntry::make('openings')
+                TextEntry::make('target_hire_count')
                     ->numeric(),
-                TextEntry::make('deadline')
+                TextEntry::make('expires_at')
                     ->date()
                     ->placeholder('-'),
                 TextEntry::make('status')
                     ->badge(),
-                TextEntry::make('views')
+                TextEntry::make('views_count')
                     ->numeric(),
                 TextEntry::make('applications_count')
                     ->numeric(),
