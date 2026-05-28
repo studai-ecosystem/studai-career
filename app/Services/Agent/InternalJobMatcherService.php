@@ -547,7 +547,7 @@ Instructions:
 PROMPT;
 
             $response = OpenAI::chat()->create([
-                'model'      => config('openai.model', 'gpt-4o-mini'),
+                'model'      => config('ai.azure.models.chat', 'gpt-5.4'),
                 'messages'   => [['role' => 'user', 'content' => $prompt]],
                 'max_tokens' => 400,
                 'temperature'=> 0.7,
