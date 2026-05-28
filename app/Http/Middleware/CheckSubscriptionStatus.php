@@ -26,6 +26,11 @@ class CheckSubscriptionStatus
         if (app()->environment('local')) {
             return $next($request);
         }
+
+        // Admins always bypass subscription checks
+        if ($user->account_type === 'admin') {
+            return $next($request);
+        }
         
         // Check if user has active subscription
         if (!$user->hasActiveSubscription()) {
