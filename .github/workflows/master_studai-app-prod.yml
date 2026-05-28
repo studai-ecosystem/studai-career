@@ -13,6 +13,9 @@ concurrency:
   group: azure-deploy-production
   cancel-in-progress: false
 
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
