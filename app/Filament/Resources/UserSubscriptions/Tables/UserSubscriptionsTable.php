@@ -316,7 +316,7 @@ class UserSubscriptionsTable
                     ->label('View User')
                     ->icon('heroicon-o-user')
                     ->color('info')
-                    ->url(fn ($record): string => route('filament.admin.resources.users.view', ['record' => $record->user_id]))
+                    ->url(fn ($record): string => route('filament.studai.resources.users.view', ['record' => $record->user_id]))
                     ->openUrlInNewTab(),
             ])
             ->toolbarActions([
@@ -398,6 +398,6 @@ class UserSubscriptionsTable
             ->deferLoading()
             ->striped()
             ->paginated([10, 25, 50, 100])
-            ->recordUrl(fn ($record): string => route('filament.admin.resources.user-subscriptions.view', ['record' => $record]));
+            ->recordUrl(fn ($record): string => route('filament.studai.resources.user-subscriptions.view', ['record' => $record]));
     }
 }

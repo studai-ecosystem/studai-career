@@ -375,7 +375,7 @@ class JobsTable
                     ->label('Applications')
                     ->icon('heroicon-o-document-text')
                     ->color('info')
-                    ->url(fn ($record): string => route('filament.admin.resources.applications.index', ['job_id' => $record->id]))
+                    ->url(fn ($record): string => route('filament.studai.resources.applications.index', ['job_id' => $record->id]))
                     ->visible(fn ($record): bool => $record->applications_count > 0),
             ])
             ->toolbarActions([
@@ -475,6 +475,6 @@ class JobsTable
             ->deferLoading()
             ->striped()
             ->paginated([10, 25, 50, 100])
-            ->recordUrl(fn ($record): string => route('filament.admin.resources.jobs.view', ['record' => $record]));
+            ->recordUrl(fn ($record): string => route('filament.studai.resources.jobs.view', ['record' => $record]));
     }
 }
