@@ -681,7 +681,11 @@ function startVoice() {
     };
     recognition.onerror = (e) => {
         stopVoice();
-        if (e.error !== 'no-speech') showError('Voice error: ' + e.error);
+        if (e.error === 'not-allowed' || e.error === 'permission-denied') {
+            showError('Microphone blocked. Click the 🔒 lock icon in your browser address bar → allow Microphone → refresh and try again.');
+        } else if (e.error !== 'no-speech') {
+            showError('Voice error: ' + e.error);
+        }
     };
     recognition.start();
 }
@@ -693,7 +697,14 @@ function stopVoice() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    scrollBottom();
+    // Scroll to the TOP of the last AI message so user reads from start, not mid-message
+    const rows = document.querySelectorAll('.msg-row.assistant');
+    const last = rows[rows.length - 1];
+    if (last) {
+        last.scrollIntoView({ behavior: 'instant', block: 'start' });
+    } else {
+        scrollBottom();
+    }
     document.getElementById('message-input').focus();
 });
 </script>
