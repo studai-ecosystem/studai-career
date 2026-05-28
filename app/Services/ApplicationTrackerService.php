@@ -430,7 +430,7 @@ class ApplicationTrackerService
         $insights = [];
         
         // Best performing job types
-        $byJobType = $applications->groupBy(fn($app) => $app->job->job_type);
+        $byJobType = $applications->groupBy(fn($app) => $app->job->employment_type ?? 'unknown');
         $jobTypeStats = [];
         foreach ($byJobType as $type => $apps) {
             $responses = $apps->whereNotNull('viewed_at')->count();

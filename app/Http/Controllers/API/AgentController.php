@@ -502,7 +502,7 @@ class AgentController extends Controller
                 ];
             });
 
-        $performanceByJobType = $applications->groupBy('job_type')
+        $performanceByJobType = $applications->groupBy(fn($app) => $app->job?->employment_type ?? 'unknown')
             ->map(function ($typeApps) {
                 $total = $typeApps->count();
                 $successful = $typeApps->whereIn('outcome', ['interview_scheduled', 'offer_received', 'accepted'])->count();

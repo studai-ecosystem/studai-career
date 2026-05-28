@@ -45,7 +45,7 @@ class SwipeJobBrowser extends Component
             ->with(['company', 'skills'])
             ->when($this->search, fn($q) => $q->where('title', 'like', "%{$this->search}%"))
             ->when($this->location, fn($q) => $q->where('location', 'like', "%{$this->location}%"))
-            ->when($this->jobType, fn($q) => $q->where('job_type', $this->jobType))
+            ->when($this->jobType, fn($q) => $q->where('employment_type', $this->jobType))
             ->when($this->minSalary, fn($q) => $q->where('salary_min', '>=', $this->minSalary))
             ->orderBy('created_at', 'desc');
 
@@ -69,7 +69,7 @@ class SwipeJobBrowser extends Component
                 'company' => $job->company?->name ?? 'Unknown Company',
                 'company_logo' => $job->company?->logo_url ?? null,
                 'location' => $job->location,
-                'job_type' => $job->job_type,
+                'job_type' => $job->employment_type,
                 'salary_min' => $job->salary_min,
                 'salary_max' => $job->salary_max,
                 'salary_display' => $this->formatSalary($job->salary_min, $job->salary_max),

@@ -95,7 +95,7 @@ class CoverLetterGeneratorService
         $prompt .= "Job Title: {$job->title}\n";
         $prompt .= "Company: {$job->company_name}\n";
         $prompt .= "Location: {$job->location}\n";
-        $prompt .= "Type: {$job->job_type}\n";
+        $prompt .= "Type: {$job->employment_type}\n";
         
         $prompt .= "\nJOB REQUIREMENTS:\n";
         $prompt .= json_encode($job->requirements) . "\n";
