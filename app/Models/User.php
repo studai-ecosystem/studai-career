@@ -268,13 +268,22 @@ class User extends Authenticatable implements FilamentUser
             $subscription->increment('ai_credits_used_this_month', $amount);
         }
 
-        AICreditLog::create([
-            'user_id'      => $this->id,
-            'action'       => $action,
-            'description'  => $description,
-            'credits_used' => $amount,
-            'meta'         => $meta ?: null,
-        ]);
+        try {
+            AICreditLog::create([
+                'user_id'      => $this->id,
+                'action'       => $action,
+                'description'  => $description,
+                'credits_used' => $amount,
+                'meta'         => $meta ?: null,
+            ]);
+        } catch (\Throwable $e) {
+            // Log silently — never let credit logging crash an AI feature
+            \Log::warning('AI credit log failed (non-critical)', [
+                'user_id' => $this->id,
+                'action'  => $action,
+                'error'   => $e->getMessage(),
+            ]);
+        }
     }
 
     public function aiCreditLogs()
