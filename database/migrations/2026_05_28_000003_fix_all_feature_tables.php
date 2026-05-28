@@ -117,6 +117,7 @@ return new class extends Migration
                 $table->json('phrases_to_avoid');
                 $table->json('transition_phrases');
                 $table->enum('tone', ['professional', 'enthusiastic', 'collaborative', 'confident', 'grateful']);
+                $table->string('formality_level')->nullable();
                 $table->json('cultural_adaptations')->nullable();
                 $table->text('personality_notes')->nullable();
                 $table->json('anchoring_tactics')->nullable();
@@ -124,10 +125,10 @@ return new class extends Migration
                 $table->json('reciprocity_elements')->nullable();
                 $table->boolean('includes_deadline')->default(false);
                 $table->boolean('includes_alternatives')->default(false);
+                $table->boolean('includes_data')->default(false);
                 $table->integer('effectiveness_rating')->nullable();
                 $table->boolean('was_used')->default(false);
                 $table->timestamp('used_at')->nullable();
-                $table->integer('formality_level')->default(3)->nullable();
                 $table->timestamps();
                 $table->index(['strategy_id', 'script_type', 'script_stage']);
             });
@@ -389,8 +390,11 @@ return new class extends Migration
                 $table->id();
                 $table->foreignId('user_id')->constrained()->onDelete('cascade');
                 $table->boolean('is_active')->default(false);
+                $table->boolean('is_paused')->default(false);
                 $table->integer('daily_application_limit')->default(5);
                 $table->integer('applications_this_month')->default(0);
+                $table->integer('applications_today')->default(0);
+                $table->date('applications_today_date')->nullable();
                 $table->json('target_roles')->nullable();
                 $table->json('preferred_locations')->nullable();
                 $table->json('required_skills')->nullable();
@@ -410,6 +414,8 @@ return new class extends Migration
                 $table->enum('application_aggressiveness', ['conservative', 'moderate', 'aggressive'])->default('moderate');
                 $table->integer('match_threshold_percentage')->default(70);
                 $table->boolean('auto_follow_up')->default(true);
+                $table->boolean('require_approval')->default(false);
+                $table->integer('approval_threshold')->default(80);
                 $table->integer('follow_up_days')->default(7);
                 $table->boolean('enable_learning')->default(true);
                 $table->json('learning_metrics')->nullable();
@@ -418,15 +424,20 @@ return new class extends Migration
                 $table->json('active_days')->nullable();
                 $table->timestamp('next_run_at')->nullable();
                 $table->timestamp('last_run_at')->nullable();
-                $table->boolean('emergency_stop')->default(false)->nullable();
-                $table->boolean('require_approval')->default(false)->nullable();
-                $table->boolean('is_paused')->default(false)->nullable();
-                $table->string('pause_reason')->nullable();
+                $table->timestamp('activated_at')->nullable();
+                $table->timestamp('deactivated_at')->nullable();
                 $table->timestamp('paused_at')->nullable();
+                $table->string('pause_reason')->nullable();
+                $table->timestamp('emergency_stopped_at')->nullable();
+                $table->unsignedBigInteger('emergency_stopped_by')->nullable();
+                $table->text('emergency_stop_reason')->nullable();
+                $table->boolean('is_globally_stopped')->default(false);
                 $table->timestamps();
                 $table->softDeletes();
                 $table->unique('user_id');
                 $table->index(['is_active', 'next_run_at']);
+                $table->index('emergency_stopped_at');
+                $table->index('is_globally_stopped');
             });
         }
 
@@ -1202,10 +1213,14 @@ return new class extends Migration
                 $table->text('relevant_experience')->nullable();
                 $table->json('attachments')->nullable();
                 $table->enum('status', ['pending', 'shortlisted', 'accepted', 'rejected', 'withdrawn'])->default('pending');
+                $table->unsignedTinyInteger('ai_match_score')->nullable();
+                $table->json('ai_match_breakdown')->nullable();
                 $table->boolean('is_boosted')->default(false);
                 $table->timestamp('boosted_at')->nullable();
                 $table->timestamp('viewed_at')->nullable();
                 $table->timestamp('responded_at')->nullable();
+                $table->timestamp('offer_sent_at')->nullable();
+                $table->timestamp('offer_responded_at')->nullable();
                 $table->decimal('ai_score', 5, 2)->nullable();
                 $table->json('ai_feedback')->nullable();
                 $table->timestamps();
