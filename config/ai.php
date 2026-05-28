@@ -23,16 +23,16 @@ return [
     */
 
     'azure' => [
-        'api_key'       => env('AZURE_OPENAI_API_KEY',       'e6e0bf0c61d14319a92bbc2d2a02f52f'),
-        'endpoint'      => env('AZURE_OPENAI_ENDPOINT',      'https://studai-openai-2049701603.openai.azure.com/'),
-        'deployment_id' => env('AZURE_OPENAI_DEPLOYMENT_ID', 'gpt-5.4'),
-        'api_version'   => env('AZURE_OPENAI_API_VERSION',   '2025-04-01-preview'),
+        'api_key'       => (empty(env('AZURE_OPENAI_API_KEY'))      ? 'e6e0bf0c61d14319a92bbc2d2a02f52f'                        : env('AZURE_OPENAI_API_KEY')),
+        'endpoint'      => (empty(env('AZURE_OPENAI_ENDPOINT'))      ? 'https://studai-openai-2049701603.openai.azure.com/'      : env('AZURE_OPENAI_ENDPOINT')),
+        'deployment_id' => (empty(env('AZURE_OPENAI_DEPLOYMENT_ID')) ? 'gpt-5.4'                                                 : env('AZURE_OPENAI_DEPLOYMENT_ID')),
+        'api_version'   => (empty(env('AZURE_OPENAI_API_VERSION'))   ? '2025-04-01-preview'                                      : env('AZURE_OPENAI_API_VERSION')),
 
         // Model configurations — GPT-5.4 (Orin™)
         'models' => [
-            'chat'       => env('AZURE_OPENAI_MODEL',      'gpt-5.4'),
-            'chat_mini'  => env('AZURE_OPENAI_MODEL_MINI', 'gpt-5.4'),
-            'embeddings' => env('AI_MODEL_EMBEDDINGS',     'text-embedding-3-large'),
+            'chat'       => (empty(env('AZURE_OPENAI_MODEL'))      ? 'gpt-5.4'                : env('AZURE_OPENAI_MODEL')),
+            'chat_mini'  => (empty(env('AZURE_OPENAI_MODEL_MINI')) ? 'gpt-5.4'                : env('AZURE_OPENAI_MODEL_MINI')),
+            'embeddings' => (empty(env('AI_MODEL_EMBEDDINGS'))     ? 'text-embedding-3-large' : env('AI_MODEL_EMBEDDINGS')),
         ],
     ],
 
