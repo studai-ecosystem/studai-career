@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class InterviewController extends Controller
 {
@@ -108,18 +109,22 @@ class InterviewController extends Controller
         // Wrapped in try-catch: if the migration hasn't run yet (e.g. during deployment),
         // the interview still works via cache — DB persistence is a durability bonus.
         try {
-            InterviewSession::create([
-                'user_id'          => Auth::id(),
-                'cache_key'        => $sessionId,
-                'job_title'        => $validated['job_title'],
-                'experience_level' => $validated['experience_level'],
-                'company_name'     => $company?->name,
-                'status'           => 'in_progress',
-                'session_data'     => $sessionData,
-                'started_at'       => now(),
-            ]);
+            $dbData = [
+                'user_id'      => Auth::id(),
+                'cache_key'    => $sessionId,
+                'job_title'    => $validated['job_title'],
+                'company_name' => $company?->name,
+                'status'       => 'in_progress',
+                'session_data' => $sessionData,
+                'started_at'   => now(),
+            ];
+            // Only include experience_level if the column exists (safe during schema migrations)
+            if (Schema::hasColumn('interview_sessions', 'experience_level')) {
+                $dbData['experience_level'] = $validated['experience_level'];
+            }
+            InterviewSession::create($dbData);
         } catch (\Throwable $e) {
-            Log::warning('InterviewSession DB persist failed (migration pending?): ' . $e->getMessage());
+            Log::warning('InterviewSession DB persist failed: ' . $e->getMessage());
         }
 
         return redirect()->route('interview.session', ['session' => $sessionId]);
