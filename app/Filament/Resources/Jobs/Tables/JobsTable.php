@@ -43,8 +43,11 @@ class JobsTable
                     ->color(fn (string $state): string => match ($state) {
                         'draft' => 'gray',
                         'active' => 'success',
+                        'published' => 'success',
                         'paused' => 'warning',
                         'closed' => 'danger',
+                        'archived' => 'gray',
+                        default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => ucfirst($state))
                     ->sortable()
@@ -74,11 +77,13 @@ class JobsTable
                         'remote' => 'success',
                         'hybrid' => 'warning',
                         'onsite' => 'info',
+                        default => 'gray',
                     })
                     ->icon(fn (string $state): string => match ($state) {
                         'remote' => 'heroicon-o-globe-alt',
                         'hybrid' => 'heroicon-o-building-office',
                         'onsite' => 'heroicon-o-map-pin',
+                        default => 'heroicon-o-briefcase',
                     })
                     ->formatStateUsing(fn (string $state): string => ucfirst($state))
                     ->sortable()
@@ -120,19 +125,19 @@ class JobsTable
                     })
                     ->toggleable(),
                 
-                TextColumn::make('openings')
+                TextColumn::make('target_hire_count')
                     ->label('Positions')
                     ->numeric()
                     ->icon('heroicon-o-users')
                     ->sortable()
                     ->toggleable(),
                 
-                TextColumn::make('deadline')
+                TextColumn::make('expires_at')
                     ->label('Deadline')
                     ->date('d M Y')
-                    ->description(fn ($record): ?string => $record->deadline ? $record->deadline->diffForHumans() : null)
+                    ->description(fn ($record): ?string => $record->expires_at ? $record->expires_at->diffForHumans() : null)
                     ->icon('heroicon-o-calendar')
-                    ->color(fn ($record): string => $record->deadline && $record->deadline->isPast() ? 'danger' : 'gray')
+                    ->color(fn ($record): string => $record->expires_at && $record->expires_at->isPast() ? 'danger' : 'gray')
                     ->sortable()
                     ->toggleable(),
                 
@@ -156,7 +161,7 @@ class JobsTable
                     ->sortable()
                     ->toggleable(),
                 
-                TextColumn::make('views')
+                TextColumn::make('views_count')
                     ->label('Views')
                     ->numeric()
                     ->icon('heroicon-o-eye')
