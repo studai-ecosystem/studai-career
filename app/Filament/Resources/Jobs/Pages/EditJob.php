@@ -18,4 +18,13 @@ class EditJob extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    /**
+     * Strip any form fields that don't map to fillable model columns.
+     */
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        unset($data['salary_negotiable'], $data['openings'], $data['deadline'], $data['extracted_skills']);
+        return $data;
+    }
 }

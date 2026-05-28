@@ -108,7 +108,7 @@ class JobForm
                                             ->helperText('City, State/Country (e.g., "Bangalore, India")')
                                             ->columnSpan(1),
                                         
-                                        TextInput::make('openings')
+                                        TextInput::make('target_hire_count')
                                             ->label('Number of Openings')
                                             ->required()
                                             ->numeric()
@@ -117,7 +117,7 @@ class JobForm
                                             ->maxValue(100)
                                             ->columnSpan(1),
                                         
-                                        DatePicker::make('deadline')
+                                        DatePicker::make('expires_at')
                                             ->label('Application Deadline')
                                             ->native(false)
                                             ->displayFormat('d M Y')
@@ -247,11 +247,6 @@ class JobForm
                                                     ->required(),
                                             ]),
                                         
-                                        Toggle::make('salary_negotiable')
-                                            ->label('Salary is Negotiable')
-                                            ->default(false)
-                                            ->inline(false)
-                                            ->helperText('Enable if salary range is flexible'),
                                     ]),
                                 
                                 Section::make('Benefits & Perks')
@@ -300,7 +295,7 @@ class JobForm
                                 Section::make('AI-Generated Insights')
                                     ->description('AI-powered analysis and extracted information')
                                     ->schema([
-                                        TagsInput::make('extracted_skills')
+                                        TagsInput::make('required_skills')
                                             ->label('Extracted Skills')
                                             ->helperText('AI-extracted skills from job description')
                                             ->placeholder('Skills will be auto-extracted by AI')
