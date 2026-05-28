@@ -123,6 +123,16 @@ fi
 timeout 30 php artisan filament:cache-components 2>/dev/null || true
 timeout 30 php artisan icons:cache 2>/dev/null || true
 
+# ---- 6. PHP-FPM Warmup ----
+# Pre-warm OPcache and Laravel bootstrap so first real user request is fast.
+# Without this, first requests after container restart take 5-10s and may return 502.
+APP_WARMUP_URL="${APP_URL:-https://studai-app-prod.azurewebsites.net}"
+echo "Warming up PHP-FPM workers (pre-loading OPcache)..."
+for i in 1 2 3; do
+  curl -sf --max-time 15 "${APP_WARMUP_URL}/up" -o /dev/null && echo "  Warmup hit $i: OK" || echo "  Warmup hit $i: skipped"
+done
+echo "Warmup complete."
+
 echo "========================================"
 echo "Startup complete!"
 echo "========================================"
