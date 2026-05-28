@@ -73,6 +73,28 @@ if [ "$APP_ENV" = "production" ]; then
   # Set APP_URL to HTTPS if not already set by Azure App Settings
   export APP_URL="${APP_URL:-https://studai-app-prod.azurewebsites.net}"
 
+  # ---- Force-load AI credentials from .env ----
+  # Azure App Service Application Settings can override .env with empty values.
+  # We read directly from .env to guarantee config:cache bakes in the real keys.
+  echo "Loading AI credentials from .env into environment..."
+  if [ -f ".env" ]; then
+    _load_env_var() {
+      local key="$1"
+      local val
+      val=$(grep -m1 "^${key}=" .env | cut -d'=' -f2-)
+      [ -n "$val" ] && export "$key"="$val" && echo "  Loaded ${key}"
+    }
+    _load_env_var AZURE_OPENAI_API_KEY
+    _load_env_var AZURE_OPENAI_ENDPOINT
+    _load_env_var AZURE_OPENAI_DEPLOYMENT_ID
+    _load_env_var AZURE_OPENAI_API_VERSION
+    _load_env_var AZURE_OPENAI_MODEL
+    _load_env_var AZURE_ANTHROPIC_API_KEY
+    _load_env_var AZURE_ANTHROPIC_ENDPOINT
+    _load_env_var AZURE_ANTHROPIC_MODEL
+    _load_env_var OPENAI_API_KEY
+  fi
+
   echo "Running production optimizations..."
   timeout 60 php artisan config:cache || echo "WARNING: config:cache failed/timed-out"
   timeout 60 php artisan route:cache  || echo "WARNING: route:cache failed/timed-out"

@@ -78,6 +78,14 @@ jobs:
 
       - name: Set resilient App Settings (use DB for session/cache/queue to avoid Redis failures)
         run: |
+          # Read Azure OpenAI credentials from the committed .env file
+          AZURE_KEY=$(grep -m1 "^AZURE_OPENAI_API_KEY=" .env | cut -d'=' -f2-)
+          AZURE_EP=$(grep -m1 "^AZURE_OPENAI_ENDPOINT=" .env | cut -d'=' -f2-)
+          AZURE_DEP=$(grep -m1 "^AZURE_OPENAI_DEPLOYMENT_ID=" .env | cut -d'=' -f2-)
+          AZURE_VER=$(grep -m1 "^AZURE_OPENAI_API_VERSION=" .env | cut -d'=' -f2-)
+          AZURE_MODEL=$(grep -m1 "^AZURE_OPENAI_MODEL=" .env | cut -d'=' -f2-)
+          ANTH_KEY=$(grep -m1 "^AZURE_ANTHROPIC_API_KEY=" .env | cut -d'=' -f2-)
+          ANTH_EP=$(grep -m1 "^AZURE_ANTHROPIC_ENDPOINT=" .env | cut -d'=' -f2-)
           az webapp config appsettings set \
             --name studai-app-prod \
             --resource-group studai-career \
@@ -85,7 +93,14 @@ jobs:
               SESSION_DRIVER=database \
               CACHE_STORE=database \
               QUEUE_CONNECTION=database \
-              AUTH_DIAG_TOKEN=studai-diag-2024
+              AUTH_DIAG_TOKEN=studai-diag-2024 \
+              AZURE_OPENAI_API_KEY="${AZURE_KEY}" \
+              AZURE_OPENAI_ENDPOINT="${AZURE_EP}" \
+              AZURE_OPENAI_DEPLOYMENT_ID="${AZURE_DEP}" \
+              AZURE_OPENAI_API_VERSION="${AZURE_VER}" \
+              AZURE_OPENAI_MODEL="${AZURE_MODEL}" \
+              AZURE_ANTHROPIC_API_KEY="${ANTH_KEY}" \
+              AZURE_ANTHROPIC_ENDPOINT="${ANTH_EP}"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
