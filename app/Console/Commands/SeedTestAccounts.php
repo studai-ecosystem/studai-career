@@ -17,9 +17,11 @@ class SeedTestAccounts extends Command
     public function handle(): int
     {
         $accounts = [
-            ['email' => 'admin@studai.com',     'password' => 'password', 'account_type' => 'admin',      'name' => 'Admin'],
-            ['email' => 'jobseeker@studai.com', 'password' => 'password', 'account_type' => 'job_seeker', 'name' => 'Test Job Seeker'],
-            ['email' => 'employer@studai.com',  'password' => 'password', 'account_type' => 'employer',   'name' => 'Test Employer'],
+            ['email' => 'admin@studai.com',              'password' => 'password', 'account_type' => 'admin',      'name' => 'Admin'],
+            ['email' => 'jobseeker@studai.com',          'password' => 'password', 'account_type' => 'job_seeker', 'name' => 'Test Job Seeker'],
+            ['email' => 'employer@studai.com',           'password' => 'password', 'account_type' => 'employer',   'name' => 'Test Employer'],
+            ['email' => 'tharinimicrosoft@gmail.com',    'password' => 'password', 'account_type' => 'employer',   'name' => 'NexHire AI'],
+            ['email' => 'onestudai@gmail.com',           'password' => 'password', 'account_type' => 'employer',   'name' => 'ACME'],
         ];
 
         $now = now()->toDateTimeString();
@@ -74,6 +76,48 @@ class SeedTestAccounts extends Command
             DB::table('users')->where('email', 'employer@studai.com')
                 ->update(['company_id' => $companyId, 'updated_at' => $now]);
             $this->info("Linked employer@studai.com to company id={$companyId}");
+        }
+
+        // Seed NexHire AI company for tharinimicrosoft@gmail.com
+        $nexhireUser = DB::table('users')->where('email', 'tharinimicrosoft@gmail.com')->first();
+        if ($nexhireUser && ! $nexhireUser->company_id) {
+            $nexhireCo = DB::table('companies')->where('slug', 'nexhire-ai')->first();
+            if (! $nexhireCo) {
+                $nexhireCoId = DB::table('companies')->insertGetId([
+                    'name'         => 'NexHire AI',
+                    'slug'         => 'nexhire-ai',
+                    'is_verified'  => 1,
+                    'is_featured'  => 0,
+                    'created_at'   => $now,
+                    'updated_at'   => $now,
+                ]);
+            } else {
+                $nexhireCoId = $nexhireCo->id;
+            }
+            DB::table('users')->where('email', 'tharinimicrosoft@gmail.com')
+                ->update(['company_id' => $nexhireCoId, 'updated_at' => $now]);
+            $this->info("Linked tharinimicrosoft@gmail.com to NexHire AI company id={$nexhireCoId}");
+        }
+
+        // Seed Acme Technologies company for onestudai@gmail.com
+        $acmeUser = DB::table('users')->where('email', 'onestudai@gmail.com')->first();
+        if ($acmeUser && ! $acmeUser->company_id) {
+            $acmeCo = DB::table('companies')->where('slug', 'acme-technologies')->first();
+            if (! $acmeCo) {
+                $acmeCoId = DB::table('companies')->insertGetId([
+                    'name'         => 'Acme Technologies Pvt Ltd',
+                    'slug'         => 'acme-technologies',
+                    'is_verified'  => 1,
+                    'is_featured'  => 0,
+                    'created_at'   => $now,
+                    'updated_at'   => $now,
+                ]);
+            } else {
+                $acmeCoId = $acmeCo->id;
+            }
+            DB::table('users')->where('email', 'onestudai@gmail.com')
+                ->update(['company_id' => $acmeCoId, 'updated_at' => $now]);
+            $this->info("Linked onestudai@gmail.com to Acme Technologies company id={$acmeCoId}");
         }
 
         // Verify passwords match
