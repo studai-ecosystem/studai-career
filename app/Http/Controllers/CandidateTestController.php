@@ -77,59 +77,81 @@ class CandidateTestController extends Controller
 
     public function submit(Request $request, int $jobId, int $roundId)
     {
-        $round   = HiringRound::with('job')->findOrFail($roundId);
-        abort_if($round->job_id !== $jobId, 404);
+        try {
+            $round   = HiringRound::with('job')->findOrFail($roundId);
+            abort_if($round->job_id !== $jobId, 404);
 
-        $attempt = RoundAttempt::where('hiring_round_id', $roundId)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+            $attempt = RoundAttempt::where('hiring_round_id', $roundId)
+                ->where('user_id', Auth::id())
+                ->firstOrFail();
 
-        // Already submitted — just redirect to result
-        if ($attempt->status === 'submitted' || $attempt->status === 'evaluated') {
-            return redirect()->route('candidate.test.result', [$jobId, $roundId]);
-        }
-
-        $answers = $request->input('answers', []);
-
-        // Auto-score MCQ answers and collect short answers
-        $questions   = $attempt->questions ?? [];
-        $score       = 0;
-        $total       = 0;
-        $enriched    = [];
-
-        foreach ($questions as $i => $q) {
-            $given = $answers[$i] ?? null;
-            $entry = $q;
-            $entry['given'] = $given;
-
-            if ($q['type'] === 'mcq') {
-                $total++;
-                if ($given !== null && (int) $given === (int) ($q['correct'] ?? -1)) {
-                    $score++;
-                    $entry['correct_answer'] = true;
-                } else {
-                    $entry['correct_answer'] = false;
-                }
+            // Already submitted — just redirect to result
+            if ($attempt->status === 'submitted' || $attempt->status === 'evaluated') {
+                return redirect()->route('candidate.test.result', [$jobId, $roundId]);
             }
-            $enriched[] = $entry;
+
+            $answers = $request->input('answers', []);
+
+            // Auto-score MCQ answers and collect short answers
+            $questions   = $attempt->questions ?? [];
+            $score       = 0;
+            $total       = 0;
+            $enriched    = [];
+
+            foreach ($questions as $i => $q) {
+                $given = $answers[$i] ?? null;
+                $entry = $q;
+                $entry['given'] = $given;
+
+                if (($q['type'] ?? 'short') === 'mcq') {
+                    $total++;
+                    if ($given !== null && (int) $given === (int) ($q['correct'] ?? -1)) {
+                        $score++;
+                        $entry['correct_answer'] = true;
+                    } else {
+                        $entry['correct_answer'] = false;
+                    }
+                }
+                $enriched[] = $entry;
+            }
+
+            $mcqScore = $total > 0 ? (int) round($score / $total * 100) : null;
+
+            $attempt->update([
+                'answers'      => $enriched,
+                'score'        => $mcqScore,
+                'violations'   => (int) $request->input('violations', 0),
+                'status'       => 'submitted',
+                'submitted_at' => now(),
+            ]);
+
+            // Fire async AI evaluation for short-answer questions
+            // (kept lightweight — no queues needed for now)
+            $this->evaluateShortAnswers($attempt, $round);
+
+            return redirect()->route('candidate.test.result', [$jobId, $roundId])
+                ->with('success', 'Test submitted! Your results are being processed.');
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            Log::error('Failed to submit candidate test', [
+                'job_id'   => $jobId,
+                'round_id' => $roundId,
+                'user_id'  => Auth::id(),
+                'error'    => $e->getMessage(),
+                'file'     => $e->getFile() . ':' . $e->getLine(),
+            ]);
+
+            if ($request->boolean('diag')) {
+                return response(
+                    'DIAG submit: ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine(),
+                    500
+                );
+            }
+
+            return redirect()->route('candidate.test.show', [$jobId, $roundId])
+                ->with('error', 'We could not submit your test. Please try again.');
         }
-
-        $mcqScore = $total > 0 ? (int) round($score / $total * 100) : null;
-
-        $attempt->update([
-            'answers'      => $enriched,
-            'score'        => $mcqScore,
-            'violations'   => (int) $request->input('violations', 0),
-            'status'       => 'submitted',
-            'submitted_at' => now(),
-        ]);
-
-        // Fire async AI evaluation for short-answer questions
-        // (kept lightweight — no queues needed for now)
-        $this->evaluateShortAnswers($attempt, $round);
-
-        return redirect()->route('candidate.test.result', [$jobId, $roundId])
-            ->with('success', 'Test submitted! Your results are being processed.');
     }
 
     // ─── Result Page ──────────────────────────────────────────────────────────
