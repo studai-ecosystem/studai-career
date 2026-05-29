@@ -85,6 +85,8 @@ jobs:
             --settings \
               APP_ENV=production \
               APP_DEBUG=false \
+              "APP_KEY=base64:sSQ1ZJAfDOTyaZNYmCveqIUzCvgEa5mHn23pBHA0wp8=" \
+              APP_URL=https://studai-app-prod.azurewebsites.net \
               SESSION_DRIVER=database \
               SESSION_LIFETIME=480 \
               SESSION_SECURE_COOKIE=true \

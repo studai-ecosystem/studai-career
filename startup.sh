@@ -79,17 +79,20 @@ if [ "$APP_ENV" = "production" ]; then
   # Set APP_URL to HTTPS if not already set by Azure App Settings
   export APP_URL="${APP_URL:-https://studai-app-prod.azurewebsites.net}"
 
-  # ---- Force-load AI credentials from .env ----
+  # ---- Force-load critical credentials from .env ----
   # Azure App Service Application Settings can override .env with empty values.
   # We read directly from .env to guarantee config:cache bakes in the real keys.
-  echo "Loading AI credentials from .env into environment..."
+  echo "Loading credentials from .env into environment..."
   if [ -f ".env" ]; then
     _load_env_var() {
       local key="$1"
       local val
-      val=$(grep -m1 "^${key}=" .env | cut -d'=' -f2-)
+      val=$(grep -m1 "^${key}=" .env | cut -d'=' -f2- | tr -d '"' | tr -d "'")
       [ -n "$val" ] && export "$key"="$val" && echo "  Loaded ${key}"
     }
+    # APP_KEY must be consistent — load from .env as single source of truth
+    # to prevent session decryption failures (419) when Azure App Settings differ
+    _load_env_var APP_KEY
     _load_env_var AZURE_OPENAI_API_KEY
     _load_env_var AZURE_OPENAI_ENDPOINT
     _load_env_var AZURE_OPENAI_DEPLOYMENT_ID
@@ -101,6 +104,17 @@ if [ "$APP_ENV" = "production" ]; then
     _load_env_var OPENAI_API_KEY
   fi
 
+  # ---- Force production session settings ----
+  # These override any stale Azure App Settings to prevent 419 Session Expired errors.
+  # Sessions must use database driver (not file — NFS is ephemeral per container).
+  export APP_ENV=production
+  export APP_DEBUG=false
+  export SESSION_DRIVER=database
+  export SESSION_LIFETIME=480
+  export SESSION_SECURE_COOKIE=true
+  export SESSION_SAME_SITE=lax
+  echo "  Session settings forced: driver=database lifetime=480 secure=true"
+
   echo "Running production optimizations..."
   # NOTE: view:cache REMOVED — compiling all Blade templates in startup uses too much
   # memory on the 512MB container and causes PHP-FPM OOM crashes. Views compile
@@ -111,6 +125,15 @@ if [ "$APP_ENV" = "production" ]; then
 
   echo "Running migrations..."
   timeout 60 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
+
+  echo "Clearing stale sessions (prevents 419 after APP_KEY or session config changes)..."
+  php -r "
+    require 'vendor/autoload.php';
+    \$app = require 'bootstrap/app.php';
+    \$app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+    try { DB::table('sessions')->delete(); echo 'Sessions table cleared.' . PHP_EOL; }
+    catch (\Exception \$e) { echo 'Sessions clear skipped: ' . \$e->getMessage() . PHP_EOL; }
+  " 2>/dev/null || echo 'WARNING: Could not clear sessions (non-critical)'
 
   echo "Syncing Meilisearch indices..."
   timeout 15 php artisan scout:sync-index-settings 2>/dev/null || true
