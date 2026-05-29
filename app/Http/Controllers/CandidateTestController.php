@@ -142,13 +142,6 @@ class CandidateTestController extends Controller
                 'file'     => $e->getFile() . ':' . $e->getLine(),
             ]);
 
-            if ($request->boolean('diag')) {
-                return response(
-                    'DIAG submit: ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine(),
-                    500
-                );
-            }
-
             return redirect()->route('candidate.test.show', [$jobId, $roundId])
                 ->with('error', 'We could not submit your test. Please try again.');
         }

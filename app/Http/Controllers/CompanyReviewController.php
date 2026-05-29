@@ -23,47 +23,66 @@ class CompanyReviewController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Company::query()
-            ->withCount(['reviews', 'jobs'])
-            ->where('total_reviews', '>', 0)
-            ->orWhere('is_featured', true);
+        $filters = $request->only(['search', 'industry', 'min_rating', 'sort']);
 
-        // Search filter
-        if ($search = $request->get('search')) {
-            $query->where('name', 'LIKE', "%{$search}%");
+        try {
+            $query = Company::query()
+                ->withCount(['reviews', 'jobs'])
+                // Group the base visibility condition so it isn't broken by the
+                // additional filters below (correct SQL precedence).
+                ->where(function ($q) {
+                    $q->where('total_reviews', '>', 0)
+                        ->orWhere('is_featured', true);
+                });
+
+            // Search filter
+            if ($search = $request->get('search')) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            }
+
+            // Industry filter
+            if ($industry = $request->get('industry')) {
+                $query->where('industry', $industry);
+            }
+
+            // Rating filter
+            if ($minRating = $request->get('min_rating')) {
+                $query->where('avg_rating', '>=', $minRating);
+            }
+
+            // Sorting
+            $sortBy = $request->get('sort', 'reviews');
+            match ($sortBy) {
+                'rating' => $query->orderByDesc('avg_rating'),
+                'name' => $query->orderBy('name'),
+                default => $query->orderByDesc('total_reviews'),
+            };
+
+            $companies = $query->paginate(20);
+
+            // Get top industries for filter
+            $industries = Company::select('industry')
+                ->distinct()
+                ->whereNotNull('industry')
+                ->orderBy('industry')
+                ->pluck('industry');
+        } catch (\Throwable $e) {
+            // Degrade gracefully instead of throwing a hard 500. The real cause
+            // (e.g. a missing table/column in prod) is logged for diagnosis.
+            \Illuminate\Support\Facades\Log::error('Company directory failed to load', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            $companies = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 20);
+            $companies->setPath($request->url());
+            $industries = collect();
         }
-
-        // Industry filter
-        if ($industry = $request->get('industry')) {
-            $query->where('industry', $industry);
-        }
-
-        // Rating filter
-        if ($minRating = $request->get('min_rating')) {
-            $query->where('avg_rating', '>=', $minRating);
-        }
-
-        // Sorting
-        $sortBy = $request->get('sort', 'reviews');
-        match ($sortBy) {
-            'rating' => $query->orderByDesc('avg_rating'),
-            'name' => $query->orderBy('name'),
-            default => $query->orderByDesc('total_reviews'),
-        };
-
-        $companies = $query->paginate(20);
-
-        // Get top industries for filter
-        $industries = Company::select('industry')
-            ->distinct()
-            ->whereNotNull('industry')
-            ->orderBy('industry')
-            ->pluck('industry');
 
         return view('companies.index', [
             'companies' => $companies,
             'industries' => $industries,
-            'filters' => $request->only(['search', 'industry', 'min_rating', 'sort']),
+            'filters' => $filters,
         ]);
     }
 

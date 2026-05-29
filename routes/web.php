@@ -458,6 +458,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/payments/{id}', [PaymentHistoryController::class, 'show'])->name('payments.show');
     
     // Job Search & Actions
+    // /jobs (index) → job search/listing. Prevents 404 on direct navigation,
+    // old bookmarks, and email "Browse Available Positions" links.
+    Route::get('/jobs', fn () => redirect()->route('jobs.search'))->name('jobs.index');
     Route::get('/jobs/search', [JobController::class, 'search'])->name('jobs.search');
     Route::get('/jobs/saved', [JobController::class, 'saved'])->name('jobs.saved');
     Route::get('/jobs/{id}', [JobController::class, 'show'])->name('jobs.show');
