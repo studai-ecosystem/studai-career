@@ -42,14 +42,28 @@ class CandidateTestController extends Controller
                 return redirect()->route('candidate.test.result', [$jobId, $roundId]);
             }
 
-            // Generate questions if not yet generated
-            if (empty($attempt->questions)) {
+            // Track which round type the stored questions were generated for so we can
+            // refresh stale sets (e.g. questions generated before type-specific banks
+            // existed, which made every round show the same company-info questions).
+            $tracksType = \Illuminate\Support\Facades\Schema::hasColumn('round_attempts', 'generated_type');
+            $typeMismatch = $tracksType && $attempt->generated_type !== $round->type;
+            // Heal legacy attempts (generated before the marker existed) once: their
+            // questions may be the old generic/company-info set regardless of round type.
+            $needsHeal = $tracksType && $attempt->generated_type === null && !empty($attempt->questions);
+
+            // Generate questions if not yet generated, or if the stored set was
+            // generated for a different round type (stale before submission).
+            if (empty($attempt->questions) || $typeMismatch || $needsHeal) {
                 $questions = $this->generateQuestions($round);
-                $attempt->update([
+                $payload = [
                     'questions'  => $questions,
                     'status'     => 'in_progress',
-                    'started_at' => now(),
-                ]);
+                    'started_at' => $attempt->started_at ?? now(),
+                ];
+                if ($tracksType) {
+                    $payload['generated_type'] = $round->type;
+                }
+                $attempt->update($payload);
             } elseif ($attempt->status === 'not_started') {
                 $attempt->update(['status' => 'in_progress', 'started_at' => now()]);
             }

@@ -11,7 +11,7 @@ class RoundAttempt extends Model
 {
     protected $fillable = [
         'hiring_round_id', 'user_id', 'application_id',
-        'questions', 'answers', 'score', 'ai_feedback',
+        'questions', 'generated_type', 'answers', 'score', 'ai_feedback',
         'status', 'started_at', 'submitted_at', 'violations',
     ];
 

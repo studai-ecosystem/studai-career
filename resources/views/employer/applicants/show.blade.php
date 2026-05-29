@@ -185,8 +185,8 @@
                                         'culture_fit'     => 'bg-indigo-100 text-indigo-700',
                                         'portfolio_review'=> 'bg-cyan-100 text-cyan-700',
                                     ];
-                                    $typeColor = $typeColors[$round->round_type] ?? 'bg-gray-100 text-gray-600';
-                                    $typeLabel = ucwords(str_replace('_', ' ', $round->round_type));
+                                    $typeColor = $typeColors[$round->round_type] ?? $typeColors[$round->type] ?? 'bg-gray-100 text-gray-600';
+                                    $typeLabel = ucwords(str_replace('_', ' ', $round->round_type ?? $round->type));
                                 @endphp
                                 <div class="border border-gray-200 rounded-xl p-4">
                                     <div class="flex items-start justify-between gap-3 mb-3">
