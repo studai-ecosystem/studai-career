@@ -101,7 +101,11 @@ jobs:
               MAIL_USERNAME=onestudai@gmail.com \
               "MAIL_PASSWORD=jnuw zktk zlsr yvdp" \
               MAIL_FROM_ADDRESS=onestudai@gmail.com \
-              "MAIL_FROM_NAME=StudAI Career"
+              "MAIL_FROM_NAME=StudAI Career" \
+              RAZORPAY_KEY=rzp_live_SYaE3xGta8COx9 \
+              RAZORPAY_SECRET=ouijhe7OJOWLOZKVqYGbuJ82 \
+              RAZORPAY_WEBHOOK_SECRET=Studai@2203 \
+              RAZORPAY_CURRENCY=INR
 
           # Set Azure OpenAI credentials from GitHub Secrets (if configured)
           # NOTE: .env is NOT in git so we never read from it here.

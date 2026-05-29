@@ -102,6 +102,9 @@ if [ "$APP_ENV" = "production" ]; then
     _load_env_var AZURE_ANTHROPIC_ENDPOINT
     _load_env_var AZURE_ANTHROPIC_MODEL
     _load_env_var OPENAI_API_KEY
+    _load_env_var RAZORPAY_KEY
+    _load_env_var RAZORPAY_SECRET
+    _load_env_var RAZORPAY_WEBHOOK_SECRET
   fi
 
   # ---- Force production session settings ----
