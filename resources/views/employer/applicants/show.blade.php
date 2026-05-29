@@ -587,17 +587,16 @@
 
                     <!-- Resume -->
                     @php
-                        $resumeUrl = null;
+                        $hasResume = false;
                         if ($application->resume_file) {
-                            // Use relative /storage/ path to avoid APP_URL port mismatches in development
-                            if (str_starts_with($application->resume_file, 'resume:')) {
-                                $resumeUrl = null; // AI-generated resume reference, no downloadable file
-                            } else {
-                                $resumeUrl = '/storage/' . ltrim($application->resume_file, '/');
-                            }
+                            // Covers uploaded files and saved/AI resume references ("resume:{id}").
+                            $hasResume = true;
                         } elseif (!$application->is_guest_applicant && $application->user?->profile?->resume_path) {
-                            $resumeUrl = '/storage/' . ltrim($application->user->profile->resume_path, '/');
+                            $hasResume = true;
                         }
+                        // Always serve through the authorized employer route so saved resumes
+                        // (stored as "resume:{id}") are rendered to PDF on demand.
+                        $resumeUrl = $hasResume ? route('employer.applicants.resume', $application->id) : null;
                     @endphp
                     @if($resumeUrl)
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">

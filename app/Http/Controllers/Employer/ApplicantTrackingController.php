@@ -7,15 +7,19 @@ use App\Mail\ApplicationConfirmationMail;
 use App\Mail\PipelineStageAdvancedMail;
 use App\Models\Application;
 use App\Models\Job;
+use App\Models\Resume;
 use App\Jobs\SendHiringEmailsJob;
 use App\Notifications\CandidateHiredNotification;
 use App\Notifications\CandidateRejectedNotification;
 use App\Notifications\CandidateShortlistedNotification;
 use App\Notifications\PipelineStageAdvancedNotification;
+use App\Services\ResumeExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ApplicantTrackingController extends Controller
 {
@@ -124,6 +128,62 @@ class ApplicantTrackingController extends Controller
             : null;
 
         return view('employer.applicants.show', compact('application', 'roundAttempts', 'overallTestScore'));
+    }
+
+    /**
+     * Stream/download an applicant's resume.
+     *
+     * Resolves the resume from (in order): a saved/AI resume reference ("resume:{id}"),
+     * an uploaded application file, or the candidate profile resume. Scoped to the
+     * employer's company so only authorized recruiters can access it.
+     */
+    public function resume($id)
+    {
+        $company = auth()->user()->company;
+        abort_unless($company, 403);
+
+        $application = Application::with(['user.profile'])
+            ->whereHas('job', function ($q) use ($company) {
+                $q->where('company_id', $company->id);
+            })
+            ->findOrFail($id);
+
+        $resumeFile = $application->resume_file;
+
+        // Case 1: saved/AI-generated resume reference -> render PDF from the Resume model.
+        if ($resumeFile && str_starts_with($resumeFile, 'resume:')) {
+            $resumeId = (int) substr($resumeFile, strlen('resume:'));
+            $resume = Resume::find($resumeId);
+            abort_unless($resume, 404, 'Resume not found.');
+
+            $path = $resume->pdf_path;
+            if (!$path || !Storage::disk('public')->exists($path)) {
+                $path = app(ResumeExportService::class)->exportToPDF($resume);
+                $resume->update(['pdf_path' => $path]);
+            }
+
+            return response()->download(
+                Storage::disk('public')->path($path),
+                Str::slug($resume->title ?: 'resume') . '.pdf'
+            );
+        }
+
+        // Case 2: an uploaded application file or the candidate profile resume.
+        $candidatePaths = array_filter([
+            $resumeFile,
+            $application->user?->profile?->resume_path,
+        ]);
+
+        foreach ($candidatePaths as $path) {
+            if (Storage::disk('public')->exists($path)) {
+                return response()->download(Storage::disk('public')->path($path));
+            }
+            if (Storage::disk('private')->exists($path)) {
+                return response()->download(Storage::disk('private')->path($path));
+            }
+        }
+
+        abort(404, 'No resume file available for this candidate.');
     }
 
     public function updateStatus(Request $request, $id)

@@ -1026,6 +1026,7 @@ Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->
     Route::get('/applicants/kanban', [ApplicantTrackingController::class, 'kanban'])->name('applicants.kanban');
     Route::get('/applicants/{id}/ranked', [ApplicantTrackingController::class, 'ranked'])->name('applicants.ranked');
     Route::get('/applicants/{id}/ranked/export', [ApplicantTrackingController::class, 'exportRanked'])->name('applicants.ranked.export');
+    Route::get('/applicants/{id}/resume', [ApplicantTrackingController::class, 'resume'])->name('applicants.resume');
     Route::get('/applicants/{id}', [ApplicantTrackingController::class, 'show'])->name('applicants.show');
     Route::patch('/applicants/{id}/status', [ApplicantTrackingController::class, 'updateStatus'])->name('applicants.updateStatus');
     Route::patch('/applicants/bulk-status', [ApplicantTrackingController::class, 'bulkUpdateStatus'])->name('applicants.bulkStatus');
