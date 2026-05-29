@@ -285,7 +285,7 @@
                 <x-heroicon-o-newspaper class="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
                 <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Your feed is empty</h3>
                 <p class="text-gray-500 mb-4">Connect with professionals and follow people to see their updates here.</p>
-                <a href="{{ route('candidate.network.connections') }}"
+                <a href="{{ route('network.connections') }}"
                    class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition">
                     Find Connections
                 </a>

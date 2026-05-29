@@ -409,6 +409,7 @@ Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
 Route::middleware('auth')->group(function () {
     // Skill Gap Analyzer Routes
     Route::prefix('skills')->name('skills.')->group(function () {
+        Route::get('/', fn () => redirect()->route('skills.analyzer'))->name('index');
         Route::get('/dashboard', [SkillAnalyzerWebController::class, 'dashboard'])->name('analyzer');
         Route::get('/learning-paths', [SkillAnalyzerWebController::class, 'learningPaths'])->name('learning-paths');
         Route::get('/learning-path/{id}', [SkillAnalyzerWebController::class, 'showLearningPath'])->name('learning-path.show');
@@ -1298,6 +1299,8 @@ Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->
 
 // AI Negotiation Strategist Routes (Authenticated Job Seekers)
 Route::middleware(['auth', 'verified'])->prefix('negotiation')->name('negotiation.')->group(function () {
+    // Section root redirects to the negotiation dashboard.
+    Route::get('/', fn () => redirect()->route('negotiation.dashboard'))->name('index');
     // Dashboard - Main negotiation hub with strategy overview
     Route::get('/dashboard', function() {
         /** @var \App\Models\User|null $user */

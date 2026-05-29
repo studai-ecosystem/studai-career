@@ -20,6 +20,7 @@ use App\Models\CompetitorSalaryData;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
 
@@ -67,7 +68,9 @@ class EnhancedAnalyticsService
             }
             
             return [
-                'points' => $heatmapData->map(fn($h) => $h->toMapData())->toArray(),
+                // Precomputed rows are JobMarketHeatmap models (toMapData());
+                // generated rows are plain stdClass already in the final shape.
+                'points' => $heatmapData->map(fn($h) => is_object($h) && method_exists($h, 'toMapData') ? $h->toMapData() : (array) $h)->toArray(),
                 'summary' => $this->getHeatmapSummary($heatmapData),
                 'top_locations' => $this->getTopLocations($heatmapData, 10),
                 'generated_at' => now()->toIso8601String(),
@@ -279,31 +282,37 @@ class EnhancedAnalyticsService
         $cacheKey = 'skills_forecast_' . md5(json_encode($filters));
         
         return Cache::remember($cacheKey, 3600, function () use ($filters) {
-            $query = SkillDemandForecast::query()
-                ->orderByDesc('current_demand')
-                ->orderByDesc('forecast_date');
-            
-            if (!empty($filters['industry'])) {
-                $query->forIndustry($filters['industry']);
+            $forecasts = collect();
+
+            // Precomputed forecasts live in the SkillDemandForecast model/table,
+            // which may not exist in every environment. Fall back to live job data.
+            if (class_exists(SkillDemandForecast::class) && Schema::hasTable('skill_demand_forecasts')) {
+                $query = SkillDemandForecast::query()
+                    ->orderByDesc('current_demand')
+                    ->orderByDesc('forecast_date');
+
+                if (!empty($filters['industry'])) {
+                    $query->forIndustry($filters['industry']);
+                }
+
+                if (!empty($filters['category'])) {
+                    $query->ofCategory($filters['category']);
+                }
+
+                if (!empty($filters['trend'])) {
+                    $query->where('trend_direction', $filters['trend']);
+                }
+
+                $forecasts = $query->limit(50)->get();
             }
-            
-            if (!empty($filters['category'])) {
-                $query->ofCategory($filters['category']);
-            }
-            
-            if (!empty($filters['trend'])) {
-                $query->where('trend_direction', $filters['trend']);
-            }
-            
-            $forecasts = $query->limit(50)->get();
-            
+
             // If no precomputed data, generate from jobs
             if ($forecasts->isEmpty()) {
                 $forecasts = $this->generateSkillsForecast($filters);
             }
-            
+
             return [
-                'skills' => $forecasts->map(fn($f) => $f->getForecastSummary())->toArray(),
+                'skills' => $forecasts->map(fn($f) => is_object($f) && method_exists($f, 'getForecastSummary') ? $f->getForecastSummary() : (array) $f)->toArray(),
                 'rising_skills' => $forecasts->where('trend_direction', 'rising')->take(10)->values()->toArray(),
                 'declining_skills' => $forecasts->where('trend_direction', 'falling')->take(10)->values()->toArray(),
                 'stable_skills' => $forecasts->where('trend_direction', 'stable')->take(10)->values()->toArray(),
@@ -908,12 +917,27 @@ class EnhancedAnalyticsService
     public function getDashboardData(?int $userId = null, string $dashboardType = 'default'): array
     {
         return [
-            'heatmap' => $this->getJobMarketHeatmap(),
-            'skills_forecast' => $this->getSkillsDemandForecast(['limit' => 15]),
-            'salary_trends' => $this->getSalaryTrends(),
-            'career_paths' => $this->getCareerPathVisualization(),
+            'heatmap' => $this->safeSection(fn() => $this->getJobMarketHeatmap(), ['points' => [], 'summary' => []]),
+            'skills_forecast' => $this->safeSection(fn() => $this->getSkillsDemandForecast(['limit' => 15]), ['skills' => [], 'rising_skills' => [], 'declining_skills' => [], 'stable_skills' => [], 'generated_at' => now()->toIso8601String()]),
+            'salary_trends' => $this->safeSection(fn() => $this->getSalaryTrends(), ['labels' => [], 'data' => [], 'trend' => 'stable']),
+            'career_paths' => $this->safeSection(fn() => $this->getCareerPathVisualization(), ['nodes' => [], 'edges' => [], 'levels' => []]),
             'generated_at' => now()->toIso8601String(),
         ];
+    }
+
+    /**
+     * Run a dashboard section safely so one failing/missing data source
+     * cannot bring down the whole analytics dashboard with a 500.
+     */
+    private function safeSection(callable $callback, array $fallback): array
+    {
+        try {
+            return $callback();
+        } catch (\Throwable $e) {
+            Log::error('Analytics dashboard section failed', ['error' => $e->getMessage()]);
+
+            return $fallback;
+        }
     }
 
     /**

@@ -425,7 +425,7 @@ class User extends Authenticatable implements FilamentUser
      */
     public function sentConnections()
     {
-        return $this->hasMany(Connection::class, 'sender_id');
+        return $this->hasMany(Connection::class, 'requester_id');
     }
 
     /**

@@ -43,12 +43,15 @@ class CalendarController extends Controller
             ->active()
             ->get();
 
-        return view('calendar.index', compact(
-            'connections',
-            'upcomingEvents',
-            'availability',
-            'schedulingLinks'
-        ));
+        // The dashboard view shows the upcoming-events count plus the event list.
+        return view('calendar.dashboard', [
+            'connections' => $connections,
+            'upcomingEvents' => $upcomingEvents->count(),
+            'events' => $upcomingEvents,
+            'pendingRequests' => $upcomingEvents->where('status', 'pending')->count(),
+            'availability' => $availability,
+            'schedulingLinks' => $schedulingLinks,
+        ]);
     }
 
     /**

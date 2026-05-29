@@ -140,7 +140,8 @@ PROMPT;
      */
     private function callOpenAI(string $prompt): string
     {
-        $openaiKey = env('OPENAI_API_KEY');
+        // Use config() (not env()) so the key resolves correctly after config:cache in production.
+        $openaiKey = config('ai.openai.api_key');
 
         if ($openaiKey && str_starts_with($openaiKey, 'sk-')) {
             // Standard OpenAI chat completions
