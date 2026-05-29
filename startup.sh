@@ -116,7 +116,8 @@ if [ "$APP_ENV" = "production" ]; then
   export SESSION_LIFETIME=480
   export SESSION_SECURE_COOKIE=true
   export SESSION_SAME_SITE=lax
-  echo "  Session settings forced: driver=database lifetime=480 secure=true"
+  export SCOUT_DRIVER=database
+  echo "  Session settings forced: driver=database lifetime=480 secure=true; scout=database"
 
   echo "Running production optimizations..."
   # NOTE: view:cache REMOVED — compiling all Blade templates in startup uses too much
@@ -129,8 +130,8 @@ if [ "$APP_ENV" = "production" ]; then
   echo "Running migrations..."
   timeout 60 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
 
-  echo "Syncing Meilisearch indices..."
-  timeout 15 php artisan scout:sync-index-settings 2>/dev/null || true
+  # Scout uses database driver in production (no Meilisearch required)
+  # scout:sync-index-settings is only for Meilisearch — skip it
 
   # Seed test accounts only on first deploy (lock file prevents repeat runs)
   # Sessions are NOT cleared here — APP_KEY is stable (force-loaded from .env),
