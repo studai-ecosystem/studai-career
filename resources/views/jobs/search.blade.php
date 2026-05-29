@@ -327,6 +327,7 @@
                                 'show_url'         => route('jobs.show', $job->id),
                                 'apply_url'        => route('api.jobs.apply', $job->id),
                                 'match_score'      => $matchScores[$job->id] ?? null,
+                                'has_applied'      => in_array((int) $job->id, $appliedJobIds ?? [], true),
                             ];
                             $palette = [
                                 ['accent'=>'#6366f1','light'=>'rgba(99,102,241,.065)','avatar'=>'135deg,#818cf8,#6366f1'],
@@ -460,12 +461,31 @@
                         {{-- Apply button ALWAYS VISIBLE --}}
                         <div class="flex gap-2">
                             @auth
-                            <a :href="selectedJobData.show_url + '#apply'"
-                               class="btn-apply flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm text-white transition-all hover:-translate-y-0.5"
-                               style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); box-shadow:0 4px 14px rgba(139,92,246,.3)">
-                                <i class="fas fa-paper-plane" style="font-size:13px"></i>
-                                Apply Now
-                            </a>
+                            {{-- Already applied: show status + view description --}}
+                            <template x-if="selectedJobData.has_applied">
+                                <div class="flex-1 flex gap-2">
+                                    <span class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm"
+                                          style="background:#e8f5e9; color:#15803d; border:1.5px solid #bbf7d0">
+                                        <i class="fas fa-check-circle" style="font-size:13px"></i>
+                                        Applied Already
+                                    </span>
+                                    <a :href="selectedJobData.show_url"
+                                       class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all hover:-translate-y-0.5"
+                                       style="border:1.5px solid #8b5cf6; color:#7c3aed">
+                                        <i class="fas fa-file-alt" style="font-size:13px"></i>
+                                        View Job Description
+                                    </a>
+                                </div>
+                            </template>
+                            {{-- Not applied yet: show apply button --}}
+                            <template x-if="!selectedJobData.has_applied">
+                                <a :href="selectedJobData.show_url + '#apply'"
+                                   class="btn-apply flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm text-white transition-all hover:-translate-y-0.5"
+                                   style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); box-shadow:0 4px 14px rgba(139,92,246,.3)">
+                                    <i class="fas fa-paper-plane" style="font-size:13px"></i>
+                                    Apply Now
+                                </a>
+                            </template>
                             <button @click.stop="toggleSaveJob(selectedJobData.id)"
                                     :id="'save-panel-btn-' + selectedJobData.id"
                                     class="p-2.5 rounded-xl transition-colors"

@@ -115,6 +115,14 @@ class JobController extends Controller
 
         // Compute per-job AI match scores for authenticated users
         $matchScores = [];
+        // Track which jobs the current user has already applied to (for "Applied" UI state)
+        $appliedJobIds = [];
+        if (Auth::check()) {
+            $appliedJobIds = \App\Models\Application::where('user_id', Auth::id())
+                ->pluck('job_id')
+                ->map(fn ($id) => (int) $id)
+                ->all();
+        }
         if (Auth::check()) {
             $user = Auth::user();
             $profile = $user->profile;
@@ -247,7 +255,8 @@ class JobController extends Controller
             'locations',
             'experienceLevels',
             'jobTypes',
-            'matchScores'
+            'matchScores',
+            'appliedJobIds'
         ));
     }
 

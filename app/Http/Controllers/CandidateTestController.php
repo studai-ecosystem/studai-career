@@ -46,14 +46,18 @@ class CandidateTestController extends Controller
             // refresh stale sets (e.g. questions generated before type-specific banks
             // existed, which made every round show the same company-info questions).
             $tracksType = \Illuminate\Support\Facades\Schema::hasColumn('round_attempts', 'generated_type');
-            $typeMismatch = $tracksType && $attempt->generated_type !== $round->type;
+            $typeMismatch = $tracksType && $attempt->generated_type !== null && $attempt->generated_type !== $round->type;
             // Heal legacy attempts (generated before the marker existed) once: their
             // questions may be the old generic/company-info set regardless of round type.
             $needsHeal = $tracksType && $attempt->generated_type === null && !empty($attempt->questions);
+            // Column-independent safety net: detect company/culture-style questions
+            // stored for a round type that should NOT be about the company. This fixes
+            // existing attempts even before the generated_type migration runs.
+            $contentStale = !empty($attempt->questions) && $this->questionsLookMismatched($attempt->questions, $round->type);
 
             // Generate questions if not yet generated, or if the stored set was
             // generated for a different round type (stale before submission).
-            if (empty($attempt->questions) || $typeMismatch || $needsHeal) {
+            if (empty($attempt->questions) || $typeMismatch || $needsHeal || $contentStale) {
                 $questions = $this->generateQuestions($round);
                 $payload = [
                     'questions'  => $questions,
@@ -176,6 +180,37 @@ class CandidateTestController extends Controller
     }
 
     // ─── AI Question Generation ───────────────────────────────────────────────
+
+    /**
+     * Column-independent staleness check. Returns true when a stored question set
+     * is clearly about the company/culture but the round is a skills round
+     * (aptitude/technical/hr_interview/practical/portfolio_review). This catches
+     * legacy attempts that stored the old generic company-info questions for every
+     * round type, so they get regenerated with the correct type-specific bank.
+     */
+    private function questionsLookMismatched(array $questions, string $roundType): bool
+    {
+        $companyTypes = ['info_test', 'culture_fit'];
+        if (in_array($roundType, $companyTypes, true)) {
+            return false;
+        }
+
+        $total = 0;
+        $companyHits = 0;
+        foreach ($questions as $q) {
+            $text = strtolower((string) ($q['question'] ?? ''));
+            if ($text === '') {
+                continue;
+            }
+            $total++;
+            if (preg_match('/\b(company|culture|mission|values|organization|organisation|workplace|industry)\b/', $text)) {
+                $companyHits++;
+            }
+        }
+
+        // Treat as stale only when the set is dominated by company/culture wording.
+        return $total > 0 && ($companyHits / $total) >= 0.5;
+    }
 
     private function generateQuestions(HiringRound $round): array
     {
