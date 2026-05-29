@@ -99,5 +99,6 @@
         </a>
         <a href="/" class="brand-link"><span>StudAI</span> Hire</a>
     </div>
+    @stack('scripts')
 </body>
 </html>
