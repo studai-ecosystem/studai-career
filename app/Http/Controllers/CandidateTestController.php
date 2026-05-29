@@ -68,22 +68,8 @@ class CandidateTestController extends Controller
                 'line'     => $e->getLine(),
             ]);
 
-            $message = 'We could not start the test right now. Please try again in a moment.';
-
-            // Temporary, opt-in diagnostic: only exposed when ?diag=1 is explicitly
-            // present in the request. Safe for production (normal users never trigger it).
-            if (request()->boolean('diag')) {
-                $message = sprintf(
-                    'DIAG [%s] %s @ %s:%d',
-                    class_basename($e),
-                    $e->getMessage(),
-                    basename($e->getFile()),
-                    $e->getLine()
-                );
-            }
-
             return redirect()->route('jobs.show', $jobId)
-                ->with('error', $message);
+                ->with('error', 'We could not start the test right now. Please try again in a moment.');
         }
     }
 
