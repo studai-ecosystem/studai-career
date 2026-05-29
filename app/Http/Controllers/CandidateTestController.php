@@ -276,7 +276,7 @@ Return ONLY valid JSON: {\"score\": 85, \"feedback\": \"The candidate demonstrat
         $openaiKey = config('ai.openai.api_key');
 
         if ($openaiKey && str_starts_with($openaiKey, 'sk-')) {
-            $response = Http::timeout(60)
+            $response = Http::timeout(30)->connectTimeout(10)
                 ->withHeaders(['Authorization' => 'Bearer ' . $openaiKey, 'Content-Type' => 'application/json'])
                 ->post('https://api.openai.com/v1/chat/completions', [
                     'model'    => 'gpt-4o-mini',
@@ -300,7 +300,7 @@ Return ONLY valid JSON: {\"score\": 85, \"feedback\": \"The candidate demonstrat
         }
 
         $url      = "{$endpoint}/openai/deployments/{$deployment}/chat/completions?api-version={$apiVersion}";
-        $response = Http::timeout(60)
+        $response = Http::timeout(30)->connectTimeout(10)
             ->withHeaders(['api-key' => $azureKey, 'Content-Type' => 'application/json'])
             ->post($url, [
                 'messages'   => [
