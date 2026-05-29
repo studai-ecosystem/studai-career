@@ -292,7 +292,7 @@
                         </div>
                         <div>
                             <p class="text-sm text-gray-600">Expires</p>
-                            <p class="font-semibold text-gray-900">{{ $job->expires_at->diffForHumans() }}</p>
+                            <p class="font-semibold text-gray-900">{{ $job->expires_at?->diffForHumans() ?? 'N/A' }}</p>
                         </div>
                     </div>
                 </div>

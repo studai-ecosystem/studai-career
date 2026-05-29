@@ -401,7 +401,7 @@ class JobController extends Controller
                 'application_number' => 'APP-' . strtoupper(substr(md5(uniqid()), 0, 8)),
                 'cover_letter'       => $request->cover_letter,
                 'resume_file'        => $resumeFile,
-                'status'             => 'pending',
+                'status'             => 'submitted',
                 'submitted_at'       => now(),
                 'is_archived'        => false,
                 'source'             => 'manual',

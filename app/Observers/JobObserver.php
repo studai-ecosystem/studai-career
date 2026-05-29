@@ -43,7 +43,7 @@ class JobObserver
                     'location' => $job->location,
                     'employment_type' => $job->employment_type,
                     'work_mode' => $job->work_mode,
-                    'published_at' => $job->published_at->toIso8601String(),
+                    'published_at' => $job->published_at?->toIso8601String(),
                     'expires_at' => $job->expires_at?->toIso8601String(),
                 ],
                 $job->company_id
