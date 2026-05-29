@@ -197,12 +197,19 @@ PROMPT;
             $raw = preg_replace('/\s*```$/m', '', $raw);
             $questions = json_decode(trim($raw), true);
 
-            if (!is_array($questions) || empty($questions)) {
+            // Azure/OpenAI sometimes wrap the array, e.g. {"questions": [...]}.
+            if (is_array($questions) && isset($questions['questions']) && is_array($questions['questions'])) {
+                $questions = $questions['questions'];
+            }
+
+            $questions = $this->normalizeQuestions(is_array($questions) ? $questions : []);
+
+            if (empty($questions)) {
                 throw new \Exception('Invalid JSON response from AI');
             }
 
             return $questions;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::warning('AI question generation failed, using fallback', ['error' => $e->getMessage()]);
             return $this->fallbackQuestions($roundType, $jobTitle);
         }
@@ -308,7 +315,6 @@ Return ONLY valid JSON: {\"score\": 85, \"feedback\": \"The candidate demonstrat
                     ['role' => 'user',   'content' => $prompt],
                 ],
                 'max_completion_tokens' => 2000,
-                'temperature' => 0.7,
             ]);
 
         if (!$response->successful()) {
@@ -319,6 +325,64 @@ Return ONLY valid JSON: {\"score\": 85, \"feedback\": \"The candidate demonstrat
     }
 
     // ─── Fallback Questions ───────────────────────────────────────────────────
+
+    /**
+     * Normalize AI-generated questions into a safe, predictable structure so the
+     * view can never crash on malformed data. Every MCQ is guaranteed to have at
+     * least two string options and a valid 0-based "correct" index; anything
+     * unusable is downgraded to a short-answer question or dropped.
+     */
+    private function normalizeQuestions(array $questions): array
+    {
+        $clean = [];
+
+        foreach ($questions as $q) {
+            if (!is_array($q)) {
+                continue;
+            }
+
+            $text = trim((string) ($q['question'] ?? ''));
+            if ($text === '') {
+                continue;
+            }
+
+            $type = (($q['type'] ?? '') === 'mcq') ? 'mcq' : 'short';
+
+            if ($type === 'mcq') {
+                $options = $q['options'] ?? [];
+                if (!is_array($options)) {
+                    $options = [];
+                }
+
+                $options = array_values(array_filter(
+                    array_map(fn ($o) => is_scalar($o) ? trim((string) $o) : '', $options),
+                    fn ($o) => $o !== ''
+                ));
+
+                // Not a usable MCQ — downgrade to short answer.
+                if (count($options) < 2) {
+                    $clean[] = ['type' => 'short', 'question' => $text];
+                    continue;
+                }
+
+                $correct = (int) ($q['correct'] ?? 0);
+                if ($correct < 0 || $correct >= count($options)) {
+                    $correct = 0;
+                }
+
+                $clean[] = [
+                    'type'     => 'mcq',
+                    'question' => $text,
+                    'options'  => $options,
+                    'correct'  => $correct,
+                ];
+            } else {
+                $clean[] = ['type' => 'short', 'question' => $text];
+            }
+        }
+
+        return $clean;
+    }
 
     private function fallbackQuestions(string $type, string $jobTitle): array
     {

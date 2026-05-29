@@ -214,7 +214,7 @@ class DashboardController extends Controller
 
         // Build query
         $query = Application::where('user_id', $user->id)
-            ->with(['job.company', 'job']);
+            ->with(['job.company', 'job.hiringRounds']);
 
         // Apply status filter
         if ($status && $status !== 'all') {

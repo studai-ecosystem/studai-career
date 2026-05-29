@@ -112,9 +112,9 @@
                     <div class="bg-gray-900 border border-gray-700 rounded-2xl p-6">
                         <div class="flex items-start gap-3 mb-4">
                             <span class="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white font-bold text-sm flex items-center justify-center">{{ $index + 1 }}</span>
-                            <p class="text-gray-100 font-medium leading-relaxed">{{ $q['question'] }}</p>
+                            <p class="text-gray-100 font-medium leading-relaxed">{{ $q['question'] ?? '' }}</p>
                         </div>
-                        @if($q['type'] === 'mcq')
+                        @if(($q['type'] ?? 'short') === 'mcq' && !empty($q['options']) && is_array($q['options']))
                         <div class="space-y-3 ml-11">
                             @foreach($q['options'] as $optIdx => $option)
                             <label class="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-700 cursor-pointer hover:border-purple-500 hover:bg-purple-500/10 transition-all has-[:checked]:border-purple-500 has-[:checked]:bg-purple-500/10">

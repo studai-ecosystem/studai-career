@@ -60,7 +60,7 @@
 
                             {{-- Hiring Rounds Card --}}
                             @if($job->hiringRounds->isNotEmpty())
-                            <div class="mt-6 rounded-2xl border border-purple-200 bg-gradient-to-br from-purple-50 to-fuchsia-50 overflow-hidden">
+                            <div id="hiring-process" class="mt-6 rounded-2xl border border-purple-200 bg-gradient-to-br from-purple-50 to-fuchsia-50 overflow-hidden scroll-mt-24">
                                 {{-- Header --}}
                                 <div class="flex items-center gap-2 px-5 py-4 border-b border-purple-200 bg-white/60">
                                     <svg class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -121,9 +121,17 @@
                                                 </span>
                                             </div>
 
-                                            @if($round->test_date || $round->evaluation_date)
+                                            @if($round->test_date || $round->evaluation_date || (auth()->check() && $hasApplied))
                                             <div class="flex flex-wrap items-center justify-between gap-3 mt-3 pt-3 border-t border-gray-100">
                                                 <div class="flex flex-wrap gap-3">
+                                                    @if(!$round->test_date && !$round->evaluation_date)
+                                                    <div class="flex items-center gap-1.5 text-xs text-gray-500">
+                                                        <svg class="w-3.5 h-3.5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                                        </svg>
+                                                        <span class="font-medium text-gray-600">Available now</span>
+                                                    </div>
+                                                    @endif
                                                     @if($round->test_date)
                                                     <div class="flex items-center gap-1.5 text-xs text-gray-600">
                                                         <svg class="w-3.5 h-3.5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
