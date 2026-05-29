@@ -1104,7 +1104,7 @@ Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->
         Route::get('/shortlisting', function () {
             $user = auth()->user();
             $company = $user->company;
-            $jobsQuery = \App\Models\Job::withCount(['applications as pending_count' => fn($q) => $q->whereIn('status', ['pending', 'reviewing'])]);
+            $jobsQuery = \App\Models\Job::withCount(['applications as pending_count' => fn($q) => $q->whereIn('status', ['submitted', 'viewed', 'pending', 'reviewing'])]);
             if ($company) {
                 $jobsQuery->where('company_id', $company->id);
             } elseif ($user) {
@@ -1121,7 +1121,7 @@ Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->
         // JSON endpoint: fetch pending application IDs for a job
         Route::get('/jobs/{jobId}/applications', function (int $jobId) {
             $applications = \App\Models\Application::where('job_id', $jobId)
-                ->whereIn('status', ['pending', 'reviewing'])
+                ->whereIn('status', ['submitted', 'viewed', 'pending', 'reviewing'])
                 ->with('user:id,name,email')
                 ->get(['id', 'user_id', 'application_number', 'status']);
             return response()->json(['applications' => $applications]);
