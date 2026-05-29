@@ -167,7 +167,7 @@ PROMPT;
         $azureKey   = config('ai.azure.api_key');
         $deployment = config('ai.azure.deployment_id', 'gpt-5.4');
         $apiVersion = config('ai.azure.api_version', '2025-04-01-preview');
-        $endpoint   = rtrim(config('ai.azure.endpoint', 'https://studai-openai-2049701603.openai.azure.com'), '/');
+        $endpoint   = rtrim((string) config('ai.azure.endpoint'), '/');
 
         if (empty($azureKey)) {
             throw new \Exception('No AI credentials configured. Set OPENAI_API_KEY or AZURE_OPENAI_API_KEY in .env');

@@ -23,10 +23,11 @@ return [
     */
 
     'azure' => [
-        'api_key'       => (empty(env('AZURE_OPENAI_API_KEY'))      ? 'e6e0bf0c61d14319a92bbc2d2a02f52f'                        : env('AZURE_OPENAI_API_KEY')),
-        'endpoint'      => (empty(env('AZURE_OPENAI_ENDPOINT'))      ? 'https://studai-openai-2049701603.openai.azure.com/'      : env('AZURE_OPENAI_ENDPOINT')),
-        'deployment_id' => (empty(env('AZURE_OPENAI_DEPLOYMENT_ID')) ? 'gpt-5.4'                                                 : env('AZURE_OPENAI_DEPLOYMENT_ID')),
-        'api_version'   => (empty(env('AZURE_OPENAI_API_VERSION'))   ? '2025-04-01-preview'                                      : env('AZURE_OPENAI_API_VERSION')),
+        // Secrets MUST come from the environment only. Never hardcode keys/endpoints here.
+        'api_key'       => env('AZURE_OPENAI_API_KEY'),
+        'endpoint'      => env('AZURE_OPENAI_ENDPOINT'),
+        'deployment_id' => env('AZURE_OPENAI_DEPLOYMENT_ID', 'gpt-5.4'),
+        'api_version'   => env('AZURE_OPENAI_API_VERSION', '2025-04-01-preview'),
 
         // Model configurations — GPT-5.4 (Orin™)
         'models' => [
