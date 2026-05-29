@@ -401,7 +401,77 @@ Return ONLY valid JSON: {\"score\": 85, \"feedback\": \"The candidate demonstrat
 
     private function fallbackQuestions(string $type, string $jobTitle): array
     {
-        $base = [
+        $banks = [
+            'info_test' => [
+                ['type' => 'mcq', 'question' => 'When researching a company before joining, which source is generally most reliable for its official values?', 'options' => ['Anonymous forums', 'The company\'s official website and reports', 'Unverified social media posts', 'Competitor advertisements'], 'correct' => 1],
+                ['type' => 'mcq', 'question' => 'Which of the following best reflects a strong cultural fit with an organization?', 'options' => ['Ignoring company values', 'Aligning your work with the company mission', 'Working only for the paycheck', 'Avoiding collaboration'], 'correct' => 1],
+                ['type' => 'mcq', 'question' => 'Why is understanding a company\'s industry important for an employee?', 'options' => ['It is not important', 'It helps make informed, relevant decisions', 'Only managers need to know it', 'It slows down work'], 'correct' => 1],
+                ['type' => 'short', 'question' => 'What attracts you most to this company and its mission?'],
+                ['type' => 'short', 'question' => 'How would you contribute to this company\'s culture and values?'],
+                ['type' => 'short', 'question' => 'What do you know about the products or services this company offers?'],
+            ],
+            'aptitude' => [
+                ['type' => 'mcq', 'question' => 'What is the next number in the sequence: 2, 6, 12, 20, 30, ?', 'options' => ['36', '40', '42', '44'], 'correct' => 2],
+                ['type' => 'mcq', 'question' => 'If 5 machines make 5 widgets in 5 minutes, how long do 100 machines take to make 100 widgets?', 'options' => ['100 minutes', '20 minutes', '5 minutes', '1 minute'], 'correct' => 2],
+                ['type' => 'mcq', 'question' => 'A shirt costs $40 after a 20% discount. What was its original price?', 'options' => ['$48', '$50', '$52', '$60'], 'correct' => 1],
+                ['type' => 'mcq', 'question' => 'Which word is the odd one out?', 'options' => ['Apple', 'Banana', 'Carrot', 'Mango'], 'correct' => 2],
+                ['type' => 'mcq', 'question' => 'If "FACE" is coded as "GBDF", how is "BEAD" coded?', 'options' => ['CFBE', 'CFBD', 'CEBF', 'DFCE'], 'correct' => 0],
+                ['type' => 'short', 'question' => 'Describe how you would approach solving a problem when you do not immediately know the answer.'],
+                ['type' => 'short', 'question' => 'Give an example of a time you used logical reasoning to reach a conclusion.'],
+                ['type' => 'short', 'question' => 'How do you check your work to avoid careless mistakes under time pressure?'],
+            ],
+            'technical' => [
+                ['type' => 'mcq', 'question' => 'What is the primary purpose of version control systems like Git?', 'options' => ['Designing UIs', 'Tracking and managing changes to code', 'Hosting websites', 'Writing documentation'], 'correct' => 1],
+                ['type' => 'mcq', 'question' => 'Which data structure uses Last-In-First-Out (LIFO) ordering?', 'options' => ['Queue', 'Stack', 'Linked list', 'Tree'], 'correct' => 1],
+                ['type' => 'mcq', 'question' => 'What does an API primarily allow?', 'options' => ['Styling pages', 'Communication between software systems', 'Storing images', 'Encrypting passwords only'], 'correct' => 1],
+                ['type' => 'mcq', 'question' => 'Which practice helps prevent introducing bugs when changing existing code?', 'options' => ['Skipping tests', 'Writing automated tests', 'Removing comments', 'Avoiding code review'], 'correct' => 1],
+                ['type' => 'mcq', 'question' => 'What is the time complexity of binary search on a sorted array?', 'options' => ['O(n)', 'O(n log n)', 'O(log n)', 'O(1)'], 'correct' => 2],
+                ['type' => 'short', 'question' => "Describe a technical problem you solved relevant to a {$jobTitle} role."],
+                ['type' => 'short', 'question' => 'How do you keep your technical skills up to date?'],
+                ['type' => 'short', 'question' => 'Explain how you would debug a feature that works locally but fails in production.'],
+            ],
+            'practical' => [
+                ['type' => 'mcq', 'question' => 'A deadline is at risk because of an unexpected blocker. What is the best first step?', 'options' => ['Hide the problem', 'Communicate early with stakeholders and propose options', 'Miss the deadline silently', 'Blame a teammate'], 'correct' => 1],
+                ['type' => 'mcq', 'question' => 'You receive conflicting instructions from two managers. What should you do?', 'options' => ['Ignore both', 'Pick one at random', 'Clarify priorities with both to align', 'Do nothing until told again'], 'correct' => 2],
+                ['type' => 'mcq', 'question' => 'A customer reports an urgent issue. What is the most professional response?', 'options' => ['Ignore until convenient', 'Acknowledge, investigate, and keep them updated', 'Tell them it is not your job', 'Close the ticket immediately'], 'correct' => 1],
+                ['type' => 'short', 'question' => 'Describe how you would prioritize multiple urgent tasks competing for your time.'],
+                ['type' => 'short', 'question' => "Walk through how you would handle a typical real-world scenario in a {$jobTitle} role."],
+                ['type' => 'short', 'question' => 'Tell us about a time you improved a process at work. What was the impact?'],
+                ['type' => 'short', 'question' => 'How do you ensure quality when working quickly under pressure?'],
+            ],
+            'hr_interview' => [
+                ['type' => 'short', 'question' => 'Tell us about yourself and why you are interested in this role.'],
+                ['type' => 'short', 'question' => 'Describe a situation where you faced a significant challenge. (Situation/Task)'],
+                ['type' => 'short', 'question' => 'What actions did you take to address that challenge? (Action)'],
+                ['type' => 'short', 'question' => 'What was the outcome and what did you learn? (Result)'],
+                ['type' => 'short', 'question' => 'Tell us about a time you worked in a team that had a conflict. How did you handle it?'],
+                ['type' => 'short', 'question' => 'Where do you see yourself professionally in the next few years?'],
+                ['type' => 'short', 'question' => 'Why are you leaving your current/most recent position?'],
+                ['type' => 'short', 'question' => 'Describe a time you received difficult feedback and how you responded.'],
+            ],
+            'culture_fit' => [
+                ['type' => 'mcq', 'question' => 'Which behavior best supports a positive team culture?', 'options' => ['Withholding information', 'Sharing knowledge and helping teammates', 'Taking sole credit', 'Avoiding feedback'], 'correct' => 1],
+                ['type' => 'mcq', 'question' => 'How do you prefer to receive feedback?', 'options' => ['Never', 'Only when forced', 'Constructively and regularly', 'Anonymously only'], 'correct' => 2],
+                ['type' => 'mcq', 'question' => 'What does inclusivity in the workplace mean to you?', 'options' => ['Excluding different views', 'Valuing diverse perspectives and people', 'Working alone always', 'Ignoring others'], 'correct' => 1],
+                ['type' => 'mcq', 'question' => 'When a teammate succeeds, the best response is to:', 'options' => ['Feel threatened', 'Recognize and celebrate their success', 'Take the credit', 'Stay silent'], 'correct' => 1],
+                ['type' => 'short', 'question' => 'Describe the kind of work environment in which you do your best work.'],
+                ['type' => 'short', 'question' => 'How do you handle working with people whose styles differ from yours?'],
+                ['type' => 'short', 'question' => 'What values are most important to you in a workplace?'],
+                ['type' => 'short', 'question' => 'How do you contribute to a positive team atmosphere?'],
+            ],
+            'portfolio_review' => [
+                ['type' => 'short', 'question' => 'Walk us through a project you are most proud of. What was your role?'],
+                ['type' => 'short', 'question' => 'What problem did that project solve and who was it for?'],
+                ['type' => 'short', 'question' => 'Describe a key decision you made during the project and your reasoning.'],
+                ['type' => 'short', 'question' => 'What challenges did you encounter and how did you overcome them?'],
+                ['type' => 'short', 'question' => 'What would you do differently if you started that project again?'],
+                ['type' => 'short', 'question' => "What skills relevant to the {$jobTitle} role does your portfolio demonstrate?"],
+                ['type' => 'short', 'question' => 'How do you measure the success or impact of your work?'],
+                ['type' => 'short', 'question' => 'Describe your typical approach or process when starting a new project.'],
+            ],
+        ];
+
+        $default = [
             ['type' => 'mcq', 'question' => 'Which of the following best describes effective teamwork?', 'options' => ['Working independently', 'Collaborating and communicating clearly', 'Avoiding conflict at all costs', 'Following instructions without question'], 'correct' => 1],
             ['type' => 'mcq', 'question' => 'What is the most important factor in meeting project deadlines?', 'options' => ['Working longer hours', 'Proper planning and prioritization', 'Delegating all tasks', 'Avoiding scope changes'], 'correct' => 1],
             ['type' => 'mcq', 'question' => 'How should you handle a disagreement with a colleague?', 'options' => ['Ignore the issue', 'Escalate immediately to HR', 'Discuss professionally and find a solution', 'Complain to other colleagues'], 'correct' => 2],
@@ -409,6 +479,7 @@ Return ONLY valid JSON: {\"score\": 85, \"feedback\": \"The candidate demonstrat
             ['type' => 'short', 'question' => 'Describe a challenge you faced at work and how you resolved it.'],
             ['type' => 'short', 'question' => 'What are your key strengths relevant to this position?'],
         ];
-        return $base;
+
+        return $banks[$type] ?? $default;
     }
 }
