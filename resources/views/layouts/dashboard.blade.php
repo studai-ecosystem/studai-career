@@ -206,7 +206,7 @@
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2 min-w-0">
                     <img src="/assets/logo/icon.png" alt="StudAI Hire" style="width:32px;height:32px;object-fit:contain;flex-shrink:0">
                     <span x-show="sidebarOpen" x-transition class="truncate" style="font-size:13px;font-weight:700;letter-spacing:-0.01em">
-                        <span style="background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Stud<span style="font-weight:800">AI</span></span><span style="color:#6b21a8;font-weight:500;margin-left:2px">One</span>
+                        <span style="background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Stud<span style="font-weight:800">AI</span></span><span style="color:#6b21a8;font-weight:500;margin-left:2px">Hire</span>
                     </span>
                 </a>
             </div>

@@ -181,7 +181,7 @@
                 {{-- Logo --}}
                 <a href="/" class="flex items-center gap-2 group">
                     <img src="/assets/logo/icon.png?v=3" alt="StudAI Hire" style="width:36px;height:36px;object-fit:contain;flex-shrink:0" class="transition-transform group-hover:scale-110">
-                    <span class="text-xl font-bold" style="color:#1a1a2e">Stud<span style="background:linear-gradient(135deg,#1a73e8,#7c3aed);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">AI</span> One</span>
+                    <span class="text-xl font-bold" style="color:#1a1a2e">Stud<span style="background:linear-gradient(135deg,#1a73e8,#7c3aed);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">AI</span> Hire</span>
                 </a>
 
                 {{-- Desktop Navigation --}}

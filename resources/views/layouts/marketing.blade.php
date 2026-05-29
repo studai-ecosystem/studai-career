@@ -98,7 +98,7 @@
                 {{-- Logo --}}
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5 group">
                     <img src="/assets/logo/icon.png" alt="StudAI Hire" style="width:36px;height:36px;object-fit:contain;flex-shrink:0" class="transition-transform group-hover:scale-110">
-                    <span class="text-lg font-extrabold tracking-tight" style="color:#1a1a2e">Stud<span class="grad-text">AI</span> One</span>
+                    <span class="text-lg font-extrabold tracking-tight" style="color:#1a1a2e">Stud<span class="grad-text">AI</span> Hire</span>
                 </a>
 
                 {{-- Desktop Nav --}}
@@ -186,7 +186,7 @@
                 <div class="col-span-1">
                     <div class="flex items-center gap-2.5 mb-4">
                         <img src="/assets/logo/icon.png" alt="StudAI Hire" style="width:32px;height:32px;object-fit:contain;flex-shrink:0">
-                        <span class="text-base font-extrabold" style="color:#1a1a2e">Stud<span class="grad-text">AI</span> One</span>
+                        <span class="text-base font-extrabold" style="color:#1a1a2e">Stud<span class="grad-text">AI</span> Hire</span>
                     </div>
                     <p class="text-sm leading-relaxed mb-5" style="color:#6b7280">
                         India's first autonomous career OS. AI-powered job search, interview prep, and salary negotiation.

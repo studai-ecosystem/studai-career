@@ -18,42 +18,59 @@ class CandidateTestController extends Controller
 
     public function show(int $jobId, int $roundId)
     {
-        $round = HiringRound::with('job')->findOrFail($roundId);
+        try {
+            $round = HiringRound::with('job')->findOrFail($roundId);
 
-        abort_if($round->job_id !== $jobId, 404);
+            abort_if($round->job_id !== $jobId, 404);
 
-        $application = Application::where('user_id', Auth::id())
-            ->where('job_id', $jobId)
-            ->first();
+            $application = Application::where('user_id', Auth::id())
+                ->where('job_id', $jobId)
+                ->first();
 
-        if (!$application) {
-            return redirect()->route('jobs.show', $jobId)
-                ->with('error', 'You must apply for this job before taking the test.');
-        }
+            if (!$application) {
+                return redirect()->route('jobs.show', $jobId)
+                    ->with('error', 'You must apply for this job before taking the test.');
+            }
 
-        $attempt = RoundAttempt::firstOrCreate(
-            ['hiring_round_id' => $roundId, 'user_id' => Auth::id()],
-            ['application_id' => $application->id, 'status' => 'not_started']
-        );
+            $attempt = RoundAttempt::firstOrCreate(
+                ['hiring_round_id' => $roundId, 'user_id' => Auth::id()],
+                ['application_id' => $application->id, 'status' => 'not_started']
+            );
 
-        // Already evaluated — redirect to result page
-        if (in_array($attempt->status, ['submitted', 'evaluated'], true)) {
-            return redirect()->route('candidate.test.result', [$jobId, $roundId]);
-        }
+            // Already evaluated — redirect to result page
+            if (in_array($attempt->status, ['submitted', 'evaluated'], true)) {
+                return redirect()->route('candidate.test.result', [$jobId, $roundId]);
+            }
 
-        // Generate questions if not yet generated
-        if (empty($attempt->questions)) {
-            $questions = $this->generateQuestions($round);
-            $attempt->update([
-                'questions'  => $questions,
-                'status'     => 'in_progress',
-                'started_at' => now(),
+            // Generate questions if not yet generated
+            if (empty($attempt->questions)) {
+                $questions = $this->generateQuestions($round);
+                $attempt->update([
+                    'questions'  => $questions,
+                    'status'     => 'in_progress',
+                    'started_at' => now(),
+                ]);
+            } elseif ($attempt->status === 'not_started') {
+                $attempt->update(['status' => 'in_progress', 'started_at' => now()]);
+            }
+
+            return view('candidate.test', compact('round', 'attempt'));
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            // Let intentional aborts (404, etc.) bubble up untouched.
+            throw $e;
+        } catch (\Throwable $e) {
+            Log::error('Failed to start candidate test', [
+                'job_id'   => $jobId,
+                'round_id' => $roundId,
+                'user_id'  => Auth::id(),
+                'error'    => $e->getMessage(),
+                'file'     => $e->getFile(),
+                'line'     => $e->getLine(),
             ]);
-        } elseif ($attempt->status === 'not_started') {
-            $attempt->update(['status' => 'in_progress', 'started_at' => now()]);
-        }
 
-        return view('candidate.test', compact('round', 'attempt'));
+            return redirect()->route('jobs.show', $jobId)
+                ->with('error', 'We could not start the test right now. Please try again in a moment.');
+        }
     }
 
     // ─── Submit Test ──────────────────────────────────────────────────────────
@@ -255,7 +272,8 @@ Return ONLY valid JSON: {\"score\": 85, \"feedback\": \"The candidate demonstrat
 
     private function callAI(string $prompt): string
     {
-        $openaiKey = env('OPENAI_API_KEY');
+        // Use config() (not env()) so the key resolves correctly after config:cache in production.
+        $openaiKey = config('ai.openai.api_key');
 
         if ($openaiKey && str_starts_with($openaiKey, 'sk-')) {
             $response = Http::timeout(60)

@@ -184,7 +184,7 @@
                         <img src="{{ asset('assets/logo/icon.png') }}" alt="StudAI Hire" class="w-10 h-10 object-contain">
                         <span class="absolute -inset-2 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" style="background:rgba(99,102,241,.15); filter:blur(10px)"></span>
                     </div>
-                    <span class="text-2xl font-extrabold tracking-tight" style="color:#1a1a2e">Stud<span class="g-text">AI</span> One</span>
+                    <span class="text-2xl font-extrabold tracking-tight" style="color:#1a1a2e">Stud<span class="g-text">AI</span> Hire</span>
                 </a>
 
                 {{-- Tagline pill --}}

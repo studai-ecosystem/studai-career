@@ -163,7 +163,7 @@
                 {{-- Logo --}}
                 <a href="{{ route('dashboard') }}" class="nav-logo flex items-center gap-2.5">
                     <img src="/assets/logo/icon.png?v=3" alt="StudAI Hire" class="nav-logo-img" style="width:34px;height:34px;object-fit:contain;">
-                    <span class="nav-logo-text">Stud<span>AI</span> One</span>
+                    <span class="nav-logo-text">Stud<span>AI</span> Hire</span>
                 </a>
 
                 {{-- Divider --}}
