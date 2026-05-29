@@ -85,7 +85,8 @@ class DashboardController extends Controller
             "job_recommendations_{$user->id}",
             3600,
             function () {
-                return Job::where('status', 'published')
+                return Job::with('company')
+                    ->where('status', 'published')
                     ->where(function ($q) {
                         $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
                     })
