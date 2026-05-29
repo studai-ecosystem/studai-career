@@ -86,7 +86,15 @@ jobs:
               SESSION_DRIVER=database \
               CACHE_STORE=database \
               QUEUE_CONNECTION=database \
-              AUTH_DIAG_TOKEN=studai-diag-2024
+              AUTH_DIAG_TOKEN=studai-diag-2024 \
+              MAIL_MAILER=smtp \
+              MAIL_HOST=smtp.gmail.com \
+              MAIL_PORT=587 \
+              MAIL_ENCRYPTION=tls \
+              MAIL_USERNAME=onestudai@gmail.com \
+              "MAIL_PASSWORD=jnuw zktk zlsr yvdp" \
+              MAIL_FROM_ADDRESS=onestudai@gmail.com \
+              "MAIL_FROM_NAME=StudAI Career"
 
           # Set Azure OpenAI credentials from GitHub Secrets (if configured)
           # NOTE: .env is NOT in git so we never read from it here.
