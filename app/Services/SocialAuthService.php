@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Events\UserRegistered;
 use App\Models\SocialAccount;
 use App\Models\SocialAuthLog;
 use App\Models\SocialProvider;
@@ -257,6 +258,15 @@ class SocialAuthService
             } catch (\Throwable $e) {
                 // Profile may already exist or schema differs; non-fatal.
             }
+        }
+
+        // Mirror standard registration: send the role-specific welcome email.
+        try {
+            event(new UserRegistered($user));
+        } catch (\Throwable $e) {
+            Log::warning('Social signup welcome email dispatch failed', [
+                'error' => $e->getMessage(),
+            ]);
         }
 
         return $user;

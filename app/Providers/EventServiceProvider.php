@@ -46,8 +46,10 @@ use App\Listeners\NotifyOnMessagingAndReferral;
 use App\Listeners\NotifyOnSubscriptionChange;
 use App\Listeners\SendApplicationStatusChangedNotification;
 use App\Listeners\SendApplicationSubmittedNotification;
+use App\Listeners\SendLoginNotification;
 use App\Listeners\SendWelcomeEmail;
 use App\Listeners\UpdateSearchIndex;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -63,6 +65,11 @@ class EventServiceProvider extends ServiceProvider
         // Laravel Auth Events
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+
+        // Security: notify user of every successful sign-in
+        Login::class => [
+            SendLoginNotification::class,
         ],
 
         // User Events

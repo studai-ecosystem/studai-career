@@ -38,7 +38,17 @@ class SendApplicationConfirmation extends Notification implements ShouldQueue
         $job = $this->application->job;
         $company = $job->company;
         $hrEmail = $company?->hr_email ?? null;
-        
+
+        $applicationDate = $this->application->submitted_at
+            ? $this->application->submitted_at->format('d M Y')
+            : now()->format('d M Y');
+        $closingDate = $job->close_date
+            ? \Carbon\Carbon::parse($job->close_date)->format('d M Y')
+            : 'To be announced';
+        $evaluationDate = $job->eval_start_date
+            ? \Carbon\Carbon::parse($job->eval_start_date)->format('d M Y')
+            : 'To be announced';
+
         $message = (new MailMessage)
             ->subject('Application Submitted - ' . $job->title)
             ->greeting('Hello ' . $notifiable->name . '!')
@@ -47,6 +57,9 @@ class SendApplicationConfirmation extends Notification implements ShouldQueue
             ->line('Company: ' . $company->name)
             ->line('Application Number: ' . $this->application->application_number)
             ->line('Match Score: ' . $this->application->match_score . '%')
+            ->line('Application Date: ' . $applicationDate)
+            ->line('Applications Close: ' . $closingDate)
+            ->line('Evaluation Begins: ' . $evaluationDate)
             ->action('View Application', url('/applications/' . $this->application->id))
             ->line('We will notify you when the employer reviews your application.')
             ->line('Good luck!');
