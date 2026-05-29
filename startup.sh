@@ -129,20 +129,21 @@ if [ "$APP_ENV" = "production" ]; then
   echo "Running migrations..."
   timeout 60 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
 
-  echo "Clearing stale sessions (prevents 419 after APP_KEY or session config changes)..."
-  php -r "
-    require 'vendor/autoload.php';
-    \$app = require 'bootstrap/app.php';
-    \$app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-    try { DB::table('sessions')->delete(); echo 'Sessions table cleared.' . PHP_EOL; }
-    catch (\Exception \$e) { echo 'Sessions clear skipped: ' . \$e->getMessage() . PHP_EOL; }
-  " 2>/dev/null || echo 'WARNING: Could not clear sessions (non-critical)'
-
   echo "Syncing Meilisearch indices..."
   timeout 15 php artisan scout:sync-index-settings 2>/dev/null || true
 
-  # Seed test accounts once (idempotent - skips if already seeded)
-  timeout 20 php artisan studai:seed-test-accounts 2>/dev/null || echo "WARNING: account seeder failed (non-critical)"
+  # Seed test accounts only on first deploy (lock file prevents repeat runs)
+  # Sessions are NOT cleared here — APP_KEY is stable (force-loaded from .env),
+  # so existing sessions remain valid. Old/invalid sessions expire naturally.
+  SEEDER_LOCK="/home/site/seeded.lock"
+  if [ ! -f "$SEEDER_LOCK" ]; then
+    echo "First-time seeding test accounts..."
+    timeout 30 php artisan studai:seed-test-accounts 2>/dev/null \
+      && touch "$SEEDER_LOCK" \
+      || echo "WARNING: account seeder failed (will retry on next restart)"
+  else
+    echo "Test accounts already seeded (lock exists), skipping."
+  fi
 
 else
   echo "Development mode - clearing caches..."
@@ -158,12 +159,13 @@ timeout 15 php artisan filament:cache-components 2>/dev/null || true
 timeout 15 php artisan icons:cache 2>/dev/null || true
 
 # ---- 6. PHP-FPM Warmup ----
-# Pre-warm OPcache and Laravel bootstrap so first real user request is fast.
-# Without this, first requests after container restart take 5-10s and may return 502.
-APP_WARMUP_URL="${APP_URL:-https://studai-app-prod.azurewebsites.net}"
+# Pre-warm OPcache via localhost (avoids DNS/SSL overhead of hitting the public URL).
+# Nginx listens on port 8080 internally in Azure App Service containers.
 echo "Warming up PHP-FPM workers (pre-loading OPcache)..."
 for i in 1 2 3; do
-  curl -sf --max-time 15 "${APP_WARMUP_URL}/up" -o /dev/null && echo "  Warmup hit $i: OK" || echo "  Warmup hit $i: skipped"
+  curl -sf --max-time 10 http://127.0.0.1:8080/up -o /dev/null \
+    && echo "  Warmup hit $i: OK" \
+    || echo "  Warmup hit $i: skipped (PHP-FPM not yet ready)"
 done
 echo "Warmup complete."
 
