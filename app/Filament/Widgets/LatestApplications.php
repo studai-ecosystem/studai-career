@@ -28,7 +28,7 @@ class LatestApplications extends TableWidget
     {
         return $table
             ->query(
-                fn (): Builder => Application::query()->latest()->limit(10)
+                fn (): Builder => Application::query()->with(['user', 'job.company'])->latest()->limit(10)
             )
             ->heading('Latest Job Applications')
             ->columns([
