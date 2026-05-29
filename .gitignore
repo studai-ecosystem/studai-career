@@ -24,3 +24,9 @@ CLAUDE.md
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Temp diagnostics & office lock files
+diag-*.php
+smoke-test.php
+smoke-results.txt
+~$*
