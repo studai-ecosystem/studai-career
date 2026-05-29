@@ -37,9 +37,16 @@ class SocialAuthController extends Controller
     /**
      * Redirect to OAuth provider.
      */
-    public function redirect(string $provider)
+    public function redirect(Request $request, string $provider)
     {
         try {
+            // Remember which side ("student"/job_seeker or company/employer) the
+            // user picked so a new social account is created with the right type.
+            $type = $request->query('type');
+            if (in_array($type, ['job_seeker', 'employer'], true)) {
+                session(['social_auth_role' => $type]);
+            }
+
             return $this->socialAuthService->redirect($provider);
         } catch (\Exception $e) {
             Log::error('Social auth redirect failed', [
@@ -81,9 +88,19 @@ class SocialAuthController extends Controller
 
             // Determine redirect destination
             if ($isNewUser) {
+                session()->forget('social_auth_role');
+
+                // New employers must complete their company / Corporate DNA profile.
+                if ($user->account_type === 'employer') {
+                    return redirect()->route('employer.onboarding')
+                        ->with('success', 'Welcome to StudAI Hire! Complete your company profile to start hiring.');
+                }
+
                 return redirect()->route('profile.edit')
                     ->with('success', 'Welcome to StudAI Hire! Please complete your profile to get started.');
             }
+
+            session()->forget('social_auth_role');
 
             return redirect()->intended(route('dashboard'))
                 ->with('success', 'Welcome back, ' . $user->name . '!');

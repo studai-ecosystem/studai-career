@@ -36,10 +36,16 @@ class SocialAuthService
      */
     public function getProvider(string $slug): ?SocialProvider
     {
-        return SocialProvider::where('slug', $slug)
-            ->enabled()
-            ->configured()
-            ->first();
+        try {
+            return SocialProvider::where('slug', $slug)
+                ->enabled()
+                ->configured()
+                ->first();
+        } catch (\Throwable $e) {
+            // social_providers table may not exist on every environment; the
+            // caller can still fall back to .env credentials.
+            return null;
+        }
     }
 
     /**
@@ -49,24 +55,63 @@ class SocialAuthService
     {
         $provider = $this->getProvider($slug);
 
-        if (!$provider) {
-            return null;
+        if ($provider) {
+            $config = $provider->getSocialiteConfig();
+
+            // Override Laravel config at runtime so Socialite picks up DB credentials
+            config(["services.{$slug}" => $config]);
+
+            $driver = Socialite::driver($slug);
+
+            // Apply scopes if specified
+            $scopes = $provider->getScopesArray();
+            if (!empty($scopes)) {
+                $driver->scopes($scopes);
+            }
+
+            return $driver;
         }
 
-        $config = $provider->getSocialiteConfig();
+        // Fallback: use credentials from config/services.php (.env) when no DB
+        // row exists. This lets "Continue with Google" work out of the box once
+        // GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET are set, without seeding a row.
+        if ($this->hasEnvCredentials($slug)) {
+            $envConfig = (array) config("services.{$slug}");
 
-        // Override Laravel config at runtime so Socialite picks up DB credentials
-        config(["services.{$slug}" => $config]);
+            if (empty($envConfig['redirect'])) {
+                $envConfig['redirect'] = route('social.callback', ['provider' => $slug]);
+                config(["services.{$slug}" => $envConfig]);
+            }
 
-        $driver = Socialite::driver($slug);
-
-        // Apply scopes if specified
-        $scopes = $provider->getScopesArray();
-        if (!empty($scopes)) {
-            $driver->scopes($scopes);
+            return Socialite::driver($slug);
         }
 
-        return $driver;
+        return null;
+    }
+
+    /**
+     * Whether a provider has usable credentials in config/services.php (.env).
+     */
+    public function hasEnvCredentials(string $slug): bool
+    {
+        $config = config("services.{$slug}");
+
+        return is_array($config)
+            && !empty($config['client_id'])
+            && !empty($config['client_secret']);
+    }
+
+    /**
+     * Whether a provider can be used for auth, via DB row or .env credentials.
+     */
+    public function isProviderAvailable(string $slug): bool
+    {
+        // Cheap env check first so it works even without the social_providers table.
+        if ($this->hasEnvCredentials($slug)) {
+            return true;
+        }
+
+        return $this->getProvider($slug) !== null;
     }
 
     /**
@@ -183,12 +228,38 @@ class SocialAuthService
             $email = Str::slug($name) . '-' . Str::random(8) . '@social.local';
         }
 
-        return User::create([
+        // Respect the account type chosen on the "Continue with Google" button
+        // (student vs company). Defaults to job_seeker for safety.
+        $accountType = session('social_auth_role') === 'employer' ? 'employer' : 'job_seeker';
+
+        $user = User::create([
             'name' => $name,
             'email' => $email,
             'password' => Hash::make(Str::random(32)),
             'email_verified_at' => now(), // Social login = verified
+            'account_type' => $accountType,
+            'is_active' => true,
         ]);
+
+        // Mirror standard registration: assign role + seed job seeker profile.
+        try {
+            $user->assignRole($accountType);
+        } catch (\Throwable $e) {
+            Log::warning('Social signup role assignment failed', [
+                'account_type' => $accountType,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        if ($accountType === 'job_seeker') {
+            try {
+                $user->profile()->create(['profile_completeness' => 10]);
+            } catch (\Throwable $e) {
+                // Profile may already exist or schema differs; non-fatal.
+            }
+        }
+
+        return $user;
     }
 
     /**
