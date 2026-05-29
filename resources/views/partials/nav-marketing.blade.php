@@ -5,7 +5,7 @@
             {{-- Logo --}}
             <a href="/" class="flex items-center gap-2 group">
                 <img src="/assets/logo/icon.png" alt="StudAI Hire" style="width:36px;height:36px;object-fit:contain;flex-shrink:0" class="transition-transform duration-200 group-hover:scale-110">
-                <span class="text-xl font-semibold text-gray-900">StudAI<span class="text-[#1A73E8]">One</span></span>
+                <span class="text-xl font-semibold text-gray-900">StudAI<span class="text-[#1A73E8]">&nbsp;Hire</span></span>
             </a>
 
             {{-- Desktop Navigation --}}

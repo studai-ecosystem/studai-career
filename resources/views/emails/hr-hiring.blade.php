@@ -174,7 +174,7 @@
 
   <div class="footer">
     <p>This is an automated internal notification from <strong>StudAI Hire Platform</strong>. Do not reply to this email.</p>
-    <p>&copy; {{ date('Y') }} StudAI Career. All rights reserved.</p>
+    <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
   </div>
 
 </div>

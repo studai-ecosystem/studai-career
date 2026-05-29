@@ -115,4 +115,16 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Support Inbox
+    |--------------------------------------------------------------------------
+    |
+    | Destination address for contact-form submissions and support requests.
+    | Falls back to the global "from" address when not explicitly configured.
+    |
+    */
+
+    'support_email' => env('MAIL_SUPPORT_EMAIL', env('MAIL_FROM_ADDRESS', 'hello@example.com')),
+
 ];
