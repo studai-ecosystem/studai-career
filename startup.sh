@@ -107,6 +107,26 @@ if [ "$APP_ENV" = "production" ]; then
     _load_env_var RAZORPAY_WEBHOOK_SECRET
   fi
 
+  # ---- Verify Azure OpenAI credentials are present ----
+  echo "Verifying AI credentials..."
+  if [ -z "$AZURE_OPENAI_API_KEY" ]; then
+    echo "WARNING: AZURE_OPENAI_API_KEY is not set — AI question generation will use fallback banks"
+  else
+    echo "  AZURE_OPENAI_API_KEY: set (${#AZURE_OPENAI_API_KEY} chars)"
+  fi
+  if [ -z "$AZURE_OPENAI_ENDPOINT" ]; then
+    echo "WARNING: AZURE_OPENAI_ENDPOINT is not set — AI calls will fail"
+  else
+    echo "  AZURE_OPENAI_ENDPOINT: $AZURE_OPENAI_ENDPOINT"
+  fi
+  echo "  AZURE_OPENAI_DEPLOYMENT_ID: ${AZURE_OPENAI_DEPLOYMENT_ID:-gpt-5.4 (default)}"
+  echo "  AZURE_OPENAI_API_VERSION: ${AZURE_OPENAI_API_VERSION:-2025-04-01-preview (default)}"
+  if [ -z "$AZURE_ANTHROPIC_API_KEY" ]; then
+    echo "  AZURE_ANTHROPIC_API_KEY: not set (Anthropic fallback disabled)"
+  else
+    echo "  AZURE_ANTHROPIC_API_KEY: set"
+  fi
+
   # ---- Force production session settings ----
   # These override any stale Azure App Settings to prevent 419 Session Expired errors.
   # Sessions must use database driver (not file — NFS is ephemeral per container).

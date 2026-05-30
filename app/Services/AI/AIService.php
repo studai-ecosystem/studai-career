@@ -187,6 +187,8 @@ class AIService
         $openAICircuit = CircuitBreakerService::forAzureOpenAI();
         $anthropicCircuit = CircuitBreakerService::forAzureAnthropic();
 
+        $primaryError = null;
+
         try {
             // Primary: Azure OpenAI (GPT-5.4 — Orin™) with Circuit Breaker
             Log::info('Calling Azure OpenAI API', [
@@ -207,12 +209,14 @@ class AIService
 
         } catch (CircuitOpenException $e) {
             // Circuit is open, go directly to fallback
+            $primaryError = $e;
             Log::warning('Azure OpenAI circuit breaker is OPEN, using Anthropic fallback', [
                 'service' => 'azure_openai',
                 'user_id' => $this->user?->id,
             ]);
 
         } catch (\Exception $e) {
+            $primaryError = $e;
             Log::warning('Azure OpenAI failed, trying Anthropic fallback', [
                 'error' => $e->getMessage(),
                 'user_id' => $this->user?->id,
@@ -220,7 +224,7 @@ class AIService
             ]);
         }
 
-        // Fallback: Azure Anthropic (Claude Sonnet 4.5) with Circuit Breaker
+        // Fallback: Azure Anthropic (Claude Sonnet 4.6) with Circuit Breaker
         if (config('ai.fallback.use_anthropic_if_azure_fails', true)) {
             try {
                 Log::info('Calling Azure Anthropic API (fallback)', [
@@ -243,7 +247,7 @@ class AIService
                 ]);
             } catch (\Exception $fallbackError) {
                 Log::error('Both Azure OpenAI and Anthropic failed', [
-                    'azure_error' => $e->getMessage() ?? 'Circuit open',
+                    'azure_error' => $primaryError?->getMessage() ?? 'Circuit open',
                     'anthropic_error' => $fallbackError->getMessage(),
                     'anthropic_circuit_state' => $anthropicCircuit->getState(),
                 ]);
@@ -251,7 +255,7 @@ class AIService
         }
 
         // Return fallback response
-        return $this->fallbackResponse($prompt, $e ?? null);
+        return $this->fallbackResponse($prompt, $primaryError);
     }
 
     /**

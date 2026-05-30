@@ -7,13 +7,15 @@ namespace App\Http\Controllers;
 use App\Models\Application;
 use App\Models\HiringRound;
 use App\Models\RoundAttempt;
+use App\Services\AI\AIService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class CandidateTestController extends Controller
 {
+    public function __construct(private readonly AIService $aiService) {}
+
     // ─── Show / Start Test ───────────────────────────────────────────────────
 
     public function show(int $jobId, int $roundId)
@@ -341,51 +343,17 @@ Return ONLY valid JSON: {\"score\": 85, \"feedback\": \"The candidate demonstrat
 
     // ─── AI Helper ────────────────────────────────────────────────────────────
 
+    /**
+     * Call AI using the centralized AIService (circuit breaker + Anthropic fallback).
+     * Throws on total failure; caller falls back to static question banks.
+     */
     private function callAI(string $prompt): string
     {
-        // Use config() (not env()) so the key resolves correctly after config:cache in production.
-        $openaiKey = config('ai.openai.api_key');
-
-        if ($openaiKey && str_starts_with($openaiKey, 'sk-')) {
-            $response = Http::timeout(30)->connectTimeout(10)
-                ->withHeaders(['Authorization' => 'Bearer ' . $openaiKey, 'Content-Type' => 'application/json'])
-                ->post('https://api.openai.com/v1/chat/completions', [
-                    'model'    => 'gpt-4o-mini',
-                    'messages' => [['role' => 'user', 'content' => $prompt]],
-                    'max_completion_tokens' => 2000,
-                    'temperature' => 0.7,
-                ]);
-            if (!$response->successful()) {
-                throw new \Exception('OpenAI error ' . $response->status());
-            }
-            return $response->json('choices.0.message.content') ?? '';
-        }
-
-        $azureKey   = config('ai.azure.api_key');
-        $deployment = config('ai.azure.deployment_id', 'gpt-5.4');
-        $apiVersion = config('ai.azure.api_version', '2025-04-01-preview');
-        $endpoint   = rtrim((string) config('ai.azure.endpoint'), '/');
-
-        if (empty($azureKey)) {
-            throw new \Exception('No AI credentials configured.');
-        }
-
-        $url      = "{$endpoint}/openai/deployments/{$deployment}/chat/completions?api-version={$apiVersion}";
-        $response = Http::timeout(30)->connectTimeout(10)
-            ->withHeaders(['api-key' => $azureKey, 'Content-Type' => 'application/json'])
-            ->post($url, [
-                'messages'   => [
-                    ['role' => 'system', 'content' => 'You are an expert HR assessor. Return ONLY valid JSON with no markdown.'],
-                    ['role' => 'user',   'content' => $prompt],
-                ],
-                'max_completion_tokens' => 2000,
-            ]);
-
-        if (!$response->successful()) {
-            throw new \Exception('Azure OpenAI error ' . $response->status());
-        }
-
-        return $response->json('choices.0.message.content') ?? '';
+        return $this->aiService->generateText(
+            $prompt,
+            'You are an expert HR assessor. Return ONLY valid JSON with no markdown.',
+            ['max_tokens' => 2000, 'skip_cache' => true]
+        );
     }
 
     // ─── Fallback Questions ───────────────────────────────────────────────────
