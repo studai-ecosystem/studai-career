@@ -36,6 +36,18 @@ class InterviewController extends Controller
         $sessions = InterviewSession::where('user_id', $user->id)
             ->latest()
             ->get();
+
+        // Compute real stats from actual session data
+        $questionsPracticed = (int) $sessions->sum('questions_answered');
+        $completedSessions  = $sessions->where('status', 'completed');
+        $avgScore = $completedSessions->count()
+            ? (int) round($completedSessions->avg('overall_score'))
+            : 0;
+
+        // "Interview Ready" score: 100% if ≥5 sessions completed, else proportional
+        $interviewReadyPct = $completedSessions->count() >= 5
+            ? 100
+            : (int) round(($completedSessions->count() / 5) * 100);
         
         // Get recent/upcoming interviews
         $upcomingInterviews = $user->applications()
@@ -48,7 +60,10 @@ class InterviewController extends Controller
         // Get interview tips
         $tips = $this->mockInterviewService->getGenericTips();
         
-        return view('interview.index', compact('sessions', 'upcomingInterviews', 'tips'));
+        return view('interview.index', compact(
+            'sessions', 'upcomingInterviews', 'tips',
+            'questionsPracticed', 'avgScore', 'interviewReadyPct'
+        ));
     }
     
     /**

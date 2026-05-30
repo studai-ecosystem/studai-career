@@ -32,18 +32,25 @@ class CheckSubscriptionStatus
             return $next($request);
         }
         
-        // Check if user has active subscription
-        if (!$user->hasActiveSubscription()) {
+        // Check subscription status.
+        // Users who have NEVER subscribed are treated as free-tier — they get access.
+        // Only users whose subscription has EXPIRED are redirected to pricing.
+        $subscription = $user->subscription;
+
+        if ($subscription && !$subscription->isActive()) {
+            // Had a subscription that expired — prompt to renew
             if ($request->expectsJson()) {
                 return response()->json([
-                    'message' => 'Active subscription required',
-                    'upgrade_url' => route('pricing')
+                    'message' => 'Your subscription has expired. Please renew to continue.',
+                    'upgrade_url' => route('pricing'),
                 ], 403);
             }
-            
+
             return redirect()->route('pricing')
-                ->with('error', 'This feature requires an active subscription.');
+                ->with('error', 'Your subscription has expired. Please renew to continue.');
         }
+
+        // No subscription record = free tier — let them through for basic access
         
         // Check for specific feature if provided
         if ($requiredFeature && !$user->hasFeature($requiredFeature)) {

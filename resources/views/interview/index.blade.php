@@ -36,21 +36,21 @@
             <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#ede9fe;">
                 <svg class="w-5 h-5" style="color:#8b5cf6;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
             </div>
-            <div class="text-3xl font-bold text-gray-900">82<span class="text-lg font-semibold text-gray-500">%</span></div>
+            <div class="text-3xl font-bold text-gray-900">{{ $avgScore }}<span class="text-lg font-semibold text-gray-500">%</span></div>
             <div class="text-sm text-gray-600 mt-1">Avg. Score</div>
         </div>
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#f5f3ff;">
                 <svg class="w-5 h-5" style="color:#6d28d9;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
-            <div class="text-3xl font-bold text-gray-900">47</div>
+            <div class="text-3xl font-bold text-gray-900">{{ $questionsPracticed }}</div>
             <div class="text-sm text-gray-600 mt-1">Questions Practiced</div>
         </div>
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#ede9fe;">
                 <svg class="w-5 h-5" style="color:#7c3aed;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
-            <div class="text-3xl font-bold text-gray-900">94<span class="text-lg font-semibold text-gray-500">%</span></div>
+            <div class="text-3xl font-bold text-gray-900">{{ $interviewReadyPct }}<span class="text-lg font-semibold text-gray-500">%</span></div>
             <div class="text-sm text-gray-600 mt-1">Interview Ready</div>
         </div>
     </div>
