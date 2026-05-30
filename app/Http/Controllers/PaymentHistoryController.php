@@ -11,6 +11,21 @@ class PaymentHistoryController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->query('diag') === '1') {
+            try {
+                $user = $request->user();
+                $transactions = $user->paymentTransactions()
+                    ->with('subscriptionPlan')
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(20);
+
+                return response(view('payments.history', compact('transactions'))->render());
+            } catch (\Throwable $e) {
+                return response('DIAG payments: ' . get_class($e) . ': ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine(), 200)
+                    ->header('Content-Type', 'text/plain');
+            }
+        }
+
         $user = $request->user();
         
         $transactions = $user->paymentTransactions()
