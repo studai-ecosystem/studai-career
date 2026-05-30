@@ -126,8 +126,15 @@ class SocialAuthService
             throw new \Exception("Provider '{$provider}' is not configured or enabled.");
         }
 
-        // Log the redirect attempt
-        SocialAuthLog::logSuccess($provider, 'redirect');
+        // Log the redirect attempt (non-fatal — a missing table must never block OAuth)
+        try {
+            SocialAuthLog::logSuccess($provider, 'redirect');
+        } catch (\Throwable $logEx) {
+            Log::warning('SocialAuthLog::logSuccess failed (non-fatal)', [
+                'provider' => $provider,
+                'error'    => $logEx->getMessage(),
+            ]);
+        }
 
         return $driver->redirect();
     }
@@ -153,11 +160,18 @@ class SocialAuthService
                 'error' => $e->getMessage(),
             ]);
 
-            SocialAuthLog::logFailure(
-                $provider,
-                'callback',
-                $e->getMessage()
-            );
+            try {
+                SocialAuthLog::logFailure(
+                    $provider,
+                    'callback',
+                    $e->getMessage()
+                );
+            } catch (\Throwable $logEx) {
+                Log::warning('SocialAuthLog::logFailure failed (non-fatal)', [
+                    'provider' => $provider,
+                    'error'    => $logEx->getMessage(),
+                ]);
+            }
 
             throw $e;
         }
@@ -180,9 +194,13 @@ class SocialAuthService
                 // Update tokens and profile
                 $this->updateSocialAccount($socialAccount, $socialUser);
 
-                SocialAuthLog::logSuccess($provider, 'login', $user->id, [
-                    'email' => $socialUser->getEmail(),
-                ]);
+                try {
+                    SocialAuthLog::logSuccess($provider, 'login', $user->id, [
+                        'email' => $socialUser->getEmail(),
+                    ]);
+                } catch (\Throwable $logEx) {
+                    Log::warning('SocialAuthLog failed (non-fatal)', ['error' => $logEx->getMessage()]);
+                }
             } else {
                 // Check if user exists with same email
                 $email = $socialUser->getEmail();
@@ -193,18 +211,26 @@ class SocialAuthService
                     $socialAccount = $this->createSocialAccount($user, $provider, $socialUser);
                     $isNewUser = false;
 
-                    SocialAuthLog::logSuccess($provider, 'link', $user->id, [
-                        'email' => $email,
-                    ]);
+                    try {
+                        SocialAuthLog::logSuccess($provider, 'link', $user->id, [
+                            'email' => $email,
+                        ]);
+                    } catch (\Throwable $logEx) {
+                        Log::warning('SocialAuthLog failed (non-fatal)', ['error' => $logEx->getMessage()]);
+                    }
                 } else {
                     // Create new user
                     $user = $this->createUser($socialUser);
                     $socialAccount = $this->createSocialAccount($user, $provider, $socialUser);
                     $isNewUser = true;
 
-                    SocialAuthLog::logSuccess($provider, 'register', $user->id, [
-                        'email' => $socialUser->getEmail(),
-                    ]);
+                    try {
+                        SocialAuthLog::logSuccess($provider, 'register', $user->id, [
+                            'email' => $socialUser->getEmail(),
+                        ]);
+                    } catch (\Throwable $logEx) {
+                        Log::warning('SocialAuthLog failed (non-fatal)', ['error' => $logEx->getMessage()]);
+                    }
                 }
             }
 
@@ -351,7 +377,11 @@ class SocialAuthService
             return false;
         }
 
-        SocialAuthLog::logSuccess($provider, 'disconnect', $user->id);
+        try {
+            SocialAuthLog::logSuccess($provider, 'disconnect', $user->id);
+        } catch (\Throwable $logEx) {
+            Log::warning('SocialAuthLog failed (non-fatal)', ['error' => $logEx->getMessage()]);
+        }
 
         return (bool) $account->delete();
     }
