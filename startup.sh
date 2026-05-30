@@ -77,7 +77,7 @@ if [ "$APP_ENV" = "production" ]; then
   rm -f bootstrap/cache/config.php bootstrap/cache/routes*.php bootstrap/cache/events.php
 
   # Set APP_URL to HTTPS if not already set by Azure App Settings
-  export APP_URL="${APP_URL:-https://studai-app-prod.azurewebsites.net}"
+  export APP_URL="${APP_URL:-https://hire.studai.one}"
 
   # ---- Force-load critical credentials from .env ----
   # Azure App Service Application Settings can override .env with empty values.
