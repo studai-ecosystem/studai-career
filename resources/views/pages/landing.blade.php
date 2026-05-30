@@ -116,7 +116,7 @@
 
         /* Grid noise overlay */
         .grid-noise {
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236366f1' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232f5fb0' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
         /* Scroll-reveal */
@@ -186,10 +186,10 @@
 
                 {{-- Desktop Navigation --}}
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="{{ route('features') }}" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#6366f1'" onmouseout="this.style.color='#4b5563'">Features</a>
-                    <a href="{{ route('pricing') }}" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#6366f1'" onmouseout="this.style.color='#4b5563'">Pricing</a>
-                    <a href="{{ route('employers') }}" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#6366f1'" onmouseout="this.style.color='#4b5563'">For Employers</a>
-                    <a href="{{ route('about') }}" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#6366f1'" onmouseout="this.style.color='#4b5563'">About</a>
+                    <a href="{{ route('features') }}" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#2f5fb0'" onmouseout="this.style.color='#4b5563'">Features</a>
+                    <a href="{{ route('pricing') }}" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#2f5fb0'" onmouseout="this.style.color='#4b5563'">Pricing</a>
+                    <a href="{{ route('employers') }}" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#2f5fb0'" onmouseout="this.style.color='#4b5563'">For Employers</a>
+                    <a href="{{ route('about') }}" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#2f5fb0'" onmouseout="this.style.color='#4b5563'">About</a>
                 </div>
 
                 {{-- Auth Buttons --}}
@@ -386,13 +386,13 @@
                     <div class="anim-card group reveal delay-100 rounded-2xl p-7 border border-indigo-200 relative cursor-default flex flex-col" style="background:linear-gradient(135deg,#f5f3ff 0%,#fdf4ff 100%);box-shadow:0 4px 24px rgba(99,102,241,.12),0 1px 4px rgba(99,102,241,.08);transition:transform .3s ease,box-shadow .3s ease;" onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 16px 40px rgba(99,102,241,.22),0 4px 12px rgba(99,102,241,.12)';" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 24px rgba(99,102,241,.12),0 1px 4px rgba(99,102,241,.08)';">
                         <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" style="background:linear-gradient(135deg,rgba(99,102,241,.06),rgba(167,139,250,.04));"></div>
                         <div class="w-13 h-13 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform" style="width:3.25rem;height:3.25rem;background:linear-gradient(135deg,#ede9fe,#ddd6fe);box-shadow:0 4px 12px rgba(99,102,241,.25);">
-                            <svg class="w-6 h-6" style="color:#7c3aed;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg class="w-6 h-6" style="color:#2f5fb0;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                         </div>
                         <h3 class="text-lg font-bold mb-2" style="color:#1a1a2e;">Autonomous Agent</h3>
                         <p class="text-sm mb-5" style="color:#6b7280;">Set your preferences. Our AI applies to 100+ matching jobs daily � while you sleep.</p>
-                        <a href="{{ route('agent.dashboard') }}" class="inline-flex items-center text-sm font-semibold mt-auto" style="color:#7c3aed;">
+                        <a href="{{ route('agent.dashboard') }}" class="inline-flex items-center text-sm font-semibold mt-auto" style="color:#2f5fb0;">
                             <span>Activate Agent</span>
                             <svg class="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                         </a>
@@ -451,13 +451,13 @@
                         <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" style="background:linear-gradient(135deg,rgba(99,102,241,.07),rgba(139,92,246,.04));"></div>
                         <div class="absolute top-4 right-4 px-2.5 py-1 text-white text-xs font-bold rounded-full" style="background:#2f5fb0;box-shadow:0 2px 8px rgba(47,95,176,.4);">For Employers</div>
                         <div class="w-13 h-13 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform" style="width:3.25rem;height:3.25rem;background:linear-gradient(135deg,#c7d2fe,#ddd6fe);box-shadow:0 4px 12px rgba(99,102,241,.25);">
-                            <svg class="w-6 h-6" style="color:#6366f1;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg class="w-6 h-6" style="color:#2f5fb0;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
                         </div>
                         <h3 class="text-lg font-bold mb-2" style="color:#1a1a2e;">S.C.O.U.T. AI</h3>
                         <p class="text-sm mb-5" style="color:#6b7280;">Bias-free AI hiring. Find the best talent faster. Reduce time-to-hire by 60%.</p>
-                        <a href="{{ route('employer.dashboard') }}" class="inline-flex items-center text-sm font-semibold mt-auto" style="color:#6366f1;">
+                        <a href="{{ route('employer.dashboard') }}" class="inline-flex items-center text-sm font-semibold mt-auto" style="color:#2f5fb0;">
                             <span>For Employers</span>
                             <svg class="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                         </a>

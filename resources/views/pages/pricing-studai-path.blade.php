@@ -48,10 +48,10 @@
             gap:0.5rem;font-weight:600;border-radius:0.5rem;
             transition:all 0.2s ease;cursor:pointer;
             padding:0.625rem 1.25rem;font-size:0.875rem;
-            background:linear-gradient(135deg,#7c3aed,#4f46e5);
+            background:linear-gradient(135deg,#c9941a,#e3b62f);
             color:#fff;border:none;width:100%;margin-bottom:2rem;
         }
-        .btn-executive:hover { background:linear-gradient(135deg,#6d28d9,#4338ca); transform:scale(0.98); box-shadow:0 4px 14px rgba(79,70,229,.4); }
+        .btn-executive:hover { background:linear-gradient(135deg,#b3830f,#c9941a); transform:scale(0.98); box-shadow:0 4px 14px rgba(227,182,47,.4); }
         .btn-starter {
             display:inline-flex;align-items:center;justify-content:center;
             gap:0.5rem;font-weight:600;border-radius:0.5rem;
@@ -73,30 +73,30 @@
         /* Colored plan card themes */
         .card-free   { background: linear-gradient(145deg, #f0fdf4, #dcfce7, #d1fae5); border-color: #86efac; }
         .card-pro    { background: linear-gradient(145deg, #eff6ff, #dbeafe, #e0e7ff); border-color: #93c5fd; }
-        .card-exec   { background: linear-gradient(145deg, #faf5ff, #ede9fe, #f3e8ff); border-color: #c084fc; }
+        .card-exec   { background: linear-gradient(145deg, #fffdf5, #fbf2d6, #fdf6e3); border-color: #e3b62f; }
         .card-starter{ background: linear-gradient(145deg, #fff7ed, #ffedd5, #fef3c7); border-color: #fbbf24; }
         .card-growth { background: linear-gradient(145deg, #eff6ff, #dbeafe, #e0e7ff); border-color: #3b82f6; }
-        .card-enterprise{ background: linear-gradient(145deg, #0f172a, #1e1b4b, #1e293b); border-color: #6366f1; }
+        .card-enterprise{ background: linear-gradient(145deg, #07121d, #0c1c2c, #14283d); border-color: #2f5fb0; }
         .card-enterprise h3, .card-enterprise p, .card-enterprise span { color: #e2e8f0 !important; }
-        .card-enterprise .price-label { color: #a5b4fc !important; }
+        .card-enterprise .price-label { color: #a9c4ec !important; }
         .plan-icon { width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px;flex-shrink:0; }
         .icon-free    { background:linear-gradient(135deg,#22c55e,#16a34a); }
-        .icon-pro     { background:linear-gradient(135deg,#3b82f6,#6366f1); }
-        .icon-exec    { background:linear-gradient(135deg,#7c3aed,#a21caf); }
+        .icon-pro     { background:linear-gradient(135deg,#3a6bc0,#2f5fb0); }
+        .icon-exec    { background:linear-gradient(135deg,#e3b62f,#c9941a); }
         .icon-starter { background:linear-gradient(135deg,#f59e0b,#ea580c); }
-        .icon-growth  { background:linear-gradient(135deg,#3b82f6,#0ea5e9); }
-        .icon-ent     { background:linear-gradient(135deg,#6366f1,#8b5cf6); }
+        .icon-growth  { background:linear-gradient(135deg,#3a6bc0,#2f5fb0); }
+        .icon-ent     { background:linear-gradient(135deg,#2f5fb0,#1c344d); }
         .price-free   { background:linear-gradient(135deg,#16a34a,#15803d); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-        .price-pro    { background:linear-gradient(135deg,#1d4ed8,#6366f1); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-        .price-exec   { background:linear-gradient(135deg,#7c3aed,#a21caf); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .price-pro    { background:linear-gradient(135deg,#2f5fb0,#1f3f7a); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .price-exec   { background:linear-gradient(135deg,#c9941a,#b3830f); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
         .price-starter{ background:linear-gradient(135deg,#b45309,#d97706); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-        .price-growth { background:linear-gradient(135deg,#1d4ed8,#0ea5e9); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .price-growth { background:linear-gradient(135deg,#2f5fb0,#3a6bc0); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
         .check-free   { color:#16a34a !important; }
-        .check-pro    { color:#2563eb !important; }
-        .check-exec   { color:#9333ea !important; }
+        .check-pro    { color:#2f5fb0 !important; }
+        .check-exec   { color:#c9941a !important; }
         .check-starter{ color:#d97706 !important; }
-        .check-growth { color:#0284c7 !important; }
-        .check-ent    { color:#818cf8 !important; }
+        .check-growth { color:#2f5fb0 !important; }
+        .check-ent    { color:#a9c4ec !important; }
         .card-enterprise li { color:#cbd5e1 !important; }
         /* Fade-in-up animation for plan cards */
         @keyframes fadeInUp {
@@ -113,24 +113,24 @@
         /* "Best for" tag under plan name */
         .best-for { display:inline-flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:600;letter-spacing:.02em;text-transform:uppercase;padding:4px 10px;border-radius:999px;margin-top:8px; }
         .best-for-free { background:rgba(22,163,74,.12); color:#15803d; }
-        .best-for-pro  { background:rgba(37,99,235,.12); color:#1d4ed8; }
-        .best-for-exec { background:rgba(147,51,234,.12); color:#7c3aed; }
+        .best-for-pro  { background:rgba(47,95,176,.12); color:#2f5fb0; }
+        .best-for-exec { background:rgba(227,182,47,.16); color:#b3830f; }
         /* Credit allotment pill */
         .credit-pill { display:flex;align-items:center;gap:8px;font-size:0.8rem;font-weight:600;padding:8px 12px;border-radius:10px;margin-bottom:18px; }
         .credit-pill-free { background:rgba(22,163,74,.10); color:#15803d; border:1px solid rgba(22,163,74,.25); }
-        .credit-pill-pro  { background:rgba(37,99,235,.10); color:#1d4ed8; border:1px solid rgba(37,99,235,.25); }
-        .credit-pill-exec { background:rgba(147,51,234,.10); color:#7c3aed; border:1px solid rgba(147,51,234,.25); }
+        .credit-pill-pro  { background:rgba(47,95,176,.10); color:#2f5fb0; border:1px solid rgba(47,95,176,.25); }
+        .credit-pill-exec { background:rgba(227,182,47,.12); color:#b3830f; border:1px solid rgba(227,182,47,.30); }
         /* Value highlight strip */
         .value-strip { display:flex;align-items:flex-start;gap:8px;font-size:0.8rem;font-weight:500;line-height:1.35;padding:10px 12px;border-radius:10px;margin-bottom:18px;background:rgba(255,255,255,.55); }
         .value-strip-free { color:#166534; }
         .value-strip-pro  { color:#1e40af; }
-        .value-strip-exec { color:#6b21a8; }
+        .value-strip-exec { color:#8a6d12; }
         /* Comparison table */
         .compare-table { width:100%;border-collapse:separate;border-spacing:0;font-size:0.875rem; }
         .compare-table th, .compare-table td { padding:14px 16px;text-align:center;border-bottom:1px solid #e5e7eb; }
         .compare-table th:first-child, .compare-table td:first-child { text-align:left;font-weight:600;color:#374151; }
         .compare-table thead th { font-size:0.95rem;font-weight:700;color:#1f2937; }
-        .compare-table thead th.col-pro { color:#1d4ed8; }
+        .compare-table thead th.col-pro { color:#2f5fb0; }
         .compare-table tbody tr:hover { background:#f8fafc; }
         .compare-table .col-pro { background:rgba(37,99,235,.04); }
         .compare-yes { color:#16a34a;font-weight:700; }
@@ -499,7 +499,7 @@
                             <p class="text-sm" style="color:#94a3b8">For large organizations with complex needs.</p>
                         </div>
                         <div class="mb-6">
-                            <span class="text-4xl font-extrabold" style="color:#a5b4fc">Custom</span>
+                            <span class=\"text-4xl font-extrabold\" style=\"color:#a9c4ec\">Custom</span>
                         </div>
                         <a href="{{ route('contact') }}" class="btn-enterprise">
                             Contact Sales
