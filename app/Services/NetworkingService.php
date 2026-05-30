@@ -38,10 +38,10 @@ class NetworkingService
     ): Connection {
         // Check if connection already exists
         $existing = Connection::where(function ($query) use ($sender, $recipient) {
-            $query->where('sender_id', $sender->id)
+            $query->where('requester_id', $sender->id)
                 ->where('recipient_id', $recipient->id);
         })->orWhere(function ($query) use ($sender, $recipient) {
-            $query->where('sender_id', $recipient->id)
+            $query->where('requester_id', $recipient->id)
                 ->where('recipient_id', $sender->id);
         })->first();
 
@@ -60,7 +60,7 @@ class NetworkingService
         }
 
         return Connection::create([
-            'sender_id' => $sender->id,
+            'requester_id' => $sender->id,
             'recipient_id' => $recipient->id,
             'message' => $message,
             'status' => Connection::STATUS_PENDING,
@@ -79,11 +79,11 @@ class NetworkingService
         $connection->accept();
 
         // Auto-follow each other
-        $this->followUser($connection->sender, $connection->recipient);
-        $this->followUser($connection->recipient, $connection->sender);
+        $this->followUser($connection->requester, $connection->recipient);
+        $this->followUser($connection->recipient, $connection->requester);
 
         // Clear cache
-        $this->clearConnectionCache($connection->sender_id);
+        $this->clearConnectionCache($connection->requester_id);
         $this->clearConnectionCache($connection->recipient_id);
 
         return $connection;
@@ -108,21 +108,21 @@ class NetworkingService
      */
     public function removeConnection(Connection $connection, User $user): void
     {
-        if ($connection->sender_id !== $user->id && $connection->recipient_id !== $user->id) {
+        if ($connection->requester_id !== $user->id && $connection->recipient_id !== $user->id) {
             throw new \Exception('You are not part of this connection');
         }
 
         // Unfollow each other
-        UserFollow::where('follower_id', $connection->sender_id)
+        UserFollow::where('follower_id', $connection->requester_id)
             ->where('following_id', $connection->recipient_id)
             ->delete();
         UserFollow::where('follower_id', $connection->recipient_id)
-            ->where('following_id', $connection->sender_id)
+            ->where('following_id', $connection->requester_id)
             ->delete();
 
         $connection->delete();
 
-        $this->clearConnectionCache($connection->sender_id);
+        $this->clearConnectionCache($connection->requester_id);
         $this->clearConnectionCache($connection->recipient_id);
     }
 
@@ -133,10 +133,10 @@ class NetworkingService
     {
         // Find or create connection and set to blocked
         $connection = Connection::where(function ($query) use ($blocker, $blocked) {
-            $query->where('sender_id', $blocker->id)
+            $query->where('requester_id', $blocker->id)
                 ->where('recipient_id', $blocked->id);
         })->orWhere(function ($query) use ($blocker, $blocked) {
-            $query->where('sender_id', $blocked->id)
+            $query->where('requester_id', $blocked->id)
                 ->where('recipient_id', $blocker->id);
         })->first();
 
@@ -144,7 +144,7 @@ class NetworkingService
             $connection->block();
         } else {
             Connection::create([
-                'sender_id' => $blocker->id,
+                'requester_id' => $blocker->id,
                 'recipient_id' => $blocked->id,
                 'status' => Connection::STATUS_BLOCKED,
             ]);
@@ -166,7 +166,7 @@ class NetworkingService
     {
         return Connection::forUser($user->id)
             ->accepted()
-            ->with(['sender', 'recipient'])
+            ->with(['requester', 'recipient'])
             ->orderByDesc('connected_at')
             ->paginate($perPage);
     }
@@ -178,7 +178,7 @@ class NetworkingService
     {
         return Connection::where('recipient_id', $user->id)
             ->pending()
-            ->with('sender')
+            ->with('requester')
             ->orderByDesc('created_at')
             ->get();
     }
@@ -188,7 +188,7 @@ class NetworkingService
      */
     public function getSentRequests(User $user): Collection
     {
-        return Connection::where('sender_id', $user->id)
+        return Connection::where('requester_id', $user->id)
             ->pending()
             ->with('recipient')
             ->orderByDesc('created_at')
@@ -219,10 +219,10 @@ class NetworkingService
 
         // Check 1st degree (direct connection)
         $directConnection = Connection::where(function ($query) use ($user1, $user2) {
-            $query->where('sender_id', $user1->id)
+            $query->where('requester_id', $user1->id)
                 ->where('recipient_id', $user2->id);
         })->orWhere(function ($query) use ($user1, $user2) {
-            $query->where('sender_id', $user2->id)
+            $query->where('requester_id', $user2->id)
                 ->where('recipient_id', $user1->id);
         })->where('status', Connection::STATUS_ACCEPTED)->exists();
 
@@ -259,10 +259,10 @@ class NetworkingService
     public function areConnected(int $userId1, int $userId2): bool
     {
         return Connection::where(function ($query) use ($userId1, $userId2) {
-            $query->where('sender_id', $userId1)
+            $query->where('requester_id', $userId1)
                 ->where('recipient_id', $userId2);
         })->orWhere(function ($query) use ($userId1, $userId2) {
-            $query->where('sender_id', $userId2)
+            $query->where('requester_id', $userId2)
                 ->where('recipient_id', $userId1);
         })->where('status', Connection::STATUS_ACCEPTED)->exists();
     }
@@ -275,14 +275,14 @@ class NetworkingService
         $cacheKey = "user_connections_{$user->id}";
 
         return Cache::remember($cacheKey, 300, function () use ($user) {
-            $sentConnections = Connection::where('sender_id', $user->id)
+            $sentConnections = Connection::where('requester_id', $user->id)
                 ->where('status', Connection::STATUS_ACCEPTED)
                 ->pluck('recipient_id')
                 ->toArray();
 
             $receivedConnections = Connection::where('recipient_id', $user->id)
                 ->where('status', Connection::STATUS_ACCEPTED)
-                ->pluck('sender_id')
+                ->pluck('requester_id')
                 ->toArray();
 
             return array_unique(array_merge($sentConnections, $receivedConnections));
@@ -809,11 +809,11 @@ class NetworkingService
     {
         $connectionIds = $this->getConnectionIds($user);
         $blockedIds = Connection::where(function ($query) use ($user) {
-            $query->where('sender_id', $user->id)
+            $query->where('requester_id', $user->id)
                 ->orWhere('recipient_id', $user->id);
         })->where('status', Connection::STATUS_BLOCKED)
             ->get()
-            ->map(fn ($c) => $c->sender_id === $user->id ? $c->recipient_id : $c->sender_id)
+            ->map(fn ($c) => $c->requester_id === $user->id ? $c->recipient_id : $c->requester_id)
             ->toArray();
 
         $excludeIds = array_merge($connectionIds, $blockedIds, [$user->id]);

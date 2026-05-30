@@ -1741,16 +1741,7 @@ Route::middleware(['auth'])->prefix('api/mobile')->name('api.mobile.')->group(fu
 // Professional Networking Routes (Candidate/Job Seeker)
 Route::middleware(['auth', 'verified'])->prefix('network')->name('network.')->group(function () {
     // Activity Feed
-    Route::get('/', function (\Illuminate\Http\Request $request) {
-        if ($request->query('diag') === '1') {
-            try {
-                return response(view('network.feed')->render());
-            } catch (\Throwable $e) {
-                return response('DIAG network: ' . get_class($e) . ': ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine(), 200)
-                    ->header('Content-Type', 'text/plain');
-            }
-        }
-
+    Route::get('/', function () {
         return view('network.feed');
     })->name('feed');
     

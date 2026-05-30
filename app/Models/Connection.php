@@ -50,6 +50,14 @@ class Connection extends Model
         return $query->where('status', self::STATUS_ACCEPTED);
     }
 
+    public function scopeForUser($query, int $userId)
+    {
+        return $query->where(function ($q) use ($userId) {
+            $q->where('requester_id', $userId)
+                ->orWhere('recipient_id', $userId);
+        });
+    }
+
     public function isPending(): bool
     {
         return $this->status === self::STATUS_PENDING;

@@ -39,28 +39,7 @@ class SubscriptionController extends Controller
     /**
      * Show user's current subscription
      */
-    public function index(Request $request)
-    {
-        if ($request->query('diag') === '1') {
-            try {
-                $result = $this->renderIndex();
-
-                return $result instanceof \Illuminate\View\View
-                    ? response($result->render())
-                    : $result;
-            } catch (\Throwable $e) {
-                return response('DIAG subscriptions: ' . get_class($e) . ': ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine(), 200)
-                    ->header('Content-Type', 'text/plain');
-            }
-        }
-
-        return $this->renderIndex();
-    }
-
-    /**
-     * Build the subscription index response (extracted so the diag surface can wrap it).
-     */
-    private function renderIndex()
+    public function index()
     {
         $user = Auth::user();
         $subscription = $user->subscription;
