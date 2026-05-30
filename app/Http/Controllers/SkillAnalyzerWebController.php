@@ -16,13 +16,12 @@ class SkillAnalyzerWebController extends Controller
     {
         $user = Auth::user();
 
-        $gaps = $this->safely('skillGaps', fn () => $user->skillGaps()->with('learningPath')->rankedByPriority()->limit(20)->get());
-        $activePaths = $this->safely('learningPaths', fn () => $user->learningPaths()->active()->with('resources')->get());
-        $validations = $this->safely('skillValidations', fn () => $user->skillValidations()->highConfidence()->limit(10)->get());
+        $gaps             = $this->safely('skillGaps',        fn () => $user->skillGaps()->with('learningPath')->rankedByPriority()->limit(20)->get());
+        $activePaths      = $this->safely('learningPaths',    fn () => $user->learningPaths()->active()->with('resources')->get());
+        $validations      = $this->safely('skillValidations', fn () => $user->skillValidations()->highConfidence()->limit(10)->get());
         $recentAssessments = $this->safely('skillAssessments', fn () => $user->skillAssessments()->latest()->limit(5)->get());
 
-        // Mint the throwaway API token here (not in the Blade view) so a missing/
-        // drifted personal_access_tokens table degrades gracefully instead of 500ing.
+        // Mint the throwaway API token here (not in the Blade view).
         $apiToken = '';
         try {
             $apiToken = $user->createToken('skills-dashboard')->plainTextToken;
@@ -30,25 +29,46 @@ class SkillAnalyzerWebController extends Controller
             Log::error('Skills dashboard token mint failed', ['message' => $e->getMessage()]);
         }
 
-        $data = compact('gaps', 'activePaths', 'validations', 'recentAssessments', 'apiToken');
+        $emptyData = [
+            'gaps'              => collect(),
+            'activePaths'       => collect(),
+            'validations'       => collect(),
+            'recentAssessments' => collect(),
+            'apiToken'          => '',
+        ];
 
-        // Guard the full render: any prod-only schema/view drift logs the true
-        // cause and still returns a usable page instead of a hard 500.
+        // Pass 1: full data render.
         try {
-            return response(view('skills.dashboard', $data)->render());
+            return response(view('skills.dashboard', compact('gaps', 'activePaths', 'validations', 'recentAssessments', 'apiToken'))->render());
         } catch (\Throwable $e) {
-            Log::error('Skills dashboard view render failed', [
-                'message' => $e->getMessage(),
+            Log::error('Skills dashboard full render failed', [
+                'message'  => $e->getMessage(),
                 'location' => $e->getFile() . ':' . $e->getLine(),
             ]);
-
-            return response(view('skills.dashboard', array_merge($data, [
-                'gaps' => collect(),
-                'activePaths' => collect(),
-                'validations' => collect(),
-                'recentAssessments' => collect(),
-            ]))->render());
         }
+
+        // Pass 2: empty-collection render (layout issues still possible).
+        try {
+            return response(view('skills.dashboard', $emptyData)->render());
+        } catch (\Throwable $e) {
+            Log::error('Skills dashboard empty render failed', [
+                'message'  => $e->getMessage(),
+                'location' => $e->getFile() . ':' . $e->getLine(),
+            ]);
+        }
+
+        // Pass 3: last resort — plain HTML response, no layout dependency.
+        return response(<<<HTML
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<title>Skill Dashboard</title>
+<meta http-equiv="refresh" content="3;url=/dashboard">
+<style>body{font-family:sans-serif;text-align:center;padding:60px;background:#f8fafc}</style>
+</head><body>
+<h2 style="color:#1A73E8">Skill Gap Analyzer</h2>
+<p>Dashboard is loading… you will be redirected shortly.</p>
+<a href="/dashboard" style="color:#1A73E8">Return to Dashboard</a>
+</body></html>
+HTML, 200);
     }
 
     /**
