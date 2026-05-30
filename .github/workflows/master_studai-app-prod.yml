@@ -110,7 +110,7 @@ jobs:
               SCOUT_QUEUE=false \
               "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
               "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
-              GOOGLE_REDIRECT_URI=https://studai-app-prod.azurewebsites.net/auth/google/callback
+              GOOGLE_REDIRECT_URI=https://hire.studai.one/auth/google/callback
 
           # Set Azure OpenAI credentials from GitHub Secrets (if configured)
           # NOTE: .env is NOT in git so we never read from it here.
