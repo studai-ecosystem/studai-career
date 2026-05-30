@@ -186,7 +186,7 @@
 
                 {{-- Desktop Navigation --}}
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="#features" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#6366f1'" onmouseout="this.style.color='#4b5563'">Features</a>
+                    <a href="{{ route('features') }}" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#6366f1'" onmouseout="this.style.color='#4b5563'">Features</a>
                     <a href="{{ route('pricing') }}" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#6366f1'" onmouseout="this.style.color='#4b5563'">Pricing</a>
                     <a href="{{ route('employers') }}" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#6366f1'" onmouseout="this.style.color='#4b5563'">For Employers</a>
                     <a href="{{ route('about') }}" class="text-sm font-medium transition-colors" style="color:#4b5563;" onmouseover="this.style.color='#6366f1'" onmouseout="this.style.color='#4b5563'">About</a>
@@ -195,9 +195,34 @@
                 {{-- Auth Buttons --}}
                 <div class="flex items-center" style="gap:.75rem;">
                     @auth
-                        <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#7c3aed);box-shadow:0 2px 10px rgba(99,102,241,.35);">
-                            Dashboard
-                        </a>
+                        @php($navUser = auth()->user())
+                        <div class="relative" id="nav-account">
+                            <button type="button" onclick="event.stopPropagation();document.getElementById('nav-account-menu').classList.toggle('hidden');" class="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full transition-colors" style="border:1px solid rgba(99,102,241,.25);background:rgba(255,255,255,.7);">
+                                <span class="inline-flex items-center justify-center rounded-full text-white text-sm font-bold" style="width:32px;height:32px;background:linear-gradient(135deg,#6366f1,#7c3aed);">{{ strtoupper(substr($navUser->name ?? 'U', 0, 1)) }}</span>
+                                <span class="hidden sm:block text-sm font-medium max-w-[120px] truncate" style="color:#1a1a2e;">{{ $navUser->name ?? 'Account' }}</span>
+                                <svg class="w-4 h-4" style="color:#6b7280;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div id="nav-account-menu" class="hidden absolute right-0 mt-2 w-56 rounded-2xl overflow-hidden" style="background:#fff;border:1px solid rgba(99,102,241,.15);box-shadow:0 12px 40px rgba(99,102,241,.18);z-index:60;">
+                                <div class="px-4 py-3" style="border-bottom:1px solid #f1f1f6;">
+                                    <p class="text-xs" style="color:#9ca3af;">Signed in as</p>
+                                    <p class="text-sm font-semibold truncate" style="color:#1a1a2e;">{{ $navUser->name ?? 'User' }}</p>
+                                    <p class="text-xs truncate" style="color:#9ca3af;">{{ $navUser->email }}</p>
+                                </div>
+                                <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-sm font-medium transition-colors hover:bg-indigo-50" style="color:#374151;">Dashboard</a>
+                                <a href="{{ route('about') }}" class="block px-4 py-2.5 text-sm font-medium transition-colors hover:bg-indigo-50" style="color:#374151;">About</a>
+                                <form method="POST" action="{{ route('logout') }}" style="border-top:1px solid #f1f1f6;">
+                                    @csrf
+                                    <button type="submit" class="block w-full text-left px-4 py-2.5 text-sm font-medium transition-colors hover:bg-red-50" style="color:#dc2626;">Sign out</button>
+                                </form>
+                            </div>
+                        </div>
+                        <script>
+                            document.addEventListener('click', function (e) {
+                                var wrap = document.getElementById('nav-account');
+                                var menu = document.getElementById('nav-account-menu');
+                                if (menu && wrap && !wrap.contains(e.target)) { menu.classList.add('hidden'); }
+                            });
+                        </script>
                     @else
                         <a href="{{ route('login') }}" class="text-sm font-medium hidden sm:block" style="color:#4b5563;">Sign in</a>
                         <a href="{{ route('register') }}" class="inline-flex items-center px-5 py-2 rounded-xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#7c3aed);box-shadow:0 2px 10px rgba(99,102,241,.35);">
