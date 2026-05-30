@@ -163,6 +163,10 @@
         .completeness-ring  { transform:rotate(-90deg); }
         .completeness-ring circle { transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1); }
         .dark { --bg:#0f172a; --surface:#1e293b; --border:#334155; --text:#f1f5f9; --text-muted:#94a3b8; }
+        /* Hide Alpine-controlled overlays/dropdowns until Alpine initializes.
+           Without this, x-show elements (esp. the full-screen command palette)
+           render visible before/if-without Alpine and block all clicks. */
+        [x-cloak] { display: none !important; }
         /* Input styles that work in both light and dark mode */
         .input-google { display:block; width:100%; border-radius:10px; border:1px solid #ddd6fe; background-color:#ffffff; padding:10px 14px; font-size:14px; color:#1a1a2e; transition:all .15s ease; }
         .input-google:focus { outline:none; border-color:#7c3aed; box-shadow:0 0 0 3px rgba(124,58,237,.12); }
@@ -615,7 +619,7 @@
                         </button>
 
                         {{-- Dropdown --}}
-                        <div x-show="open"
+                        <div x-cloak x-show="open"
                             @click.outside="open = false"
                             x-transition:enter="transition ease-out duration-150"
                             x-transition:enter-start="opacity-0 translate-y-1"
@@ -741,7 +745,7 @@
                             </svg>
                         </button>
 
-                        <div x-show="open" @click.outside="open = false"
+                        <div x-cloak x-show="open" @click.outside="open = false"
                             x-transition:enter="transition ease-out duration-150"
                             x-transition:enter-start="opacity-0 scale-95"
                             x-transition:enter-end="opacity-100 scale-100"
@@ -921,6 +925,7 @@
     }
     </style>
     <div id="cmd-palette"
+        x-cloak
         x-show="cmdOpen"
         @click="cmdOpen = false"
         class="fixed inset-0 flex items-center justify-center px-4"
