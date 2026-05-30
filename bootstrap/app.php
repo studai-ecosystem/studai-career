@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
 
         $middleware->alias([
+            'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'profile.complete' => \App\Http\Middleware\CheckProfileCompleteness::class,
             'subscription' => \App\Http\Middleware\CheckSubscriptionStatus::class,
             'rate.plan' => \App\Http\Middleware\RateLimitByPlan::class,
