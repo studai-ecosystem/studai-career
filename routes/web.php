@@ -265,6 +265,91 @@ Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
         }
         $output['table_exists'] = $newCheck;
     }
+
+    // Emergency: create missing social auth tables directly (bypasses migration tracking)
+    if ($request->query('action') === 'fix_social_tables') {
+        $fixLog = [];
+        try {
+            if (!$Schema::hasTable('social_providers')) {
+                $Schema::create('social_providers', function (\Illuminate\Database\Schema\Blueprint $table) {
+                    $table->id();
+                    $table->string('name');
+                    $table->string('slug')->unique();
+                    $table->string('client_id')->nullable();
+                    $table->text('client_secret')->nullable();
+                    $table->text('redirect_url')->nullable();
+                    $table->json('scopes')->nullable();
+                    $table->json('additional_config')->nullable();
+                    $table->string('icon')->nullable();
+                    $table->string('color')->nullable();
+                    $table->boolean('is_enabled')->default(false);
+                    $table->boolean('allow_login')->default(true);
+                    $table->boolean('allow_register')->default(true);
+                    $table->integer('sort_order')->default(0);
+                    $table->timestamps();
+                    $table->index(['is_enabled', 'sort_order']);
+                });
+                $fixLog[] = 'CREATED: social_providers';
+            } else {
+                $fixLog[] = 'EXISTS: social_providers';
+            }
+        } catch (\Throwable $e) { $fixLog[] = 'ERROR social_providers: ' . $e->getMessage(); }
+
+        try {
+            if (!$Schema::hasTable('social_accounts')) {
+                $Schema::create('social_accounts', function (\Illuminate\Database\Schema\Blueprint $table) {
+                    $table->id();
+                    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+                    $table->string('provider');
+                    $table->string('provider_user_id');
+                    $table->string('email')->nullable();
+                    $table->string('name')->nullable();
+                    $table->string('nickname')->nullable();
+                    $table->string('avatar')->nullable();
+                    $table->text('access_token')->nullable();
+                    $table->text('refresh_token')->nullable();
+                    $table->timestamp('token_expires_at')->nullable();
+                    $table->json('profile_data')->nullable();
+                    $table->timestamp('last_login_at')->nullable();
+                    $table->timestamps();
+                    $table->unique(['provider', 'provider_user_id']);
+                    $table->index(['user_id', 'provider']);
+                    $table->index('email');
+                });
+                $fixLog[] = 'CREATED: social_accounts';
+            } else {
+                $fixLog[] = 'EXISTS: social_accounts';
+            }
+        } catch (\Throwable $e) { $fixLog[] = 'ERROR social_accounts: ' . $e->getMessage(); }
+
+        try {
+            if (!$Schema::hasTable('social_auth_logs')) {
+                $Schema::create('social_auth_logs', function (\Illuminate\Database\Schema\Blueprint $table) {
+                    $table->id();
+                    $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+                    $table->string('provider', 50);
+                    $table->string('provider_user_id')->nullable();
+                    $table->string('email')->nullable();
+                    $table->string('action', 50);
+                    $table->string('status', 20);
+                    $table->string('ip_address', 45)->nullable();
+                    $table->string('user_agent')->nullable();
+                    $table->text('error_message')->nullable();
+                    $table->json('metadata')->nullable();
+                    $table->timestamps();
+                    $table->index(['provider', 'created_at']);
+                    $table->index(['user_id', 'created_at']);
+                    $table->index('action');
+                });
+                $fixLog[] = 'CREATED: social_auth_logs';
+            } else {
+                $fixLog[] = 'EXISTS: social_auth_logs';
+            }
+        } catch (\Throwable $e) { $fixLog[] = 'ERROR social_auth_logs: ' . $e->getMessage(); }
+
+        $output['fix_social_log'] = $fixLog;
+    }
+
     return response()->json($output);
 })->name('auth.diag');
 
