@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SkillAssessment;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -11,7 +12,7 @@ use Illuminate\View\View;
 
 class SkillAnalyzerWebController extends Controller
 {
-    public function dashboard(): View
+    public function dashboard(): View|Response
     {
         $user = Auth::user();
 
@@ -20,7 +21,34 @@ class SkillAnalyzerWebController extends Controller
         $validations = $this->safely('skillValidations', fn () => $user->skillValidations()->highConfidence()->limit(10)->get());
         $recentAssessments = $this->safely('skillAssessments', fn () => $user->skillAssessments()->latest()->limit(5)->get());
 
-        return view('skills.dashboard', compact('gaps', 'activePaths', 'validations', 'recentAssessments'));
+        // Mint the throwaway API token here (not in the Blade view) so a missing/
+        // drifted personal_access_tokens table degrades gracefully instead of 500ing.
+        $apiToken = '';
+        try {
+            $apiToken = $user->createToken('skills-dashboard')->plainTextToken;
+        } catch (\Throwable $e) {
+            Log::error('Skills dashboard token mint failed', ['message' => $e->getMessage()]);
+        }
+
+        $data = compact('gaps', 'activePaths', 'validations', 'recentAssessments', 'apiToken');
+
+        // Guard the full render: any prod-only schema/view drift logs the true
+        // cause and still returns a usable page instead of a hard 500.
+        try {
+            return response(view('skills.dashboard', $data)->render());
+        } catch (\Throwable $e) {
+            Log::error('Skills dashboard view render failed', [
+                'message' => $e->getMessage(),
+                'location' => $e->getFile() . ':' . $e->getLine(),
+            ]);
+
+            return response(view('skills.dashboard', array_merge($data, [
+                'gaps' => collect(),
+                'activePaths' => collect(),
+                'validations' => collect(),
+                'recentAssessments' => collect(),
+            ]))->render());
+        }
     }
 
     /**
