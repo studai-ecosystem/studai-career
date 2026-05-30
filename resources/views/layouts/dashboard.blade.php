@@ -423,23 +423,26 @@
 
                 {{-- Negotiation accordion --}}
                 <div x-show="sidebarOpen" x-transition>
-                    {{-- Parent row: click anywhere toggles sub-menu --}}
-                    <button @click="negotiationOpen = !negotiationOpen"
-                            class="nav-item w-full text-left {{ request()->routeIs('negotiation.*') ? 'active' : '' }}"
-                            style="border:none;background:inherit;">
-                        <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span class="flex-1">Negotiation</span>
-                        <span class="ml-auto flex-shrink-0 flex items-center justify-center w-5 h-5 rounded"
-                              style="background:rgba(47,95,176,.12)">
+                    {{-- Parent row: label navigates to dashboard, chevron toggles sub-menu --}}
+                    <div class="flex items-center gap-1">
+                        <a href="{{ route('negotiation.dashboard') }}"
+                           class="nav-item flex-1 {{ request()->routeIs('negotiation.*') && ! request()->routeIs('negotiation.chatbot') ? 'active' : '' }}">
+                            <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="flex-1">Negotiation</span>
+                        </a>
+                        <button type="button" @click="negotiationOpen = !negotiationOpen"
+                                aria-label="Toggle negotiation menu"
+                                class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded"
+                                style="background:rgba(47,95,176,.12);border:none;cursor:pointer;">
                             <svg class="w-3 h-3 transition-transform duration-200"
                                  :class="negotiationOpen ? 'rotate-180' : ''"
                                  fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                             </svg>
-                        </span>
-                    </button>
+                        </button>
+                    </div>
 
                     {{-- Sub-item --}}
                     <div x-show="negotiationOpen"
