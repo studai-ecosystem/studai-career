@@ -507,8 +507,8 @@
     /* AI chip */
     .studai-chip-ai {
         @apply px-3 py-1 text-xs font-medium rounded-full;
-        background: linear-gradient(135deg, rgba(26, 115, 232, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
-        color: #7C3AED;
+        background: #eaf0fa;
+        color: #2f5fb0;
     }
 }
 
@@ -645,7 +645,7 @@
     /* AI Score badge */
     .studai-ai-score {
         @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold;
-        background: linear-gradient(135deg, rgba(26, 115, 232, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+        background: #eaf0fa;
     }
 
     .studai-ai-score-excellent {
@@ -1136,7 +1136,7 @@
     }
 
     .studai-activity-icon-ai {
-        background: linear-gradient(135deg, rgba(26, 115, 232, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
+        background: #eaf0fa;
         @apply text-google-blue-600;
     }
 

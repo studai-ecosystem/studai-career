@@ -74,7 +74,7 @@
                         </div>
                         <h3 class="text-base font-semibold text-ink-primary mb-1">No AI usage yet</h3>
                         <p class="text-sm text-ink-secondary mb-5">Generate a cover letter or use any AI feature to see your history here.</p>
-                        <a href="{{ route('jobs.search') }}" class="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white rounded-xl" style="background:linear-gradient(135deg,#6366f1,#a855f7)">
+                        <a href="{{ route('jobs.search') }}" class="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white rounded-xl" style="background:#2f5fb0">
                             Browse Jobs &rarr;
                         </a>
                     </div>
@@ -180,7 +180,7 @@
                         </a>
                     @endforeach
                 </div>
-                <a href="{{ route('pricing') }}" class="mt-4 block text-center py-2.5 rounded-xl text-sm font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#a855f7)">
+                <a href="{{ route('pricing') }}" class="mt-4 block text-center py-2.5 rounded-xl text-sm font-bold text-white" style="background:#2f5fb0">
                     Get More Credits &rarr;
                 </a>
             </div>

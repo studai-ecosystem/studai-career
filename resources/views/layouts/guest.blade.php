@@ -122,21 +122,23 @@
             color: white;
             border: none;
             cursor: pointer;
-            transition: transform .2s ease, box-shadow .2s ease;
-            background: linear-gradient(135deg, #2f5fb0, #1c344d);
-            box-shadow: 0 4px 20px rgba(47,95,176,.35);
+            transition: background .15s ease, transform .2s ease, box-shadow .2s ease;
+            background: #2f5fb0;
+            box-shadow: 0 4px 18px rgba(47,95,176,.30);
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
         .btn-auth:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(47,95,176,.45);
+            transform: translateY(-1px);
+            background: #284f95;
+            box-shadow: 0 6px 22px rgba(47,95,176,.38);
         }
-        .btn-auth:active { transform: translateY(0) scale(.99); }
+        .btn-auth:active { transform: translateY(0) scale(.99); background: #21426f; }
         .btn-auth.employer-btn {
-            background: linear-gradient(135deg, #1c344d, #0c1c2c);
-            box-shadow: 0 4px 20px rgba(28,52,77,.35);
+            background: #1c344d;
+            box-shadow: 0 4px 18px rgba(28,52,77,.30);
         }
-        .btn-auth.employer-btn:hover { box-shadow: 0 8px 28px rgba(28,52,77,.45); }
+        .btn-auth.employer-btn:hover { background: #14283d; box-shadow: 0 6px 22px rgba(28,52,77,.38); }
+        .btn-auth.employer-btn:active { background: #0c1c2c; }
 
         /* ── DIVIDER ─────────────────────────────── */
         .auth-divider {

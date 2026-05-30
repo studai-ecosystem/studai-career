@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:8px;flex-shrink:0">
-                <button onclick="ccAcceptAll()" style="padding:10px 20px;background:linear-gradient(135deg,#6366f1,#7c3aed);color:#fff;font-size:13px;font-weight:600;border:none;border-radius:12px;cursor:pointer">Accept All</button>
+                <button onclick="ccAcceptAll()" style="padding:10px 20px;background:#2f5fb0;color:#fff;font-size:13px;font-weight:600;border:none;border-radius:12px;cursor:pointer">Accept All</button>
                 <button onclick="ccEssentialOnly()" style="padding:10px 20px;background:#f3f4f6;color:#374151;font-size:13px;font-weight:600;border:none;border-radius:12px;cursor:pointer">Essential Only</button>
                 <button onclick="ccShowModal()" style="padding:10px 20px;background:transparent;color:#6b7280;font-size:13px;font-weight:600;border:1.5px solid #d1d5db;border-radius:12px;cursor:pointer">Customize</button>
             </div>
@@ -83,7 +83,7 @@
                     Back
                 </button>
                 <div style="display:flex;gap:10px">
-                    <button onclick="ccSavePrefs()" style="padding:10px 22px;background:linear-gradient(135deg,#6366f1,#7c3aed);color:#fff;font-size:13px;font-weight:600;border:none;border-radius:12px;cursor:pointer">Save Preferences</button>
+                    <button onclick="ccSavePrefs()" style="padding:10px 22px;background:#2f5fb0;color:#fff;font-size:13px;font-weight:600;border:none;border-radius:12px;cursor:pointer">Save Preferences</button>
                     <button onclick="ccAcceptAll()" style="padding:10px 22px;background:#fff;color:#374151;font-size:13px;font-weight:600;border:1.5px solid #d1d5db;border-radius:12px;cursor:pointer">Accept All</button>
                 </div>
             </div>

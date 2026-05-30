@@ -578,7 +578,7 @@
                                 <label class="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Notes to Candidate (optional)</label>
                                 <textarea name="stage_notes" rows="2" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400" placeholder="e.g. Please join via Google Meet link...">{{ $application->pipeline_stage_notes }}</textarea>
                             </div>
-                            <button type="button" onclick="advancePipelineStage()" class="w-full py-2.5 text-white text-sm font-semibold rounded-xl transition-all" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">
+                            <button type="button" onclick="advancePipelineStage()" class="w-full py-2.5 text-white text-sm font-semibold rounded-xl transition-all" style="background:#2f5fb0;">
                                 Advance & Send Email
                             </button>
                             <div id="pipeline-result" class="hidden text-sm font-medium rounded-xl p-3"></div>

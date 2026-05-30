@@ -368,7 +368,7 @@
                 <a href="{{ route('agent.dashboard') }}" class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
                     Cancel
                 </a>
-                <button type="submit" class="px-8 py-3 text-white font-semibold rounded-lg hover:shadow-xl transition-all" style="background:linear-gradient(135deg,#1A73E8,#6366f1);">
+                <button type="submit" class="px-8 py-3 text-white font-semibold rounded-lg hover:shadow-xl transition-all" style="background:#2f5fb0;">
                     Save Configuration
                 </button>
             </div>

@@ -861,7 +861,7 @@
     }
     .cmd-panel {
         animation: cmdSlideIn .22s cubic-bezier(.22,.68,0,1.2) both;
-        background: linear-gradient(145deg,#fdfcff 0%,#f5f3ff 40%,#fdf4ff 70%,#f0f4ff 100%);
+        background: linear-gradient(145deg,#ffffff 0%,#f7f8fa 55%,#eaf0fa 100%);
         border: 1.5px solid rgba(47,95,176,.18);
         border-radius: 1.5rem;
         box-shadow: 0 24px 80px rgba(21,35,58,.22), 0 4px 20px rgba(47,95,176,.12), 0 0 0 1px rgba(255,255,255,.6) inset;
@@ -958,7 +958,7 @@
         x-show="cmdOpen"
         @click="cmdOpen = false"
         class="fixed inset-0 flex items-center justify-center px-4"
-        style="z-index:9999; background:linear-gradient(135deg,rgba(12,28,44,.30) 0%,rgba(28,52,77,.22) 100%); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);"
+        style="display:none; z-index:9999; background:linear-gradient(135deg,rgba(12,28,44,.30) 0%,rgba(28,52,77,.22) 100%); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);"
         x-transition:enter="transition ease-out duration-150"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"

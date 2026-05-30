@@ -75,8 +75,8 @@
 .btn-apply {
     flex:1; display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
     padding:.62rem 1rem; border-radius:.75rem; font-size:.84rem; font-weight:700;
-    background:linear-gradient(135deg,#6366f1,#7c3aed); color:#fff; border:none; cursor:pointer;
-    box-shadow:0 4px 14px rgba(99,102,241,.35); transition:all .2s;
+    background:#2f5fb0; color:#fff; border:none; cursor:pointer;
+    box-shadow:0 4px 14px rgba(47,95,176,.30); transition:all .2s;
 }
 .btn-apply:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(99,102,241,.45); }
 .btn-clear {

@@ -145,7 +145,7 @@
     {{-- Welcome Header --}}
     <div class="mb-8 dash-anim-2">
         <h1 class="text-2xl font-semibold text-ink-primary">
-            Welcome back, <span style="background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">{{ explode(' ', $user->name)[0] }}</span> &#128075;
+            Welcome back, <span style="background:linear-gradient(135deg,#2f5fb0,#1c344d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">{{ explode(' ', $user->name)[0] }}</span> &#128075;
         </h1>
         <p class="mt-1 text-sm text-ink-secondary">Here's what's happening with your job search</p>
     </div>
@@ -508,7 +508,7 @@
                     </div>
 
                     @if($subscriptionStats['is_free_plan'] ?? true)
-                        <a href="{{ route('pricing') }}" class="secondary-card block w-full text-center px-4 py-3 text-white font-bold text-sm rounded-xl transition-all" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);box-shadow:0 4px 16px rgba(99,102,241,.35)">
+                        <a href="{{ route('pricing') }}" class="secondary-card block w-full text-center px-4 py-3 text-white font-bold text-sm rounded-xl transition-all" style="background:#2f5fb0;box-shadow:0 4px 16px rgba(47,95,176,.30)">
                             &#8593; Upgrade to Pro
                         </a>
                         <p class="text-xs text-center mt-2" style="color:#7c3aed">Get 50+ applications &amp; unlimited AI</p>

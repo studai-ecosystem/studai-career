@@ -37,12 +37,12 @@
         /* -- HERO GRADIENT --------------------------- */
         .hero-gradient {
             background:
-                radial-gradient(ellipse 70% 55% at 15% 20%, rgba(99,102,241,.28) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 50% at 85% 10%, rgba(236,72,153,.22) 0%, transparent 60%),
-                radial-gradient(ellipse 55% 45% at 70% 85%, rgba(16,185,129,.18) 0%, transparent 60%),
-                radial-gradient(ellipse 50% 40% at 30% 75%, rgba(245,158,11,.16) 0%, transparent 60%),
-                radial-gradient(ellipse 80% 60% at 50% 50%, rgba(139,92,246,.14) 0%, transparent 80%),
-                linear-gradient(145deg, #eef1ff 0%, #f9f0ff 30%, #eefff7 60%, #fff8ee 100%);
+                radial-gradient(ellipse 70% 55% at 15% 20%, rgba(47,95,176,.22) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 85% 10%, rgba(28,52,77,.16) 0%, transparent 60%),
+                radial-gradient(ellipse 55% 45% at 70% 85%, rgba(47,95,176,.14) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 30% 75%, rgba(227,182,47,.12) 0%, transparent 60%),
+                radial-gradient(ellipse 80% 60% at 50% 50%, rgba(47,95,176,.10) 0%, transparent 80%),
+                linear-gradient(145deg, #f7f8fa 0%, #eaf0fa 45%, #f7f8fa 75%, #fbf2d6 100%);
         }
 
         /* -- KEYFRAMES ------------------------------- */
@@ -81,7 +81,7 @@
 
         /* Animated gradient text */
         .text-gradient-anim {
-            background: linear-gradient(135deg, #1a73e8, #7c3aed, #ec4899, #1a73e8);
+            background: linear-gradient(135deg, #2f5fb0, #1c344d, #2f5fb0);
             background-size: 300% auto;
             -webkit-background-clip: text; background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -90,27 +90,27 @@
 
         /* Orbs � now more vivid and more of them */
         .orb { position:absolute; border-radius:50%; filter:blur(64px); pointer-events:none; will-change:transform; }
-        .orb-1 { width:600px;height:600px; background:radial-gradient(circle, rgba(99,102,241,.35) 0%, rgba(139,92,246,.2) 40%, transparent 70%); top:-200px;left:-150px; animation:orb1 14s ease-in-out infinite; }
-        .orb-2 { width:500px;height:500px; background:radial-gradient(circle, rgba(236,72,153,.3) 0%, rgba(245,101,101,.15) 40%, transparent 70%); bottom:-120px;right:-100px; animation:orb2 12s ease-in-out infinite; }
-        .orb-3 { width:350px;height:350px; background:radial-gradient(circle, rgba(16,185,129,.25) 0%, rgba(52,211,153,.12) 40%, transparent 70%); top:25%;right:8%; animation:orb3 16s ease-in-out infinite; }
-        .orb-4 { width:280px;height:280px; background:radial-gradient(circle, rgba(245,158,11,.28) 0%, rgba(251,191,36,.12) 40%, transparent 70%); top:55%;left:5%; animation:orb4 11s ease-in-out 2s infinite; }
-        .orb-5 { width:220px;height:220px; background:radial-gradient(circle, rgba(59,130,246,.3)  0%, rgba(14,165,233,.12) 40%, transparent 70%); bottom:15%;left:30%; animation:orb5 9s ease-in-out 4s infinite; }
+        .orb-1 { width:600px;height:600px; background:radial-gradient(circle, rgba(47,95,176,.30) 0%, rgba(28,52,77,.16) 40%, transparent 70%); top:-200px;left:-150px; animation:orb1 14s ease-in-out infinite; }
+        .orb-2 { width:500px;height:500px; background:radial-gradient(circle, rgba(28,52,77,.24) 0%, rgba(47,95,176,.12) 40%, transparent 70%); bottom:-120px;right:-100px; animation:orb2 12s ease-in-out infinite; }
+        .orb-3 { width:350px;height:350px; background:radial-gradient(circle, rgba(227,182,47,.20) 0%, rgba(227,182,47,.10) 40%, transparent 70%); top:25%;right:8%; animation:orb3 16s ease-in-out infinite; }
+        .orb-4 { width:280px;height:280px; background:radial-gradient(circle, rgba(47,95,176,.22) 0%, rgba(47,95,176,.10) 40%, transparent 70%); top:55%;left:5%; animation:orb4 11s ease-in-out 2s infinite; }
+        .orb-5 { width:220px;height:220px; background:radial-gradient(circle, rgba(28,52,77,.24) 0%, rgba(47,95,176,.10) 40%, transparent 70%); bottom:15%;left:30%; animation:orb5 9s ease-in-out 4s infinite; }
 
         /* Morphing blobs */
         .blob { position:absolute; pointer-events:none; opacity:.18; }
-        .blob-1 { width:200px;height:200px; background:linear-gradient(135deg,#6366f1,#a855f7); border-radius:60% 40% 30% 70%/60% 30% 70% 40%; top:15%;left:3%; animation:morphBlob 12s ease-in-out infinite, driftY 8s ease-in-out infinite; }
-        .blob-2 { width:140px;height:140px; background:linear-gradient(135deg,#ec4899,#f43f5e); border-radius:40% 60% 60% 40%/40% 60% 40% 60%; top:10%;right:4%; animation:morphBlob 10s ease-in-out 3s infinite, driftX 7s ease-in-out infinite; }
-        .blob-3 { width:120px;height:120px; background:linear-gradient(135deg,#10b981,#34d399); border-radius:50% 60% 40% 50%/50% 40% 60% 50%; bottom:20%;right:6%; animation:morphBlob 14s ease-in-out 6s infinite, driftY 10s ease-in-out 2s infinite; }
+        .blob-1 { width:200px;height:200px; background:linear-gradient(135deg,#2f5fb0,#1c344d); border-radius:60% 40% 30% 70%/60% 30% 70% 40%; top:15%;left:3%; animation:morphBlob 12s ease-in-out infinite, driftY 8s ease-in-out infinite; }
+        .blob-2 { width:140px;height:140px; background:linear-gradient(135deg,#1c344d,#14283d); border-radius:40% 60% 60% 40%/40% 60% 40% 60%; top:10%;right:4%; animation:morphBlob 10s ease-in-out 3s infinite, driftX 7s ease-in-out infinite; }
+        .blob-3 { width:120px;height:120px; background:linear-gradient(135deg,#e3b62f,#c9941a); border-radius:50% 60% 40% 50%/50% 40% 60% 50%; bottom:20%;right:6%; animation:morphBlob 14s ease-in-out 6s infinite, driftY 10s ease-in-out 2s infinite; }
 
         /* Animated rings */
         .ring { position:absolute; border-radius:50%; border:2px solid; pointer-events:none; animation:ringPulse 4s ease-in-out infinite; }
-        .ring-1 { width:120px;height:120px; border-color:rgba(99,102,241,.25); top:20%;left:12%; animation-delay:0s; }
-        .ring-2 { width:80px;height:80px; border-color:rgba(236,72,153,.25); top:65%;right:15%; animation-delay:1.5s; }
-        .ring-3 { width:60px;height:60px; border-color:rgba(16,185,129,.3); bottom:30%;left:20%; animation-delay:3s; }
+        .ring-1 { width:120px;height:120px; border-color:rgba(47,95,176,.25); top:20%;left:12%; animation-delay:0s; }
+        .ring-2 { width:80px;height:80px; border-color:rgba(28,52,77,.25); top:65%;right:15%; animation-delay:1.5s; }
+        .ring-3 { width:60px;height:60px; border-color:rgba(227,182,47,.3); bottom:30%;left:20%; animation-delay:3s; }
 
         /* Dot grid sparkle */
         .dot-grid {
-            background-image: radial-gradient(circle, rgba(99,102,241,.18) 1px, transparent 1px);
+            background-image: radial-gradient(circle, rgba(47,95,176,.16) 1px, transparent 1px);
             background-size: 36px 36px;
         }
 
@@ -145,7 +145,7 @@
 
         /* Shimmer button */
         .btn-shimmer {
-            background: linear-gradient(135deg, #1a73e8 0%, #7c3aed 50%, #1a73e8 100%);
+            background: linear-gradient(135deg, #2f5fb0 0%, #1c344d 50%, #2f5fb0 100%);
             background-size: 200% auto;
             animation: shimmer 2.5s linear infinite;
             color: #fff; border: none;
@@ -173,15 +173,15 @@
         .stat-counter { animation: countUp 1.2s ease-out both; }
     </style>
 </head>
-<body class="font-sans antialiased text-ink-primary" style="background:#f4f6ff;">
+<body class="font-sans antialiased text-ink-primary" style="background:#f7f8fa;">
     {{-- Navigation --}}
-    <nav class="fixed top-0 left-0 right-0 z-sticky backdrop-blur-xl" style="background:rgba(255,255,255,0.72);border-bottom:1.5px solid transparent;background-clip:padding-box;box-shadow:0 1px 0 rgba(99,102,241,.15),0 4px 24px rgba(99,102,241,.08);">
+    <nav class="fixed top-0 left-0 right-0 z-sticky backdrop-blur-xl" style="background:rgba(255,255,255,0.72);border-bottom:1.5px solid transparent;background-clip:padding-box;box-shadow:0 1px 0 rgba(47,95,176,.15),0 4px 24px rgba(21,35,58,.06);">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 {{-- Logo --}}
                 <a href="/" class="flex items-center gap-2 group">
                     <img src="/assets/logo/icon.png?v=3" alt="StudAI Hire" style="width:36px;height:36px;object-fit:contain;flex-shrink:0" class="transition-transform group-hover:scale-110">
-                    <span class="text-xl font-bold" style="color:#1a1a2e">Stud<span style="background:linear-gradient(135deg,#1a73e8,#7c3aed);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">AI</span> Hire</span>
+                    <span class="text-xl font-bold" style="color:#1c344d">Stud<span style="color:#1c344d">AI</span> Hire</span>
                 </a>
 
                 {{-- Desktop Navigation --}}
@@ -198,7 +198,7 @@
                         @php($navUser = auth()->user())
                         <div class="relative" id="nav-account">
                             <button type="button" onclick="event.stopPropagation();document.getElementById('nav-account-menu').classList.toggle('hidden');" class="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full transition-colors" style="border:1px solid rgba(99,102,241,.25);background:rgba(255,255,255,.7);">
-                                <span class="inline-flex items-center justify-center rounded-full text-white text-sm font-bold" style="width:32px;height:32px;background:linear-gradient(135deg,#6366f1,#7c3aed);">{{ strtoupper(substr($navUser->name ?? 'U', 0, 1)) }}</span>
+                                <span class="inline-flex items-center justify-center rounded-full text-white text-sm font-bold" style="width:32px;height:32px;background:#2f5fb0;">{{ strtoupper(substr($navUser->name ?? 'U', 0, 1)) }}</span>
                                 <span class="hidden sm:block text-sm font-medium max-w-[120px] truncate" style="color:#1a1a2e;">{{ $navUser->name ?? 'Account' }}</span>
                                 <svg class="w-4 h-4" style="color:#6b7280;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
@@ -225,7 +225,7 @@
                         </script>
                     @else
                         <a href="{{ route('login') }}" class="text-sm font-medium hidden sm:block" style="color:#4b5563;">Sign in</a>
-                        <a href="{{ route('register') }}" class="inline-flex items-center px-5 py-2 rounded-xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#7c3aed);box-shadow:0 2px 10px rgba(99,102,241,.35);">
+                        <a href="{{ route('register') }}" class="inline-flex items-center px-5 py-2 rounded-xl text-sm font-semibold text-white" style="background:#2f5fb0;box-shadow:0 2px 10px rgba(47,95,176,.30);">
                             Start Free
                         </a>
                     @endauth
@@ -255,17 +255,17 @@
             <div class="ring ring-2"></div>
             <div class="ring ring-3"></div>
             {{-- Floating particles --}}
-            <div class="particle-dot" style="background:linear-gradient(135deg,#6366f1,#a855f7);top:18%;left:8%;animation:floatSlow 7s ease-in-out infinite;width:10px;height:10px;box-shadow:0 0 12px rgba(99,102,241,.6);"></div>
-            <div class="particle-dot" style="background:linear-gradient(135deg,#ec4899,#f43f5e);top:60%;left:5%;animation:floatSlow 9s ease-in-out 1s infinite;width:8px;height:8px;box-shadow:0 0 10px rgba(236,72,153,.5);"></div>
-            <div class="particle-dot" style="background:linear-gradient(135deg,#10b981,#34d399);top:25%;right:7%;animation:floatSlow 8s ease-in-out 2s infinite;width:10px;height:10px;box-shadow:0 0 12px rgba(16,185,129,.5);"></div>
-            <div class="particle-dot" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);top:70%;right:10%;animation:floatSlow 6s ease-in-out .5s infinite;width:8px;height:8px;box-shadow:0 0 10px rgba(245,158,11,.5);"></div>
-            <div class="particle-dot" style="background:linear-gradient(135deg,#3b82f6,#0ea5e9);top:40%;right:3%;animation:floatSlow 11s ease-in-out 3s infinite;width:6px;height:6px;box-shadow:0 0 8px rgba(59,130,246,.6);"></div>
-            <div class="particle-dot" style="background:linear-gradient(135deg,#8b5cf6,#d946ef);top:80%;left:25%;animation:floatSlow 13s ease-in-out 1.5s infinite;width:7px;height:7px;box-shadow:0 0 9px rgba(139,92,246,.5);"></div>
+            <div class="particle-dot" style="background:#2f5fb0;top:18%;left:8%;animation:floatSlow 7s ease-in-out infinite;width:10px;height:10px;box-shadow:0 0 12px rgba(47,95,176,.6);"></div>
+            <div class="particle-dot" style="background:#1c344d;top:60%;left:5%;animation:floatSlow 9s ease-in-out 1s infinite;width:8px;height:8px;box-shadow:0 0 10px rgba(28,52,77,.5);"></div>
+            <div class="particle-dot" style="background:#e3b62f;top:25%;right:7%;animation:floatSlow 8s ease-in-out 2s infinite;width:10px;height:10px;box-shadow:0 0 12px rgba(227,182,47,.5);"></div>
+            <div class="particle-dot" style="background:#2f5fb0;top:70%;right:10%;animation:floatSlow 6s ease-in-out .5s infinite;width:8px;height:8px;box-shadow:0 0 10px rgba(47,95,176,.5);"></div>
+            <div class="particle-dot" style="background:#1c344d;top:40%;right:3%;animation:floatSlow 11s ease-in-out 3s infinite;width:6px;height:6px;box-shadow:0 0 8px rgba(28,52,77,.6);"></div>
+            <div class="particle-dot" style="background:#e3b62f;top:80%;left:25%;animation:floatSlow 13s ease-in-out 1.5s infinite;width:7px;height:7px;box-shadow:0 0 9px rgba(227,182,47,.5);"></div>
             {{-- Floating geometric shapes --}}
-            <div class="absolute floating" style="top:38%;left:2%;width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,rgba(99,102,241,.25),rgba(139,92,246,.15));border:1.5px solid rgba(99,102,241,.2);animation-delay:-2s;"></div>
-            <div class="absolute floating" style="bottom:18%;right:3%;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,rgba(236,72,153,.22),rgba(245,101,101,.12));border:1.5px solid rgba(236,72,153,.2);animation-delay:-4s;"></div>
-            <div class="absolute floating" style="top:55%;right:18%;width:36px;height:36px;border-radius:8px;transform:rotate(45deg);background:linear-gradient(135deg,rgba(16,185,129,.22),rgba(52,211,153,.12));border:1.5px solid rgba(16,185,129,.2);animation-delay:-1s;"></div>
-            <div class="absolute floating" style="top:28%;left:18%;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,rgba(245,158,11,.3),rgba(251,191,36,.15));border:1.5px solid rgba(245,158,11,.25);animation-delay:-3s;"></div>
+            <div class="absolute floating" style="top:38%;left:2%;width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,rgba(47,95,176,.22),rgba(28,52,77,.12));border:1.5px solid rgba(47,95,176,.2);animation-delay:-2s;"></div>
+            <div class="absolute floating" style="bottom:18%;right:3%;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,rgba(28,52,77,.20),rgba(47,95,176,.10));border:1.5px solid rgba(28,52,77,.2);animation-delay:-4s;"></div>
+            <div class="absolute floating" style="top:55%;right:18%;width:36px;height:36px;border-radius:8px;transform:rotate(45deg);background:linear-gradient(135deg,rgba(47,95,176,.20),rgba(47,95,176,.10));border:1.5px solid rgba(47,95,176,.2);animation-delay:-1s;"></div>
+            <div class="absolute floating" style="top:28%;left:18%;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,rgba(227,182,47,.28),rgba(227,182,47,.14));border:1.5px solid rgba(227,182,47,.25);animation-delay:-3s;"></div>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
                 <div class="text-center max-w-4xl mx-auto">
                     {{-- AI Badge --}}
@@ -449,7 +449,7 @@
                     {{-- S.C.O.U.T. for Employers --}}
                     <div class="anim-card group reveal delay-600 rounded-2xl p-7 border border-indigo-200 relative cursor-default flex flex-col" id="employers" style="background:linear-gradient(135deg,#eef2ff 0%,#ede9fe 100%);box-shadow:0 4px 24px rgba(99,102,241,.15),0 1px 4px rgba(99,102,241,.08);transition:transform .3s ease,box-shadow .3s ease;" onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 16px 40px rgba(99,102,241,.28),0 4px 12px rgba(99,102,241,.15)';" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 24px rgba(99,102,241,.15),0 1px 4px rgba(99,102,241,.08)';">
                         <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" style="background:linear-gradient(135deg,rgba(99,102,241,.07),rgba(139,92,246,.04));"></div>
-                        <div class="absolute top-4 right-4 px-2.5 py-1 text-white text-xs font-bold rounded-full" style="background:linear-gradient(135deg,#6366f1,#7c3aed);box-shadow:0 2px 8px rgba(99,102,241,.4);">For Employers</div>
+                        <div class="absolute top-4 right-4 px-2.5 py-1 text-white text-xs font-bold rounded-full" style="background:#2f5fb0;box-shadow:0 2px 8px rgba(47,95,176,.4);">For Employers</div>
                         <div class="w-13 h-13 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform" style="width:3.25rem;height:3.25rem;background:linear-gradient(135deg,#c7d2fe,#ddd6fe);box-shadow:0 4px 12px rgba(99,102,241,.25);">
                             <svg class="w-6 h-6" style="color:#6366f1;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -772,21 +772,21 @@
                 <div class="absolute inset-0" style="background-image:radial-gradient(circle,rgba(99,102,241,.12) 1px,transparent 1px);background-size:40px 40px;"></div>
             </div>
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal-scale relative">
-                <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold mb-6" style="background:rgba(99,102,241,.1);color:#6366f1;border:1px solid rgba(99,102,241,.2);">No credit card required</div>
-                <h2 class="text-3xl sm:text-4xl font-bold mb-6" style="color:#1a1a2e;">
-                    Ready to put your career on <span style="background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">autopilot?</span>
+                <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold mb-6" style="background:#eaf0fa;color:#2f5fb0;border:1px solid rgba(47,95,176,.2);">No credit card required</div>
+                <h2 class="text-3xl sm:text-4xl font-bold mb-6" style="color:#15233a;">
+                    Ready to put your career on <span style="background:linear-gradient(135deg,#2f5fb0,#1c344d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">autopilot?</span>
                 </h2>
                 <p class="text-lg mb-8 max-w-2xl mx-auto" style="color:#4b5563;">
                     Join 50,000+ professionals who let AI manage their job search. Start free � no credit card required.
                 </p>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#7c3aed);box-shadow:0 4px 18px rgba(99,102,241,.4);">
+                    <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold text-white" style="background:#2f5fb0;box-shadow:0 4px 18px rgba(47,95,176,.30);">
                         Start Free � No Credit Card
                         <svg class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
                     </a>
-                    <a href="{{ route('pricing') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,.85);color:#6366f1;border:1.5px solid rgba(99,102,241,.25);">
+                    <a href="{{ route('pricing') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,.85);color:#2f5fb0;border:1.5px solid rgba(47,95,176,.25);">
                         View Pricing
                     </a>
                 </div>
@@ -795,9 +795,9 @@
     </main>
 
     {{-- Footer --}}
-    <footer class="py-16 relative" style="background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);">
-        <div class="absolute inset-0 pointer-events-none" style="background-image:radial-gradient(circle,rgba(99,102,241,.12) 1px,transparent 1px);background-size:36px 36px;"></div>
-        <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(99,102,241,.5),rgba(139,92,246,.5),rgba(236,72,153,.3),transparent);"></div>
+    <footer class="py-16 relative" style="background:linear-gradient(160deg,#0c1c2c 0%,#14283d 50%,#1c344d 100%);">
+        <div class="absolute inset-0 pointer-events-none" style="background-image:radial-gradient(circle,rgba(47,95,176,.14) 1px,transparent 1px);background-size:36px 36px;"></div>
+        <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(47,95,176,.5),rgba(227,182,47,.35),transparent);"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
                 <div class="col-span-2 md:col-span-1">
