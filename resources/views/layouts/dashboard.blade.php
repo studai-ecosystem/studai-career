@@ -78,7 +78,7 @@
         .nav-item:hover { background:rgba(139,92,246,.12); color:#4c1d95; }
         .nav-item:hover svg { transform:scale(1.1) rotate(-4deg); }
         .nav-item svg { width:18px !important; height:18px !important; flex-shrink:0; }
-        .nav-sub { padding-left:28px; font-size:12.5px; padding-top:6px; padding-bottom:6px; opacity:.85; }
+        .nav-sub { padding-left:10px; font-size:12.5px; padding-top:6px; padding-bottom:6px; opacity:.9; }
         .nav-item.active { background:rgba(109,40,217,.15); color:#4c1d95; font-weight:600; position:relative; }
         .nav-item.active::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:65%; background:#7c3aed; border-radius:0 3px 3px 0; }
         .nav-active { position:relative; }
@@ -424,34 +424,39 @@
                     <span x-show="sidebarOpen" x-transition>Career Coach</span>
                 </a>
 
-                <div class="flex items-center gap-0">
-                    <a href="{{ route('negotiation.dashboard') }}"
-                       class="nav-item flex-1 {{ request()->routeIs('negotiation.*') ? 'active' : '' }}"
-                       :class="!sidebarOpen && 'justify-center'">
-                        <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <div x-show="sidebarOpen" x-transition
+                     class="nav-item {{ request()->routeIs('negotiation.*') && !request()->routeIs('negotiation.chatbot') ? 'active' : '' }} !pr-2 cursor-default select-none">
+                    <a href="{{ route('negotiation.dashboard') }}" class="flex items-center gap-[10px] flex-1 min-w-0" style="text-decoration:none;color:inherit">
+                        <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span x-show="sidebarOpen" x-transition>Negotiation</span>
+                        <span class="flex-1 truncate">Negotiation</span>
                     </a>
-                    <button x-show="sidebarOpen" x-transition
-                            @click="negotiationOpen = !negotiationOpen"
-                            class="p-1 mr-1 rounded hover:bg-white/10 transition-colors flex-shrink-0"
-                            :title="negotiationOpen ? 'Collapse' : 'Expand'">
-                        <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="negotiationOpen ? 'rotate-180' : ''"
-                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <button @click.prevent="negotiationOpen = !negotiationOpen"
+                            class="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 transition-colors duration-150"
+                            :class="negotiationOpen ? 'text-violet-700' : 'text-violet-400 hover:text-violet-600'">
+                        <svg class="w-3 h-3 transition-transform duration-200" :class="negotiationOpen ? 'rotate-180' : ''"
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
                 </div>
-                <a href="{{ route('negotiation.chatbot') }}"
-                   class="nav-item nav-sub {{ request()->routeIs('negotiation.chatbot') ? 'active' : '' }}"
-                   x-show="sidebarOpen && negotiationOpen" x-transition
-                   :class="!sidebarOpen && 'justify-center'">
-                    <svg class="w-[16px] h-[16px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                {{-- collapsed sidebar: show icon-only nav item --}}
+                <a x-show="!sidebarOpen"
+                   href="{{ route('negotiation.dashboard') }}"
+                   class="nav-item {{ request()->routeIs('negotiation.*') ? 'active' : '' }} justify-center">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span x-show="sidebarOpen" x-transition>AI Negotiation Agent</span>
                 </a>
+                <div x-show="sidebarOpen && negotiationOpen" x-transition class="relative ml-4">
+                    <div class="absolute inset-y-1 left-[11px] w-px rounded-full" style="background:linear-gradient(to bottom,rgba(139,92,246,.4),rgba(139,92,246,.06));"></div>
+                    <a href="{{ route('negotiation.chatbot') }}"
+                       class="nav-item nav-sub {{ request()->routeIs('negotiation.chatbot') ? 'active' : '' }}">
+                        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ml-3" style="background:#a78bfa;"></span>
+                        <span>AI Negotiation Agent</span>
+                    </a>
+                </div>
 
                 <span class="nav-section-label" x-show="sidebarOpen">More</span>
 
