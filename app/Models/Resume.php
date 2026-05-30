@@ -90,6 +90,22 @@ class Resume extends Model
         'updated_at' => 'datetime',
     ];
 
+    /**
+     * Resilient attribute access: resumes created under a previous APP_KEY
+     * cannot have their encrypted fields (email/phone/location/*_url)
+     * decrypted with the current key. Rather than throwing an uncaught
+     * DecryptException (which 500s the whole page), degrade gracefully to
+     * null for the affected field.
+     */
+    public function getAttribute($key)
+    {
+        try {
+            return parent::getAttribute($key);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            return null;
+        }
+    }
+
     protected static function boot()
     {
         parent::boot();

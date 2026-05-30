@@ -24,10 +24,18 @@ class ResumeController extends Controller
      */
     public function index()
     {
-        $resumes = auth()->user()->resumes()
-            ->with('template')
-            ->latest()
-            ->paginate(12);
+        try {
+            $resumes = auth()->user()->resumes()
+                ->with('template')
+                ->latest()
+                ->paginate(12);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Resume index failed: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+            $resumes = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 12);
+        }
 
         return view('resume.index', compact('resumes'));
     }
