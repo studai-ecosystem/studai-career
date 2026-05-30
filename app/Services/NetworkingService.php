@@ -774,7 +774,7 @@ class NetworkingService
      */
     public function getUnreadCount(User $user): int
     {
-        return DB::table('conversation_participants as cp')
+        return DB::table('network_conversation_participants as cp')
             ->join('network_conversations as nc', 'cp.conversation_id', '=', 'nc.id')
             ->join('network_messages as nm', 'nc.id', '=', 'nm.conversation_id')
             ->where('cp.user_id', $user->id)

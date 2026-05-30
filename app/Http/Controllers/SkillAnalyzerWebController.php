@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\SkillAssessment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class SkillAnalyzerWebController extends Controller
@@ -12,13 +14,31 @@ class SkillAnalyzerWebController extends Controller
     public function dashboard(): View
     {
         $user = Auth::user();
-        
-        $gaps = $user->skillGaps()->with('learningPath')->rankedByPriority()->limit(20)->get();
-        $activePaths = $user->learningPaths()->active()->with('resources')->get();
-        $validations = $user->skillValidations()->highConfidence()->limit(10)->get();
-        $recentAssessments = $user->skillAssessments()->latest()->limit(5)->get();
-        
+
+        $gaps = $this->safely('skillGaps', fn () => $user->skillGaps()->with('learningPath')->rankedByPriority()->limit(20)->get());
+        $activePaths = $this->safely('learningPaths', fn () => $user->learningPaths()->active()->with('resources')->get());
+        $validations = $this->safely('skillValidations', fn () => $user->skillValidations()->highConfidence()->limit(10)->get());
+        $recentAssessments = $this->safely('skillAssessments', fn () => $user->skillAssessments()->latest()->limit(5)->get());
+
         return view('skills.dashboard', compact('gaps', 'activePaths', 'validations', 'recentAssessments'));
+    }
+
+    /**
+     * Run a dashboard query, returning an empty collection if the underlying
+     * schema/relation is unavailable (prevents the page from 500ing on drift).
+     */
+    private function safely(string $context, callable $query): Collection
+    {
+        try {
+            return $query();
+        } catch (\Throwable $e) {
+            Log::error('Skills dashboard query failed', [
+                'context' => $context,
+                'message' => $e->getMessage(),
+            ]);
+
+            return collect();
+        }
     }
 
     public function learningPaths(): View

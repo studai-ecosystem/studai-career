@@ -14,7 +14,7 @@ class NetworkMessage extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'messages';
+    protected $table = 'network_messages';
 
     protected $fillable = [
         'conversation_id',

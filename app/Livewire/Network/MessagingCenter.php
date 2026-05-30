@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Services\NetworkingService;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -225,7 +224,17 @@ class MessagingCenter extends Component
         return $conversation->last_message_at->gt($participant->last_read_at);
     }
 
-    #[On('echo:conversation.{activeConversationId},MessageSent')]
+    protected function getListeners(): array
+    {
+        if (! $this->activeConversationId) {
+            return [];
+        }
+
+        return [
+            'echo:conversation.' . $this->activeConversationId . ',MessageSent' => 'handleNewMessage',
+        ];
+    }
+
     public function handleNewMessage(): void
     {
         unset($this->messages, $this->conversations);

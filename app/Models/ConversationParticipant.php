@@ -12,6 +12,8 @@ class ConversationParticipant extends Model
 {
     use HasFactory;
 
+    protected $table = 'network_conversation_participants';
+
     protected $fillable = [
         'conversation_id',
         'user_id',

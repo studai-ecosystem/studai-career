@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class NetworkConversation extends Model
 {
     use HasFactory;
 
-    protected $table = 'conversations';
+    protected $table = 'network_conversations';
 
     protected $fillable = [
         'type',
@@ -45,9 +47,21 @@ class NetworkConversation extends Model
         return $this->hasMany(NetworkMessage::class, 'conversation_id');
     }
 
-    public function latestMessage()
+    public function latestMessage(): HasOne
     {
         return $this->hasOne(NetworkMessage::class, 'conversation_id')->latestOfMany();
+    }
+
+    public function lastMessage(): HasOne
+    {
+        return $this->hasOne(NetworkMessage::class, 'conversation_id')->latestOfMany();
+    }
+
+    public function scopeForUser(Builder $query, int $userId): Builder
+    {
+        return $query->whereHas('participants', function (Builder $q) use ($userId) {
+            $q->where('user_id', $userId);
+        });
     }
 
     public function isParticipant(User $user): bool
