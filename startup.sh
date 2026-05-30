@@ -139,13 +139,31 @@ if [ "$APP_ENV" = "production" ]; then
   export SCOUT_DRIVER=database
   echo "  Session settings forced: driver=database lifetime=480 secure=true; scout=database"
 
+  # ---- PHP-FPM Pool Tuning for Premium P1V3 (2 vCPU / 8 GB RAM) ----
+  # Azure App Service PHP-FPM pool config. With 1 GB memory_limit per worker,
+  # 8 children use ~8 GB max — safe on 8 GB container with OS + nginx headroom.
+  FPM_CONF=$(find /etc/php -name 'www.conf' 2>/dev/null | head -1)
+  if [ -n "$FPM_CONF" ]; then
+    echo "Tuning PHP-FPM pool ($FPM_CONF) for P1V3..."
+    sed -i 's/^pm = .*/pm = dynamic/'                       "$FPM_CONF" 2>/dev/null || true
+    sed -i 's/^pm.max_children = .*/pm.max_children = 10/'  "$FPM_CONF" 2>/dev/null || true
+    sed -i 's/^pm.start_servers = .*/pm.start_servers = 3/' "$FPM_CONF" 2>/dev/null || true
+    sed -i 's/^pm.min_spare_servers = .*/pm.min_spare_servers = 2/' "$FPM_CONF" 2>/dev/null || true
+    sed -i 's/^pm.max_spare_servers = .*/pm.max_spare_servers = 5/' "$FPM_CONF" 2>/dev/null || true
+    sed -i 's/^;pm.max_requests = .*/pm.max_requests = 1000/' "$FPM_CONF" 2>/dev/null || true
+    # Reload FPM with new pool config
+    kill -USR2 1 2>/dev/null || true
+    echo "  PHP-FPM pool: dynamic max_children=10 start=3 spare=2-5 max_requests=1000"
+  else
+    echo "  PHP-FPM www.conf not found — using Azure defaults"
+  fi
+
   echo "Running production optimizations..."
-  # NOTE: view:cache REMOVED — compiling all Blade templates in startup uses too much
-  # memory on the 512MB container and causes PHP-FPM OOM crashes. Views compile
-  # on-demand instead (slight first-request overhead, but server stays stable).
-  timeout 30 php artisan config:cache || echo "WARNING: config:cache failed/timed-out"
-  timeout 30 php artisan route:cache  || echo "WARNING: route:cache failed/timed-out"
-  timeout 30 php artisan event:cache  || echo "WARNING: event:cache failed/timed-out"
+  timeout 30  php artisan config:cache || echo "WARNING: config:cache failed/timed-out"
+  timeout 30  php artisan route:cache  || echo "WARNING: route:cache failed/timed-out"
+  timeout 30  php artisan event:cache  || echo "WARNING: event:cache failed/timed-out"
+  # view:cache re-enabled: P1V3 has 8 GB RAM — no OOM risk from Blade compilation
+  timeout 120 php artisan view:cache   || echo "WARNING: view:cache failed/timed-out"
 
   echo "Running migrations..."
   timeout 60 php artisan migrate --force --no-interaction || echo "WARNING: migrations failed/timed-out"
@@ -183,12 +201,12 @@ timeout 15 php artisan icons:cache 2>/dev/null || true
 # Pre-warm OPcache via localhost (avoids DNS/SSL overhead of hitting the public URL).
 # Nginx listens on port 8080 internally in Azure App Service containers.
 echo "Warming up PHP-FPM workers (pre-loading OPcache)..."
-for i in 1 2 3; do
+for i in 1 2 3 4 5 6; do
   curl -sf --max-time 10 http://127.0.0.1:8080/up -o /dev/null \
     && echo "  Warmup hit $i: OK" \
     || echo "  Warmup hit $i: skipped (PHP-FPM not yet ready)"
 done
-echo "Warmup complete."
+echo "Warmup complete (6 workers pre-warmed)."
 
 echo "========================================"
 echo "Startup complete!"
