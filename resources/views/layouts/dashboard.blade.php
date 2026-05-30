@@ -191,7 +191,7 @@
     sidebarMobileOpen: false,
     darkMode: false,
     cmdOpen: false,
-    negotiationOpen: {{ request()->routeIs('negotiation.*') ? 'true' : 'false' }}
+    negotiationOpen: true
 }" x-init="localStorage.removeItem('darkMode')" :class="{ 'dark': darkMode }"
 @keydown.ctrl.k.window.prevent="cmdOpen = !cmdOpen"
 @keydown.meta.k.window.prevent="cmdOpen = !cmdOpen"
@@ -424,24 +424,45 @@
                     <span x-show="sidebarOpen" x-transition>Career Coach</span>
                 </a>
 
-                <div x-show="sidebarOpen" x-transition
-                     class="nav-item {{ request()->routeIs('negotiation.*') && !request()->routeIs('negotiation.chatbot') ? 'active' : '' }} !pr-2 cursor-default select-none">
-                    <a href="{{ route('negotiation.dashboard') }}" class="flex items-center gap-[10px] flex-1 min-w-0" style="text-decoration:none;color:inherit">
+                {{-- Negotiation accordion --}}
+                <div x-show="sidebarOpen" x-transition>
+                    {{-- Parent row: click anywhere toggles sub-menu --}}
+                    <button @click="negotiationOpen = !negotiationOpen"
+                            class="nav-item w-full text-left {{ request()->routeIs('negotiation.*') ? 'active' : '' }}"
+                            style="border:none;background:inherit;">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span class="flex-1 truncate">Negotiation</span>
-                    </a>
-                    <button @click.prevent="negotiationOpen = !negotiationOpen"
-                            class="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 transition-colors duration-150"
-                            :class="negotiationOpen ? 'text-violet-700' : 'text-violet-400 hover:text-violet-600'">
-                        <svg class="w-3 h-3 transition-transform duration-200" :class="negotiationOpen ? 'rotate-180' : ''"
-                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
+                        <span class="flex-1">Negotiation</span>
+                        <span class="ml-auto flex-shrink-0 flex items-center justify-center w-5 h-5 rounded"
+                              style="background:rgba(139,92,246,.15)">
+                            <svg class="w-3 h-3 transition-transform duration-200"
+                                 :class="negotiationOpen ? 'rotate-180' : ''"
+                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </span>
                     </button>
+
+                    {{-- Sub-item --}}
+                    <div x-show="negotiationOpen"
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 -translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-1"
+                         class="ml-4 relative">
+                        <div class="absolute inset-y-1 left-[11px] w-px rounded-full"
+                             style="background:linear-gradient(to bottom,rgba(139,92,246,.4),rgba(139,92,246,.06))"></div>
+                        <a href="{{ route('negotiation.chatbot') }}"
+                           class="nav-item nav-sub {{ request()->routeIs('negotiation.chatbot') ? 'active' : '' }}">
+                            <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ml-3" style="background:#a78bfa"></span>
+                            <span>AI Negotiation Agent</span>
+                        </a>
+                    </div>
                 </div>
-                {{-- collapsed sidebar: show icon-only nav item --}}
+                {{-- Collapsed sidebar: icon-only --}}
                 <a x-show="!sidebarOpen"
                    href="{{ route('negotiation.dashboard') }}"
                    class="nav-item {{ request()->routeIs('negotiation.*') ? 'active' : '' }} justify-center">
@@ -449,14 +470,6 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </a>
-                <div x-show="sidebarOpen && negotiationOpen" x-transition class="relative ml-4">
-                    <div class="absolute inset-y-1 left-[11px] w-px rounded-full" style="background:linear-gradient(to bottom,rgba(139,92,246,.4),rgba(139,92,246,.06));"></div>
-                    <a href="{{ route('negotiation.chatbot') }}"
-                       class="nav-item nav-sub {{ request()->routeIs('negotiation.chatbot') ? 'active' : '' }}">
-                        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ml-3" style="background:#a78bfa;"></span>
-                        <span>AI Negotiation Agent</span>
-                    </a>
-                </div>
 
                 <span class="nav-section-label" x-show="sidebarOpen">More</span>
 
