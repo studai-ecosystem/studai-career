@@ -132,6 +132,137 @@
 
         {{-- Right sidebar --}}
         <div class="space-y-5">
+
+            {{-- ═══ NEGOTIATION AGENT TOGGLE PANEL ═══ --}}
+            <div x-data="{ open: true, loading: false, question: '', messages: [] }" class="rounded-2xl overflow-hidden shadow-sm" style="border:1.5px solid #7c3aed;">
+
+                {{-- Toggle header --}}
+                <button @click="open = !open"
+                        class="w-full flex items-center justify-between px-4 py-3.5 transition-colors"
+                        style="background:linear-gradient(135deg,#4c1d95,#7c3aed);">
+                    <div class="flex items-center gap-2.5">
+                        {{-- Animated pulse dot --}}
+                        <span class="relative flex h-2.5 w-2.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background:#86efac;"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5" style="background:#4ade80;"></span>
+                        </span>
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold text-white" style="background:rgba(255,255,255,.2);">₹</div>
+                        <div class="text-left">
+                            <p class="text-xs font-bold text-white leading-none">Negotiation Agent</p>
+                            <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.7);">AI-powered salary advisor</p>
+                        </div>
+                    </div>
+                    <svg class="w-4 h-4 text-white transition-transform duration-200"
+                         :class="open ? 'rotate-180' : ''"
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+
+                {{-- Collapsible body --}}
+                <div x-show="open"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 -translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 -translate-y-2"
+                     class="bg-white">
+
+                    {{-- Mini chat history --}}
+                    <div class="px-4 pt-3 pb-2 space-y-2 max-h-52 overflow-y-auto" id="agent-mini-chat"
+                         style="min-height:60px;">
+                        {{-- Default greeting --}}
+                        <template x-if="messages.length === 0">
+                            <div class="flex gap-2 items-start">
+                                <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white mt-0.5" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">₹</div>
+                                <div class="text-xs text-gray-700 rounded-xl rounded-tl-none px-3 py-2 leading-relaxed" style="background:#f5f3ff;border:1px solid #ede9fe;">
+                                    Hi! I'm your AI Negotiation Agent. Ask me anything about your offer, salary ranges, or negotiation tactics. 💜
+                                </div>
+                            </div>
+                        </template>
+                        {{-- Dynamic messages --}}
+                        <template x-for="(msg, idx) in messages" :key="idx">
+                            <div>
+                                <div x-show="msg.role === 'user'" class="flex justify-end">
+                                    <div class="text-xs text-white rounded-xl rounded-tr-none px-3 py-2 max-w-[85%] leading-relaxed" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);" x-text="msg.content"></div>
+                                </div>
+                                <div x-show="msg.role === 'agent'" class="flex gap-2 items-start">
+                                    <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white mt-0.5" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">₹</div>
+                                    <div class="text-xs text-gray-700 rounded-xl rounded-tl-none px-3 py-2 leading-relaxed max-w-[85%]" style="background:#f5f3ff;border:1px solid #ede9fe;" x-text="msg.content"></div>
+                                </div>
+                            </div>
+                        </template>
+                        {{-- Loading dots --}}
+                        <div x-show="loading" class="flex gap-2 items-start">
+                            <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">₹</div>
+                            <div class="px-3 py-2 rounded-xl rounded-tl-none" style="background:#f5f3ff;border:1px solid #ede9fe;">
+                                <span class="flex gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full" style="background:#7c3aed;animation:chatDot .9s infinite ease-in-out;animation-delay:0s"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full" style="background:#7c3aed;animation:chatDot .9s infinite ease-in-out;animation-delay:.2s"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full" style="background:#7c3aed;animation:chatDot .9s infinite ease-in-out;animation-delay:.4s"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Quick prompts --}}
+                    <div class="px-4 pb-3 flex flex-wrap gap-1.5">
+                        <button @click="question = 'How do I counter a low offer?'; $nextTick(() => sendAgentMessage())"
+                                class="text-xs px-2.5 py-1 rounded-full border transition-colors hover:text-white"
+                                style="border-color:#c4b5fd;color:#7c3aed;"
+                                onmouseover="this.style.background='#7c3aed';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='#7c3aed'">
+                            Counter low offer
+                        </button>
+                        <button @click="question = 'What is a good salary for my role?'; $nextTick(() => sendAgentMessage())"
+                                class="text-xs px-2.5 py-1 rounded-full border transition-colors"
+                                style="border-color:#c4b5fd;color:#7c3aed;"
+                                onmouseover="this.style.background='#7c3aed';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='#7c3aed'">
+                            Market salary?
+                        </button>
+                        <button @click="question = 'Give me a negotiation script'; $nextTick(() => sendAgentMessage())"
+                                class="text-xs px-2.5 py-1 rounded-full border transition-colors"
+                                style="border-color:#c4b5fd;color:#7c3aed;"
+                                onmouseover="this.style.background='#7c3aed';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='#7c3aed'">
+                            Get script
+                        </button>
+                    </div>
+
+                    {{-- Input bar --}}
+                    <div class="px-3 pb-3">
+                        <form @submit.prevent="sendAgentMessage()" class="flex gap-2">
+                            <input x-model="question"
+                                   type="text"
+                                   placeholder="Ask the agent..."
+                                   class="flex-1 text-xs px-3 py-2 rounded-xl border bg-gray-50 focus:outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-200"
+                                   style="border-color:#ddd6fe;"
+                                   :disabled="loading">
+                            <button type="submit"
+                                    :disabled="loading || !question.trim()"
+                                    class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-opacity disabled:opacity-40"
+                                    style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">
+                                <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                    {{-- Full agent link --}}
+                    <div class="px-3 pb-4">
+                        <a href="{{ route('negotiation.chatbot') }}"
+                           class="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-xl transition-colors"
+                           style="background:linear-gradient(135deg,#4c1d95,#7c3aed);color:#fff;">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                            </svg>
+                            Open Full Agent
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {{-- ═══ END NEGOTIATION AGENT TOGGLE PANEL ═══ --}}
+
             <div class="rounded-2xl p-5 text-white" style="background:linear-gradient(135deg,#4c1d95,#7c3aed,#a855f7);">
                 <div class="flex items-center gap-2.5 mb-4">
                     <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:rgba(255,255,255,.2);">
