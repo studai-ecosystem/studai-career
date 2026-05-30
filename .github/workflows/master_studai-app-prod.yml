@@ -107,7 +107,10 @@ jobs:
               RAZORPAY_WEBHOOK_SECRET= \
               RAZORPAY_CURRENCY=INR \
               SCOUT_DRIVER=database \
-              SCOUT_QUEUE=false
+              SCOUT_QUEUE=false \
+              "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
+              "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+              GOOGLE_REDIRECT_URI=https://studai-app-prod.azurewebsites.net/auth/google/callback
 
           # Set Azure OpenAI credentials from GitHub Secrets (if configured)
           # NOTE: .env is NOT in git so we never read from it here.
