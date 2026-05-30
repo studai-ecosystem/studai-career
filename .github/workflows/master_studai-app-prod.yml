@@ -102,9 +102,9 @@ jobs:
               "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" \
               MAIL_FROM_ADDRESS=onestudai@gmail.com \
               "MAIL_FROM_NAME=StudAI Career" \
-              RAZORPAY_KEY= \
-              RAZORPAY_SECRET= \
-              RAZORPAY_WEBHOOK_SECRET= \
+              "RAZORPAY_KEY=${{ secrets.RAZORPAY_KEY }}" \
+              "RAZORPAY_SECRET=${{ secrets.RAZORPAY_SECRET }}" \
+              "RAZORPAY_WEBHOOK_SECRET=${{ secrets.RAZORPAY_WEBHOOK_SECRET }}" \
               RAZORPAY_CURRENCY=INR \
               SCOUT_DRIVER=database \
               SCOUT_QUEUE=false \
