@@ -254,6 +254,45 @@ class AIService
             }
         }
 
+        // Third fallback: Standard OpenAI API (api.openai.com) — works with OPENAI_API_KEY
+        $openAIKey = config('ai.openai.api_key');
+        if (!empty($openAIKey)) {
+            try {
+                Log::info('Calling standard OpenAI API (3rd fallback)', [
+                    'user_id' => $this->user?->id,
+                ]);
+
+                $response = \Illuminate\Support\Facades\Http::timeout(30)
+                    ->withToken($openAIKey)
+                    ->post('https://api.openai.com/v1/chat/completions', [
+                        'model' => 'gpt-4o-mini',
+                        'messages' => $messages,
+                        'max_tokens' => $options['max_tokens'] ?? $this->maxTokens,
+                        'temperature' => $options['temperature'] ?? 0.7,
+                    ]);
+
+                if ($response->successful()) {
+                    $data = $response->json();
+                    $content = $data['choices'][0]['message']['content'] ?? '';
+
+                    if (!empty($content)) {
+                        Cache::put($cacheKey, $content, now()->addHours($options['cache_hours'] ?? 1));
+                        return $content;
+                    }
+                }
+
+                Log::warning('Standard OpenAI 3rd fallback returned empty response', [
+                    'status' => $response->status(),
+                    'user_id' => $this->user?->id,
+                ]);
+            } catch (\Exception $openAIError) {
+                Log::error('Standard OpenAI 3rd fallback also failed', [
+                    'error' => $openAIError->getMessage(),
+                    'user_id' => $this->user?->id,
+                ]);
+            }
+        }
+
         // Return fallback response
         return $this->fallbackResponse($prompt, $primaryError);
     }

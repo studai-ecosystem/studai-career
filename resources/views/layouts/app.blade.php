@@ -71,5 +71,16 @@
         @livewireScripts
         @stack('scripts')
         <x-cursor />
+
+        {{-- PWA Service Worker Registration --}}
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                        .then(function (reg) { console.debug('[SW] Registered:', reg.scope); })
+                        .catch(function (err) { console.warn('[SW] Registration failed:', err); });
+                });
+            }
+        </script>
     </body>
 </html>
