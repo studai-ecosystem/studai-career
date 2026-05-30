@@ -155,7 +155,7 @@
         .animate-shimmer    { animation:shimmer 1.5s linear infinite; background:linear-gradient(90deg,#f0f0f8 25%,#e8e8f4 50%,#f0f0f8 75%); background-size:200%; }
         .skeleton           { background:linear-gradient(90deg,#f0f0f8 25%,#e8e8f4 50%,#f0f0f8 75%); background-size:200%; animation:shimmer 1.5s linear infinite; border-radius:8px; }
         .skill-bar-fill     { width:0; transition:width 1s cubic-bezier(.4,0,.2,1); }
-        .xp-bar             { background:linear-gradient(90deg,#2f5fb0,#3a6bc0,#e3b62f); background-size:200%; animation:shimmer 2.5s linear infinite; }
+        .xp-bar             { background:#2f5fb0; }
         #cmd-palette        { backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
         .ai-fab-pulse       { animation:aiFabPulse 2.5s ease-in-out infinite; }
         .alert-pulse        { animation:alertPulse 1.5s ease-in-out infinite; }
@@ -210,7 +210,7 @@
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2 min-w-0">
                     <img src="/assets/logo/icon.png" alt="StudAI Hire" style="width:32px;height:32px;object-fit:contain;flex-shrink:0">
                     <span x-show="sidebarOpen" x-transition class="truncate" style="font-size:13px;font-weight:700;letter-spacing:-0.01em">
-                        <span style="background:linear-gradient(135deg,#2f5fb0,#1c344d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Stud<span style="font-weight:800">AI</span></span><span style="color:#c9941a;font-weight:600;margin-left:2px">Hire</span>
+                        <span style="color:#1c344d">Stud<span style="font-weight:800">AI</span></span><span style="color:#1c344d;font-weight:700;margin-left:2px">Hire</span>
                     </span>
                 </a>
             </div>

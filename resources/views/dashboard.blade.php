@@ -17,10 +17,7 @@
 <div class="space-y-6 animate-fade-in">
 
     {{-- ═══ HERO GREETING + PROFILE COMPLETENESS RING ═══ --}}
-    <div class="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-fuchsia-500 rounded-2xl p-6 text-white">
-        {{-- Background mesh --}}
-        <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,.2) 0%, transparent 40%);"></div>
-
+    <div class="relative overflow-hidden bg-navy-800 border border-navy-line rounded-2xl p-6 text-white">
         <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             {{-- Left: greeting --}}
             <div class="flex items-center gap-4">
@@ -38,15 +35,15 @@
                     </div>
                 </div>
                 <div>
-                    <p class="text-indigo-200 text-sm font-medium">{{ now()->format('l, F j') }}</p>
+                    <p class="text-white/60 text-sm font-medium">{{ now()->format('l, F j') }}</p>
                     <h1 class="text-2xl font-bold">{{ $greeting }}, {{ explode(' ', $name)[0] }}! 👋</h1>
-                    <p class="text-indigo-100 text-sm mt-0.5">Your profile is {{ $completeness }}% complete · <a href="{{ route('profile.edit') }}" class="underline hover:no-underline">Finish it</a> for 3× more matches</p>
+                    <p class="text-white/70 text-sm mt-0.5">Your profile is {{ $completeness }}% complete · <a href="{{ route('profile.edit') }}" class="underline hover:no-underline">Finish it</a> for 3× more matches</p>
                 </div>
             </div>
 
             {{-- Right: quick actions --}}
             <div class="flex flex-wrap gap-3">
-                <a href="{{ route('jobs.search') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white text-indigo-700 font-semibold rounded-xl hover:bg-indigo-50 transition-all hover:-translate-y-0.5 text-sm shadow-sm">
+                <a href="{{ route('jobs.search') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white text-navy-800 font-semibold rounded-xl hover:bg-gray-100 transition-all hover:-translate-y-0.5 text-sm shadow-sm">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     Find Jobs
                 </a>
@@ -62,7 +59,7 @@
     <div class="bg-white rounded-2xl border border-surface-200 shadow-card px-5 py-3">
         <div class="flex items-center gap-4">
             <div class="flex items-center gap-2 flex-shrink-0">
-                <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                <div class="w-8 h-8 bg-brand-600 rounded-full flex items-center justify-center">
                     <span class="text-xs font-bold text-white">{{ $level }}</span>
                 </div>
                 <div>
@@ -169,7 +166,7 @@
                     ]; @endphp
                     @foreach($jobs as $j)
                     <div class="group flex items-center gap-4 px-6 py-4 hover:bg-surface-50 transition-colors cursor-pointer">
-                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br {{ $j['grad'] }} flex items-center justify-center text-white font-bold text-base flex-shrink-0">{{ $j['letter'] }}</div>
+                        <div class="w-11 h-11 rounded-xl bg-surface-100 border border-surface-200 flex items-center justify-center text-ink-primary font-bold text-base flex-shrink-0">{{ $j['letter'] }}</div>
                         <div class="flex-1 min-w-0">
                             <div class="font-semibold text-ink-primary text-sm group-hover:text-module-jobs-600 transition-colors">{{ $j['role'] }}</div>
                             <div class="text-xs text-ink-tertiary mt-0.5">{{ $j['co'] }} · {{ $j['loc'] }}</div>
@@ -221,25 +218,25 @@
         <div class="space-y-5">
 
             {{-- AI Agent Status --}}
-            <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-5 text-white">
+            <div class="bg-navy-800 border border-navy-line rounded-2xl p-5 text-white">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
+                    <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center">
                         <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                     </div>
                     <div>
                         <div class="font-semibold text-sm">AI Agent</div>
                         <div class="flex items-center gap-1.5 mt-0.5">
                             <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span></span>
-                            <span class="text-xs text-indigo-200">Active · Scanning jobs</span>
+                            <span class="text-xs text-white/60">Active · Scanning jobs</span>
                         </div>
                     </div>
                 </div>
                 <div class="space-y-2 text-sm">
-                    <div class="flex justify-between"><span class="text-indigo-200">Jobs Analyzed</span><span class="font-semibold">147 today</span></div>
-                    <div class="flex justify-between"><span class="text-indigo-200">Applications Sent</span><span class="font-semibold">12 today</span></div>
-                    <div class="flex justify-between"><span class="text-indigo-200">Queue</span><span class="font-semibold">8 pending</span></div>
+                    <div class="flex justify-between"><span class="text-white/60">Jobs Analyzed</span><span class="font-semibold">147 today</span></div>
+                    <div class="flex justify-between"><span class="text-white/60">Applications Sent</span><span class="font-semibold">12 today</span></div>
+                    <div class="flex justify-between"><span class="text-white/60">Queue</span><span class="font-semibold">8 pending</span></div>
                 </div>
-                <a href="{{ route('agent.dashboard') }}" class="mt-4 flex items-center justify-center gap-1.5 text-sm font-medium text-white hover:text-indigo-200 transition-colors">
+                <a href="{{ route('agent.dashboard') }}" class="mt-4 flex items-center justify-center gap-1.5 text-sm font-medium text-white hover:text-white/70 transition-colors">
                     View Agent Dashboard <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </a>
             </div>
@@ -308,7 +305,7 @@
             ]; @endphp
             @foreach($tools as $t)
             <a href="{{ route($t['route']) }}" class="card-lift bg-white rounded-2xl border border-surface-200 p-4 flex flex-col items-center text-center gap-3 hover:border-surface-300 group">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br {{ $t['from'] }} {{ $t['to'] }} flex items-center justify-center shadow-soft ring-4 {{ $t['ring'] }} ring-opacity-40 group-hover:scale-110 transition-transform">
+                <div class="w-12 h-12 rounded-2xl bg-brand-600 flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform">
                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         @if($t['icon']==='zap')<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         @elseif($t['icon']==='video')<path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
