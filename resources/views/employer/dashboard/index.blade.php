@@ -56,29 +56,30 @@
     padding: 2rem;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 40%, #ec4899 75%, #f97316 100%);
+    background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 40%, #fdf2f8 75%, #fff7ed 100%);
     background-size: 250% 250%;
     animation: gradFlow 8s ease infinite;
-    box-shadow: 0 8px 40px rgba(99,102,241,.3), 0 2px 12px rgba(0,0,0,.08);
-    color: #fff;
+    border: 1.5px solid rgba(99,102,241,.12);
+    box-shadow: 0 8px 30px rgba(99,102,241,.12), 0 2px 12px rgba(0,0,0,.04);
+    color: #1e293b;
 }
 .emp-hero::before {
     content:'';
     position:absolute; inset:0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238b5cf6' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     pointer-events:none;
 }
 .emp-hero::after {
     content:'';
     position:absolute; top:-60px; right:-60px;
     width:200px; height:200px; border-radius:50%;
-    background: rgba(255,255,255,.12);
+    background: rgba(139,92,246,.08);
     animation: float 5s ease-in-out infinite;
 }
 .emp-hero-blob2 {
     position:absolute; bottom:-40px; left:30%;
     width:140px; height:140px; border-radius:50%;
-    background: rgba(255,255,255,.08);
+    background: rgba(99,102,241,.06);
     animation: float 7s ease-in-out infinite .5s;
     pointer-events:none;
 }
@@ -96,24 +97,24 @@
     box-shadow: 0 4px 24px rgba(0,0,0,.1);
     transition: transform .25s cubic-bezier(.22,.68,0,1.2), box-shadow .25s;
     animation: popIn .4s ease both;
-    color: #fff;
+    color: #475569;
 }
 .emp-stat:hover {
     transform: translateY(-6px) scale(1.02);
     box-shadow: 0 18px 48px rgba(0,0,0,.18);
 }
 
-/* Card backgrounds */
-.stat-blue   { background: linear-gradient(135deg, #6366f1 0%, #818cf8 50%, #a5b4fc 100%); }
-.stat-violet { background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%); }
-.stat-amber  { background: linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #fb923c 100%); }
-.stat-rose   { background: linear-gradient(135deg, #f43f5e 0%, #e11d48 40%, #9f1239 100%); }
+/* Card backgrounds — pastel */
+.stat-blue   { background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); color:#6366f1; }
+.stat-violet { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); color:#8b5cf6; }
+.stat-amber  { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); color:#d97706; }
+.stat-rose   { background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%); color:#f43f5e; }
 
-/* Animated glow overlay */
+/* Soft sheen overlay */
 .emp-stat::before {
     content:'';
     position:absolute; inset:0;
-    background: linear-gradient(135deg, rgba(255,255,255,.18) 0%, transparent 60%);
+    background: linear-gradient(135deg, rgba(255,255,255,.5) 0%, transparent 70%);
     pointer-events:none;
 }
 
@@ -122,13 +123,13 @@
     content:'';
     position:absolute; bottom:-25px; right:-25px;
     width:100px; height:100px; border-radius:50%;
-    background: rgba(255,255,255,.12);
+    background: rgba(255,255,255,.5);
     animation: float 5s ease-in-out infinite;
 }
 .emp-stat .stat-circle2 {
     position:absolute; top:-20px; right:40px;
     width:60px; height:60px; border-radius:50%;
-    background: rgba(255,255,255,.08);
+    background: rgba(255,255,255,.35);
     pointer-events:none;
     animation: float 7s ease-in-out infinite .8s;
 }
@@ -136,34 +137,32 @@
 .emp-stat .stat-icon {
     width:2.75rem; height:2.75rem; border-radius:.875rem;
     display:flex; align-items:center; justify-content:center; flex-shrink:0;
-    background: rgba(255,255,255,.22);
-    color: #fff;
-    box-shadow: 0 2px 10px rgba(0,0,0,.12);
-    backdrop-filter: blur(4px);
+    background: rgba(255,255,255,.75);
+    color: currentColor;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
 }
 
 .emp-stat .stat-num {
     font-size:2.5rem; font-weight:900; line-height:1; letter-spacing:-.04em;
-    color: #fff;
-    text-shadow: 0 2px 8px rgba(0,0,0,.15);
-    -webkit-text-fill-color: #fff;
+    color: #1e293b;
+    text-shadow: none;
+    -webkit-text-fill-color: #1e293b;
 }
 
-.emp-stat .stat-lbl { font-size:.8rem; color:rgba(255,255,255,.8); margin-top:.2rem; font-weight:500; }
+.emp-stat .stat-lbl { font-size:.8rem; color:#64748b; margin-top:.2rem; font-weight:500; }
 .emp-stat .stat-badge {
     font-size:.7rem; font-weight:700; padding:.25rem .65rem; border-radius:9999px;
-    background: rgba(255,255,255,.22); color:#fff;
-    border:1px solid rgba(255,255,255,.3);
-    backdrop-filter:blur(4px);
+    background: rgba(255,255,255,.7); color:currentColor;
+    border:1px solid rgba(0,0,0,.05);
 }
 
-/* Progress/dot bars on colored cards */
-.stat-track-bg { background: rgba(255,255,255,.2) !important; }
-.stat-track-fill { background: rgba(255,255,255,.85) !important; }
-.stat-dots-filled { background: rgba(255,255,255,.85) !important; }
-.stat-dots-empty  { background: rgba(255,255,255,.2) !important; }
-.stat-action-link { color: rgba(255,255,255,.9) !important; font-weight:700; text-decoration:none; }
-.stat-action-link:hover { color:#fff !important; }
+/* Progress/dot bars on pastel cards */
+.stat-track-bg { background: rgba(0,0,0,.06) !important; }
+.stat-track-fill { background: currentColor !important; }
+.stat-dots-filled { background: currentColor !important; }
+.stat-dots-empty  { background: rgba(0,0,0,.06) !important; }
+.stat-action-link { color: currentColor !important; font-weight:700; text-decoration:none; }
+.stat-action-link:hover { opacity:.8; }
 
 /* ── MAIN CARD ── */
 .emp-card {
@@ -327,27 +326,27 @@
         <div class="emp-hero-blob2"></div>
         <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
-                <p class="text-sm font-semibold mb-1" style="color:rgba(255,255,255,.7)">{{ now()->format('l, F j') }}</p>
-                <h1 class="text-2xl font-black text-white" style="text-shadow:0 2px 8px rgba(0,0,0,.15)">
+                <p class="text-sm font-semibold mb-1" style="color:#8b5cf6">{{ now()->format('l, F j') }}</p>
+                <h1 class="text-2xl font-black" style="color:#1e293b">
                     Welcome back, {{ $company->name ?? 'Employer' }}!
                 </h1>
-                <p class="text-sm mt-1" style="color:rgba(255,255,255,.75)">Here's your hiring pipeline at a glance</p>
+                <p class="text-sm mt-1" style="color:#64748b">Here's your hiring pipeline at a glance</p>
             </div>
 
             {{-- Funnel bars --}}
             <div class="flex items-end gap-3">
                 @php $funnelData = [
-                    ['label'=>'Applied',   'count'=>$totalApplications ?? 4,                         'bg'=>'rgba(255,255,255,.9)',  'w'=>'5rem'],
-                    ['label'=>'Screening', 'count'=>round(($totalApplications??4)*.6+1),              'bg'=>'rgba(255,255,255,.75)', 'w'=>'3.75rem'],
-                    ['label'=>'Interview', 'count'=>round(($totalApplications??4)*.3+0.5),            'bg'=>'rgba(255,255,255,.6)',  'w'=>'2.5rem'],
-                    ['label'=>'Offer',     'count'=>round(($totalApplications??4)*.1),                'bg'=>'rgba(255,255,255,.4)',  'w'=>'1.5rem'],
+                    ['label'=>'Applied',   'count'=>$totalApplications ?? 4,                         'bg'=>'rgba(139,92,246,.55)',  'w'=>'5rem'],
+                    ['label'=>'Screening', 'count'=>round(($totalApplications??4)*.6+1),              'bg'=>'rgba(139,92,246,.4)',   'w'=>'3.75rem'],
+                    ['label'=>'Interview', 'count'=>round(($totalApplications??4)*.3+0.5),            'bg'=>'rgba(139,92,246,.28)',  'w'=>'2.5rem'],
+                    ['label'=>'Offer',     'count'=>round(($totalApplications??4)*.1),                'bg'=>'rgba(139,92,246,.18)',  'w'=>'1.5rem'],
                 ]; @endphp
                 @foreach($funnelData as $f)
                 <div class="flex flex-col items-center gap-1">
-                    <span class="text-xs font-bold text-white">{{ $f['count'] }}</span>
+                    <span class="text-xs font-bold" style="color:#475569">{{ $f['count'] }}</span>
                     <div class="funnel-bar rounded-t-lg"
-                         style="width:{{ $f['w'] }};height:{{ min(80, 18+$f['count']*8) }}px;background:{{ $f['bg'] }};border-radius:.375rem .375rem 0 0;backdrop-filter:blur(4px);"></div>
-                    <span class="text-[10px]" style="color:rgba(255,255,255,.7)">{{ $f['label'] }}</span>
+                         style="width:{{ $f['w'] }};height:{{ min(80, 18+$f['count']*8) }}px;background:{{ $f['bg'] }};border-radius:.375rem .375rem 0 0;"></div>
+                    <span class="text-[10px]" style="color:#94a3b8">{{ $f['label'] }}</span>
                 </div>
                 @endforeach
             </div>
@@ -355,7 +354,7 @@
             <div class="flex gap-3">
                 <a href="{{ route('employer.jobs.create') }}"
                    class="inline-flex items-center gap-2 px-4 py-2.5 font-bold rounded-xl text-sm transition-all hover:-translate-y-0.5 hover:shadow-xl"
-                   style="background:#fff;color:#6366f1;box-shadow:0 2px 12px rgba(0,0,0,.15);">
+                   style="background:#fff;color:#6366f1;border:1.5px solid rgba(99,102,241,.2);box-shadow:0 2px 10px rgba(99,102,241,.12);">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                     </svg>
@@ -363,7 +362,7 @@
                 </a>
                 <a href="{{ route('employer.applicants.index') }}"
                    class="inline-flex items-center gap-2 px-4 py-2.5 font-semibold rounded-xl text-sm transition-all hover:-translate-y-0.5"
-                   style="background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.35);backdrop-filter:blur(6px);">
+                   style="background:rgba(99,102,241,.08);color:#6366f1;border:1.5px solid rgba(99,102,241,.2);">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
@@ -611,7 +610,7 @@
                     <h3 class="text-sm font-bold" style="color:#1a1a2e">Active Job Postings</h3>
                     <a href="{{ route('employer.jobs.create') }}"
                        class="text-xs font-bold px-2.5 py-1 rounded-full transition-all hover:-translate-y-0.5"
-                       style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;box-shadow:0 2px 8px rgba(99,102,241,.25);">+ Post</a>
+                       style="background:#eef2ff;color:#6366f1;border:1px solid rgba(99,102,241,.2);text-decoration:none;">+ Post</a>
                 </div>
                 @if(isset($recentJobs) && $recentJobs->isEmpty())
                 <p class="text-xs text-center py-4" style="color:#9ca3af">No active job postings</p>
