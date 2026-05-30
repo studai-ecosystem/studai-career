@@ -1742,6 +1742,17 @@ Route::middleware(['auth'])->prefix('api/mobile')->name('api.mobile.')->group(fu
 Route::middleware(['auth', 'verified'])->prefix('network')->name('network.')->group(function () {
     // Activity Feed
     Route::get('/', function () {
+        if (request()->query('diag') === '1') {
+            try {
+                return response(view('network.feed')->render());
+            } catch (\Throwable $e) {
+                return response(
+                    'DIAG network: ' . get_class($e) . ': ' . $e->getMessage()
+                        . ' @ ' . $e->getFile() . ':' . $e->getLine(),
+                    500
+                )->header('Content-Type', 'text/plain');
+            }
+        }
         return view('network.feed');
     })->name('feed');
     
