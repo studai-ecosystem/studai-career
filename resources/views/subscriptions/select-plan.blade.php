@@ -1,4 +1,97 @@
 <x-layouts.dashboard :title="'Confirm Plan'">
+@php
+$tierFeatures = [
+    'free' => [
+        'tagline'  => 'Start your job search manually — no card needed',
+        'for'      => 'Students & casual job seekers exploring opportunities',
+        'included' => [
+            '10 job applications/month (manual)',
+            '10 AI credits/month',
+            'Basic AI Cover Letter (uses 1 credit)',
+            '5 smart job alert emails/day',
+            'Public profile listing on StudAI',
+            'Community support forum',
+        ],
+    ],
+    'basic' => [
+        'tagline'  => 'Let AI apply to hundreds of jobs for you — on autopilot',
+        'for'      => 'Active job seekers who want AI doing the heavy lifting',
+        'included' => [
+            'Unlimited job applications',
+            '50 AI credits/month',
+            '🤖 Autonomous AI Agent — auto-applies 24/7 while you sleep',
+            'One-click Apply on all major platforms',
+            'AI Resume Review & ATS Score Optimizer',
+            'AI Cover Letter — personalized per job role',
+            'AI Interview Lab — role-specific practice questions',
+            '100 smart job alert notifications/day',
+            'Enhanced recruiter profile visibility',
+            'Application status tracker (basic)',
+            'Email support',
+        ],
+    ],
+    'pro' => [
+        'tagline'  => 'Full AI career OS — agent + coaching + negotiation + analytics',
+        'for'      => 'Professionals who want every career advantage AI can offer',
+        'included' => [
+            'Unlimited job applications',
+            '200 AI credits/month',
+            '🤖 Autonomous AI Agent — auto-applies 24/7 while you sleep',
+            'One-click Apply on all major platforms',
+            'AI Resume Optimizer + multiple resume variants',
+            'AI Cover Letter — personalized per job role',
+            'AI Interview Lab — advanced coaching mode',
+            '🎯 AI Career Coach — personalized career roadmap & advice',
+            '💰 Salary Negotiation Strategist — counter-offer scripts & market data',
+            '🔍 Skill Gap Analyzer — learn exactly what to upskill next',
+            'Advanced Application Tracker with analytics dashboard',
+            'Unlimited smart job alerts',
+            'API Access (10,000 calls/month)',
+            'Priority support (24h response SLA)',
+        ],
+    ],
+    'basic-annual' => [
+        'tagline'  => 'Everything in Basic — save 17% by committing to a full year',
+        'for'      => 'Job seekers ready to commit to a focused, AI-powered search',
+        'included' => [
+            'Unlimited job applications',
+            '600 AI credits/year (50/month)',
+            '🤖 Autonomous AI Agent — auto-applies 24/7 while you sleep',
+            'One-click Apply on all major platforms',
+            'AI Resume Review & ATS Score Optimizer',
+            'AI Cover Letter — personalized per job role',
+            'AI Interview Lab — role-specific practice questions',
+            'Unlimited smart job alerts',
+            'Enhanced recruiter profile visibility',
+            'Application status tracker (basic)',
+            'Email support',
+            '✅ Save ₹998 vs monthly billing',
+        ],
+    ],
+    'pro-annual' => [
+        'tagline'  => 'Everything in Pro — save 25% on the full AI career platform',
+        'for'      => 'Professionals investing seriously in long-term career growth',
+        'included' => [
+            'Unlimited job applications',
+            '2,400 AI credits/year (200/month)',
+            '🤖 Autonomous AI Agent — auto-applies 24/7 while you sleep',
+            'One-click Apply on all major platforms',
+            'AI Resume Optimizer + multiple resume variants',
+            'AI Cover Letter — personalized per job role',
+            'AI Interview Lab — advanced coaching mode',
+            '🎯 AI Career Coach — personalized career roadmap & advice',
+            '💰 Salary Negotiation Strategist — counter-offer scripts & market data',
+            '🔍 Skill Gap Analyzer — learn exactly what to upskill next',
+            'Advanced Application Tracker with analytics dashboard',
+            'Unlimited smart job alerts',
+            'API Access (10,000 calls/month)',
+            'Priority support (24h response SLA)',
+            '✅ Save ₹2,998 vs monthly billing',
+        ],
+    ],
+];
+$tierF = $tierFeatures[$plan->slug] ?? $tierFeatures['basic'];
+@endphp
 
     <div style="max-width:560px;margin:0 auto;padding:8px 0 40px">
         <div class="rounded-2xl overflow-hidden" style="background:#fff;border:1px solid #ebebf4;box-shadow:0 4px 24px rgba(99,102,241,.10)">
@@ -42,28 +135,16 @@
 
                             <!-- Features Summary -->
                             <div class="p-4 bg-indigo-50 rounded-xl mb-5">
+                                <p class="text-xs font-medium text-indigo-500 uppercase tracking-wide mb-1">Best for</p>
+                                <p class="text-sm text-indigo-800 font-medium mb-3">{{ $tierF['for'] }}</p>
                                 <h4 class="font-semibold text-indigo-900 mb-3">What's Included:</h4>
                                 <ul class="space-y-2 text-sm text-indigo-800">
-                                    <li class="flex items-center gap-2">
-                                        <svg class="h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                        <span><strong>{{ ($plan->applications_limit === null || $plan->applications_limit == -1) ? 'Unlimited' : number_format($plan->applications_limit) }}</strong> job applications/{{ $isYearly ? 'year' : 'month' }}</span>
+                                    @foreach($tierF['included'] as $feature)
+                                    <li class="flex items-start gap-2">
+                                        <svg class="h-4 w-4 flex-shrink-0 text-indigo-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                        <span>{{ $feature }}</span>
                                     </li>
-                                    <li class="flex items-center gap-2">
-                                        <svg class="h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                        <span><strong>{{ ($plan->ai_credits === null || $plan->ai_credits == -1) ? 'Unlimited' : number_format($plan->ai_credits) }}</strong> AI credits/{{ $isYearly ? 'year' : 'month' }}</span>
-                                    </li>
-                                    @if($plan->priority_support)
-                                    <li class="flex items-center gap-2">
-                                        <svg class="h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                        <span>Priority customer support</span>
-                                    </li>
-                                    @endif
-                                    @if($plan->api_access)
-                                    <li class="flex items-center gap-2">
-                                        <svg class="h-5 w-5 flex-shrink-0 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                        <span>API access ({{ number_format($plan->api_calls_limit) }} calls/mo)</span>
-                                    </li>
-                                    @endif
+                                    @endforeach
                                 </ul>
                             </div>
 

@@ -190,7 +190,8 @@
     sidebarOpen: true,
     sidebarMobileOpen: false,
     darkMode: false,
-    cmdOpen: false
+    cmdOpen: false,
+    negotiationOpen: {{ request()->routeIs('negotiation.*') ? 'true' : 'false' }}
 }" x-init="localStorage.removeItem('darkMode')" :class="{ 'dark': darkMode }"
 @keydown.ctrl.k.window.prevent="cmdOpen = !cmdOpen"
 @keydown.meta.k.window.prevent="cmdOpen = !cmdOpen"
@@ -423,17 +424,28 @@
                     <span x-show="sidebarOpen" x-transition>Career Coach</span>
                 </a>
 
-                <a href="{{ route('negotiation.dashboard') }}"
-                   class="nav-item {{ request()->routeIs('negotiation.*') ? 'active' : '' }}"
-                   :class="!sidebarOpen && 'justify-center'">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span x-show="sidebarOpen" x-transition>Negotiation</span>
-                </a>
+                <div class="flex items-center gap-0">
+                    <a href="{{ route('negotiation.dashboard') }}"
+                       class="nav-item flex-1 {{ request()->routeIs('negotiation.*') ? 'active' : '' }}"
+                       :class="!sidebarOpen && 'justify-center'">
+                        <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span x-show="sidebarOpen" x-transition>Negotiation</span>
+                    </a>
+                    <button x-show="sidebarOpen" x-transition
+                            @click="negotiationOpen = !negotiationOpen"
+                            class="p-1 mr-1 rounded hover:bg-white/10 transition-colors flex-shrink-0"
+                            :title="negotiationOpen ? 'Collapse' : 'Expand'">
+                        <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="negotiationOpen ? 'rotate-180' : ''"
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                </div>
                 <a href="{{ route('negotiation.chatbot') }}"
                    class="nav-item nav-sub {{ request()->routeIs('negotiation.chatbot') ? 'active' : '' }}"
-                   x-show="sidebarOpen" x-transition
+                   x-show="sidebarOpen && negotiationOpen" x-transition
                    :class="!sidebarOpen && 'justify-center'">
                     <svg class="w-[16px] h-[16px] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />

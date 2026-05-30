@@ -12,32 +12,37 @@ class RazorpayController extends Controller
     public function createOrder(Request $request)
     {
         Log::info('Razorpay Order Creation Started', ['amount' => $request->amount]);
-        $api = new Api(
-            config('services.razorpay.key'),
-            config('services.razorpay.secret')
-        );
 
         try {
+            $key    = config('services.razorpay.key');
+            $secret = config('services.razorpay.secret');
+
+            if (empty($key) || empty($secret)) {
+                Log::error('Razorpay credentials not configured');
+                return response()->json(['error' => 'Payment gateway is not configured. Please contact support.'], 500);
+            }
+
             if ($request->amount <= 0) {
                 return response()->json(['error' => 'Amount must be greater than zero for Razorpay orders.'], 400);
             }
 
+            $api = new Api($key, $secret);
+
             $orderData = [
                 'receipt' => 'receipt_' . rand(1000, 9999),
-                'amount' => $request->amount * 100, // amount in paise
+                'amount'  => $request->amount * 100, // paise
                 'currency' => 'INR',
             ];
 
             $order = $api->order->create($orderData);
             Log::info('Razorpay Order Created Successfully', ['order_id' => $order['id']]);
 
-            return response()->json([
-                'order_id' => $order['id']
-            ]);
+            return response()->json(['order_id' => $order['id']]);
+
         } catch (\Exception $e) {
             Log::error('Razorpay Order Creation Failed: ' . $e->getMessage(), [
-                'request' => $request->all(),
-                'exception' => $e
+                'request'   => $request->all(),
+                'exception' => $e,
             ]);
             return response()->json(['error' => 'Could not create order: ' . $e->getMessage()], 500);
         }
@@ -46,12 +51,16 @@ class RazorpayController extends Controller
     public function verifyPayment(Request $request)
     {
         Log::info('Razorpay Payment Verification Started', ['request' => $request->all()]);
-        $api = new Api(
-            config('services.razorpay.key'),
-            config('services.razorpay.secret')
-        );
 
         try {
+            $key    = config('services.razorpay.key');
+            $secret = config('services.razorpay.secret');
+
+            if (empty($key) || empty($secret)) {
+                return response()->json(['status' => 'failed', 'redirect_url' => url('/payments/failed')], 500);
+            }
+
+            $api = new Api($key, $secret);
             $attributes = [
                 'razorpay_order_id' => $request->razorpay_order_id,
                 'razorpay_payment_id' => $request->razorpay_payment_id,
