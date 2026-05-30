@@ -2,13 +2,13 @@
     <div class="space-y-5">
         <div class="text-center">
             <div class="flex justify-center mb-4">
-                <div class="w-14 h-14 rounded-2xl flex items-center justify-center" style="background:linear-gradient(135deg,#e0e7ff,#ede9fe)">
-                    <svg class="w-7 h-7" style="color:#6366f1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center" style="background:linear-gradient(135deg,#eaf0fa,#dbe6f6)">
+                    <svg class="w-7 h-7" style="color:#2f5fb0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                     </svg>
                 </div>
             </div>
-            <h2 class="text-2xl font-extrabold tracking-tight" style="color:#1a1a2e">Forgot password?</h2>
+            <h2 class="text-2xl font-extrabold tracking-tight" style="color:#15233a">Forgot password?</h2>
             <p class="text-sm mt-1.5 max-w-xs mx-auto leading-relaxed" style="color:#6b7280">
                 No worries. Enter your email and we'll send you a reset link.
             </p>
@@ -36,7 +36,7 @@
 
         <p class="text-center text-sm" style="color:#6b7280">
             Remembered it?
-            <a href="{{ route('login') }}" class="font-semibold transition-colors hover:text-indigo-700 ml-1" style="color:#6366f1">Back to sign in →</a>
+            <a href="{{ route('login') }}" class="font-semibold transition-colors hover:text-[#284f95] ml-1" style="color:#2f5fb0">Back to sign in →</a>
         </p>
     </div>
 </x-guest-layout>

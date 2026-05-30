@@ -10,8 +10,8 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="text-center mb-8">
-                        <div class="mx-auto w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="mx-auto w-16 h-16 bg-[#eaf0fa] rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-[#2f5fb0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
                             </svg>
                         </div>
@@ -43,7 +43,7 @@
                                 <p class="text-sm text-gray-600 mb-2">Enter this code manually in your authenticator app:</p>
                                 <div class="flex items-center justify-between p-3 bg-white border border-gray-300 rounded-md">
                                     <code class="text-sm font-mono text-gray-900">{{ $secret }}</code>
-                                    <button type="button" onclick="copyToClipboard('{{ $secret }}')" class="text-pink-600 hover:text-pink-700 text-sm font-medium">
+                                    <button type="button" onclick="copyToClipboard('{{ $secret }}')" class="text-[#2f5fb0] hover:text-[#284f95] text-sm font-medium">
                                         Copy
                                     </button>
                                 </div>
@@ -63,7 +63,7 @@
                                 type="text" 
                                 id="code" 
                                 name="code" 
-                                class="block w-full px-4 py-3 text-center text-2xl tracking-widest border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500" 
+                                class="block w-full px-4 py-3 text-center text-2xl tracking-widest border-gray-300 rounded-lg focus:ring-[#2f5fb0] focus:border-[#2f5fb0]" 
                                 maxlength="6" 
                                 pattern="[0-9]{6}" 
                                 required 
@@ -79,7 +79,7 @@
                             <a href="{{ route('two-factor.show') }}" class="text-sm text-gray-600 hover:text-gray-900">
                                 ← Back
                             </a>
-                            <button type="submit" class="inline-flex items-center px-6 py-3 bg-pink-600 border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-wider hover:bg-pink-700 active:bg-pink-900 focus:outline-none focus:border-pink-900 focus:ring ring-pink-300 disabled:opacity-25 transition ease-in-out duration-150">
+                            <button type="submit" class="inline-flex items-center px-6 py-3 bg-[#2f5fb0] border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-wider hover:bg-[#284f95] active:bg-[#21426f] focus:outline-none focus:border-[#21426f] focus:ring ring-[#c3d2ea] disabled:opacity-25 transition ease-in-out duration-150">
                                 Verify & Enable
                             </button>
                         </div>

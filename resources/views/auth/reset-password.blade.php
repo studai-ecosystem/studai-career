@@ -3,13 +3,13 @@
         {{-- Header --}}
         <div class="text-center">
             <div class="flex justify-center mb-4">
-                <div class="w-14 h-14 rounded-2xl flex items-center justify-center" style="background:linear-gradient(135deg,#e0e7ff,#ede9fe)">
-                    <svg class="w-7 h-7" style="color:#6366f1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center" style="background:linear-gradient(135deg,#eaf0fa,#dbe6f6)">
+                    <svg class="w-7 h-7" style="color:#2f5fb0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
                 </div>
             </div>
-            <h2 class="text-2xl font-extrabold tracking-tight" style="color:#1a1a2e">Set new password</h2>
+            <h2 class="text-2xl font-extrabold tracking-tight" style="color:#15233a">Set new password</h2>
             <p class="text-sm mt-1.5 max-w-xs mx-auto leading-relaxed" style="color:#6b7280">
                 Choose a strong password to secure your account.
             </p>
@@ -50,7 +50,7 @@
 
         <p class="text-center text-sm" style="color:#6b7280">
             Remembered it?
-            <a href="{{ route('login') }}" class="font-semibold transition-colors hover:text-indigo-700 ml-1" style="color:#6366f1">Back to sign in →</a>
+            <a href="{{ route('login') }}" class="font-semibold transition-colors hover:text-[#284f95] ml-1" style="color:#2f5fb0">Back to sign in →</a>
         </p>
     </div>
 </x-guest-layout>

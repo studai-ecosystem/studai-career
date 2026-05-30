@@ -17,8 +17,8 @@
 
     {{-- Header --}}
     <div class="mb-6 text-center">
-        <h2 class="text-2xl font-extrabold tracking-tight" style="color:#1a1a2e">Welcome back</h2>
-        <p class="text-sm mt-1" style="color:#6b7280">Sign in to your <span style="color:#6366f1; font-weight:600">AI Career Platform</span></p>
+        <h2 class="text-2xl font-extrabold tracking-tight" style="color:#15233a">Welcome back</h2>
+        <p class="text-sm mt-1" style="color:#6b7280">Sign in to your <span style="color:#2f5fb0; font-weight:600">AI Career Platform</span></p>
     </div>
 
     <div x-data="{ role: '{{ old('login_type', request('type') === 'employer' ? 'employer' : 'seeker') }}' }" class="space-y-5">
@@ -28,15 +28,15 @@
             <button type="button" @click="role = 'seeker'"
                 :class="role === 'seeker' ? 'role-card active-seeker' : 'role-card'"
                 class="flex flex-col items-center gap-2 text-center w-full">
-                <div :class="role === 'seeker' ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-400'"
+                <div :class="role === 'seeker' ? 'bg-[#eaf0fa] text-[#2f5fb0]' : 'bg-gray-100 text-gray-400'"
                     class="flex h-11 w-11 items-center justify-center rounded-xl transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
                 </div>
-                <span :class="role === 'seeker' ? 'text-indigo-700' : 'text-gray-600'" class="text-xs font-bold transition-colors">Job Seeker</span>
+                <span :class="role === 'seeker' ? 'text-[#21426f]' : 'text-gray-600'" class="text-xs font-bold transition-colors">Job Seeker</span>
                 <span class="text-[10px] leading-tight" style="color:#9ca3af">Find jobs &amp; career tools</span>
-                <span x-show="role === 'seeker'" class="absolute top-2 right-2 text-indigo-500">
+                <span x-show="role === 'seeker'" class="absolute top-2 right-2 text-[#2f5fb0]">
                     <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                 </span>
             </button>
@@ -44,25 +44,25 @@
             <button type="button" @click="role = 'employer'"
                 :class="role === 'employer' ? 'role-card active-employer' : 'role-card'"
                 class="flex flex-col items-center gap-2 text-center w-full">
-                <div :class="role === 'employer' ? 'bg-purple-100 text-purple-600' : 'bg-gray-100 text-gray-400'"
+                <div :class="role === 'employer' ? 'bg-[#e7ebf2] text-[#1c344d]' : 'bg-gray-100 text-gray-400'"
                     class="flex h-11 w-11 items-center justify-center rounded-xl transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                     </svg>
                 </div>
-                <span :class="role === 'employer' ? 'text-purple-700' : 'text-gray-600'" class="text-xs font-bold transition-colors">Company</span>
+                <span :class="role === 'employer' ? 'text-[#15233a]' : 'text-gray-600'" class="text-xs font-bold transition-colors">Company</span>
                 <span class="text-[10px] leading-tight" style="color:#9ca3af">Post jobs &amp; hire talent</span>
-                <span x-show="role === 'employer'" class="absolute top-2 right-2 text-purple-500">
+                <span x-show="role === 'employer'" class="absolute top-2 right-2 text-[#1c344d]">
                     <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                 </span>
             </button>
         </div>
 
         {{-- Context hint --}}
-        <p x-show="role === 'seeker'" class="text-center text-xs font-medium" style="color:#6366f1; margin-top:-4px">
+        <p x-show="role === 'seeker'" class="text-center text-xs font-medium" style="color:#2f5fb0; margin-top:-4px">
             Signing in as <strong>Job Seeker</strong> — AI Career Agent
         </p>
-        <p x-show="role === 'employer'" class="text-center text-xs font-medium" style="color:#a855f7; margin-top:-4px">
+        <p x-show="role === 'employer'" class="text-center text-xs font-medium" style="color:#1c344d; margin-top:-4px">
             Signing in as <strong>Employer</strong> — S.C.O.U.T™
         </p>
 
@@ -89,12 +89,12 @@
             <div class="flex items-center justify-between">
                 <label class="inline-flex items-center gap-2 text-sm cursor-pointer" style="color:#6b7280">
                     <input type="checkbox" name="remember"
-                        class="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                        class="w-4 h-4 rounded border-gray-300 text-[#2f5fb0] focus:ring-[#2f5fb0]">
                     Remember me
                 </label>
                 @if (Route::has('password.request'))
                     <a href="{{ route('password.request') }}"
-                       :class="role === 'employer' ? 'text-purple-600 hover:text-purple-700' : 'text-indigo-600 hover:text-indigo-700'"
+                       :class="role === 'employer' ? 'text-[#1c344d] hover:text-[#15233a]' : 'text-[#2f5fb0] hover:text-[#284f95]'"
                        class="text-sm font-semibold transition-colors">
                         Forgot password?
                     </a>
@@ -115,7 +115,7 @@
         <p class="text-center text-sm" style="color:#6b7280">
             Don't have an account?
             <a :href="role === 'employer' ? '{{ route('register') }}?type=employer' : '{{ route('register') }}'"
-               :class="role === 'employer' ? 'text-purple-600 hover:text-purple-700' : 'text-indigo-600 hover:text-indigo-700'"
+               :class="role === 'employer' ? 'text-[#1c344d] hover:text-[#15233a]' : 'text-[#2f5fb0] hover:text-[#284f95]'"
                class="font-semibold transition-colors ml-1">
                 Sign up free →
             </a>
