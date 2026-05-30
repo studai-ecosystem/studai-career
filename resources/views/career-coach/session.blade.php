@@ -4,17 +4,15 @@
 
 @push('styles')
 <style>
-/* ── Full-screen blurred overlay ── */
+/* ── Chat overlay (content area only — never covers the sidebar) ── */
 #coach-overlay {
     position: fixed;
     top: 80px;
     bottom: 0;
-    left: 0;
+    left: var(--coach-overlay-left, 252px);
     right: 0;
-    z-index: 50;
-    background: rgba(15, 10, 50, 0.45);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    z-index: 30;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -312,7 +310,7 @@
 @endpush
 
 @section('content')
-<div id="coach-overlay">
+<div id="coach-overlay" x-bind:style="`--coach-overlay-left:${sidebarOpen ? '252px' : '72px'}`">
 <div id="coach-chat-wrap">
 
     {{-- ── Header ── --}}
