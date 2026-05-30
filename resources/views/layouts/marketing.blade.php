@@ -113,9 +113,7 @@
                     @if(Route::has('about'))
                     <a href="{{ route('about') }}" class="transition-colors hover:text-indigo-600" style="color:#4b5563">About</a>
                     @endif
-                    @if(Route::has('contact'))
                     <a href="{{ route('contact') }}" class="transition-colors hover:text-indigo-600" style="color:#4b5563">Contact</a>
-                    @endif
 
                     @auth
                         <a href="{{ route('dashboard') }}"
@@ -160,9 +158,7 @@
             @if(Route::has('about'))
             <a href="{{ route('about') }}" class="block px-3 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-indigo-50 hover:text-indigo-700" style="color:#4b5563">About</a>
             @endif
-            @if(Route::has('contact'))
             <a href="{{ route('contact') }}" class="block px-3 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-indigo-50 hover:text-indigo-700" style="color:#4b5563">Contact</a>
-            @endif
             @auth
                 <a href="{{ route('dashboard') }}" class="block mt-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-center text-white" style="background:linear-gradient(135deg,#6366f1,#7c3aed)">Dashboard →</a>
             @else
