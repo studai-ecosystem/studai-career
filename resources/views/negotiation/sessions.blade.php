@@ -70,7 +70,7 @@
                 </svg>
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">No Active Sessions</h3>
                 <p class="text-gray-600 dark:text-gray-400 mb-6">Start a new coaching session by creating a negotiation strategy first.</p>
-                <a href="{{ route('negotiation.strategy') }}" 
+                <a href="{{ route('negotiation.dashboard') }}" 
                    class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-medium rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

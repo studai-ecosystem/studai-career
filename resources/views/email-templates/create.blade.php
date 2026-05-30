@@ -17,7 +17,7 @@
             
             <!-- Basic Info -->
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-lg font-bold text-gray-900 mb-4">� Basic Information</h2>
+                <h2 class="text-lg font-bold text-gray-900 mb-4">� Basic Information</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Template Name *</label>
@@ -52,17 +52,17 @@
 
             <!-- Subject Line -->
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-lg font-bold text-gray-900 mb-4">�¬ Subject Line</h2>
+                <h2 class="text-lg font-bold text-gray-900 mb-4">�¬ Subject Line</h2>
                 <input type="text" name="subject" required 
                        class="w-full border-gray-200 rounded-lg focus:ring-orange-500 focus:border-orange-500"
-                       placeholder="e.g., Interview Invitation: {{job_title}} at {{company_name}}">
+                       placeholder="e.g., Interview Invitation: @{{job_title}} at @{{company_name}}">
                 <p class="text-xs text-gray-500 mt-2">Use @{{variable_name}} for dynamic content</p>
             </div>
 
             <!-- Email Body -->
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-bold text-gray-900">�„ Email Body</h2>
+                    <h2 class="text-lg font-bold text-gray-900">�„ Email Body</h2>
                     <div class="flex gap-2">
                         <button type="button" onclick="insertVariable()" class="text-sm px-3 py-1 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200">
                             + Insert Variable
@@ -76,7 +76,7 @@
 
             <!-- Variables Reference -->
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
-                <h2 class="text-lg font-bold text-gray-900 mb-4">�‹ Available Variables</h2>
+                <h2 class="text-lg font-bold text-gray-900 mb-4">�‹ Available Variables</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
                     @foreach($availableVariables as $variable => $description)
                     <button type="button" onclick="insertVar('{{ $variable }}')" 
@@ -91,9 +91,9 @@
             <!-- Preview Section -->
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-orange-100">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-bold text-gray-900">�ï¸ Preview</h2>
+                    <h2 class="text-lg font-bold text-gray-900">�ï¸ Preview</h2>
                     <button type="button" onclick="refreshPreview()" class="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
-                        �„ Refresh Preview
+                        �„ Refresh Preview
                     </button>
                 </div>
                 <div id="preview-container" class="border border-gray-200 rounded-lg p-6 min-h-[200px]">
@@ -119,7 +119,7 @@
     <div class="bg-white rounded-2xl max-w-lg w-full max-h-[80vh] overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
             <h3 class="text-lg font-bold text-gray-900">Insert Variable</h3>
-            <button onclick="closeVariableModal()" class="p-2 hover:bg-gray-100 rounded-lg">�</button>
+            <button onclick="closeVariableModal()" class="p-2 hover:bg-gray-100 rounded-lg">�</button>
         </div>
         <div class="p-6 max-h-[60vh] overflow-y-auto">
             <div class="space-y-2">

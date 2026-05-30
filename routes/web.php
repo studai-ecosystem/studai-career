@@ -1604,7 +1604,7 @@ Route::middleware(['auth', 'verified'])->prefix('negotiation')->name('negotiatio
     
     // Tactics Library - Browse negotiation tactics and frameworks
     Route::get('/tactics', function() {
-        $tactics = \App\Models\NegotiationTactic::orderBy('category')->orderBy('name')->get()->groupBy('category');
+        $tactics = \App\Models\NegotiationTactic::orderBy('tactic_category')->orderBy('tactic_name')->get()->groupBy('tactic_category');
         return view('negotiation.tactics', compact('tactics'));
     })->name('tactics');
 

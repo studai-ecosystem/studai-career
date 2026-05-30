@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\MentorshipMatch;
 use App\Models\User;
+use App\Services\AI\AIService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;

@@ -106,23 +106,23 @@
                     <span class="text-xs mt-1">Discover</span>
                 </a>
                 
-                <a href="{{ route('applications.index') }}" 
-                   class="flex flex-col items-center justify-center w-full h-full {{ request()->routeIs('applications.*') ? 'text-pink-500' : 'text-gray-500 dark:text-gray-400' }}">
+                <a href="{{ route('applications') }}" 
+                   class="flex flex-col items-center justify-center w-full h-full {{ request()->routeIs('applications*') ? 'text-pink-500' : 'text-gray-500 dark:text-gray-400' }}">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                     </svg>
                     <span class="text-xs mt-1">Applied</span>
                 </a>
                 
-                <a href="{{ route('saved-jobs.index') }}" 
-                   class="flex flex-col items-center justify-center w-full h-full {{ request()->routeIs('saved-jobs.*') ? 'text-pink-500' : 'text-gray-500 dark:text-gray-400' }}">
+                <a href="{{ route('jobs.saved') }}" 
+                   class="flex flex-col items-center justify-center w-full h-full {{ request()->routeIs('jobs.saved') ? 'text-pink-500' : 'text-gray-500 dark:text-gray-400' }}">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                     </svg>
                     <span class="text-xs mt-1">Saved</span>
                 </a>
                 
-                <a href="{{ route('profile.show') }}" 
+                <a href="{{ route('profile.edit') }}" 
                    class="flex flex-col items-center justify-center w-full h-full {{ request()->routeIs('profile.*') ? 'text-pink-500' : 'text-gray-500 dark:text-gray-400' }}">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />

@@ -162,7 +162,7 @@ class GroupBrowser extends Component
     {
         return GroupMember::where('group_id', $groupId)
             ->where('user_id', auth()->id())
-            ->where('status', GroupMember::STATUS_ACTIVE)
+            ->where('status', GroupMember::STATUS_APPROVED)
             ->exists();
     }
 
