@@ -134,7 +134,48 @@
         <div class="space-y-5">
 
             {{-- ═══ NEGOTIATION AGENT TOGGLE PANEL ═══ --}}
-            <div x-data="{ open: true, loading: false, question: '', messages: [] }" class="rounded-2xl overflow-hidden shadow-sm" style="border:1.5px solid #7c3aed;">
+            <div x-data="{
+                    open: true,
+                    loading: false,
+                    question: '',
+                    messages: [],
+                    scrollChat() {
+                        this.$nextTick(() => {
+                            const c = document.getElementById('agent-mini-chat');
+                            if (c) c.scrollTop = c.scrollHeight;
+                        });
+                    },
+                    async sendAgentMessage() {
+                        const text = this.question.trim();
+                        if (!text || this.loading) return;
+                        this.messages.push({ role: 'user', content: text });
+                        this.question = '';
+                        this.loading = true;
+                        this.scrollChat();
+                        try {
+                            const history = this.messages
+                                .filter(m => m.role === 'user' || m.role === 'agent')
+                                .slice(0, -1)
+                                .map(m => ({ role: m.role === 'agent' ? 'assistant' : 'user', content: m.content }));
+                            const res = await fetch('{{ route('negotiation.chat') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({ message: text, history })
+                            });
+                            const data = await res.json();
+                            this.messages.push({ role: 'agent', content: data.reply || data.message || 'Sorry, something went wrong. Please try again.' });
+                        } catch (e) {
+                            this.messages.push({ role: 'agent', content: 'Connection error. Please try again in a moment.' });
+                        } finally {
+                            this.loading = false;
+                            this.scrollChat();
+                        }
+                    }
+                }" class="rounded-2xl overflow-hidden shadow-sm" style="border:1.5px solid #7c3aed;">
 
                 {{-- Toggle header --}}
                 <button @click="open = !open"
