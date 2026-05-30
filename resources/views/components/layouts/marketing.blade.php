@@ -75,8 +75,7 @@
             <div class="flex justify-between items-center h-16">
                 {{-- Logo --}}
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5 group">
-                    <img src="/assets/logo/icon.png" alt="StudAI Hire" style="width:36px;height:36px;object-fit:contain;flex-shrink:0" class="transition-transform group-hover:scale-110">
-                    <span class="text-lg font-extrabold tracking-tight text-gray-900">Stud<span class="gradient-text">AI</span> Hire</span>
+                    <img src="/assets/logo/studai-hire-wordmark.svg?v=4" alt="StudAI Hire" style="height:30px;width:auto;object-fit:contain;flex-shrink:0" class="transition-transform group-hover:scale-110">
                 </a>
 
                 {{-- Desktop Navigation --}}
@@ -145,8 +144,7 @@
                 {{-- Brand --}}
                 <div class="col-span-1 md:col-span-2">
                     <div class="flex items-center gap-2.5 mb-4">
-                        <img src="/assets/logo/icon.png" alt="StudAI Hire" style="width:32px;height:32px;object-fit:contain;flex-shrink:0">
-                        <span class="text-base font-extrabold text-gray-900">Stud<span class="gradient-text">AI</span> Hire</span>
+                        <img src="/assets/logo/studai-hire-wordmark.svg?v=4" alt="StudAI Hire" style="height:28px;width:auto;object-fit:contain;flex-shrink:0">
                     </div>
                     <p class="text-sm text-gray-500 leading-relaxed mb-5 max-w-xs">
                         India's first autonomous career OS. AI-powered job search, interview prep, and salary negotiation.

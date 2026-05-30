@@ -162,8 +162,7 @@
             <div class="flex items-center gap-5">
                 {{-- Logo --}}
                 <a href="{{ route('dashboard') }}" class="nav-logo flex items-center gap-2.5">
-                    <img src="/assets/logo/icon.png?v=3" alt="StudAI Hire" class="nav-logo-img" style="width:34px;height:34px;object-fit:contain;">
-                    <span class="nav-logo-text">Stud<span>AI</span> Hire</span>
+                    <img src="/assets/logo/studai-hire-wordmark.svg?v=4" alt="StudAI Hire" class="nav-logo-img" style="height:30px;width:auto;object-fit:contain;">
                 </a>
 
                 {{-- Divider --}}

@@ -182,11 +182,7 @@
             {{-- Logo --}}
             <div class="logo-float flex flex-col items-center gap-3">
                 <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                    <div class="relative w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg overflow-hidden" style="background:linear-gradient(135deg,#2f5fb0,#1c344d)">
-                        <img src="{{ asset('assets/logo/icon.png') }}" alt="StudAI Hire" class="w-10 h-10 object-contain">
-                        <span class="absolute -inset-2 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" style="background:rgba(47,95,176,.15); filter:blur(10px)"></span>
-                    </div>
-                    <span class="text-2xl font-extrabold tracking-tight" style="color:#15233a">Stud<span class="g-text">AI</span> Hire</span>
+                    <img src="{{ asset('assets/logo/studai-hire-wordmark.svg') }}?v=4" alt="StudAI Hire" style="height:44px;width:auto;object-fit:contain">
                 </a>
 
                 {{-- Tagline pill --}}

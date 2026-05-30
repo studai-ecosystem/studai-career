@@ -208,10 +208,8 @@
             {{-- Logo --}}
             <div class="flex items-center gap-2 px-3 border-b flex-shrink-0" style="height:64px; border-color:var(--border)">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2 min-w-0">
-                    <img src="/assets/logo/icon.png" alt="StudAI Hire" style="width:32px;height:32px;object-fit:contain;flex-shrink:0">
-                    <span x-show="sidebarOpen" x-transition class="truncate" style="font-size:13px;font-weight:700;letter-spacing:-0.01em">
-                        <span style="color:#1c344d">Stud<span style="font-weight:800">AI</span></span><span style="color:#1c344d;font-weight:700;margin-left:2px">Hire</span>
-                    </span>
+                    <img src="/assets/logo/studai-hire-icon.svg?v=4" alt="StudAI Hire" x-show="!sidebarOpen" style="width:32px;height:32px;object-fit:contain;flex-shrink:0">
+                    <img src="/assets/logo/studai-hire-wordmark.svg?v=4" alt="StudAI Hire" x-show="sidebarOpen" x-transition style="height:26px;width:auto;object-fit:contain;flex-shrink:0">
                 </a>
             </div>
 

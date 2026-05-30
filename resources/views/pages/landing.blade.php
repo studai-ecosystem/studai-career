@@ -180,8 +180,7 @@
             <div class="flex items-center justify-between h-16">
                 {{-- Logo --}}
                 <a href="/" class="flex items-center gap-2 group">
-                    <img src="/assets/logo/icon.png?v=3" alt="StudAI Hire" style="width:36px;height:36px;object-fit:contain;flex-shrink:0" class="transition-transform group-hover:scale-110">
-                    <span class="text-xl font-bold" style="color:#1c344d">Stud<span style="color:#1c344d">AI</span> Hire</span>
+                    <img src="/assets/logo/studai-hire-wordmark.svg?v=4" alt="StudAI Hire" style="height:32px;width:auto;object-fit:contain;flex-shrink:0" class="transition-transform group-hover:scale-110">
                 </a>
 
                 {{-- Desktop Navigation --}}
@@ -802,8 +801,7 @@
             <div class="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
                 <div class="col-span-2 md:col-span-1">
                     <div class="flex items-center gap-2 mb-4">
-                        <img src="/assets/logo/icon.png?v=3" alt="StudAI Hire" style="width:28px;height:28px;object-fit:contain">
-                        <span class="text-lg font-semibold">StudAI Hire</span>
+                        <img src="/assets/logo/studai-hire-wordmark-white.svg?v=4" alt="StudAI Hire" style="height:26px;width:auto;object-fit:contain">
                     </div>
                     <p class="text-sm text-white/60 mb-4">Your Career. Autonomous.</p>
                     <p class="text-xs text-white/40">Building the future of career management. One AI-powered decision at a time.</p>

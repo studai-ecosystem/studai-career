@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="StudAI Hire">
+  <title>StudAI Hire</title>
+  <!-- knot -->
+  <polygon points="22,10 42,10 39,27 25,27" fill="#F5A623"/>
+  <!-- tie body -->
+  <polygon points="25,27 39,27 47,42 32,60 17,42" fill="#15294C"/>
+  <!-- diagonal stripe -->
+  <clipPath id="tieIconClip">
+    <polygon points="25,27 39,27 47,42 32,60 17,42"/>
+  </clipPath>
+  <g clip-path="url(#tieIconClip)">
+    <polygon points="17,38 39,18 49,30 27,50" fill="#2C5AA0"/>
+    <polygon points="24,60 46,40 54,52 32,72" fill="#2C5AA0"/>
+  </g>
+</svg>

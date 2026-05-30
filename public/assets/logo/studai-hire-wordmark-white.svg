@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 170" width="640" height="170" role="img" aria-label="StudAI Hire">
+  <title>StudAI Hire</title>
+  <g font-family="'Arial Black','Arial',sans-serif" font-weight="900" font-size="96" letter-spacing="-3" fill="#FFFFFF">
+    <text x="8" y="120">StudAI H</text>
+    <text x="474" y="120">RE</text>
+  </g>
+  <!-- Necktie forming the letter I -->
+  <g>
+    <polygon points="446,52 470,52 465,74 451,74" fill="#F5A623"/>
+    <polygon points="451,74 465,74 473,100 458,144 443,100" fill="#3B6FB8"/>
+    <clipPath id="tieClipW">
+      <polygon points="451,74 465,74 473,100 458,144 443,100"/>
+    </clipPath>
+    <g clip-path="url(#tieClipW)">
+      <polygon points="443,92 465,74 473,86 451,104" fill="#CFE0F5"/>
+      <polygon points="448,124 470,106 476,118 454,136" fill="#CFE0F5"/>
+    </g>
+  </g>
+</svg>
