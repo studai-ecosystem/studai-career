@@ -7,6 +7,109 @@
         1 => ['from'=>'#7c3aed','to'=>'#a855f7','light'=>'#f5f3ff','btn'=>'linear-gradient(135deg,#7c3aed,#a855f7)'],
         2 => ['from'=>'#0891b2','to'=>'#06b6d4','light'=>'#ecfeff','btn'=>'linear-gradient(135deg,#0891b2,#06b6d4)'],
     ];
+
+    // Comprehensive feature sets per plan slug
+    $tierFeatures = [
+        'free' => [
+            'tagline'  => 'Start your job search manually — no card needed',
+            'for'      => 'Students & casual job seekers exploring opportunities',
+            'included' => [
+                '10 job applications/month (manual)',
+                '10 AI credits/month',
+                'Basic AI Cover Letter (uses 1 credit)',
+                '5 smart job alert emails/day',
+                'Public profile listing on StudAI',
+                'Community support forum',
+            ],
+            'excluded' => [
+                'Autonomous AI Agent (24/7 auto-apply)',
+                'AI Resume Optimizer & ATS Score',
+                'AI Interview Lab & mock interviews',
+                'Salary Negotiation Strategist',
+                'One-click Apply',
+            ],
+        ],
+        'basic' => [
+            'tagline'  => 'Let AI apply to hundreds of jobs for you — on autopilot',
+            'for'      => 'Active job seekers who want AI doing the heavy lifting',
+            'included' => [
+                'Unlimited job applications',
+                '50 AI credits/month',
+                '🤖 Autonomous AI Agent — auto-applies 24/7 while you sleep',
+                'One-click Apply on all major platforms',
+                'AI Resume Review & ATS Score Optimizer',
+                'AI Cover Letter — personalized per job role',
+                'AI Interview Lab — role-specific practice questions',
+                '100 smart job alert notifications/day',
+                'Enhanced recruiter profile visibility',
+                'Application status tracker (basic)',
+                'Email support',
+            ],
+            'excluded' => [],
+        ],
+        'pro' => [
+            'tagline'  => 'Full AI career OS — agent + coaching + negotiation + analytics',
+            'for'      => 'Professionals who want every career advantage AI can offer',
+            'included' => [
+                'Unlimited job applications',
+                '200 AI credits/month',
+                '🤖 Autonomous AI Agent — auto-applies 24/7 while you sleep',
+                'One-click Apply on all major platforms',
+                'AI Resume Optimizer + multiple resume variants',
+                'AI Cover Letter — personalized per job role',
+                'AI Interview Lab — advanced coaching mode',
+                '🎯 AI Career Coach — personalized career roadmap & advice',
+                '💰 Salary Negotiation Strategist — counter-offer scripts & market data',
+                '🔍 Skill Gap Analyzer — learn exactly what to upskill next',
+                'Advanced Application Tracker with analytics dashboard',
+                'Unlimited smart job alerts',
+                'API Access (10,000 calls/month)',
+                'Priority support (24h response SLA)',
+            ],
+            'excluded' => [],
+        ],
+        'basic-annual' => [
+            'tagline'  => 'Everything in Basic — save 17% by committing to a full year',
+            'for'      => 'Job seekers ready to commit to a focused, AI-powered search',
+            'included' => [
+                'Unlimited job applications',
+                '600 AI credits/year (50/month)',
+                '🤖 Autonomous AI Agent — auto-applies 24/7 while you sleep',
+                'One-click Apply on all major platforms',
+                'AI Resume Review & ATS Score Optimizer',
+                'AI Cover Letter — personalized per job role',
+                'AI Interview Lab — role-specific practice questions',
+                'Unlimited smart job alerts',
+                'Enhanced recruiter profile visibility',
+                'Application status tracker (basic)',
+                'Email support',
+                '✅ Save ₹998 vs monthly billing',
+            ],
+            'excluded' => [],
+        ],
+        'pro-annual' => [
+            'tagline'  => 'Everything in Pro — save 25% on the full AI career platform',
+            'for'      => 'Professionals investing seriously in long-term career growth',
+            'included' => [
+                'Unlimited job applications',
+                '2,400 AI credits/year (200/month)',
+                '🤖 Autonomous AI Agent — auto-applies 24/7 while you sleep',
+                'One-click Apply on all major platforms',
+                'AI Resume Optimizer + multiple resume variants',
+                'AI Cover Letter — personalized per job role',
+                'AI Interview Lab — advanced coaching mode',
+                '🎯 AI Career Coach — personalized career roadmap & advice',
+                '💰 Salary Negotiation Strategist — counter-offer scripts & market data',
+                '🔍 Skill Gap Analyzer — learn exactly what to upskill next',
+                'Advanced Application Tracker with analytics dashboard',
+                'Unlimited smart job alerts',
+                'API Access (10,000 calls/month)',
+                'Priority support (24h response SLA)',
+                '✅ Save ₹2,998 vs monthly billing',
+            ],
+            'excluded' => [],
+        ],
+    ];
 @endphp
 
 @push('styles')
@@ -100,22 +203,33 @@ details[open] .faq-icon{transform:rotate(180deg)}
                         @if($isFree)<p class="mt-1 text-sm text-gray-400">Free forever &bull; No credit card</p>
                         @else<p class="mt-1 text-sm text-gray-400">Billed monthly &bull; Cancel anytime</p>@endif
                     </div>
-                    <ul class="space-y-3 flex-1 mb-8">
-                        <li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700"><strong>{{ $appLimit === null ? 'Unlimited' : number_format($appLimit) }}</strong> job applications/month</span></li>
-                        <li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700"><strong>{{ ($creditLim === null || $creditLim === -1) ? 'Unlimited' : number_format($creditLim) }}</strong> AI credits/month</span></li>
-                        @if(!empty($features['ai_resume_review']))<li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700">AI Resume Review &amp; Optimizer</span></li>@endif
-                        @if(!empty($features['ai_interview_prep']))<li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700">AI Interview Preparation</span></li>@endif
-                        @if(!empty($features['ai_cover_letter']))<li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700">AI Cover Letter Generator</span></li>@endif
-                        @if(!empty($features['ai_career_coaching']))<li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700">AI Career Coaching</span></li>@endif
-                        @if($plan->priority_support)<li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700">Priority support</span></li>@endif
-                        @if($plan->api_access)<li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700">API access ({{ number_format($plan->api_calls_limit) }} calls/mo)</span></li>@endif
+                    @php $tierF = $tierFeatures[$plan->slug] ?? $tierFeatures['basic']; @endphp
+                    {{-- What this plan is for --}}
+                    <div class="mb-4 px-3 py-2.5 rounded-xl" style="background:{{ $t['light'] }};border:1px solid {{ $t['from'] }}22">
+                        <p class="text-xs font-semibold mb-0.5" style="color:{{ $t['from'] }}">{{ $tierF['tagline'] }}</p>
+                        <p class="text-xs text-gray-500">Best for: {{ $tierF['for'] }}</p>
+                    </div>
+                    {{-- Included features --}}
+                    <ul class="space-y-2.5 flex-1 mb-8">
+                        @foreach($tierF['included'] as $feat)
+                        <li class="flex items-start gap-2.5">
+                            <svg class="check-icon flex-shrink-0 w-4 h-4 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            <span class="text-sm text-gray-700">{{ $feat }}</span>
+                        </li>
+                        @endforeach
+                        @foreach($tierF['excluded'] as $feat)
+                        <li class="flex items-start gap-2.5 opacity-40">
+                            <svg class="flex-shrink-0 w-4 h-4 mt-0.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <span class="text-sm text-gray-400 line-through">{{ $feat }}</span>
+                        </li>
+                        @endforeach
                     </ul>
                     @auth
                         @if($isCurrent)<div class="w-full py-3.5 px-6 text-center rounded-2xl font-semibold text-sm" style="background:#f3f4f6;color:#6b7280">&#10003; Current Plan</div>
                         @elseif($isFree)<a href="{{ route('dashboard') }}" class="block w-full py-3.5 px-6 text-center rounded-2xl font-semibold text-sm hover:opacity-90 transition-all hover:-translate-y-0.5" style="background:{{ $t['light'] }};color:{{ $t['from'] }}">Continue for Free</a>
                         @else<a href="{{ route('subscriptions.select-plan', ['plan_id' => $plan->id]) }}" class="shimmer-btn block w-full py-3.5 px-6 text-center rounded-2xl font-bold text-sm text-white transition-all hover:shadow-xl hover:-translate-y-0.5" style="background:{{ $t['btn'] }}">{{ $isUpgrade ? 'Upgrade Now' : 'Get Started' }}</a>@endif
                     @else
-                        <a href="{{ route('register') }}" class="shimmer-btn block w-full py-3.5 px-6 text-center rounded-2xl font-bold text-sm text-white transition-all hover:shadow-xl hover:-translate-y-0.5" style="background:{{ $t['btn'] }}">{{ $isFree ? 'Start Free � No Card' : 'Get Started Free' }}</a>
+                        <a href="{{ route('register') }}" class="shimmer-btn block w-full py-3.5 px-6 text-center rounded-2xl font-bold text-sm text-white transition-all hover:shadow-xl hover:-translate-y-0.5" style="background:{{ $t['btn'] }}">{{ $isFree ? 'Start Free � No Card' : 'Get Started Free' }}</a>
                     @endauth
                 </div>
             </div>
@@ -151,16 +265,20 @@ details[open] .faq-icon{transform:rotate(180deg)}
                         <div class="flex items-baseline gap-1"><span class="text-5xl font-extrabold" style="color:{{ $t['from'] }}">&#8377;{{ number_format($plan->price_monthly) }}</span><span class="text-gray-400 font-medium">/mo</span></div>
                         <p class="mt-1 text-sm text-gray-400">Billed &#8377;{{ number_format($plan->price) }}/year &bull; Cancel anytime</p>
                     </div>
-                    <ul class="space-y-3 flex-1 mb-8">
-                        <li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700"><strong>{{ $appLimit === null ? 'Unlimited' : number_format($appLimit) }}</strong> job applications/year</span></li>
-                        <li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700"><strong>{{ ($creditLim === null || $creditLim === -1) ? 'Unlimited' : number_format($creditLim) }}</strong> AI credits/year</span></li>
-                        @if(!empty($features['ai_resume_review']))<li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700">AI Resume Review &amp; Optimizer</span></li>@endif
-                        @if(!empty($features['ai_interview_prep']))<li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700">AI Interview Preparation</span></li>@endif
-                        @if(!empty($features['ai_cover_letter']))<li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700">AI Cover Letter Generator</span></li>@endif
-                        @if(!empty($features['ai_career_coaching']))<li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700">AI Career Coaching</span></li>@endif
-                        @if($plan->priority_support)<li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700">Priority support</span></li>@endif
-                        @if($plan->api_access)<li class="flex items-start gap-3"><svg class="check-icon flex-shrink-0 w-5 h-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm text-gray-700">API access ({{ number_format($plan->api_calls_limit) }} calls/mo)</span></li>@endif
-                        @if(!empty($features['savings_text']))<li class="flex items-start gap-3"><svg class="flex-shrink-0 w-5 h-5 mt-0.5" style="color:#059669" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-sm font-semibold" style="color:#059669">{{ $features['savings_text'] }}</span></li>@endif
+                    @php $tierF = $tierFeatures[$plan->slug] ?? $tierFeatures['pro-annual']; @endphp
+                    {{-- What this plan is for --}}
+                    <div class="mb-4 px-3 py-2.5 rounded-xl" style="background:{{ $t['light'] }};border:1px solid {{ $t['from'] }}22">
+                        <p class="text-xs font-semibold mb-0.5" style="color:{{ $t['from'] }}">{{ $tierF['tagline'] }}</p>
+                        <p class="text-xs text-gray-500">Best for: {{ $tierF['for'] }}</p>
+                    </div>
+                    {{-- Included features --}}
+                    <ul class="space-y-2.5 flex-1 mb-8">
+                        @foreach($tierF['included'] as $feat)
+                        <li class="flex items-start gap-2.5">
+                            <svg class="check-icon flex-shrink-0 w-4 h-4 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            <span class="text-sm text-gray-700">{{ $feat }}</span>
+                        </li>
+                        @endforeach
                     </ul>
                     @auth
                         @if($isCurrent)<div class="w-full py-3.5 px-6 text-center rounded-2xl font-semibold text-sm" style="background:#f3f4f6;color:#6b7280">&#10003; Current Plan</div>
@@ -195,7 +313,7 @@ details[open] .faq-icon{transform:rotate(180deg)}
             @foreach([
                 ['q'=>'Can I change plans anytime?','a'=>"Yes! Upgrade or downgrade at any time. Changes take effect immediately and we'll prorate the difference.",'color'=>'#6366f1'],
                 ['q'=>'What payment methods do you accept?','a'=>'We accept all major credit/debit cards, UPI, net banking, and digital wallets through Razorpay and PayU.','color'=>'#7c3aed'],
-                ['q'=>'Is there a refund policy?','a'=>'Yes � 7-day money-back guarantee, no questions asked.','color'=>'#0891b2'],
+                ['q'=>'Is there a refund policy?','a'=>'Yes � 7-day money-back guarantee, no questions asked.','color'=>'#0891b2'],
                 ['q'=>'What counts as an AI credit?','a'=>'Each AI action (resume analysis, cover letter, interview question, salary insight) uses 1 credit. Complex tasks use 2-3 credits.','color'=>'#059669'],
                 ['q'=>'Do unused credits roll over?','a'=>'Applications and AI credits reset each month and do not roll over.','color'=>'#d97706'],
             ] as $faq)
