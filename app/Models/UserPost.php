@@ -55,7 +55,17 @@ class UserPost extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function originalPost(): BelongsTo
+    {
+        return $this->belongsTo(UserPost::class, 'original_post_id');
+    }
+
+    public function sharedPost(): BelongsTo
     {
         return $this->belongsTo(UserPost::class, 'original_post_id');
     }

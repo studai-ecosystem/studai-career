@@ -356,8 +356,7 @@ class NetworkingService
             'content' => $content,
             'visibility' => $visibility,
             'media' => $media,
-            'group_id' => $groupId,
-            'shared_post_id' => $sharedPostId,
+            'original_post_id' => $sharedPostId,
         ]);
 
         // Sync hashtags
@@ -378,10 +377,6 @@ class NetworkingService
     {
         $connectionIds = $this->getConnectionIds($user);
         $followingIds = $user->following()->pluck('following_id')->toArray();
-        $groupIds = $user->groupMemberships()
-            ->where('status', 'active')
-            ->pluck('group_id')
-            ->toArray();
 
         // Combine all relevant user IDs
         $relevantUserIds = array_unique(array_merge(
@@ -390,22 +385,16 @@ class NetworkingService
             [$user->id]
         ));
 
-        return UserPost::with(['author', 'sharedPost.author', 'group'])
+        return UserPost::with(['author', 'sharedPost.author'])
             ->withCount(['likes', 'comments'])
-            ->where(function ($query) use ($user, $relevantUserIds, $groupIds) {
+            ->where(function ($query) use ($relevantUserIds) {
                 // Posts from connections/following with public/connections visibility
                 $query->whereIn('user_id', $relevantUserIds)
-                    ->whereIn('visibility', ['public', 'connections'])
-                    ->whereNull('group_id');
-            })
-            ->orWhere(function ($query) use ($groupIds) {
-                // Posts from user's groups
-                $query->whereIn('group_id', $groupIds);
+                    ->whereIn('visibility', ['public', 'connections']);
             })
             ->orWhere(function ($query) {
                 // Public posts from anyone
-                $query->where('visibility', 'public')
-                    ->whereNull('group_id');
+                $query->where('visibility', 'public');
             })
             ->orderByDesc('created_at')
             ->paginate($perPage);
@@ -418,8 +407,7 @@ class NetworkingService
     {
         $query = UserPost::where('user_id', $user->id)
             ->with(['sharedPost.author'])
-            ->withCount(['likes', 'comments'])
-            ->whereNull('group_id');
+            ->withCount(['likes', 'comments']);
 
         // Filter by visibility based on viewer relationship
         if (! $viewer || $viewer->id !== $user->id) {
