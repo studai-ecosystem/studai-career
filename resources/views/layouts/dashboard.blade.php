@@ -1,6 +1,6 @@
 {{--
     StudAI Hire - Dashboard Layout
-    Premium light SaaS design: Plus Jakarta Sans, #f7f7fc bg, #6366f1 brand indigo
+    Premium light SaaS design: Plus Jakarta Sans, #f7f8fa bg, #2f5fb0 royal-blue brand
 --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -27,106 +27,105 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icons/icon-192x192.svg">
-    <meta name="theme-color" content="#6366f1">
+    <meta name="theme-color" content="#0c1c2c">
     @yield('head')
     @stack('styles')
 
     <style>
         /* -- DESIGN TOKENS -- */
         :root {
-            --brand:        #6366f1;
-            --brand-hover:  #4f46e5;
-            --brand-light:  #f0f0ff;
-            --bg:           #f5f5fb; /* fallback */
+            --brand:        #2f5fb0;
+            --brand-hover:  #284f95;
+            --brand-light:  #eaf0fa;
+            --bg:           #f7f8fa; /* fallback */
             --surface:      #ffffff;
-            --border:       #ebebf4;
-            --text:         #1a1a2e;
-            --text-2:       #374151;
-            --text-muted:   #6b7280;
+            --border:       #e0e3ea;
+            --text:         #15233a;
+            --text-2:       #38465e;
+            --text-muted:   #5c6a82;
             --sidebar-w:    252px;
             --topbar-h:     64px;
-            --ease:         cubic-bezier(0.4, 0, 0.2, 1);
+            --ease:         cubic-bezier(0.2, 0, 0, 1);
             --dur:          220ms;
-            /* module accents */
-            --accent-coach:       #a855f7;
-            --accent-interview:   #f97316;
-            --accent-jobs:        #22c55e;
-            --accent-market:      #3b82f6;
-            --accent-negotiation: #eab308;
-            --accent-scout:       #f43f5e;
-            --accent-vantage:     #14b8a6;
-            --accent-resume:      #8b5cf6;
+            /* module accents (unified navy/blue/gold) */
+            --accent-coach:       #2f5fb0;
+            --accent-interview:   #c9941a;
+            --accent-jobs:        #1f8a5b;
+            --accent-market:      #2f5fb0;
+            --accent-negotiation: #c9941a;
+            --accent-scout:       #2f5fb0;
+            --accent-vantage:     #1c344d;
+            --accent-resume:      #2f5fb0;
             /* stat card accents */
-            --stat-applications:  #6366f1;
-            --stat-interviews:    #f97316;
-            --stat-views:         #3b82f6;
-            --stat-match:         #22c55e;
+            --stat-applications:  #2f5fb0;
+            --stat-interviews:    #c9941a;
+            --stat-views:         #1c344d;
+            --stat-match:         #1f8a5b;
         }
 
         /* -- BASE -- */
-        body { font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; line-height:1.6; background:#eef2ff; color:var(--text); -webkit-font-smoothing:antialiased; }
-        .main-bg { background:linear-gradient(135deg, #e0e7ff 0%, #ede9fe 20%, #f5d0fe 40%, #fce7f3 60%, #dbeafe 80%, #d1fae5 100%); background-attachment:fixed; min-height:100vh; padding-top:80px; }
+        body { font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; line-height:1.6; background:#f7f8fa; color:var(--text); -webkit-font-smoothing:antialiased; }
+        .main-bg { background:#f7f8fa; min-height:100vh; padding-top:80px; }
         h1,h2,h3,h4,h5,h6 { font-weight:700; letter-spacing:-0.02em; }
         .font-mono { font-family:'JetBrains Mono',monospace; }
 
         /* -- SIDEBAR / TOPBAR -- */
-        aside  { background:linear-gradient(180deg, #f0edff 0%, #ede9fe 30%, #e9d5ff 65%, #f3e8ff 100%); border-right:1px solid rgba(167,139,250,.25); }
-        header { background:linear-gradient(90deg, #e0e7ff 0%, #ede9fe 35%, #f5d0fe 65%, #dbeafe 100%); border-bottom:1px solid rgba(167,139,250,.2); height:var(--topbar-h); }
+        aside  { background:#ffffff; border-right:1px solid var(--border); }
+        header { background:rgba(255,255,255,.85); backdrop-filter:saturate(180%) blur(10px); -webkit-backdrop-filter:saturate(180%) blur(10px); border-bottom:1px solid #eaecf1; height:var(--topbar-h); }
 
         /* -- NAV ITEMS -- */
-        .nav-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:10px; font-size:13.5px; font-weight:500; color:#5b21b6; transition:all var(--dur) var(--ease); cursor:pointer; text-decoration:none; }
-        .nav-item:hover { background:rgba(139,92,246,.12); color:#4c1d95; }
-        .nav-item:hover svg { transform:scale(1.1) rotate(-4deg); }
+        .nav-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:11px; font-size:13.5px; font-weight:600; color:#38465e; transition:all var(--dur) var(--ease); cursor:pointer; text-decoration:none; }
+        .nav-item:hover { background:#f1f3f6; color:#15233a; }
         .nav-item svg { width:18px !important; height:18px !important; flex-shrink:0; }
         .nav-sub { padding-left:10px; font-size:12.5px; padding-top:6px; padding-bottom:6px; opacity:.9; }
-        .nav-item.active { background:rgba(109,40,217,.15); color:#4c1d95; font-weight:600; position:relative; }
-        .nav-item.active::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:65%; background:#7c3aed; border-radius:0 3px 3px 0; }
+        .nav-item.active { background:var(--brand-light); color:#21426f; font-weight:700; position:relative; }
+        .nav-item.active::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:65%; background:var(--brand); border-radius:0 3px 3px 0; }
         .nav-active { position:relative; }
-        .nav-active::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:65%; border-radius:0 3px 3px 0; background:#7c3aed; }
-        .nav-section-label { font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#9333ea; padding:0 12px; margin-bottom:4px; margin-top:20px; display:block; }
+        .nav-active::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:65%; border-radius:0 3px 3px 0; background:var(--brand); }
+        .nav-section-label { font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#7e879a; padding:0 12px; margin-bottom:4px; margin-top:20px; display:block; }
 
         /* -- CARDS -- */
-        .card { background:#ffffff; border:1px solid var(--border); border-radius:14px; box-shadow:0 1px 3px rgb(0 0 0 / 0.05); transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease); }
-        .card:hover { box-shadow:0 8px 32px rgba(99,102,241,.10); transform:translateY(-3px); }
-        .card-static { background:#ffffff; border:1px solid var(--border); border-radius:14px; box-shadow:0 1px 3px rgb(0 0 0 / 0.05); }
+        .card { background:#ffffff; border:1px solid var(--border); border-radius:14px; box-shadow:0 1px 3px rgba(21,35,58,.06); transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease); }
+        .card:hover { box-shadow:0 12px 28px rgba(21,35,58,.13); transform:translateY(-3px); }
+        .card-static { background:#ffffff; border:1px solid var(--border); border-radius:14px; box-shadow:0 1px 3px rgba(21,35,58,.06); }
         .card-lift { transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease); }
-        .card-lift:hover { transform:translateY(-3px); box-shadow:0 8px 32px rgba(99,102,241,.10); }
-        .shadow-card { box-shadow:0 1px 3px rgb(0 0 0 / 0.05); }
+        .card-lift:hover { transform:translateY(-3px); box-shadow:0 12px 28px rgba(21,35,58,.13); }
+        .shadow-card { box-shadow:0 1px 3px rgba(21,35,58,.06); }
 
         /* -- BUTTONS -- */
-        .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px; font-size:13.5px; font-weight:600; cursor:pointer; border:none; transition:all var(--dur) var(--ease); text-decoration:none; }
-        .btn:hover { transform:translateY(-2px); }
+        .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 18px; border-radius:9999px; font-size:13.5px; font-weight:700; cursor:pointer; border:none; transition:all var(--dur) var(--ease); text-decoration:none; }
+        .btn:hover { transform:translateY(-1px); }
         .btn:active { transform:translateY(0) scale(.98); }
 
         /* Primary */
-        .btn-primary { background:#6366f1; color:#fff; box-shadow:0 4px 14px rgba(99,102,241,.28); }
-        .btn-primary:hover { background:#4f46e5; box-shadow:0 6px 20px rgba(99,102,241,.38); }
+        .btn-primary { background:var(--brand); color:#fff; box-shadow:0 6px 18px rgba(47,95,176,.30); }
+        .btn-primary:hover { background:var(--brand-hover); box-shadow:0 8px 22px rgba(47,95,176,.38); }
 
         /* Secondary */
-        .btn-secondary { background:#ffffff; color:#374151; border:1px solid #ddddf0; box-shadow:0 1px 2px rgba(0,0,0,.04); }
-        .btn-secondary:hover { border-color:#6366f1; color:#6366f1; }
+        .btn-secondary { background:#ffffff; color:#38465e; border:1px solid var(--border); box-shadow:0 1px 2px rgba(21,35,58,.04); }
+        .btn-secondary:hover { border-color:var(--brand); color:var(--brand); }
 
         /* Success */
-        .btn-success { background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; }
-        .btn-success:hover { background:#dcfce7; }
+        .btn-success { background:#e6f4ec; color:#166442; border:1px solid #9fd6ba; }
+        .btn-success:hover { background:#cdeadb; }
 
         /* Danger */
-        .btn-danger { background:#fff1f2; color:#be123c; border:1px solid #fecdd3; }
-        .btn-danger:hover { background:#ffe4e6; }
+        .btn-danger { background:#fbe9e9; color:#9e2727; border:1px solid #f3c2c2; }
+        .btn-danger:hover { background:#f7d6d6; }
 
         /* Ghost */
-        .btn-ghost { background:transparent; color:#6b7280; border:1px solid transparent; }
-        .btn-ghost:hover { background:#f5f5fb; color:var(--text); }
+        .btn-ghost { background:transparent; color:#5c6a82; border:1px solid transparent; }
+        .btn-ghost:hover { background:#f1f3f6; color:var(--text); }
 
         /* -- STAT CARD ACCENTS -- */
-        .stat-applications .stat-icon { background:rgba(99,102,241,.10); color:#6366f1; }
-        .stat-applications .stat-value { color:#6366f1; }
-        .stat-interviews   .stat-icon { background:rgba(249,115,22,.10); color:#f97316; }
-        .stat-interviews   .stat-value { color:#f97316; }
-        .stat-views        .stat-icon { background:rgba(59,130,246,.10);  color:#3b82f6; }
-        .stat-views        .stat-value { color:#3b82f6; }
-        .stat-match        .stat-icon { background:rgba(34,197,94,.10);   color:#22c55e; }
-        .stat-match        .stat-value { color:#22c55e; }
+        .stat-applications .stat-icon { background:rgba(47,95,176,.10); color:#2f5fb0; }
+        .stat-applications .stat-value { color:#2f5fb0; }
+        .stat-interviews   .stat-icon { background:rgba(201,148,26,.12); color:#c9941a; }
+        .stat-interviews   .stat-value { color:#c9941a; }
+        .stat-views        .stat-icon { background:rgba(28,52,77,.10);  color:#1c344d; }
+        .stat-views        .stat-value { color:#1c344d; }
+        .stat-match        .stat-icon { background:rgba(31,138,91,.10);   color:#1f8a5b; }
+        .stat-match        .stat-value { color:#1f8a5b; }
 
         /* -- MAIN CONTENT LAYOUT -- */
         .main-content { max-width:1320px; margin:0 auto; padding:28px 32px 32px; }
@@ -145,7 +144,7 @@
         @keyframes pulseSoft { 0%,100%{opacity:1} 50%{opacity:.55} }
         @keyframes bounceSoft{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
         @keyframes spinSlow  { to{transform:rotate(360deg)} }
-        @keyframes aiFabPulse{ 0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.4)} 50%{box-shadow:0 0 0 14px rgba(99,102,241,0)} }
+        @keyframes aiFabPulse{ 0%,100%{box-shadow:0 0 0 0 rgba(47,95,176,.4)} 50%{box-shadow:0 0 0 14px rgba(47,95,176,0)} }
         @keyframes alertPulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.25)} }
         .animate-fade-in    { animation:fadeIn .3s var(--ease) both; }
         .animate-fade-up    { animation:fadeUp .4s var(--ease) both; }
@@ -156,7 +155,7 @@
         .animate-shimmer    { animation:shimmer 1.5s linear infinite; background:linear-gradient(90deg,#f0f0f8 25%,#e8e8f4 50%,#f0f0f8 75%); background-size:200%; }
         .skeleton           { background:linear-gradient(90deg,#f0f0f8 25%,#e8e8f4 50%,#f0f0f8 75%); background-size:200%; animation:shimmer 1.5s linear infinite; border-radius:8px; }
         .skill-bar-fill     { width:0; transition:width 1s cubic-bezier(.4,0,.2,1); }
-        .xp-bar             { background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899); background-size:200%; animation:shimmer 2.5s linear infinite; }
+        .xp-bar             { background:linear-gradient(90deg,#2f5fb0,#3a6bc0,#e3b62f); background-size:200%; animation:shimmer 2.5s linear infinite; }
         #cmd-palette        { backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
         .ai-fab-pulse       { animation:aiFabPulse 2.5s ease-in-out infinite; }
         .alert-pulse        { animation:alertPulse 1.5s ease-in-out infinite; }
@@ -168,8 +167,8 @@
            render visible before/if-without Alpine and block all clicks. */
         [x-cloak] { display: none !important; }
         /* Input styles that work in both light and dark mode */
-        .input-google { display:block; width:100%; border-radius:10px; border:1px solid #ddd6fe; background-color:#ffffff; padding:10px 14px; font-size:14px; color:#1a1a2e; transition:all .15s ease; }
-        .input-google:focus { outline:none; border-color:#7c3aed; box-shadow:0 0 0 3px rgba(124,58,237,.12); }
+        .input-google { display:block; width:100%; border-radius:12px; border:1px solid #e0e3ea; background-color:#ffffff; padding:10px 14px; font-size:14px; color:#15233a; transition:all .15s ease; }
+        .input-google:focus { outline:none; border-color:#2f5fb0; box-shadow:0 0 0 3px rgba(47,95,176,.15); }
         .input-google::placeholder { color:#9ca3af; }
         .dark .input-google { background-color:#1e293b; border-color:#334155; color:#f1f5f9; }
         .dark .input-google::placeholder { color:#64748b; }
@@ -179,10 +178,10 @@
         .scrollbar-thin::-webkit-scrollbar { width:4px; }
         .scrollbar-thin::-webkit-scrollbar-track { background:transparent; }
         .scrollbar-thin::-webkit-scrollbar-thumb { background:#e5e7eb; border-radius:999px; }
-        .glow-coach{box-shadow:0 0 24px rgba(168,85,247,.20)} .glow-interview{box-shadow:0 0 24px rgba(249,115,22,.20)}
-        .glow-jobs {box-shadow:0 0 24px rgba(34,197,94,.20)}  .glow-market{box-shadow:0 0 24px rgba(59,130,246,.20)}
-        .glow-negotiation{box-shadow:0 0 24px rgba(234,179,8,.20)} .glow-scout{box-shadow:0 0 24px rgba(244,63,94,.20)}
-        .glow-vantage{box-shadow:0 0 24px rgba(20,184,166,.20)}
+        .glow-coach{box-shadow:0 6px 18px rgba(47,95,176,.22)} .glow-interview{box-shadow:0 6px 18px rgba(201,148,26,.22)}
+        .glow-jobs {box-shadow:0 6px 18px rgba(31,138,91,.20)}  .glow-market{box-shadow:0 6px 18px rgba(47,95,176,.22)}
+        .glow-negotiation{box-shadow:0 6px 18px rgba(201,148,26,.22)} .glow-scout{box-shadow:0 6px 18px rgba(47,95,176,.22)}
+        .glow-vantage{box-shadow:0 6px 18px rgba(28,52,77,.20)}
         .count-up { font-variant-numeric:tabular-nums; }
     </style>
 </head>
@@ -211,7 +210,7 @@
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2 min-w-0">
                     <img src="/assets/logo/icon.png" alt="StudAI Hire" style="width:32px;height:32px;object-fit:contain;flex-shrink:0">
                     <span x-show="sidebarOpen" x-transition class="truncate" style="font-size:13px;font-weight:700;letter-spacing:-0.01em">
-                        <span style="background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Stud<span style="font-weight:800">AI</span></span><span style="color:#6b21a8;font-weight:500;margin-left:2px">Hire</span>
+                        <span style="background:linear-gradient(135deg,#2f5fb0,#1c344d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Stud<span style="font-weight:800">AI</span></span><span style="color:#c9941a;font-weight:600;margin-left:2px">Hire</span>
                     </span>
                 </a>
             </div>
@@ -435,7 +434,7 @@
                         </svg>
                         <span class="flex-1">Negotiation</span>
                         <span class="ml-auto flex-shrink-0 flex items-center justify-center w-5 h-5 rounded"
-                              style="background:rgba(139,92,246,.15)">
+                              style="background:rgba(47,95,176,.12)">
                             <svg class="w-3 h-3 transition-transform duration-200"
                                  :class="negotiationOpen ? 'rotate-180' : ''"
                                  fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
@@ -454,10 +453,10 @@
                          x-transition:leave-end="opacity-0 -translate-y-1"
                          class="ml-4 relative">
                         <div class="absolute inset-y-1 left-[11px] w-px rounded-full"
-                             style="background:linear-gradient(to bottom,rgba(139,92,246,.4),rgba(139,92,246,.06))"></div>
+                             style="background:linear-gradient(to bottom,rgba(47,95,176,.4),rgba(47,95,176,.06))"></div>
                         <a href="{{ route('negotiation.chatbot') }}"
                            class="nav-item nav-sub {{ request()->routeIs('negotiation.chatbot') ? 'active' : '' }}">
-                            <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ml-3" style="background:#a78bfa"></span>
+                            <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ml-3" style="background:#2f5fb0"></span>
                             <span>AI Negotiation Agent</span>
                         </a>
                     </div>
@@ -530,11 +529,11 @@
                     $userInitial = strtoupper(substr($userName, 0, 1));
                 @endphp
                 <div class="flex items-center gap-3 px-1 mb-2" :class="!sidebarOpen && 'justify-center'">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#a855f7)">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-white" style="background:linear-gradient(135deg,#2f5fb0,#1c344d)">
                         {{ $userInitial }}
                     </div>
                     <div x-show="sidebarOpen" x-transition class="flex-1 min-w-0">
-                        <div class="text-sm font-semibold truncate" style="color:#1e1b4b">{{ $userName }}</div>
+                        <div class="text-sm font-semibold truncate" style="color:#15233a">{{ $userName }}</div>
                         <div class="text-xs truncate" style="color:#6b7280">{{ $userEmail }}</div>
                     </div>
                 </div>
@@ -608,16 +607,16 @@
 
                         // Icon/color map by notification type
                         $notifStyles = [
-                            'application'  => ['bg'=>'#f0f0ff','color'=>'#6366f1','dot'=>'#6366f1'],
-                            'interview'    => ['bg'=>'#fff7ed','color'=>'#f97316','dot'=>'#f97316'],
-                            'pipeline'     => ['bg'=>'#fff7ed','color'=>'#f97316','dot'=>'#f97316'],
-                            'test'         => ['bg'=>'#eff6ff','color'=>'#1A73E8','dot'=>'#1A73E8'],
-                            'scout'        => ['bg'=>'#fdf4ff','color'=>'#a855f7','dot'=>'#a855f7'],
-                            'shortlisted'  => ['bg'=>'#f0fdf4','color'=>'#22c55e','dot'=>'#22c55e'],
-                            'hired'        => ['bg'=>'#f0fdf4','color'=>'#16a34a','dot'=>'#16a34a'],
-                            'rejected'     => ['bg'=>'#fef2f2','color'=>'#ef4444','dot'=>'#ef4444'],
-                            'job'          => ['bg'=>'#eff6ff','color'=>'#3b82f6','dot'=>'#3b82f6'],
-                            'default'      => ['bg'=>'#f9fafb','color'=>'#6b7280','dot'=>'#6b7280'],
+                            'application'  => ['bg'=>'#eaf0fa','color'=>'#2f5fb0','dot'=>'#2f5fb0'],
+                            'interview'    => ['bg'=>'#fbf2d6','color'=>'#c9941a','dot'=>'#c9941a'],
+                            'pipeline'     => ['bg'=>'#fbf2d6','color'=>'#c9941a','dot'=>'#c9941a'],
+                            'test'         => ['bg'=>'#eaf0fa','color'=>'#2f5fb0','dot'=>'#2f5fb0'],
+                            'scout'        => ['bg'=>'#eaf0fa','color'=>'#2f5fb0','dot'=>'#2f5fb0'],
+                            'shortlisted'  => ['bg'=>'#e6f4ec','color'=>'#1f8a5b','dot'=>'#1f8a5b'],
+                            'hired'        => ['bg'=>'#e6f4ec','color'=>'#166442','dot'=>'#166442'],
+                            'rejected'     => ['bg'=>'#fbe9e9','color'=>'#cf3a3a','dot'=>'#cf3a3a'],
+                            'job'          => ['bg'=>'#eaf0fa','color'=>'#2f5fb0','dot'=>'#2f5fb0'],
+                            'default'      => ['bg'=>'#f7f8fa','color'=>'#5c6a82','dot'=>'#5c6a82'],
                         ];
 
                         if (!function_exists('notifTypeKey')) {
@@ -634,8 +633,8 @@
                         {{-- Bell Button --}}
                         <button @click="open = !open"
                             class="relative flex items-center justify-center rounded-xl transition-all"
-                            style="width:38px;height:38px;background:var(--bg);border:1.5px solid var(--border);color:#6366f1;box-shadow:0 1px 3px rgba(0,0,0,.06);"
-                            :style="open ? 'background:#f0f0ff;border-color:#6366f1' : ''">
+                            style="width:38px;height:38px;background:var(--bg);border:1.5px solid var(--border);color:#2f5fb0;box-shadow:0 1px 3px rgba(0,0,0,.06);"
+                            :style="open ? 'background:#eaf0fa;border-color:#2f5fb0' : ''">
                             <svg style="width:19px;height:19px;flex-shrink:0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                             </svg>
@@ -657,21 +656,21 @@
                             x-transition:leave="transition ease-in duration-100"
                             x-transition:leave-start="opacity-100 translate-y-0"
                             x-transition:leave-end="opacity-0 translate-y-1"
-                            style="position:absolute;top:calc(100% + 10px);right:0;width:340px;background:white;border:1px solid #ebebf5;border-radius:18px;box-shadow:0 8px 40px rgba(99,102,241,.13),0 2px 12px rgba(0,0,0,.08);overflow:hidden;z-index:9999;">
+                            style="position:absolute;top:calc(100% + 10px);right:0;width:340px;background:white;border:1px solid #e0e3ea;border-radius:18px;box-shadow:0 8px 40px rgba(21,35,58,.14),0 2px 12px rgba(0,0,0,.08);overflow:hidden;z-index:9999;">
 
                             {{-- Header --}}
                             <div style="padding:14px 18px 11px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;justify-content:space-between;">
                                 <div style="display:flex;align-items:center;gap:8px;">
                                     <span style="font-size:15px;font-weight:700;color:#1a1a2e">Notifications</span>
                                     @if($unreadCount > 0)
-                                    <span style="padding:2px 9px;font-size:11px;font-weight:700;border-radius:99px;background:#f0f0ff;color:#6366f1;border:1px solid #e0e0ff;">{{ $unreadCount }} new</span>
+                                    <span style="padding:2px 9px;font-size:11px;font-weight:700;border-radius:99px;background:#eaf0fa;color:#2f5fb0;border:1px solid #cfddf3;">{{ $unreadCount }} new</span>
                                     @endif
                                 </div>
                                 <div style="display:flex;align-items:center;gap:8px;">
                                     @if($unreadCount > 0)
                                     <form method="POST" action="{{ route('notifications.mark-all-read') }}" style="margin:0;">
                                         @csrf
-                                        <button type="submit" style="font-size:11px;font-weight:600;color:#6366f1;background:none;border:none;cursor:pointer;padding:0;">Mark all read</button>
+                                        <button type="submit" style="font-size:11px;font-weight:600;color:#2f5fb0;background:none;border:none;cursor:pointer;padding:0;">Mark all read</button>
                                     </form>
                                     @endif
                                     <button @click="open = false" style="color:#9ca3af;background:none;border:none;cursor:pointer;padding:2px;">
@@ -759,7 +758,7 @@
 
                             {{-- Footer --}}
                             <div style="padding:10px 18px 13px;border-top:1px solid #f3f4f6;display:flex;justify-content:center;">
-                                <a href="{{ route('notifications.all') }}" style="font-size:13px;font-weight:600;color:#6366f1;text-decoration:none;">View all notifications &#8594;</a>
+                                <a href="{{ route('notifications.all') }}" style="font-size:13px;font-weight:600;color:#2f5fb0;text-decoration:none;">View all notifications &#8594;</a>
                             </div>
                         </div>
                     </div>
@@ -767,7 +766,7 @@
                     {{-- Profile Dropdown --}}
                     <div x-data="{ open: false }" class="relative">
                         <button @click="open = !open" class="flex items-center gap-2 p-1.5 rounded-xl transition-colors hover:bg-gray-100">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#6366f1,#a855f7)">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#2f5fb0,#1c344d)">
                                 @php echo strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)); @endphp
                             </div>
                             <svg class="w-3.5 h-3.5" style="color:var(--text-muted)" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -863,40 +862,40 @@
     .cmd-panel {
         animation: cmdSlideIn .22s cubic-bezier(.22,.68,0,1.2) both;
         background: linear-gradient(145deg,#fdfcff 0%,#f5f3ff 40%,#fdf4ff 70%,#f0f4ff 100%);
-        border: 1.5px solid rgba(99,102,241,.18);
+        border: 1.5px solid rgba(47,95,176,.18);
         border-radius: 1.5rem;
-        box-shadow: 0 24px 80px rgba(99,102,241,.22), 0 4px 20px rgba(139,92,246,.12), 0 0 0 1px rgba(255,255,255,.6) inset;
+        box-shadow: 0 24px 80px rgba(21,35,58,.22), 0 4px 20px rgba(47,95,176,.12), 0 0 0 1px rgba(255,255,255,.6) inset;
         overflow: hidden;
         margin-top: -80px;
     }
     .cmd-search-row {
         display:flex; align-items:center; gap:.75rem;
         padding:.9rem 1.25rem;
-        background: linear-gradient(90deg,rgba(99,102,241,.07) 0%,rgba(139,92,246,.05) 100%);
-        border-bottom: 1.5px solid rgba(99,102,241,.1);
+        background: linear-gradient(90deg,rgba(47,95,176,.07) 0%,rgba(28,52,77,.05) 100%);
+        border-bottom: 1.5px solid rgba(47,95,176,.1);
     }
     .cmd-search-icon {
         width:2rem; height:2rem; border-radius:.625rem; flex-shrink:0;
-        background: linear-gradient(135deg,#6366f1,#a855f7);
+        background: linear-gradient(135deg,#2f5fb0,#1c344d);
         display:flex; align-items:center; justify-content:center;
-        box-shadow: 0 3px 10px rgba(99,102,241,.35);
+        box-shadow: 0 3px 10px rgba(47,95,176,.35);
     }
     .cmd-input {
         flex:1; background:transparent; outline:none; border:none;
         font-size:.9375rem; font-weight:500; letter-spacing:-.01em;
-        color:#1a1a2e;
+        color:#15233a;
         font-family:'Plus Jakarta Sans',sans-serif;
     }
-    .cmd-input::placeholder { color:#a5b4fc; font-weight:400; }
+    .cmd-input::placeholder { color:#9aa6bd; font-weight:400; }
     .cmd-esc-badge {
         padding:.25rem .6rem; border-radius:.5rem; font-size:.7rem; font-weight:700;
-        background: linear-gradient(135deg,#eef2ff,#e0e7ff);
-        color:#6366f1; border:1px solid rgba(99,102,241,.2);
+        background: #eaf0fa;
+        color:#2f5fb0; border:1px solid rgba(47,95,176,.2);
         font-family:'JetBrains Mono',monospace;
     }
     .cmd-section-label {
         font-size:.67rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
-        color:#a5b4fc; padding:.75rem 1.25rem .3rem; display:block;
+        color:#9aa6bd; padding:.75rem 1.25rem .3rem; display:block;
     }
     .cmd-item {
         display:flex; align-items:center; gap:.875rem;
@@ -907,13 +906,13 @@
         cursor:pointer;
     }
     .cmd-item:hover {
-        background: linear-gradient(90deg,rgba(99,102,241,.08) 0%,rgba(139,92,246,.05) 100%);
+        background: linear-gradient(90deg,rgba(47,95,176,.08) 0%,rgba(28,52,77,.05) 100%);
         transform: translateX(3px);
     }
     .cmd-item:active { transform:translateX(3px) scale(.98); }
     .cmd-item .ripple {
         position:absolute; border-radius:50%;
-        background:rgba(99,102,241,.25);
+        background:rgba(47,95,176,.25);
         pointer-events:none;
         animation: cmdRipple .5s ease-out forwards;
     }
@@ -925,33 +924,33 @@
     }
     .cmd-item:hover .cmd-icon-badge { transform:scale(1.1) rotate(-5deg); box-shadow:0 4px 14px rgba(0,0,0,.14); }
     .cmd-label {
-        font-size:.875rem; font-weight:600; color:#1a1a2e;
+        font-size:.875rem; font-weight:600; color:#15233a;
         letter-spacing:-.01em; font-family:'Plus Jakarta Sans',sans-serif;
         flex:1;
     }
     .cmd-arrow {
-        font-size:.75rem; color:#c4b5fd; opacity:0;
+        font-size:.75rem; color:#9aa6bd; opacity:0;
         transition: opacity .15s, transform .15s;
         font-weight:700;
     }
     .cmd-item:hover .cmd-arrow { opacity:1; transform:translateX(3px); }
     .cmd-footer {
         padding:.625rem 1.25rem;
-        background: linear-gradient(90deg,rgba(99,102,241,.05) 0%,rgba(139,92,246,.04) 100%);
-        border-top:1.5px solid rgba(99,102,241,.1);
+        background: linear-gradient(90deg,rgba(47,95,176,.05) 0%,rgba(28,52,77,.04) 100%);
+        border-top:1.5px solid rgba(47,95,176,.1);
         display:flex; align-items:center; gap:1rem;
     }
     .cmd-kbd {
         display:inline-flex; align-items:center; gap:.35rem;
-        font-size:.7rem; color:#7c6fd4; font-weight:600;
+        font-size:.7rem; color:#5c6a82; font-weight:600;
     }
     .cmd-kbd kbd {
         padding:.2rem .5rem; border-radius:.375rem;
-        background:linear-gradient(135deg,#eef2ff,#e0e7ff);
-        border:1px solid rgba(99,102,241,.2);
-        color:#6366f1; font-size:.65rem; font-weight:700;
+        background:#eaf0fa;
+        border:1px solid rgba(47,95,176,.2);
+        color:#2f5fb0; font-size:.65rem; font-weight:700;
         font-family:'JetBrains Mono',monospace;
-        box-shadow:0 1px 3px rgba(99,102,241,.15);
+        box-shadow:0 1px 3px rgba(47,95,176,.15);
     }
     </style>
     <div id="cmd-palette"
@@ -959,7 +958,7 @@
         x-show="cmdOpen"
         @click="cmdOpen = false"
         class="fixed inset-0 flex items-center justify-center px-4"
-        style="z-index:9999; background:linear-gradient(135deg,rgba(99,102,241,.18) 0%,rgba(139,92,246,.15) 50%,rgba(236,72,153,.12) 100%); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);"
+        style="z-index:9999; background:linear-gradient(135deg,rgba(12,28,44,.30) 0%,rgba(28,52,77,.22) 100%); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);"
         x-transition:enter="transition ease-out duration-150"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
@@ -984,18 +983,18 @@
             </div>
 
             {{-- Results --}}
-            <div class="py-1 max-h-80 overflow-y-auto" style="scrollbar-width:thin;scrollbar-color:rgba(99,102,241,.2) transparent">
+            <div class="py-1 max-h-80 overflow-y-auto" style="scrollbar-width:thin;scrollbar-color:rgba(47,95,176,.2) transparent">
                 @php
                     $cmdItems = [
-                        ['href'=>route('dashboard'),            'label'=>'Dashboard',            'icon'=>'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',       'grad'=>'linear-gradient(135deg,#6366f1,#818cf8)', 'shadow'=>'rgba(99,102,241,.35)'],
-                        ['href'=>route('resume.index'),         'label'=>'Resume Builder',        'icon'=>'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',                               'grad'=>'linear-gradient(135deg,#8b5cf6,#a855f7)', 'shadow'=>'rgba(139,92,246,.35)'],
-                        ['href'=>route('interview.index'),      'label'=>'Interview Lab',         'icon'=>'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',               'grad'=>'linear-gradient(135deg,#f97316,#fb923c)', 'shadow'=>'rgba(249,115,22,.35)'],
-                        ['href'=>route('jobs.search'),          'label'=>'Job Search',            'icon'=>'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',                                                                                                       'grad'=>'linear-gradient(135deg,#22c55e,#4ade80)', 'shadow'=>'rgba(34,197,94,.35)'],
-                        ['href'=>route('career-coach.index'),   'label'=>'Career Coach',          'icon'=>'M13 10V3L4 14h7v7l9-11h-7z',                                                                                                                        'grad'=>'linear-gradient(135deg,#ec4899,#f472b6)', 'shadow'=>'rgba(236,72,153,.35)'],
-                        ['href'=>route('negotiation.dashboard'),'label'=>'Negotiation Strategist','icon'=>'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'grad'=>'linear-gradient(135deg,#7c3aed,#a855f7)', 'shadow'=>'rgba(124,58,237,.35)'],
-                        ['href'=>route('agent.dashboard'),      'label'=>'AI Agent',              'icon'=>'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',                                       'grad'=>'linear-gradient(135deg,#06b6d4,#22d3ee)', 'shadow'=>'rgba(6,182,212,.35)'],
+                        ['href'=>route('dashboard'),            'label'=>'Dashboard',            'icon'=>'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',       'grad'=>'linear-gradient(135deg,#2f5fb0,#3a6bc0)', 'shadow'=>'rgba(47,95,176,.35)'],
+                        ['href'=>route('resume.index'),         'label'=>'Resume Builder',        'icon'=>'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',                               'grad'=>'linear-gradient(135deg,#2f5fb0,#1c344d)', 'shadow'=>'rgba(47,95,176,.35)'],
+                        ['href'=>route('interview.index'),      'label'=>'Interview Lab',         'icon'=>'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',               'grad'=>'linear-gradient(135deg,#e3b62f,#c9941a)', 'shadow'=>'rgba(201,148,26,.35)'],
+                        ['href'=>route('jobs.search'),          'label'=>'Job Search',            'icon'=>'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',                                                                                                       'grad'=>'linear-gradient(135deg,#1f8a5b,#26a86c)', 'shadow'=>'rgba(31,138,91,.35)'],
+                        ['href'=>route('career-coach.index'),   'label'=>'Career Coach',          'icon'=>'M13 10V3L4 14h7v7l9-11h-7z',                                                                                                                        'grad'=>'linear-gradient(135deg,#2f5fb0,#3a6bc0)', 'shadow'=>'rgba(47,95,176,.35)'],
+                        ['href'=>route('negotiation.dashboard'),'label'=>'Negotiation Strategist','icon'=>'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'grad'=>'linear-gradient(135deg,#e3b62f,#c9941a)', 'shadow'=>'rgba(201,148,26,.35)'],
+                        ['href'=>route('agent.dashboard'),      'label'=>'AI Agent',              'icon'=>'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',                                       'grad'=>'linear-gradient(135deg,#1c344d,#0c1c2c)', 'shadow'=>'rgba(28,52,77,.35)'],
                         ['href'=>route('profile.edit'),         'label'=>'Profile Settings',      'icon'=>'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',                                                                              'grad'=>'linear-gradient(135deg,#64748b,#94a3b8)', 'shadow'=>'rgba(100,116,139,.35)'],
-                        ['href'=>route('subscriptions.pricing'),'label'=>'Upgrade Plan',          'icon'=>'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',                                        'grad'=>'linear-gradient(135deg,#f43f5e,#fb7185)', 'shadow'=>'rgba(244,63,94,.35)'],
+                        ['href'=>route('subscriptions.pricing'),'label'=>'Upgrade Plan',          'icon'=>'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',                                        'grad'=>'linear-gradient(135deg,#e3b62f,#c9941a)', 'shadow'=>'rgba(201,148,26,.35)'],
                     ];
                 @endphp
 
@@ -1021,14 +1020,14 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="{{ $cmd['icon'] }}" />
                         </svg>
                     </div>
-                    <span class="cmd-label" x-html="q !== '' ? '{{ $cmd['label'] }}'.replace(new RegExp(q, 'gi'), m => '<mark style=\'background:linear-gradient(135deg,#eef2ff,#ddd6fe);color:#6366f1;border-radius:.25rem;padding:0 .2rem;font-weight:700\'>'+m+'</mark>') : '{{ $cmd['label'] }}'"></span>
+                    <span class="cmd-label" x-html="q !== '' ? '{{ $cmd['label'] }}'.replace(new RegExp(q, 'gi'), m => '<mark style=\'background:#eaf0fa;color:#2f5fb0;border-radius:.25rem;padding:0 .2rem;font-weight:700\'>'+m+'</mark>') : '{{ $cmd['label'] }}'"></span>
                     <span class="cmd-arrow">&#8594;</span>
                 </a>
                 @endforeach
 
                 <p x-show="q !== '' && !{{ json_encode(array_map(fn($c) => strtolower($c['label']), $cmdItems)) }}.some(l => l.includes(q.toLowerCase()))"
-                   style="padding:1.5rem 1.25rem;text-align:center;font-size:.84rem;color:#a5b4fc;font-weight:500;font-family:'Plus Jakarta Sans',sans-serif;">
-                    No results for "<span x-text="q" style="color:#6366f1;font-weight:700"></span>" ??
+                   style="padding:1.5rem 1.25rem;text-align:center;font-size:.84rem;color:#9aa6bd;font-weight:500;font-family:'Plus Jakarta Sans',sans-serif;">
+                    No results for "<span x-text="q" style="color:#2f5fb0;font-weight:700"></span>"
                 </p>
             </div>
 
@@ -1037,7 +1036,7 @@
                 <span class="cmd-kbd"><kbd>??</kbd> navigate</span>
                 <span class="cmd-kbd"><kbd>?</kbd> open</span>
                 <span class="cmd-kbd"><kbd>Esc</kbd> close</span>
-                <span style="margin-left:auto;font-size:.68rem;font-weight:700;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.02em">StudAI CMD</span>
+                <span style="margin-left:auto;font-size:.68rem;font-weight:700;background:linear-gradient(135deg,#2f5fb0,#1c344d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.02em">StudAI CMD</span>
             </div>
         </div>
     </div>
@@ -1046,7 +1045,7 @@
     @if(auth()->user()?->account_type !== 'employer')
     <a href="{{ route('agent.dashboard') }}"
         class="ai-fab-pulse fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full text-white flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95"
-        style="background:linear-gradient(135deg,#6366f1,#a855f7)"
+        style="background:linear-gradient(135deg,#2f5fb0,#1c344d)"
         title="Open AI Agent">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

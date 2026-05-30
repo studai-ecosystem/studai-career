@@ -35,12 +35,12 @@ class StudaiPanelProvider extends PanelProvider
             ->brandLogoHeight('3rem')
             ->favicon(asset('images/favicon.png'))
             ->colors([
-                'primary' => Color::Pink,
-                'secondary' => Color::Purple,
-                'success' => Color::Green,
-                'info' => Color::Blue,
-                'warning' => Color::Amber,
-                'danger' => Color::Red,
+                'primary' => Color::hex('#2f5fb0'),
+                'secondary' => Color::hex('#1c344d'),
+                'success' => Color::hex('#1f8a5b'),
+                'info' => Color::hex('#2f5fb0'),
+                'warning' => Color::hex('#c9941a'),
+                'danger' => Color::hex('#cf3a3a'),
             ])
             ->font('Inter')
             ->darkMode(false)

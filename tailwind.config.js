@@ -64,19 +64,22 @@ export default {
                 // ========================================
                 
                 // Primary Brand Colors
+                // NOTE: 'google.blue' is remapped to the StudAI Hire royal-blue
+                // (navy/blue/gold design system) so all existing utility classes
+                // (bg-google-blue-600, etc.) recolor to the new brand automatically.
                 'google': {
                     'blue': {
-                        DEFAULT: '#1A73E8',
-                        50: '#E8F0FE',
-                        100: '#D2E3FC',
-                        200: '#AECBFA',
-                        300: '#8AB4F8',
-                        400: '#669DF6',
-                        500: '#4285F4',
-                        600: '#1A73E8',
-                        700: '#1967D2',
-                        800: '#185ABC',
-                        900: '#174EA6',
+                        DEFAULT: '#2f5fb0',
+                        50: '#eaf0fa',
+                        100: '#d5e1f3',
+                        200: '#aec3e6',
+                        300: '#84a3d6',
+                        400: '#5a83c6',
+                        500: '#3a6bc0',
+                        600: '#2f5fb0',
+                        700: '#284f95',
+                        800: '#21426f',
+                        900: '#1f3f7a',
                     },
                     'red': {
                         DEFAULT: '#EA4335',
@@ -91,32 +94,76 @@ export default {
                         800: '#B31412',
                         900: '#A50E0E',
                     },
+                    // Remapped to brand gold (#e3b62f) — sparing accent.
                     'yellow': {
-                        DEFAULT: '#FBBC05',
-                        50: '#FEF7E0',
-                        100: '#FEEFC3',
-                        200: '#FDE293',
-                        300: '#FDD663',
-                        400: '#FCC934',
-                        500: '#FBBC05',
-                        600: '#F9AB00',
-                        700: '#F29900',
-                        800: '#EA8600',
-                        900: '#E37400',
+                        DEFAULT: '#e3b62f',
+                        50: '#fbf2d6',
+                        100: '#f8e8b8',
+                        200: '#f3d986',
+                        300: '#eecb54',
+                        400: '#e9c142',
+                        500: '#e3b62f',
+                        600: '#c9941a',
+                        700: '#a87914',
+                        800: '#87600f',
+                        900: '#6b4c0c',
                     },
                     'green': {
-                        DEFAULT: '#34A853',
-                        50: '#E6F4EA',
-                        100: '#CEEAD6',
-                        200: '#A8DAB5',
-                        300: '#81C995',
-                        400: '#5BB974',
-                        500: '#34A853',
-                        600: '#1E8E3E',
-                        700: '#188038',
-                        800: '#137333',
-                        900: '#0D652D',
+                        DEFAULT: '#1f8a5b',
+                        50: '#e6f4ec',
+                        100: '#cdeadb',
+                        200: '#9fd6ba',
+                        300: '#6cbf95',
+                        400: '#3fa676',
+                        500: '#1f8a5b',
+                        600: '#1b7a50',
+                        700: '#166442',
+                        800: '#114f34',
+                        900: '#0d3d28',
                     },
+                },
+
+                // StudAI Hire brand families (navy / royal-blue / gold)
+                'brand': {
+                    DEFAULT: '#2f5fb0',
+                    50: '#eaf0fa',
+                    100: '#d5e1f3',
+                    200: '#aec3e6',
+                    300: '#84a3d6',
+                    400: '#5a83c6',
+                    500: '#3a6bc0',
+                    600: '#2f5fb0',
+                    700: '#284f95',
+                    800: '#21426f',
+                    900: '#1f3f7a',
+                },
+                'navy': {
+                    DEFAULT: '#0c1c2c',
+                    50: '#eef1f4',
+                    100: '#d3dae2',
+                    200: '#a7b6c6',
+                    300: '#6f8298',
+                    400: '#3f566e',
+                    500: '#1c344d',
+                    600: '#14283d',
+                    700: '#0f2030',
+                    800: '#0c1c2c',
+                    900: '#07121d',
+                    line: '#21364c',
+                    soft: '#16293c',
+                },
+                'gold': {
+                    DEFAULT: '#e3b62f',
+                    50: '#fbf2d6',
+                    100: '#f8e8b8',
+                    200: '#f3d986',
+                    300: '#eecb54',
+                    400: '#e9c142',
+                    500: '#e3b62f',
+                    600: '#c9941a',
+                    700: '#a87914',
+                    800: '#87600f',
+                    900: '#6b4c0c',
                 },
 
                 // Neutral Grays (Google Material)
@@ -137,157 +184,103 @@ export default {
                 // Background variants
                 'canvas': {
                     DEFAULT: '#FFFFFF',
-                    light: '#f7f7fc',
-                    subtle: '#f7f7fc',
-                    muted: '#ebebf5',
+                    light: '#f7f8fa',
+                    subtle: '#f7f8fa',
+                    muted: '#eaecf1',
                     elevated: '#FFFFFF',
                 },
 
-                // Text colors
+                // Text colors (cool, navy-leaning ink)
                 'ink': {
-                    DEFAULT: '#202124',
-                    primary: '#202124',
-                    secondary: '#5F6368',
-                    tertiary: '#80868B',
-                    disabled: '#9AA0A6',
+                    DEFAULT: '#15233a',
+                    primary: '#15233a',
+                    secondary: '#5c6a82',
+                    tertiary: '#7e879a',
+                    disabled: '#a3aab8',
                     inverse: '#FFFFFF',
                 },
 
                 // Semantic colors
                 'status': {
                     'success': {
-                        light: '#E6F4EA',
-                        DEFAULT: '#34A853',
-                        dark: '#137333',
+                        light: '#e6f4ec',
+                        DEFAULT: '#1f8a5b',
+                        dark: '#166442',
                     },
                     'warning': {
-                        light: '#FEF7E0',
-                        DEFAULT: '#FBBC05',
-                        dark: '#EA8600',
+                        light: '#fbf2d6',
+                        DEFAULT: '#c9941a',
+                        dark: '#87600f',
                     },
                     'error': {
-                        light: '#FCE8E6',
-                        DEFAULT: '#EA4335',
-                        dark: '#B31412',
+                        light: '#fbe9e9',
+                        DEFAULT: '#cf3a3a',
+                        dark: '#9e2727',
                     },
                     'info': {
-                        light: '#E8F0FE',
-                        DEFAULT: '#1A73E8',
-                        dark: '#174EA6',
+                        light: '#eaf0fa',
+                        DEFAULT: '#2f5fb0',
+                        dark: '#1f3f7a',
                     },
                 },
 
-                // AI-specific accent colors
+                // AI-specific accent colors (on-brand: blue → gold)
                 'ai': {
                     'purple': {
-                        DEFAULT: '#A855F7',
-                        light: '#F3E8FF',
-                        dark: '#7C3AED',
+                        DEFAULT: '#2f5fb0',
+                        light: '#eaf0fa',
+                        dark: '#21426f',
                     },
-                    'gradient-start': '#1A73E8',
-                    'gradient-end': '#A855F7',
+                    'gradient-start': '#2f5fb0',
+                    'gradient-end': '#e3b62f',
                 },
 
                 // ========================================
                 // MODULE ACCENT COLOR SYSTEM
-                // Each feature module has its own identity color
+                // Unified to the StudAI Hire navy/blue/gold system:
+                // most modules -> royal blue, interview/negotiation -> gold,
+                // jobs -> success green. (Per design system: blue + gold only.)
                 // ========================================
                 'module': {
-                    // Career Coach — Purple (wisdom, guidance)
+                    // Career Coach — royal blue
                     'coach': {
-                        DEFAULT: '#9333ea',
-                        50:  '#faf5ff',
-                        100: '#f3e8ff',
-                        200: '#e9d5ff',
-                        400: '#c084fc',
-                        500: '#a855f7',
-                        600: '#9333ea',
-                        700: '#7c3aed',
-                        900: '#4c1d95',
+                        DEFAULT: '#2f5fb0', 50: '#eaf0fa', 100: '#d5e1f3', 200: '#aec3e6',
+                        400: '#5a83c6', 500: '#3a6bc0', 600: '#2f5fb0', 700: '#284f95', 900: '#1f3f7a',
                     },
-                    // Interview Lab — Orange (energy, performance)
+                    // Interview Lab — gold
                     'interview': {
-                        DEFAULT: '#ea580c',
-                        50:  '#fff7ed',
-                        100: '#ffedd5',
-                        200: '#fed7aa',
-                        400: '#fb923c',
-                        500: '#f97316',
-                        600: '#ea580c',
-                        700: '#c2410c',
-                        900: '#7c2d12',
+                        DEFAULT: '#c9941a', 50: '#fbf2d6', 100: '#f8e8b8', 200: '#f3d986',
+                        400: '#e9c142', 500: '#e3b62f', 600: '#c9941a', 700: '#a87914', 900: '#6b4c0c',
                     },
-                    // Jobs / Job Search — Green (growth, opportunity)
+                    // Jobs / Job Search — success green
                     'jobs': {
-                        DEFAULT: '#16a34a',
-                        50:  '#f0fdf4',
-                        100: '#dcfce7',
-                        200: '#bbf7d0',
-                        400: '#4ade80',
-                        500: '#22c55e',
-                        600: '#16a34a',
-                        700: '#15803d',
-                        900: '#14532d',
+                        DEFAULT: '#1f8a5b', 50: '#e6f4ec', 100: '#cdeadb', 200: '#9fd6ba',
+                        400: '#3fa676', 500: '#1f8a5b', 600: '#1b7a50', 700: '#166442', 900: '#0d3d28',
                     },
-                    // Market Intelligence — Blue (data, intelligence)
+                    // Market Intelligence — royal blue
                     'market': {
-                        DEFAULT: '#2563eb',
-                        50:  '#eff6ff',
-                        100: '#dbeafe',
-                        200: '#bfdbfe',
-                        400: '#60a5fa',
-                        500: '#3b82f6',
-                        600: '#2563eb',
-                        700: '#1d4ed8',
-                        900: '#1e3a8a',
+                        DEFAULT: '#2f5fb0', 50: '#eaf0fa', 100: '#d5e1f3', 200: '#aec3e6',
+                        400: '#5a83c6', 500: '#3a6bc0', 600: '#2f5fb0', 700: '#284f95', 900: '#1f3f7a',
                     },
-                    // Negotiation — Amber/Yellow (power, confidence)
+                    // Negotiation — gold
                     'negotiation': {
-                        DEFAULT: '#d97706',
-                        50:  '#fffbeb',
-                        100: '#fef3c7',
-                        200: '#fde68a',
-                        400: '#fbbf24',
-                        500: '#f59e0b',
-                        600: '#d97706',
-                        700: '#b45309',
-                        900: '#78350f',
+                        DEFAULT: '#c9941a', 50: '#fbf2d6', 100: '#f8e8b8', 200: '#f3d986',
+                        400: '#e9c142', 500: '#e3b62f', 600: '#c9941a', 700: '#a87914', 900: '#6b4c0c',
                     },
-                    // S.C.O.U.T. — Rose (precision, radar)
+                    // S.C.O.U.T. — royal blue
                     'scout': {
-                        DEFAULT: '#e11d48',
-                        50:  '#fff1f2',
-                        100: '#ffe4e6',
-                        200: '#fecdd3',
-                        400: '#fb7185',
-                        500: '#f43f5e',
-                        600: '#e11d48',
-                        700: '#be123c',
-                        900: '#881337',
+                        DEFAULT: '#2f5fb0', 50: '#eaf0fa', 100: '#d5e1f3', 200: '#aec3e6',
+                        400: '#5a83c6', 500: '#3a6bc0', 600: '#2f5fb0', 700: '#284f95', 900: '#1f3f7a',
                     },
-                    // Vantage — Teal (vision, clarity)
+                    // Vantage — navy-leaning blue
                     'vantage': {
-                        DEFAULT: '#0d9488',
-                        50:  '#f0fdfa',
-                        100: '#ccfbf1',
-                        200: '#99f6e4',
-                        400: '#2dd4bf',
-                        500: '#14b8a6',
-                        600: '#0d9488',
-                        700: '#0f766e',
-                        900: '#134e4a',
+                        DEFAULT: '#1c344d', 50: '#eef1f4', 100: '#d3dae2', 200: '#a7b6c6',
+                        400: '#3f566e', 500: '#1c344d', 600: '#14283d', 700: '#0f2030', 900: '#07121d',
                     },
-                    // Resume Builder — Violet
+                    // Resume Builder — royal blue
                     'resume': {
-                        DEFAULT: '#7c3aed',
-                        50:  '#f5f3ff',
-                        100: '#ede9fe',
-                        200: '#ddd6fe',
-                        400: '#a78bfa',
-                        500: '#8b5cf6',
-                        600: '#7c3aed',
-                        700: '#6d28d9',
-                        900: '#4c1d95',
+                        DEFAULT: '#2f5fb0', 50: '#eaf0fa', 100: '#d5e1f3', 200: '#aec3e6',
+                        400: '#5a83c6', 500: '#3a6bc0', 600: '#2f5fb0', 700: '#284f95', 900: '#1f3f7a',
                     },
                 },
 
@@ -320,30 +313,30 @@ export default {
                         900: '#064e3b',
                     },
                     'blue': {
-                        DEFAULT: '#1A73E8',
-                        50: '#E8F0FE',
-                        100: '#D2E3FC',
-                        200: '#AECBFA',
-                        300: '#8AB4F8',
-                        400: '#669DF6',
-                        500: '#4285F4',
-                        600: '#1A73E8',
-                        700: '#1967D2',
-                        800: '#185ABC',
-                        900: '#174EA6',
+                        DEFAULT: '#2f5fb0',
+                        50: '#eaf0fa',
+                        100: '#d5e1f3',
+                        200: '#aec3e6',
+                        300: '#84a3d6',
+                        400: '#5a83c6',
+                        500: '#3a6bc0',
+                        600: '#2f5fb0',
+                        700: '#284f95',
+                        800: '#21426f',
+                        900: '#1f3f7a',
                     },
                     'yellow': {
-                        DEFAULT: '#FBBC05',
-                        50: '#FEF7E0',
-                        100: '#FEEFC3',
-                        200: '#FDE293',
-                        300: '#FDD663',
-                        400: '#FCC934',
-                        500: '#FBBC05',
-                        600: '#F9AB00',
-                        700: '#F29900',
-                        800: '#EA8600',
-                        900: '#E37400',
+                        DEFAULT: '#e3b62f',
+                        50: '#fbf2d6',
+                        100: '#f8e8b8',
+                        200: '#f3d986',
+                        300: '#eecb54',
+                        400: '#e9c142',
+                        500: '#e3b62f',
+                        600: '#c9941a',
+                        700: '#a87914',
+                        800: '#87600f',
+                        900: '#6b4c0c',
                     },
                 },
             },
@@ -394,10 +387,10 @@ export default {
                 'full': '9999px',
                 // Component-specific
                 'card': '16px',
-                'button': '8px',
-                'input': '10px',
-                'chip': '20px',
-                'modal': '24px',
+                'button': '9999px',
+                'input': '12px',
+                'chip': '9999px',
+                'modal': '20px',
                 'panel': '16px',
             },
 
@@ -414,13 +407,13 @@ export default {
                 'elevation-5': '0 4px 4px 0 rgba(60, 64, 67, 0.3), 0 8px 12px 6px rgba(60, 64, 67, 0.15)',
                 
                 // Component shadows
-                'card': '0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15)',
-                'card-hover': '0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15)',
-                'dropdown': '0 2px 6px 2px rgba(60, 64, 67, 0.15)',
-                'modal': '0 8px 10px -6px rgba(0, 0, 0, 0.1), 0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-                'button': '0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15)',
-                'button-hover': '0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15)',
-                'input-focus': '0 0 0 2px rgba(26, 115, 232, 0.2)',
+                'card': '0 1px 3px rgba(21, 35, 58, 0.06), 0 1px 2px rgba(21, 35, 58, 0.04)',
+                'card-hover': '0 12px 28px rgba(21, 35, 58, 0.13), 0 4px 10px rgba(21, 35, 58, 0.06)',
+                'dropdown': '0 8px 28px rgba(21, 35, 58, 0.14)',
+                'modal': '0 8px 10px -6px rgba(12, 28, 44, 0.1), 0 20px 40px -8px rgba(12, 28, 44, 0.18)',
+                'button': '0 6px 18px rgba(47, 95, 176, 0.28)',
+                'button-hover': '0 8px 22px rgba(47, 95, 176, 0.38)',
+                'input-focus': '0 0 0 3px rgba(47, 95, 176, 0.25)',
                 'fab': '0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12)',
                 
                 // Soft shadows (Apple-inspired)
@@ -430,20 +423,20 @@ export default {
                 'soft-xl': '0 16px 48px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.06)',
                 
                 // Colored shadows
-                'blue': '0 4px 14px 0 rgba(26, 115, 232, 0.39)',
-                'green': '0 4px 14px 0 rgba(52, 168, 83, 0.39)',
-                'red': '0 4px 14px 0 rgba(234, 67, 53, 0.39)',
-                'purple': '0 4px 14px 0 rgba(168, 85, 247, 0.39)',
+                'blue': '0 6px 18px rgba(47, 95, 176, 0.30)',
+                'green': '0 4px 14px 0 rgba(31, 138, 91, 0.32)',
+                'red': '0 4px 14px 0 rgba(207, 58, 58, 0.32)',
+                'purple': '0 6px 18px rgba(47, 95, 176, 0.30)',
                 // Card system
-                'card': '0 1px 4px rgba(0,0,0,0.05)',
-                'card-hover': '0 8px 32px rgba(99,102,241,0.12)',
-                'brand-glow': '0 0 24px rgba(99,102,241,0.20)',
-                'green-glow': '0 0 24px rgba(34,197,94,0.20)',
-                'orange-glow': '0 0 24px rgba(249,115,22,0.20)',
-                'amber-glow': '0 0 24px rgba(234,179,8,0.20)',
-                'rose-glow': '0 0 24px rgba(244,63,94,0.20)',
-                'teal-glow': '0 0 24px rgba(20,184,166,0.20)',
-                'violet-glow': '0 0 24px rgba(139,92,246,0.20)',
+                'card': '0 1px 4px rgba(21,35,58,0.06)',
+                'card-hover': '0 12px 28px rgba(21,35,58,0.13)',
+                'brand-glow': '0 6px 18px rgba(47,95,176,0.30)',
+                'green-glow': '0 0 24px rgba(31,138,91,0.20)',
+                'orange-glow': '0 0 24px rgba(227,182,47,0.22)',
+                'amber-glow': '0 0 24px rgba(227,182,47,0.22)',
+                'rose-glow': '0 6px 18px rgba(47,95,176,0.22)',
+                'teal-glow': '0 6px 18px rgba(47,95,176,0.22)',
+                'violet-glow': '0 6px 18px rgba(47,95,176,0.22)',
                 
                 // Inner shadows
                 'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
@@ -453,21 +446,21 @@ export default {
             // GRADIENTS
             // ========================================
             backgroundImage: {
-                // Brand gradients
-                'gradient-studai': 'linear-gradient(135deg, #1A73E8 0%, #A855F7 100%)',
-                'gradient-studai-green': 'linear-gradient(135deg, #34A853 0%, #1A73E8 100%)',
-                'gradient-primary': 'linear-gradient(135deg, #1A73E8 0%, #0B57D0 100%)',
-                'gradient-ai': 'linear-gradient(135deg, #1A73E8 0%, #A855F7 50%, #EA4335 100%)',
-                
+                // Brand gradients (navy / royal-blue / gold)
+                'gradient-studai': 'linear-gradient(135deg, #2f5fb0 0%, #21426f 100%)',
+                'gradient-studai-green': 'linear-gradient(135deg, #1f8a5b 0%, #2f5fb0 100%)',
+                'gradient-primary': 'linear-gradient(135deg, #2f5fb0 0%, #21426f 100%)',
+                'gradient-ai': 'linear-gradient(135deg, #2f5fb0 0%, #1c344d 55%, #e3b62f 100%)',
+
                 // Subtle gradients for backgrounds
-                'gradient-subtle': 'linear-gradient(180deg, #FFFFFF 0%, #F8F9FA 100%)',
-                'gradient-canvas': 'linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 50%, #F8F9FA 100%)',
-                
+                'gradient-subtle': 'linear-gradient(180deg, #FFFFFF 0%, #f7f8fa 100%)',
+                'gradient-canvas': 'linear-gradient(135deg, #f7f8fa 0%, #FFFFFF 50%, #f7f8fa 100%)',
+
                 // Glass effect backgrounds
                 'glass': 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%)',
-                
+
                 // Mesh gradients for hero sections
-                'mesh-blue': 'radial-gradient(at 40% 20%, rgba(26, 115, 232, 0.1) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(168, 85, 247, 0.1) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(52, 168, 83, 0.1) 0px, transparent 50%)',
+                'mesh-blue': 'radial-gradient(at 40% 20%, rgba(47, 95, 176, 0.10) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(28, 52, 77, 0.10) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(227, 182, 47, 0.08) 0px, transparent 50%)',
             },
 
             // ========================================

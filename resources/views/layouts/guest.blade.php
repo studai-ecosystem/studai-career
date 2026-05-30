@@ -18,15 +18,15 @@
 
     <style>
         :root {
-            --brand:      #6366f1;
-            --brand-dark: #4f46e5;
-            --brand-lite: #f0f0ff;
-            --bg:         #f7f7fc;
+            --brand:      #2f5fb0;
+            --brand-dark: #284f95;
+            --brand-lite: #eaf0fa;
+            --bg:         #f7f8fa;
             --surface:    #ffffff;
-            --border:     #ebebf5;
-            --text:       #1a1a2e;
-            --text-2:     #4b5563;
-            --text-3:     #9ca3af;
+            --border:     #e0e3ea;
+            --text:       #15233a;
+            --text-2:     #5c6a82;
+            --text-3:     #7e879a;
         }
 
         html { font-size:14px; }
@@ -45,7 +45,7 @@
 
         /* ── GRAD TEXT ───────────────────────────── */
         .g-text {
-            background: linear-gradient(135deg,#6366f1,#a855f7,#ec4899);
+            background: linear-gradient(135deg,#2f5fb0,#1c344d);
             background-size: 200%;
             -webkit-background-clip: text; background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -58,9 +58,9 @@
             border: 1px solid var(--border);
             border-radius: 24px;
             box-shadow:
-                0 2px 4px rgba(99,102,241,.04),
-                0 16px 48px rgba(99,102,241,.10),
-                0 0 0 1px rgba(99,102,241,.04);
+                0 2px 4px rgba(21,35,58,.04),
+                0 16px 48px rgba(21,35,58,.10),
+                0 0 0 1px rgba(47,95,176,.04);
             animation: fadeInUp .5s ease both;
         }
 
@@ -68,7 +68,7 @@
         .role-card {
             border: 1.5px solid var(--border);
             border-radius: 14px;
-            background: #f9f9ff;
+            background: #f7f8fa;
             padding: 14px;
             cursor: pointer;
             transition: all .2s ease;
@@ -76,26 +76,26 @@
             overflow: hidden;
         }
         .role-card:hover {
-            border-color: rgba(99,102,241,.4);
-            background: #f0f0ff;
+            border-color: rgba(47,95,176,.4);
+            background: #eaf0fa;
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(99,102,241,.12);
+            box-shadow: 0 4px 16px rgba(47,95,176,.12);
         }
         .role-card.active-seeker {
-            border-color: #6366f1 !important;
-            background: #f0f0ff !important;
-            box-shadow: 0 0 0 3px rgba(99,102,241,.15), 0 4px 16px rgba(99,102,241,.12) !important;
+            border-color: #2f5fb0 !important;
+            background: #eaf0fa !important;
+            box-shadow: 0 0 0 3px rgba(47,95,176,.15), 0 4px 16px rgba(47,95,176,.12) !important;
         }
         .role-card.active-employer {
-            border-color: #a855f7 !important;
-            background: #faf5ff !important;
-            box-shadow: 0 0 0 3px rgba(168,85,247,.15), 0 4px 16px rgba(168,85,247,.12) !important;
+            border-color: #1c344d !important;
+            background: #eef1f5 !important;
+            box-shadow: 0 0 0 3px rgba(28,52,77,.15), 0 4px 16px rgba(28,52,77,.12) !important;
         }
 
         /* ── AUTH INPUTS ─────────────────────────── */
         .auth-input {
             width: 100%;
-            background: #f9f9ff;
+            background: #f7f8fa;
             border: 1.5px solid var(--border);
             border-radius: 12px;
             padding: 11px 14px;
@@ -106,8 +106,8 @@
             transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
         }
         .auth-input:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99,102,241,.15);
+            border-color: #2f5fb0;
+            box-shadow: 0 0 0 3px rgba(47,95,176,.15);
             background: white;
         }
         .auth-input::placeholder { color: var(--text-3); }
@@ -123,20 +123,20 @@
             border: none;
             cursor: pointer;
             transition: transform .2s ease, box-shadow .2s ease;
-            background: linear-gradient(135deg, #6366f1, #7c3aed);
-            box-shadow: 0 4px 20px rgba(99,102,241,.35);
+            background: linear-gradient(135deg, #2f5fb0, #1c344d);
+            box-shadow: 0 4px 20px rgba(47,95,176,.35);
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
         .btn-auth:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(99,102,241,.45);
+            box-shadow: 0 8px 28px rgba(47,95,176,.45);
         }
         .btn-auth:active { transform: translateY(0) scale(.99); }
         .btn-auth.employer-btn {
-            background: linear-gradient(135deg, #a855f7, #7c3aed);
-            box-shadow: 0 4px 20px rgba(168,85,247,.35);
+            background: linear-gradient(135deg, #1c344d, #0c1c2c);
+            box-shadow: 0 4px 20px rgba(28,52,77,.35);
         }
-        .btn-auth.employer-btn:hover { box-shadow: 0 8px 28px rgba(168,85,247,.45); }
+        .btn-auth.employer-btn:hover { box-shadow: 0 8px 28px rgba(28,52,77,.45); }
 
         /* ── DIVIDER ─────────────────────────────── */
         .auth-divider {
@@ -161,18 +161,18 @@
 </head>
 <body>
 
-    <div class="relative min-h-screen flex items-center justify-center py-12 px-4 overflow-hidden" style="background:#f7f7fc">
+    <div class="relative min-h-screen flex items-center justify-center py-12 px-4 overflow-hidden" style="background:#f7f8fa">
 
         {{-- Soft decorative blobs --}}
         <div class="blob-auth w-[500px] h-[500px] -top-48 -left-32 opacity-30"
-             style="background:radial-gradient(circle,rgba(99,102,241,.18) 0%,transparent 70%)"></div>
+             style="background:radial-gradient(circle,rgba(47,95,176,.18) 0%,transparent 70%)"></div>
         <div class="blob-auth blob-auth-2 w-[400px] h-[400px] -bottom-32 -right-24 opacity-25"
-             style="background:radial-gradient(circle,rgba(168,85,247,.15) 0%,transparent 70%)"></div>
+             style="background:radial-gradient(circle,rgba(28,52,77,.15) 0%,transparent 70%)"></div>
         <div class="blob-auth w-[300px] h-[300px] top-1/3 right-1/4 opacity-20"
-             style="background:radial-gradient(circle,rgba(236,72,153,.10) 0%,transparent 70%)"></div>
+             style="background:radial-gradient(circle,rgba(227,182,47,.12) 0%,transparent 70%)"></div>
 
         {{-- Dot grid --}}
-        <div class="absolute inset-0 pointer-events-none" style="background-image:radial-gradient(rgba(99,102,241,.08) 1px,transparent 1px); background-size:28px 28px;"></div>
+        <div class="absolute inset-0 pointer-events-none" style="background-image:radial-gradient(rgba(47,95,176,.08) 1px,transparent 1px); background-size:28px 28px;"></div>
 
         {{-- Main content --}}
         <div class="relative z-10 w-full max-w-md flex flex-col items-center gap-6">
@@ -180,15 +180,15 @@
             {{-- Logo --}}
             <div class="logo-float flex flex-col items-center gap-3">
                 <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                    <div class="relative w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg overflow-hidden" style="background:linear-gradient(135deg,#6366f1,#7c3aed)">
+                    <div class="relative w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg overflow-hidden" style="background:linear-gradient(135deg,#2f5fb0,#1c344d)">
                         <img src="{{ asset('assets/logo/icon.png') }}" alt="StudAI Hire" class="w-10 h-10 object-contain">
-                        <span class="absolute -inset-2 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" style="background:rgba(99,102,241,.15); filter:blur(10px)"></span>
+                        <span class="absolute -inset-2 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" style="background:rgba(47,95,176,.15); filter:blur(10px)"></span>
                     </div>
-                    <span class="text-2xl font-extrabold tracking-tight" style="color:#1a1a2e">Stud<span class="g-text">AI</span> Hire</span>
+                    <span class="text-2xl font-extrabold tracking-tight" style="color:#15233a">Stud<span class="g-text">AI</span> Hire</span>
                 </a>
 
                 {{-- Tagline pill --}}
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold" style="background:#f0f0ff; border:1.5px solid rgba(99,102,241,.2); color:#6366f1">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold" style="background:#eaf0fa; border:1.5px solid rgba(47,95,176,.2); color:#2f5fb0">
                     <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 100 19 9.5 9.5 0 000-19zm1 12.28l-3.14-3.15A.75.75 0 019.5 8.5h1V5.25a.75.75 0 011.5 0V8.5h1a.75.75 0 01.53 1.28l-2.03 2.03z"/></svg>
                     Your Career. On Autopilot.
                 </div>
@@ -201,7 +201,7 @@
 
             {{-- Footer --}}
             <p class="text-xs text-center" style="color:#9ca3af">
-                &copy; {{ date('Y') }} <span class="g-text font-semibold">StudAI Hire</span>. Powered by <span style="color:#6366f1; font-weight:600">Orin™ AI</span>.
+                &copy; {{ date('Y') }} <span class="g-text font-semibold">StudAI Hire</span>. Powered by <span style="color:#2f5fb0; font-weight:600">Orin™ AI</span>.
             </p>
         </div>
     </div>

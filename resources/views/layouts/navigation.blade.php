@@ -14,8 +14,8 @@
     background: rgba(255,255,255,0.92);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid rgba(99,102,241,.12);
-    box-shadow: 0 1px 0 rgba(99,102,241,.08), 0 4px 24px rgba(99,102,241,.07), 0 1px 3px rgba(0,0,0,.04);
+    border-bottom: 1px solid rgba(47,95,176,.12);
+    box-shadow: 0 1px 0 rgba(47,95,176,.08), 0 4px 24px rgba(21,35,58,.07), 0 1px 3px rgba(0,0,0,.04);
     position: relative;
     animation: nav-fadein .4s ease both;
 }
@@ -23,7 +23,7 @@
 .nav-bar::after {
     content: '';
     position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899, #6366f1);
+    background: linear-gradient(90deg, #2f5fb0, #3a6bc0, #1c344d, #e3b62f, #2f5fb0);
     background-size: 300% auto;
     animation: nav-bar-grad 4s linear infinite;
 }
@@ -31,8 +31,8 @@
 .nav-bar::before {
     content: '';
     position: absolute; inset: 0; pointer-events: none;
-    background: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,.04) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 50%, rgba(168,85,247,.04) 0%, transparent 60%);
+    background: radial-gradient(ellipse at 20% 50%, rgba(47,95,176,.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(28,52,77,.04) 0%, transparent 60%);
 }
 
 /* Floating particles inside nav */
@@ -47,11 +47,11 @@
 .nav-logo-img {
     animation: nav-float 4s ease-in-out infinite;
     transition: filter .3s, transform .3s;
-    filter: drop-shadow(0 2px 6px rgba(99,102,241,.25));
+    filter: drop-shadow(0 2px 6px rgba(47,95,176,.25));
 }
-.nav-logo:hover .nav-logo-img { filter: drop-shadow(0 4px 14px rgba(99,102,241,.55)) brightness(1.05); }
+.nav-logo:hover .nav-logo-img { filter: drop-shadow(0 4px 14px rgba(47,95,176,.55)) brightness(1.05); }
 .nav-logo-text {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 40%, #a855f7 70%, #4f46e5 100%);
+    background: linear-gradient(135deg, #284f95 0%, #2f5fb0 40%, #1c344d 70%, #284f95 100%);
     background-size: 200%;
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     animation: nav-shine 4s linear infinite;
@@ -62,9 +62,9 @@
 .nav-pill {
     display: inline-flex; align-items: center; gap: .45rem;
     padding: .35rem .95rem; border-radius: 999px;
-    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
-    border: 1.5px solid rgba(99,102,241,.2);
-    color: #4f46e5; font-size: .8rem; font-weight: 700;
+    background: #eaf0fa;
+    border: 1.5px solid rgba(47,95,176,.2);
+    color: #284f95; font-size: .8rem; font-weight: 700;
     text-decoration: none;
     transition: all .25s cubic-bezier(.34,1.56,.64,1);
     animation: nav-fadein .5s ease .1s both;
@@ -73,87 +73,87 @@
 .nav-pill::before {
     content: '';
     position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(99,102,241,.12), rgba(168,85,247,.12));
+    background: linear-gradient(135deg, rgba(47,95,176,.12), rgba(28,52,77,.12));
     opacity: 0; transition: opacity .2s;
 }
-.nav-pill:hover { border-color: rgba(99,102,241,.5); transform: translateY(-2px) scale(1.03); box-shadow: 0 6px 20px rgba(99,102,241,.2); color: #3730a3; }
+.nav-pill:hover { border-color: rgba(47,95,176,.5); transform: translateY(-2px) scale(1.03); box-shadow: 0 6px 20px rgba(47,95,176,.2); color: #21426f; }
 .nav-pill:hover::before { opacity: 1; }
-.nav-dot { width: 6px; height: 6px; border-radius: 50%; background: #6366f1; animation: nav-dot 2s ease-in-out infinite; }
+.nav-dot { width: 6px; height: 6px; border-radius: 50%; background: #2f5fb0; animation: nav-dot 2s ease-in-out infinite; }
 
 /* Breadcrumb */
-.nav-breadcrumb { color: #a78bfa; font-size: .78rem; font-weight: 600; }
-.nav-sep { color: #c4b5fd; }
+.nav-breadcrumb { color: #5c6a82; font-size: .78rem; font-weight: 600; }
+.nav-sep { color: #9aa6bd; }
 
 /* Search icon */
 .nav-icon-btn {
     width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
-    color: #6b7280; background: transparent; border: 1.5px solid #e5e7eb;
+    color: #5c6a82; background: transparent; border: 1.5px solid #e0e3ea;
     transition: all .2s cubic-bezier(.34,1.56,.64,1);
 }
-.nav-icon-btn:hover { color: #4f46e5; border-color: rgba(99,102,241,.4); background: #eef2ff; transform: scale(1.08); box-shadow: 0 4px 12px rgba(99,102,241,.15); }
+.nav-icon-btn:hover { color: #284f95; border-color: rgba(47,95,176,.4); background: #eaf0fa; transform: scale(1.08); box-shadow: 0 4px 12px rgba(47,95,176,.15); }
 
 /* Avatar with animated ring */
 .nav-avatar-wrap { position: relative; }
 .nav-avatar {
     width: 36px; height: 36px; border-radius: 50%;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed, #a855f7);
+    background: linear-gradient(135deg, #284f95, #2f5fb0, #1c344d);
     background-size: 200%; animation: nav-shine 3s linear infinite;
     display: flex; align-items: center; justify-content: center;
     font-weight: 800; font-size: .82rem; color: #fff;
     border: 2px solid #fff;
-    box-shadow: 0 2px 10px rgba(99,102,241,.35);
+    box-shadow: 0 2px 10px rgba(47,95,176,.35);
     transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s;
     z-index: 1; position: relative;
 }
 .nav-avatar-ring {
     position: absolute; inset: -4px; border-radius: 50%;
-    border: 2px solid rgba(99,102,241,.5);
+    border: 2px solid rgba(47,95,176,.5);
     animation: nav-ring 2s ease-out infinite;
 }
-.nav-user-btn:hover .nav-avatar { transform: scale(1.1); box-shadow: 0 4px 20px rgba(99,102,241,.45); }
-.nav-username { font-size: .83rem; font-weight: 700; color: #374151; }
-.nav-chevron  { color: #9ca3af; transition: transform .2s, color .2s; }
-.nav-user-btn:hover .nav-chevron { transform: rotate(180deg); color: #6366f1; }
+.nav-user-btn:hover .nav-avatar { transform: scale(1.1); box-shadow: 0 4px 20px rgba(47,95,176,.45); }
+.nav-username { font-size: .83rem; font-weight: 700; color: #38465e; }
+.nav-chevron  { color: #9aa6bd; transition: transform .2s, color .2s; }
+.nav-user-btn:hover .nav-chevron { transform: rotate(180deg); color: #2f5fb0; }
 
 /* Dropdown */
 .nav-dropdown {
     background: #fff;
-    border: 1px solid rgba(99,102,241,.15);
+    border: 1px solid rgba(47,95,176,.15);
     border-radius: 1rem;
-    box-shadow: 0 20px 60px rgba(0,0,0,.12), 0 4px 20px rgba(99,102,241,.1), 0 0 0 1px rgba(99,102,241,.05);
+    box-shadow: 0 20px 60px rgba(21,35,58,.12), 0 4px 20px rgba(47,95,176,.1), 0 0 0 1px rgba(47,95,176,.05);
     overflow: hidden; min-width: 200px;
     animation: nav-fadein .15s ease both;
 }
 .nav-dropdown-header {
     padding: .75rem 1rem;
-    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
-    border-bottom: 1px solid rgba(99,102,241,.1);
+    background: #eaf0fa;
+    border-bottom: 1px solid rgba(47,95,176,.1);
 }
 .nav-dropdown-item {
     display: flex; align-items: center; gap: .65rem;
-    padding: .6rem 1rem; color: #374151; font-size: .83rem; font-weight: 500;
+    padding: .6rem 1rem; color: #38465e; font-size: .83rem; font-weight: 500;
     transition: all .15s ease; text-decoration: none;
     border: none; width: 100%; cursor: pointer; background: transparent; text-align: left;
 }
 .nav-dropdown-item:hover {
-    background: linear-gradient(90deg, #eef2ff, #f5f3ff);
-    color: #4f46e5;
+    background: #eaf0fa;
+    color: #284f95;
     padding-left: 1.25rem;
 }
 .nav-dropdown-item svg { transition: transform .2s; }
-.nav-dropdown-item:hover svg { transform: scale(1.15); color: #6366f1; }
-.nav-dropdown-divider { height: 1px; background: #f3f4f6; margin: .25rem 0; }
-.nav-dropdown-item.danger { color: #dc2626; }
-.nav-dropdown-item.danger:hover { background: #fff1f2; color: #b91c1c; padding-left: 1.25rem; }
+.nav-dropdown-item:hover svg { transform: scale(1.15); color: #2f5fb0; }
+.nav-dropdown-divider { height: 1px; background: #eef0f4; margin: .25rem 0; }
+.nav-dropdown-item.danger { color: #cf3a3a; }
+.nav-dropdown-item.danger:hover { background: #fbe9e9; color: #9e2727; padding-left: 1.25rem; }
 </style>
 
 <nav x-data="{ open: false }" class="nav-bar sticky top-0 z-40">
 
     {{-- Floating particles (light, subtle) --}}
-    <div class="nav-particle" style="left:15%;bottom:0;width:4px;height:4px;background:#6366f1;--dur:4s;--del:0s;"></div>
-    <div class="nav-particle" style="left:35%;bottom:0;width:3px;height:3px;background:#a855f7;--dur:5s;--del:1.2s;"></div>
-    <div class="nav-particle" style="left:60%;bottom:0;width:4px;height:4px;background:#ec4899;--dur:3.5s;--del:.6s;"></div>
-    <div class="nav-particle" style="left:80%;bottom:0;width:3px;height:3px;background:#6366f1;--dur:4.5s;--del:2s;"></div>
+    <div class="nav-particle" style="left:15%;bottom:0;width:4px;height:4px;background:#2f5fb0;--dur:4s;--del:0s;"></div>
+    <div class="nav-particle" style="left:35%;bottom:0;width:3px;height:3px;background:#1c344d;--dur:5s;--del:1.2s;"></div>
+    <div class="nav-particle" style="left:60%;bottom:0;width:4px;height:4px;background:#e3b62f;--dur:3.5s;--del:.6s;"></div>
+    <div class="nav-particle" style="left:80%;bottom:0;width:3px;height:3px;background:#2f5fb0;--dur:4.5s;--del:2s;"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
@@ -167,7 +167,7 @@
                 </a>
 
                 {{-- Divider --}}
-                <div class="hidden sm:block w-px h-5" style="background:linear-gradient(180deg,transparent,#e0e7ff,transparent)"></div>
+                <div class="hidden sm:block w-px h-5" style="background:linear-gradient(180deg,transparent,#d3def0,transparent)"></div>
 
                 {{-- Dashboard pill --}}
                 <a href="{{ route('dashboard') }}" class="nav-pill hidden sm:inline-flex">
@@ -270,12 +270,12 @@
 
     {{-- Mobile menu --}}
     <div :class="{'block': open, 'hidden': !open}" class="hidden sm:hidden"
-         style="background:#fff;border-top:1px solid #eef2ff;box-shadow:0 8px 24px rgba(99,102,241,.1)">
+         style="background:#fff;border-top:1px solid #eaf0fa;box-shadow:0 8px 24px rgba(47,95,176,.1)">
         <div class="px-4 py-3 space-y-1">
             <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-indigo-700 bg-indigo-50">Dashboard</a>
             <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">Profile</a>
         </div>
-        <div class="px-4 py-3" style="border-top:1px solid #eef2ff">
+        <div class="px-4 py-3" style="border-top:1px solid #eaf0fa">
             <p class="text-sm font-bold text-gray-800">{{ Auth::user()?->name ?? 'Guest' }}</p>
             <p class="text-xs mt-0.5 text-gray-400">{{ Auth::user()?->email ?? '' }}</p>
             <form method="POST" action="{{ route('logout') }}" class="mt-3">

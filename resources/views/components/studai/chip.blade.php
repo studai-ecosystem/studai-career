@@ -31,7 +31,7 @@
         'warning' => 'bg-google-yellow-50 text-google-yellow-700',
         'error' => 'bg-google-red-50 text-google-red-600',
         'purple' => 'bg-purple-50 text-purple-600',
-        'ai' => 'bg-gradient-to-r from-google-blue-50 to-purple-50 text-purple-600',
+        'ai' => 'bg-gradient-to-r from-google-blue-50 to-google-yellow-50 text-google-blue-700',
         default => 'bg-surface-100 text-ink-secondary',
     };
     

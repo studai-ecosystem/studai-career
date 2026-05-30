@@ -29,7 +29,7 @@
         'success' => 'bg-google-green-500',
         'warning' => 'bg-google-yellow-500',
         'error' => 'bg-google-red-500',
-        'gradient' => 'bg-gradient-to-r from-google-blue-500 to-purple-500',
+        'gradient' => 'bg-gradient-to-r from-google-blue-600 to-google-yellow-500',
         default => 'bg-google-blue-500',
     };
 @endphp

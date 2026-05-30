@@ -675,7 +675,7 @@ $pricing = [
             'cta' => 'Start Pro Trial',
             'features' => [
                 'Everything in Free',
-                'Autonomous Agent (50 apps/day)',
+                'Autonomous Agent (50 credits/day)',
                 'Unlimited AI interviews',
                 'Premium resume templates',
                 'Salary negotiation coach',

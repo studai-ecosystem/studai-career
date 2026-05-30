@@ -4,14 +4,14 @@
 
 /* StudAI Career Platform - Custom Filament Theme */
 
-/* Brand Colors - Pink/Purple Theme */
+/* Brand Colors - Navy/Royal Blue/Gold Theme */
 :root {
-    --studai-pink: #ec4899;
-    --studai-purple: #a855f7;
-    --studai-green: #10b981;
-    --studai-blue: #3b82f6;
-    --studai-yellow: #f59e0b;
-    --studai-red: #ef4444;
+    --studai-pink: #2f5fb0;
+    --studai-purple: #1c344d;
+    --studai-green: #1f8a5b;
+    --studai-blue: #2f5fb0;
+    --studai-yellow: #e3b62f;
+    --studai-red: #cf3a3a;
 }
 
 /* Custom Sidebar Styling */
