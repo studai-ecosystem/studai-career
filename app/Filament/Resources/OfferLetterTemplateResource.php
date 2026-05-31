@@ -62,7 +62,7 @@ class OfferLetterTemplateResource extends Resource
                                 'system' => 'System',
                             ])
                             ->default('custom')
-                            ->disabled(fn () => !auth()->user()->hasRole('super-admin')),
+                            ->disabled(fn () => !auth()->user()->hasRole('super_admin')),
 
                         Toggle::make('is_default')
                             ->label('Default Template')
@@ -197,7 +197,7 @@ class OfferLetterTemplateResource extends Resource
         $query = parent::getEloquentQuery();
 
         // Show system templates + company templates for non-admin users
-        if (!$user->hasRole('super-admin') && $user->company_id) {
+        if (!$user->hasRole('super_admin') && $user->company_id) {
             $query->where(function ($q) use ($user) {
                 $q->where('company_id', $user->company_id)
                   ->orWhere('type', 'system');

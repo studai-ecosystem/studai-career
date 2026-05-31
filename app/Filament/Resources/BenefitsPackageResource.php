@@ -191,7 +191,7 @@ class BenefitsPackageResource extends Resource
         $query = parent::getEloquentQuery()->with(['company']);
 
         // Filter by company for non-admin users
-        if (!$user->hasRole('super-admin') && $user->company_id) {
+        if (!$user->hasRole('super_admin') && $user->company_id) {
             $query->where('company_id', $user->company_id);
         }
 

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -52,6 +53,17 @@ class AppServiceProvider extends ServiceProvider
 
         // ── Strict mode in local/testing: catches N+1, lazy loading, mass assignment ──
         Model::shouldBeStrict(! app()->isProduction());
+
+        // ── Super admin can do ANYTHING: global authorization bypass ──────────────────
+        // Grants super_admin every Gate ability and every policy method automatically.
+        // Returning null (not false) lets normal checks run for non-super-admins.
+        Gate::before(function ($user, string $ability): ?bool {
+            if (method_exists($user, 'hasRole') && $user->hasRole('super_admin')) {
+                return true;
+            }
+
+            return null;
+        });
 
         // ── Enforce strong passwords globally ─────────────────────────────────────────
         Password::defaults(fn () => app()->isProduction()

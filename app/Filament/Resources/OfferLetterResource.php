@@ -324,7 +324,7 @@ class OfferLetterResource extends Resource
             ->bulkActions([
                 Actions\BulkActionGroup::make([
                     Actions\DeleteBulkAction::make()
-                        ->visible(fn () => auth()->user()->hasRole('super-admin')),
+                        ->visible(fn () => auth()->user()->hasRole('super_admin')),
                 ]),
             ]);
     }
@@ -353,7 +353,7 @@ class OfferLetterResource extends Resource
         $query = parent::getEloquentQuery()->with(['candidate', 'company', 'job']);
 
         // Filter by company for non-admin users
-        if (!$user->hasRole('super-admin') && $user->company_id) {
+        if (!$user->hasRole('super_admin') && $user->company_id) {
             $query->where('company_id', $user->company_id);
         }
 

@@ -13,6 +13,18 @@ class OfferLetterPolicy
     use HandlesAuthorization;
 
     /**
+     * Super admins bypass all checks.
+     */
+    public function before(User $user, string $ability): ?bool
+    {
+        if ($user->hasRole('super_admin')) {
+            return true;
+        }
+
+        return null;
+    }
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
@@ -35,7 +47,7 @@ class OfferLetterPolicy
             return $user->hasAnyRole(['employer', 'recruiter', 'admin']);
         }
 
-        return $user->hasRole('super-admin');
+        return $user->hasRole('super_admin');
     }
 
     /**
@@ -43,7 +55,7 @@ class OfferLetterPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['employer', 'recruiter', 'admin', 'super-admin']);
+        return $user->hasAnyRole(['employer', 'recruiter', 'admin', 'super_admin']);
     }
 
     /**
@@ -53,7 +65,7 @@ class OfferLetterPolicy
     {
         // Only company members can update offers (not candidates)
         if ($user->company_id !== $offerLetter->company_id) {
-            return $user->hasRole('super-admin');
+            return $user->hasRole('super_admin');
         }
 
         return $user->hasAnyRole(['employer', 'recruiter', 'admin']);
@@ -70,7 +82,7 @@ class OfferLetterPolicy
         }
 
         if ($user->company_id !== $offerLetter->company_id) {
-            return $user->hasRole('super-admin');
+            return $user->hasRole('super_admin');
         }
 
         return $user->hasAnyRole(['employer', 'admin']);
@@ -90,7 +102,7 @@ class OfferLetterPolicy
     public function send(User $user, OfferLetter $offerLetter): bool
     {
         if ($user->company_id !== $offerLetter->company_id) {
-            return $user->hasRole('super-admin');
+            return $user->hasRole('super_admin');
         }
 
         return $user->hasAnyRole(['employer', 'recruiter', 'admin']) && $offerLetter->isDraft();
@@ -106,7 +118,7 @@ class OfferLetterPolicy
         }
 
         if ($user->company_id !== $offerLetter->company_id) {
-            return $user->hasRole('super-admin');
+            return $user->hasRole('super_admin');
         }
 
         return $user->hasAnyRole(['employer', 'admin']);
@@ -117,7 +129,7 @@ class OfferLetterPolicy
      */
     public function restore(User $user, OfferLetter $offerLetter): bool
     {
-        return $user->hasRole('super-admin');
+        return $user->hasRole('super_admin');
     }
 
     /**
@@ -125,6 +137,6 @@ class OfferLetterPolicy
      */
     public function forceDelete(User $user, OfferLetter $offerLetter): bool
     {
-        return $user->hasRole('super-admin');
+        return $user->hasRole('super_admin');
     }
 }

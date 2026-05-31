@@ -62,7 +62,15 @@ class RolePermissionSeeder extends Seeder
             'manage settings',
             'view analytics',
             'manage subscriptions',
-            
+
+            // SaaS administration
+            'manage pricing plans',
+            'manage user credits',
+            'manage feature access',
+            'manage domain licenses',
+            'assign roles',
+            'impersonate users',
+
             // Marketplace
             'access marketplace',
             'create gigs',

@@ -72,11 +72,13 @@ return new class extends Migration
             });
 
             // Add unique index to cache_key if missing
-            $hasUniqueIndex = count(DB::select(
-                "SHOW INDEX FROM interview_sessions WHERE Column_name = 'cache_key' AND Non_unique = 0"
-            )) > 0;
-            if (! $hasUniqueIndex && Schema::hasColumn('interview_sessions', 'cache_key')) {
-                DB::statement('CREATE UNIQUE INDEX interview_sessions_cache_key_unique ON interview_sessions (cache_key)');
+            if (DB::getDriverName() === 'mysql') {
+                $hasUniqueIndex = count(DB::select(
+                    "SHOW INDEX FROM interview_sessions WHERE Column_name = 'cache_key' AND Non_unique = 0"
+                )) > 0;
+                if (! $hasUniqueIndex && Schema::hasColumn('interview_sessions', 'cache_key')) {
+                    DB::statement('CREATE UNIQUE INDEX interview_sessions_cache_key_unique ON interview_sessions (cache_key)');
+                }
             }
         }
 
@@ -124,18 +126,20 @@ return new class extends Migration
             });
 
             // Add missing indices if needed
-            $hasEmergencyStopIndex = count(DB::select(
-                "SHOW INDEX FROM agent_configurations WHERE Key_name = 'agent_configurations_emergency_stopped_at_index'"
-            )) > 0;
-            if (! $hasEmergencyStopIndex && Schema::hasColumn('agent_configurations', 'emergency_stopped_at')) {
-                DB::statement('CREATE INDEX agent_configurations_emergency_stopped_at_index ON agent_configurations (emergency_stopped_at)');
-            }
+            if (DB::getDriverName() === 'mysql') {
+                $hasEmergencyStopIndex = count(DB::select(
+                    "SHOW INDEX FROM agent_configurations WHERE Key_name = 'agent_configurations_emergency_stopped_at_index'"
+                )) > 0;
+                if (! $hasEmergencyStopIndex && Schema::hasColumn('agent_configurations', 'emergency_stopped_at')) {
+                    DB::statement('CREATE INDEX agent_configurations_emergency_stopped_at_index ON agent_configurations (emergency_stopped_at)');
+                }
 
-            $hasGloballyStoppedIndex = count(DB::select(
-                "SHOW INDEX FROM agent_configurations WHERE Key_name = 'agent_configurations_is_globally_stopped_index'"
-            )) > 0;
-            if (! $hasGloballyStoppedIndex && Schema::hasColumn('agent_configurations', 'is_globally_stopped')) {
-                DB::statement('CREATE INDEX agent_configurations_is_globally_stopped_index ON agent_configurations (is_globally_stopped)');
+                $hasGloballyStoppedIndex = count(DB::select(
+                    "SHOW INDEX FROM agent_configurations WHERE Key_name = 'agent_configurations_is_globally_stopped_index'"
+                )) > 0;
+                if (! $hasGloballyStoppedIndex && Schema::hasColumn('agent_configurations', 'is_globally_stopped')) {
+                    DB::statement('CREATE INDEX agent_configurations_is_globally_stopped_index ON agent_configurations (is_globally_stopped)');
+                }
             }
         }
 

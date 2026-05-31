@@ -25,7 +25,7 @@ class OfferComparisonPolicy
      */
     public function view(User $user, OfferComparison $comparison): bool
     {
-        return $user->id === $comparison->user_id || $user->hasRole('super-admin');
+        return $user->id === $comparison->user_id || $user->hasRole('super_admin');
     }
 
     /**

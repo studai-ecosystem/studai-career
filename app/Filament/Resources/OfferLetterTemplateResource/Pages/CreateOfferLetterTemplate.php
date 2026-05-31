@@ -15,7 +15,7 @@ class CreateOfferLetterTemplate extends CreateRecord
     {
         $user = auth()->user();
         
-        if (!$user->hasRole('super-admin')) {
+        if (!$user->hasRole('super_admin')) {
             $data['company_id'] = $user->company_id;
             $data['type'] = 'custom';
         }

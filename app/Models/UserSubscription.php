@@ -23,6 +23,9 @@ class UserSubscription extends Model
         'current_period_end',
         'applications_used_this_month',
         'ai_credits_used_this_month',
+        'bonus_ai_credits',
+        'is_admin_managed',
+        'admin_notes',
         'canceled_at',
         'grace_period_ends_at',
         'failure_count',
@@ -40,6 +43,8 @@ class UserSubscription extends Model
         'last_retry_at' => 'datetime',
         'applications_used_this_month' => 'integer',
         'ai_credits_used_this_month' => 'integer',
+        'bonus_ai_credits' => 'integer',
+        'is_admin_managed' => 'boolean',
         'failure_count' => 'integer',
     ];
 

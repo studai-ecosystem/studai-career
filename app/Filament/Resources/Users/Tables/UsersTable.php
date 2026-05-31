@@ -299,6 +299,171 @@ class UsersTable
                     ->iconButton()
                     ->tooltip('Impersonate user'),
 
+                \Filament\Actions\ActionGroup::make([
+                    Action::make('adjust_credits')
+                        ->label('Adjust AI Credits')
+                        ->icon('heroicon-o-sparkles')
+                        ->color('info')
+                        ->form([
+                            \Filament\Forms\Components\Placeholder::make('current_balance')
+                                ->label('Current Balance')
+                                ->content(fn ($record): string => $record->hasUnlimitedAICredits()
+                                    ? 'Unlimited'
+                                    : (string) $record->getRemainingAICredits()),
+                            \Filament\Forms\Components\Select::make('direction')
+                                ->label('Action')
+                                ->options([
+                                    'grant' => 'Grant credits',
+                                    'deduct' => 'Deduct credits',
+                                ])
+                                ->default('grant')
+                                ->required(),
+                            \Filament\Forms\Components\TextInput::make('amount')
+                                ->label('Amount')
+                                ->numeric()
+                                ->minValue(1)
+                                ->required(),
+                            \Filament\Forms\Components\TextInput::make('reason')
+                                ->label('Reason (optional)')
+                                ->maxLength(255),
+                        ])
+                        ->action(function ($record, array $data): void {
+                            if ($record->subscription === null) {
+                                Notification::make()
+                                    ->title('No active subscription')
+                                    ->warning()
+                                    ->body('Assign a plan to this user before adjusting credits.')
+                                    ->send();
+
+                                return;
+                            }
+
+                            app(\App\Actions\Admin\AdjustUserCredits::class)->handle(
+                                user: $record,
+                                amount: (int) $data['amount'],
+                                direction: $data['direction'],
+                                reason: $data['reason'] ?? null,
+                            );
+
+                            Notification::make()
+                                ->title('Credits updated')
+                                ->success()
+                                ->body(ucfirst($data['direction']) . ' ' . $data['amount'] . ' AI credits.')
+                                ->send();
+                        }),
+
+                    Action::make('assign_plan')
+                        ->label('Assign / Override Plan')
+                        ->icon('heroicon-o-credit-card')
+                        ->color('primary')
+                        ->form([
+                            \Filament\Forms\Components\Select::make('subscription_plan_id')
+                                ->label('Plan')
+                                ->options(fn () => \App\Models\SubscriptionPlan::query()->pluck('name', 'id'))
+                                ->searchable()
+                                ->required(),
+                            \Filament\Forms\Components\DatePicker::make('period_end')
+                                ->label('Custom Expiry (optional)')
+                                ->native(false)
+                                ->helperText('Leave empty to use the plan billing period.'),
+                            \Filament\Forms\Components\Textarea::make('notes')
+                                ->label('Admin Notes (optional)')
+                                ->rows(2),
+                        ])
+                        ->action(function ($record, array $data): void {
+                            $plan = \App\Models\SubscriptionPlan::find($data['subscription_plan_id']);
+
+                            if ($plan === null) {
+                                return;
+                            }
+
+                            $periodEnd = ! empty($data['period_end'])
+                                ? \Illuminate\Support\Carbon::parse($data['period_end'])
+                                : null;
+
+                            app(\App\Actions\Admin\AssignSubscriptionPlan::class)->handle(
+                                user: $record,
+                                plan: $plan,
+                                periodEnd: $periodEnd,
+                                adminManaged: true,
+                                notes: $data['notes'] ?? null,
+                            );
+
+                            Notification::make()
+                                ->title('Plan assigned')
+                                ->success()
+                                ->body($record->name . ' is now on the ' . $plan->name . ' plan.')
+                                ->send();
+                        }),
+
+                    Action::make('manage_features')
+                        ->label('Manage Feature Access')
+                        ->icon('heroicon-o-adjustments-horizontal')
+                        ->color('warning')
+                        ->form([
+                            \Filament\Forms\Components\Select::make('feature_flag_id')
+                                ->label('Feature')
+                                ->options(fn () => \App\Models\FeatureFlag::query()->pluck('name', 'id'))
+                                ->searchable()
+                                ->required(),
+                            \Filament\Forms\Components\Select::make('direction')
+                                ->label('Action')
+                                ->options([
+                                    'grant' => 'Grant access',
+                                    'revoke' => 'Revoke access',
+                                ])
+                                ->default('grant')
+                                ->required(),
+                        ])
+                        ->action(function ($record, array $data): void {
+                            $flag = \App\Models\FeatureFlag::find($data['feature_flag_id']);
+
+                            if ($flag === null) {
+                                return;
+                            }
+
+                            app(\App\Actions\Admin\GrantFeatureAccess::class)->handle(
+                                user: $record,
+                                flag: $flag,
+                                direction: $data['direction'],
+                            );
+
+                            Notification::make()
+                                ->title('Feature access updated')
+                                ->success()
+                                ->body(ucfirst($data['direction']) . ' "' . $flag->name . '" for ' . $record->name . '.')
+                                ->send();
+                        }),
+
+                    Action::make('manage_roles')
+                        ->label('Manage Roles')
+                        ->icon('heroicon-o-shield-check')
+                        ->color('danger')
+                        ->form([
+                            \Filament\Forms\Components\Select::make('roles')
+                                ->label('Roles')
+                                ->multiple()
+                                ->options(fn () => \Spatie\Permission\Models\Role::query()->pluck('name', 'name'))
+                                ->default(fn ($record) => $record->getRoleNames()->toArray())
+                                ->required(),
+                        ])
+                        ->action(function ($record, array $data): void {
+                            $record->syncRoles($data['roles']);
+
+                            Notification::make()
+                                ->title('Roles updated')
+                                ->success()
+                                ->body('Roles synced for ' . $record->name . '.')
+                                ->send();
+                        })
+                        ->visible(fn () => Auth::user()->isSuperAdmin()),
+                ])
+                    ->label('Admin')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->color('gray')
+                    ->button()
+                    ->visible(fn () => Auth::user()->isAdmin()),
+
                 DeleteAction::make()
                     ->iconButton()
                     ->tooltip('Soft delete'),

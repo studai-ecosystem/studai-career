@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -29,21 +30,23 @@ return new class extends Migration
             // Table exists — ensure context column is TEXT (not ENUM)
             // to support class-name values written by trackAzureUsage / trackAnthropicUsage.
             if (Schema::hasColumn('ai_conversations', 'context')) {
-                // Check current column type; alter only if it is an ENUM.
-                $pdo = Schema::getConnection()->getPdo();
-                $stmt = $pdo->query(
-                    "SELECT DATA_TYPE FROM information_schema.COLUMNS
-                     WHERE TABLE_SCHEMA = DATABASE()
-                       AND TABLE_NAME   = 'ai_conversations'
-                       AND COLUMN_NAME  = 'context'
-                     LIMIT 1"
-                );
-                $type = $stmt ? strtolower((string) $stmt->fetchColumn()) : 'text';
+                // Check current column type; alter only if it is an ENUM (MySQL only).
+                if (DB::getDriverName() === 'mysql') {
+                    $pdo = Schema::getConnection()->getPdo();
+                    $stmt = $pdo->query(
+                        "SELECT DATA_TYPE FROM information_schema.COLUMNS
+                         WHERE TABLE_SCHEMA = DATABASE()
+                           AND TABLE_NAME   = 'ai_conversations'
+                           AND COLUMN_NAME  = 'context'
+                         LIMIT 1"
+                    );
+                    $type = $stmt ? strtolower((string) $stmt->fetchColumn()) : 'text';
 
-                if ($type === 'enum') {
-                    Schema::table('ai_conversations', function (Blueprint $table): void {
-                        $table->text('context')->change();
-                    });
+                    if ($type === 'enum') {
+                        Schema::table('ai_conversations', function (Blueprint $table): void {
+                            $table->text('context')->change();
+                        });
+                    }
                 }
             }
             return;

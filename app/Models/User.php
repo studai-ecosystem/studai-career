@@ -111,12 +111,22 @@ class User extends Authenticatable implements FilamentUser
      */
     public function isAdmin(): bool
     {
-        return $this->account_type === 'admin';
+        return $this->account_type === 'admin'
+            || $this->hasAnyRole(['admin', 'super_admin']);
+    }
+
+    /**
+     * Check if user is a super admin (full platform control).
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('super_admin');
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->account_type === 'admin';
+        return $this->account_type === 'admin'
+            || $this->hasAnyRole(['admin', 'super_admin']);
     }
     
     /**
@@ -229,7 +239,8 @@ class User extends Authenticatable implements FilamentUser
         if (!$plan || $plan->ai_credits === null || $plan->ai_credits === -1) return -1;
 
         $used = $subscription->ai_credits_used_this_month ?? 0;
-        return max(0, $plan->ai_credits - $used);
+        $bonus = $subscription->bonus_ai_credits ?? 0;
+        return max(0, ($plan->ai_credits + $bonus) - $used);
     }
 
     /**
