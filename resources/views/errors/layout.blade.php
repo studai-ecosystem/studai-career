@@ -6,19 +6,20 @@
     <meta name="robots" content="noindex, nofollow">
     <title>@yield('title') — StudAI Hire</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --brand: #1A73E8;
-            --brand-dark: #1557b0;
-            --surface: #f8fafc;
-            --text: #1e293b;
-            --text-muted: #64748b;
+            --brand: #2D6CDF;
+            --brand-dark: #1B57C4;
+            --surface: #F7F7F5;
+            --text: #0C0C0C;
+            --text-muted: #737373;
         }
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
             background: var(--surface);
             color: var(--text);
             min-height: 100vh;
@@ -32,12 +33,10 @@
             max-width: 480px;
         }
         .error-code {
+            font-family: 'Instrument Serif', Georgia, serif;
             font-size: clamp(5rem, 15vw, 8rem);
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--brand), #4285F4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-weight: 400;
+            color: var(--brand);
             line-height: 1;
             margin-bottom: 0.25rem;
         }
@@ -59,14 +58,14 @@
             background: var(--brand);
             color: #fff;
             padding: 0.75rem 1.75rem;
-            border-radius: 9999px;
+            border-radius: 8px;
             text-decoration: none;
             font-weight: 500;
             font-size: 0.9375rem;
-            transition: background 0.2s, transform 0.1s;
+            transition: background 0.2s;
         }
-        .error-action:hover { background: var(--brand-dark); transform: translateY(-1px); }
-        .error-action:active { transform: translateY(0); }
+        .error-action:hover { background: var(--brand-dark); }
+        .error-action:active { transform: none; }
         .error-action svg { width: 1.125rem; height: 1.125rem; }
         .brand-link {
             display: block;
@@ -79,9 +78,10 @@
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --surface: #0f172a;
-                --text: #e2e8f0;
-                --text-muted: #94a3b8;
+                --surface: #0A0A0A;
+                --text: #F2F2F0;
+                --text-muted: #8F8F8C;
+                --brand: #2D6CDF;
             }
         }
     </style>

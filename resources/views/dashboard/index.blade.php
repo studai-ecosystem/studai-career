@@ -32,7 +32,7 @@
 }
 .stat-card:hover {
     transform: translateY(-7px) scale(1.02);
-    box-shadow: 0 20px 48px rgba(109,40,217,.28), 0 4px 16px rgba(109,40,217,.18);
+    box-shadow: none;
     filter: brightness(1.04);
 }
 
@@ -41,7 +41,7 @@
     content: '';
     position: absolute;
     top: 0; left: -100%; width: 60%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.45), transparent);
+    background: rgba(255,255,255,.45);
     transform: skewX(-20deg);
     transition: left 0s;
     pointer-events: none;
@@ -55,14 +55,14 @@
 
 /* ── ANIMATION 5: Pulsing glow ring on icon ─────────── */
 @keyframes ring-pulse {
-    0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,.6); }
-    50%      { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+    0%,100% { box-shadow: none; }
+    50%      { box-shadow: none; }
 }
 .stat-card:hover .stat-icon { animation: icon-float 1.2s ease-in-out infinite, ring-pulse 1.8s ease-in-out infinite; }
 
 /* ── Animated gradient banner ────────────────────────── */
 .banner-gradient {
-    background: linear-gradient(270deg, #6366f1, #a855f7, #3b82f6, #6366f1);
+    background: #2D6CDF;
     background-size: 300% 300%;
     animation: dash-gradient 5s ease infinite;
 }
@@ -74,7 +74,7 @@
 .stat-number { animation: dash-count .6s cubic-bezier(.22,1,.36,1) .3s both; }
 
 /* ── Sidebar AI badge pulse ──────────────────────────── */
-@keyframes dash-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.35)} 70%{box-shadow:0 0 0 10px rgba(99,102,241,0)} }
+@keyframes dash-pulse { 0%,100%{box-shadow: none} 70%{box-shadow: none} }
 .ai-badge-pulse { animation: dash-pulse 2s cubic-bezier(.22,1,.36,1) infinite; }
 
 /* ── Job card hover ──────────────────────────────────── */
@@ -83,19 +83,19 @@
 }
 .job-card-hover:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(99,102,241,.12);
-    border-color: #a5b4fc !important;
+    box-shadow: none;
+    border-color: #BFCFEE !important;
 }
 
 /* ── Secondary card hover ────────────────────────────── */
 .secondary-card {
     transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s;
 }
-.secondary-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(99,102,241,.13); }
+.secondary-card:hover { transform: translateY(-3px); box-shadow: none; }
 
 /* ── Application row hover ───────────────────────────── */
 .app-row { transition: background .18s, transform .18s; }
-.app-row:hover { background: #f5f3ff !important; transform: translateX(3px); }
+.app-row:hover { background: #EBF2FF !important; transform: translateX(3px); }
 
 /* ── Spin slow ───────────────────────────────────────── */
 .spin-slow { animation: dash-spin 4s linear infinite; }
@@ -134,7 +134,7 @@
                 <p class="text-sm font-semibold">&#9889; Unlock your full potential with StudAI Pro</p>
                 <p class="text-xs text-blue-100 mt-0.5">Get unlimited applications, AI cover letters, interview prep &amp; career coaching</p>
             </div>
-            <a href="{{ route('pricing') }}" class="flex-shrink-0 px-4 py-2 bg-white text-google-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-50 transition-colors whitespace-nowrap" style="box-shadow:0 2px 12px rgba(0,0,0,.15)">
+            <a href="{{ route('pricing') }}" class="flex-shrink-0 px-4 py-2 bg-white text-google-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-50 transition-colors whitespace-nowrap" style="box-shadow: none">
                 See Plans &rarr;
             </a>
         </div>
@@ -145,7 +145,7 @@
     {{-- Welcome Header --}}
     <div class="mb-8 dash-anim-2">
         <h1 class="text-2xl font-semibold text-ink-primary">
-            Welcome back, <span style="background:linear-gradient(135deg,#2f5fb0,#1c344d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">{{ explode(' ', $user->name)[0] }}</span> &#128075;
+            Welcome back, <span style="background:#2D6CDF;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">{{ explode(' ', $user->name)[0] }}</span> &#128075;
         </h1>
         <p class="mt-1 text-sm text-ink-secondary">Here's what's happening with your job search</p>
     </div>
@@ -162,28 +162,28 @@
             $appsAtLimit = !$isUnlimited && $appsRaw <= 0;
         @endphp
         <a href="{{ route('dashboard.applications') }}" class="stat-card dash-anim-4 block rounded-2xl p-5"
-           style="{{ $appsAtLimit ? 'background:linear-gradient(135deg,#fef2f2,#fee2e2);border:1.5px solid #fca5a5;' : 'background:linear-gradient(135deg,#f6f4ff,#efeafe,#e6dffb);border:1.5px solid #d8cdf7;' }}">
+           style="{{ $appsAtLimit ? 'background:#fef2f2;border:1.5px solid #fca5a5;' : 'background:#EBF2FF;border:1.5px solid #2D6CDF;' }}">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider" style="{{ $appsAtLimit ? 'color:#b91c1c' : 'color:#5b21b6' }}">Applications Left</p>
-                    <p class="stat-number mt-2 text-4xl font-bold" style="{{ $appsAtLimit ? 'color:#dc2626' : 'color:#4c1d95' }}">
+                    <p class="text-xs font-semibold uppercase tracking-wider" style="{{ $appsAtLimit ? 'color:#2D6CDF' : 'color:#0C2E72' }}">Applications Left</p>
+                    <p class="stat-number mt-2 text-4xl font-bold" style="{{ $appsAtLimit ? 'color:#2D6CDF' : 'color:#0C2E72' }}">
                         {{ $subscriptionStats['applications_remaining'] }}
                     </p>
                     @if(!$isUnlimited && $appsLimit > 0)
-                        <p class="mt-1 text-xs" style="{{ $appsAtLimit ? 'color:#b91c1c' : 'color:#7c3aed' }}">{{ $appsUsed }} used of {{ $appsLimit }} this month</p>
+                        <p class="mt-1 text-xs" style="{{ $appsAtLimit ? 'color:#2D6CDF' : 'color:#2D6CDF' }}">{{ $appsUsed }} used of {{ $appsLimit }} this month</p>
                     @else
-                        <p class="mt-1 text-xs" style="color:#7c3aed">This month</p>
+                        <p class="mt-1 text-xs" style="color:#2D6CDF">This month</p>
                     @endif
                 </div>
-                <div class="stat-icon p-3 rounded-xl" style="{{ $appsAtLimit ? 'background:rgba(220,38,38,.15)' : 'background:rgba(124,58,237,.18)' }}">
-                    <svg class="w-7 h-7" style="{{ $appsAtLimit ? 'color:#dc2626' : 'color:#6d28d9' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="stat-icon p-3 rounded-xl" style="{{ $appsAtLimit ? 'background:rgba(185, 28, 28,.15)' : 'background:rgba(20, 71, 186,.18)' }}">
+                    <svg class="w-7 h-7" style="{{ $appsAtLimit ? 'color:#2D6CDF' : 'color:#1B57C4' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                 </div>
             </div>
             @if($appsAtLimit && $isFreePlan)
                 <div class="mt-3 pt-3" style="border-top:1px solid #fca5a5">
-                    <span onclick="event.preventDefault();window.location='{{ route('pricing') }}'" class="text-xs font-semibold hover:underline cursor-pointer" style="color:#dc2626">
+                    <span onclick="event.preventDefault();window.location='{{ route('pricing') }}'" class="text-xs font-semibold hover:underline cursor-pointer" style="color:#2D6CDF">
                         &uarr; Upgrade to apply to more jobs
                     </span>
                 </div>
@@ -192,12 +192,12 @@
 
         {{-- Profile Strength --}}
         <a href="{{ route('profile.career.builder') }}" class="stat-card dash-anim-5 block rounded-2xl p-5"
-           style="background:linear-gradient(135deg,#fdf6ff,#f6effe,#efe7fc);border:1.5px solid #e4cffb;">
+           style="background:#EBF2FF;border:1.5px solid #2D6CDF;">
             <div class="flex items-center justify-between">
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-semibold uppercase tracking-wider" style="color:#7e22ce">Profile Strength</p>
-                    <p class="stat-number mt-2 text-4xl font-bold" style="color:#4a044e">{{ $profileCompletion }}<span class="text-xl font-semibold" style="color:#9333ea">%</span></p>
-                    <p class="mt-1 text-xs" style="color:#9333ea">
+                    <p class="text-xs font-semibold uppercase tracking-wider" style="color:#1B57C4">Profile Strength</p>
+                    <p class="stat-number mt-2 text-4xl font-bold" style="color:#0C2E72">{{ $profileCompletion }}<span class="text-xl font-semibold" style="color:#1B57C4">%</span></p>
+                    <p class="mt-1 text-xs" style="color:#1B57C4">
                         @if($profileCompletion >= 80) Excellent &mdash; keep it up!
                         @elseif($profileCompletion >= 50) Good &mdash; almost there
                         @else Tap to complete profile
@@ -205,16 +205,16 @@
                     </p>
                 </div>
                 <div class="ml-3 flex flex-col items-end gap-2">
-                    <div class="stat-icon p-3 rounded-xl" style="background:rgba(168,85,247,.18)">
-                        <svg class="w-7 h-7" style="color:#9333ea" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="stat-icon p-3 rounded-xl" style="background:rgba(20, 71, 186,.18)">
+                        <svg class="w-7 h-7" style="color:#1B57C4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
                     </div>
                 </div>
             </div>
             {{-- Progress bar --}}
-            <div class="mt-3 w-full rounded-full h-1.5" style="background:rgba(168,85,247,.2)">
-                <div class="h-1.5 rounded-full transition-all duration-700" style="width:{{ $profileCompletion }}%;background:linear-gradient(90deg,#a855f7,#ec4899)"></div>
+            <div class="mt-3 w-full rounded-full h-1.5" style="background:rgba(20, 71, 186,.2)">
+                <div class="h-1.5 rounded-full transition-all duration-700" style="width:{{ $profileCompletion }}%;background:#2D6CDF"></div>
             </div>
         </a>
 
@@ -227,43 +227,43 @@
             $creditsAtLimit = !$creditsUnlimited && $creditsRaw <= 0 && $creditsLimitDisplay > 0;
         @endphp
         <a href="{{ route('dashboard.ai-credits') }}" class="stat-card dash-anim-6 block rounded-2xl p-5"
-           style="{{ $creditsAtLimit ? 'background:linear-gradient(135deg,#fef9e7,#fdf0c8);border:1.5px solid #fbe08a;' : 'background:linear-gradient(135deg,#f2f5ff,#e9eeff,#dde5fe);border:1.5px solid #cdd7fb;' }}">
+           style="{{ $creditsAtLimit ? 'background:#FFF8EC;border:1.5px solid #E37400;' : 'background:#EBF2FF;border:1.5px solid #2D6CDF;' }}">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider" style="{{ $creditsAtLimit ? 'color:#92400e' : 'color:#3730a3' }}">AI Credits</p>
-                    <p class="stat-number mt-2 text-4xl font-bold" style="{{ $creditsAtLimit ? 'color:#78350f' : 'color:#1e1b4b' }}">
+                    <p class="text-xs font-semibold uppercase tracking-wider" style="{{ $creditsAtLimit ? 'color:#E37400' : 'color:#0C2E72' }}">AI Credits</p>
+                    <p class="stat-number mt-2 text-4xl font-bold" style="{{ $creditsAtLimit ? 'color:#E37400' : 'color:#0C2E72' }}">
                         {{ $creditsUnlimited ? '&infin;' : $subscriptionStats['ai_credits_remaining'] }}
                     </p>
                     @if(!$creditsUnlimited && $creditsLimitDisplay > 0)
-                        <p class="mt-1 text-xs" style="{{ $creditsAtLimit ? 'color:#92400e' : 'color:#4338ca' }}">{{ $creditsUsedDisplay }} used of {{ $creditsLimitDisplay }}</p>
+                        <p class="mt-1 text-xs" style="{{ $creditsAtLimit ? 'color:#E37400' : 'color:#1B57C4' }}">{{ $creditsUsedDisplay }} used of {{ $creditsLimitDisplay }}</p>
                     @else
-                        <p class="mt-1 text-xs" style="color:#4338ca">This month</p>
+                        <p class="mt-1 text-xs" style="color:#1B57C4">This month</p>
                     @endif
                 </div>
-                <div class="stat-icon p-3 rounded-xl" style="{{ $creditsAtLimit ? 'background:rgba(251,191,36,.25)' : 'background:rgba(99,102,241,.18)' }}">
-                    <svg class="w-7 h-7" style="{{ $creditsAtLimit ? 'color:#d97706' : 'color:#4f46e5' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="stat-icon p-3 rounded-xl" style="{{ $creditsAtLimit ? 'background:rgba(251,191,36,.25)' : 'background:rgba(20, 71, 186,.18)' }}">
+                    <svg class="w-7 h-7" style="{{ $creditsAtLimit ? 'color:#E37400' : 'color:#1B57C4' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
                     </svg>
                 </div>
             </div>
             @if($creditsAtLimit)
-                <div class="mt-3 pt-3" style="border-top:1px solid #fbbf24">
-                    <p class="text-xs font-semibold" style="color:#92400e">&uarr; Upgrade for more AI credits</p>
+                <div class="mt-3 pt-3" style="border-top:1px solid #E37400">
+                    <p class="text-xs font-semibold" style="color:#E37400">&uarr; Upgrade for more AI credits</p>
                 </div>
             @endif
         </a>
 
         {{-- Total Applications --}}
         <a href="{{ route('dashboard.applications') }}" class="stat-card dash-anim-7 block rounded-2xl p-5"
-           style="background:linear-gradient(135deg,#fdf5ff,#fbeeff,#f6dcff);border:1.5px solid #f0cafb;">
+           style="background:#EBF2FF;border:1.5px solid #2D6CDF;">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider" style="color:#86198f">Applications Sent</p>
-                    <p class="stat-number mt-2 text-4xl font-bold" style="color:#4a044e">{{ $applicationStats['total'] }}</p>
-                    <p class="mt-1 text-xs" style="color:#a21caf">All time</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider" style="color:#2D6CDF">Applications Sent</p>
+                    <p class="stat-number mt-2 text-4xl font-bold" style="color:#0C2E72">{{ $applicationStats['total'] }}</p>
+                    <p class="mt-1 text-xs" style="color:#2D6CDF">All time</p>
                 </div>
                 <div class="stat-icon p-3 rounded-xl" style="background:rgba(217,70,239,.18)">
-                    <svg class="w-7 h-7" style="color:#c026d3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-7 h-7" style="color:#2D6CDF" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
@@ -272,15 +272,15 @@
 
         {{-- Saved Jobs --}}
         <a href="{{ route('jobs.saved') }}" class="stat-card dash-anim-8 block rounded-2xl p-5"
-           style="background:linear-gradient(135deg,#fff5f6,#ffeaec,#ffd9de);border:1.5px solid #fdc6cd;">
+           style="background:#FEF2F2;border:1.5px solid #FCA5A5;">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider" style="color:#9f1239">Saved Jobs</p>
-                    <p class="stat-number mt-2 text-4xl font-bold" style="color:#4c0519">{{ $savedJobsCount }}</p>
-                    <p class="mt-1 text-xs" style="color:#be123c">Bookmarked</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider" style="color:#2D6CDF">Saved Jobs</p>
+                    <p class="stat-number mt-2 text-4xl font-bold" style="color:#0C2E72">{{ $savedJobsCount }}</p>
+                    <p class="mt-1 text-xs" style="color:#2D6CDF">Bookmarked</p>
                 </div>
                 <div class="stat-icon p-3 rounded-xl" style="background:rgba(251,113,133,.2)">
-                    <svg class="w-7 h-7" style="color:#e11d48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-7 h-7" style="color:#2D6CDF" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
                     </svg>
                 </div>
@@ -293,19 +293,19 @@
         <div class="lg:col-span-2 space-y-6">
             {{-- Profile Completion Card --}}
             @if($profileCompletion < 100)
-            <div class="dash-anim-8 rounded-xl p-6" style="background:linear-gradient(135deg,#eef0ff 0%,#f3effe 50%,#faf0ff 100%);border:1.5px solid #ddd6fe;box-shadow:0 8px 28px rgba(139,92,246,.14)">
+            <div class="dash-anim-8 rounded-xl p-6 text-white" style="background:#2D6CDF;box-shadow: none">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <h3 class="text-lg font-semibold" style="color:#4338ca">Complete Your Profile</h3>
-                        <p class="text-sm mt-1" style="color:#7c6fd6">{{ $profileCompletion }}% complete</p>
+                        <h3 class="text-lg font-semibold" style="color:#ffffff">Complete Your Profile</h3>
+                        <p class="text-sm mt-1" style="color:rgba(255,255,255,.85)">{{ $profileCompletion }}% complete</p>
                     </div>
-                    <div class="text-3xl font-bold" style="color:#4338ca;text-shadow:0 2px 8px rgba(99,102,241,.12)">{{ $profileCompletion }}%</div>
+                    <div class="text-3xl font-bold" style="color:#ffffff">{{ $profileCompletion }}%</div>
                 </div>
-                <div class="w-full rounded-full h-2 mb-4" style="background:rgba(99,102,241,.15)">
-                    <div class="rounded-full h-2 anim-progress-bar" style="width:{{ $profileCompletion }}%;background:linear-gradient(90deg,#a5b4fc,#c4b5fd);transition:width 1.2s cubic-bezier(.22,1,.36,1)"></div>
+                <div class="w-full rounded-full h-2 mb-4" style="background:rgba(255,255,255,.25)">
+                    <div class="rounded-full h-2 anim-progress-bar" style="width:{{ $profileCompletion }}%;background:#ffffff;transition:width 1.2s cubic-bezier(.22,1,.36,1)"></div>
                 </div>
-                <p class="mb-4 text-sm" style="color:#6d6a8a">A complete profile gets 3x more visibility to employers.</p>
-                <a href="{{ route('profile.career.builder') }}" class="inline-flex items-center px-5 py-2.5 text-white font-medium text-sm rounded-lg transition-all hover:-translate-y-0.5 hover:shadow-lg" style="background:#6366f1">
+                <p class="text-blue-100 mb-4 text-sm">A complete profile gets 3x more visibility to employers.</p>
+                <a href="{{ route('profile.career.builder') }}" class="inline-flex items-center px-5 py-2.5 bg-white font-medium text-sm rounded-lg transition-all hover:-translate-y-0.5 hover:shadow-lg" style="color:#2D6CDF">
                     Complete Profile
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
@@ -315,13 +315,13 @@
             @endif
 
             {{-- Recent Applications --}}
-            <div class="dash-anim-9 secondary-card rounded-2xl overflow-hidden" style="border:1.5px solid #a5b4fc;box-shadow:0 4px 20px rgba(99,102,241,.12)">
-                <div class="px-6 py-4 flex items-center justify-between" style="background:linear-gradient(135deg,#eef0ff,#f1f0ff,#f5f3ff);border-bottom:1px solid #e0e0fb;">
+            <div class="dash-anim-9 secondary-card rounded-2xl overflow-hidden" style="border:1.5px solid #BFCFEE;box-shadow: none">
+                <div class="px-6 py-4 flex items-center justify-between" style="background:#1B57C4;">
                     <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 opacity-80" style="color:#6366f1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                        <h3 class="text-base font-bold" style="color:#4338ca">Recent Applications</h3>
+                        <svg class="w-4 h-4 opacity-80" style="color:#ffffff" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                        <h3 class="text-base font-bold" style="color:#ffffff">Recent Applications</h3>
                     </div>
-                    <a href="{{ route('dashboard.applications') }}" class="text-xs font-bold px-3 py-1.5 rounded-lg transition-all" style="background:rgba(79,70,229,.10);color:#4338ca">
+                    <a href="{{ route('dashboard.applications') }}" class="text-xs font-bold px-3 py-1.5 rounded-lg transition-all" style="background:rgba(255,255,255,.18);color:#ffffff">
                         View All
                     </a>
                 </div>
@@ -388,13 +388,13 @@
             </div>
 
             {{-- Recommended Jobs --}}
-            <div class="dash-anim-10 secondary-card rounded-2xl overflow-hidden" style="border:1.5px solid #6ee7b7;box-shadow:0 4px 20px rgba(16,185,129,.12)">
-                <div class="px-6 py-4" style="background:linear-gradient(135deg,#e9fbf2,#dffaea,#d1fae5);border-bottom:1px solid #b9f0d2;">
+            <div class="dash-anim-10 secondary-card rounded-2xl overflow-hidden" style="border:1.5px solid #A3D9B4;box-shadow: none">
+                <div class="px-6 py-4" style="background:#1E8E3E">
                     <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 opacity-80" style="color:#059669" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                        <h3 class="text-base font-bold" style="color:#065f46">Recommended For You</h3>
+                        <svg class="w-4 h-4 opacity-80" style="color:#ffffff" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                        <h3 class="text-base font-bold" style="color:#ffffff">Recommended For You</h3>
                     </div>
-                    <p class="text-xs mt-0.5" style="color:#15803d">Jobs matching your profile and preferences</p>
+                    <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.85)">Jobs matching your profile and preferences</p>
                 </div>
 
                 <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -432,20 +432,20 @@
         {{-- Sidebar (Right 1/3) --}}
         <div class="space-y-6">
             {{-- Subscription Status Card --}}
-            <div class="dash-anim-11 secondary-card rounded-2xl overflow-hidden" style="border:1.5px solid #818cf8;box-shadow:0 4px 24px rgba(99,102,241,.13)">
-                <div class="px-5 py-4" style="background:linear-gradient(135deg,#eef0ff,#f4effe,#faf0ff);border-bottom:1px solid #e6dffb;">
+            <div class="dash-anim-11 secondary-card rounded-2xl overflow-hidden" style="border:1.5px solid #2D6CDF;box-shadow: none">
+                <div class="px-5 py-4 text-white" style="background:#1B57C4;background-size:200%;animation:dash-gradient 5s ease infinite">
                     <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 opacity-80" style="color:#7c3aed" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
-                        <h3 class="text-sm font-bold tracking-wide" style="color:#5b21b6">Your Plan</h3>
+                        <svg class="w-4 h-4 opacity-80" style="color:#ffffff" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                        <h3 class="text-sm font-bold tracking-wide" style="color:#ffffff">Your Plan</h3>
                     </div>
                 </div>
-                <div class="px-5 py-5" style="background:linear-gradient(180deg,#f5f3ff,#ede9fe)">
+                <div class="px-5 py-5" style="background:#EBF2FF">
                     <div class="flex items-center justify-between mb-4">
-                        <span class="text-xl font-bold" style="color:#3730a3">{{ $subscriptionStats['plan_name'] }}</span>
+                        <span class="text-xl font-bold" style="color:#0C2E72">{{ $subscriptionStats['plan_name'] }}</span>
                         @if(!($subscriptionStats['is_free_plan'] ?? true))
-                            <span class="px-2.5 py-1 text-xs font-bold rounded-full" style="background:#dcfce7;color:#166534">Active</span>
+                            <span class="px-2.5 py-1 text-xs font-bold rounded-full" style="background:#EDFAF2;color:#1E8E3E">Active</span>
                         @else
-                            <span class="px-2.5 py-1 text-xs font-bold rounded-full" style="background:#e0e7ff;color:#3730a3">Free</span>
+                            <span class="px-2.5 py-1 text-xs font-bold rounded-full" style="background:#EBF2FF;color:#0C2E72">Free</span>
                         @endif
                     </div>
 
@@ -508,10 +508,10 @@
                     </div>
 
                     @if($subscriptionStats['is_free_plan'] ?? true)
-                        <a href="{{ route('pricing') }}" class="secondary-card block w-full text-center px-4 py-3 text-white font-bold text-sm rounded-xl transition-all" style="background:#2f5fb0;box-shadow:0 4px 16px rgba(47,95,176,.30)">
+                        <a href="{{ route('pricing') }}" class="secondary-card block w-full text-center px-4 py-3 text-white font-bold text-sm rounded-xl transition-all" style="background:#2D6CDF;box-shadow: none">
                             &#8593; Upgrade to Pro
                         </a>
-                        <p class="text-xs text-center mt-2" style="color:#7c3aed">Get 50+ applications &amp; unlimited AI</p>
+                        <p class="text-xs text-center mt-2" style="color:#2D6CDF">Get 50+ applications &amp; unlimited AI</p>
                     @else
                         <a href="{{ route('subscriptions.index') }}" class="block w-full text-center px-4 py-2.5 bg-surface-50 text-ink-secondary font-medium text-sm rounded-lg hover:bg-surface-100 transition-colors">
                             Manage Subscription
@@ -521,90 +521,90 @@
             </div>
 
             {{-- Application Status Breakdown --}}
-            <div class="dash-anim-12 secondary-card rounded-2xl overflow-hidden" style="border:1.5px solid #fbbf24;box-shadow:0 4px 20px rgba(251,191,36,.15)">
-                <div class="px-5 py-4" style="background:linear-gradient(135deg,#fff7e6,#fff3d6,#fef0c7);border-bottom:1px solid #fbe6b0;">
+            <div class="dash-anim-12 secondary-card rounded-2xl overflow-hidden" style="border:1.5px solid #E37400;box-shadow: none">
+                <div class="px-5 py-4 text-white" style="background:#E37400">
                     <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 opacity-80" style="color:#d97706" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                        <h3 class="text-sm font-bold tracking-wide" style="color:#92400e">Application Status</h3>
+                        <svg class="w-4 h-4 opacity-90" style="color:#ffffff" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        <h3 class="text-sm font-bold tracking-wide" style="color:#ffffff">Application Status</h3>
                     </div>
                 </div>
-                <div class="px-5 py-4 space-y-2" style="background:linear-gradient(180deg,#fffbeb,#fef3c7)">
+                <div class="px-5 py-4 space-y-2" style="background:#FFF8EC">
                     <div class="status-row flex items-center justify-between p-2.5 rounded-xl" style="background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.25)">
                         <div class="flex items-center gap-2.5">
-                            <div class="w-3 h-3 rounded-full" style="background:#f59e0b;box-shadow:0 0 6px rgba(245,158,11,.6)"></div>
-                            <span class="text-sm font-medium" style="color:#92400e">Pending</span>
+                            <div class="w-3 h-3 rounded-full" style="background:#E37400;box-shadow: none"></div>
+                            <span class="text-sm font-medium" style="color:#E37400">Pending</span>
                         </div>
-                        <span class="text-sm font-bold px-2.5 py-0.5 rounded-full" style="background:#fef3c7;color:#92400e">{{ $applicationStats['pending'] }}</span>
+                        <span class="text-sm font-bold px-2.5 py-0.5 rounded-full" style="background:#FFF8EC;color:#E37400">{{ $applicationStats['pending'] }}</span>
                     </div>
-                    <div class="status-row flex items-center justify-between p-2.5 rounded-xl" style="background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2)">
+                    <div class="status-row flex items-center justify-between p-2.5 rounded-xl" style="background:rgba(20, 71, 186,.1);border:1px solid rgba(20, 71, 186,.2)">
                         <div class="flex items-center gap-2.5">
-                            <div class="w-3 h-3 rounded-full" style="background:#6366f1;box-shadow:0 0 6px rgba(99,102,241,.6)"></div>
-                            <span class="text-sm font-medium" style="color:#3730a3">Under Review</span>
+                            <div class="w-3 h-3 rounded-full" style="background:#2D6CDF;box-shadow: none"></div>
+                            <span class="text-sm font-medium" style="color:#0C2E72">Under Review</span>
                         </div>
-                        <span class="text-sm font-bold px-2.5 py-0.5 rounded-full" style="background:#e0e7ff;color:#3730a3">{{ $applicationStats['reviewing'] }}</span>
+                        <span class="text-sm font-bold px-2.5 py-0.5 rounded-full" style="background:#EBF2FF;color:#0C2E72">{{ $applicationStats['reviewing'] }}</span>
                     </div>
-                    <div class="status-row flex items-center justify-between p-2.5 rounded-xl" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2)">
+                    <div class="status-row flex items-center justify-between p-2.5 rounded-xl" style="background:rgba(15, 107, 49,.1);border:1px solid rgba(15, 107, 49,.2)">
                         <div class="flex items-center gap-2.5">
-                            <div class="w-3 h-3 rounded-full" style="background:#10b981;box-shadow:0 0 6px rgba(16,185,129,.6)"></div>
-                            <span class="text-sm font-medium" style="color:#065f46">Shortlisted</span>
+                            <div class="w-3 h-3 rounded-full" style="background:#1E8E3E;box-shadow: none"></div>
+                            <span class="text-sm font-medium" style="color:#1E8E3E">Shortlisted</span>
                         </div>
-                        <span class="text-sm font-bold px-2.5 py-0.5 rounded-full" style="background:#d1fae5;color:#065f46">{{ $applicationStats['shortlisted'] }}</span>
+                        <span class="text-sm font-bold px-2.5 py-0.5 rounded-full" style="background:#EDFAF2;color:#1E8E3E">{{ $applicationStats['shortlisted'] }}</span>
                     </div>
-                    <div class="status-row flex items-center justify-between p-2.5 rounded-xl" style="background:rgba(239,68,68,.09);border:1px solid rgba(239,68,68,.18)">
+                    <div class="status-row flex items-center justify-between p-2.5 rounded-xl" style="background:rgba(185, 28, 28,.09);border:1px solid rgba(185, 28, 28,.18)">
                         <div class="flex items-center gap-2.5">
-                            <div class="w-3 h-3 rounded-full" style="background:#ef4444;box-shadow:0 0 6px rgba(239,68,68,.6)"></div>
-                            <span class="text-sm font-medium" style="color:#991b1b">Rejected</span>
+                            <div class="w-3 h-3 rounded-full" style="background:#2D6CDF;box-shadow: none"></div>
+                            <span class="text-sm font-medium" style="color:#2D6CDF">Rejected</span>
                         </div>
-                        <span class="text-sm font-bold px-2.5 py-0.5 rounded-full" style="background:#fee2e2;color:#991b1b">{{ $applicationStats['rejected'] }}</span>
+                        <span class="text-sm font-bold px-2.5 py-0.5 rounded-full" style="background:#FEF2F2;color:#2D6CDF">{{ $applicationStats['rejected'] }}</span>
                     </div>
                 </div>
             </div>
 
             {{-- Quick Actions --}}
-            <div class="dash-anim-12 secondary-card rounded-2xl overflow-hidden" style="border:1.5px solid #6ee7b7;box-shadow:0 4px 20px rgba(16,185,129,.13)">
-                <div class="px-5 py-4" style="background:linear-gradient(135deg,#e9fbf2,#dffaea,#d1fae5);border-bottom:1px solid #b9f0d2;">
+            <div class="dash-anim-12 secondary-card rounded-2xl overflow-hidden" style="border:1.5px solid #A3D9B4;box-shadow: none">
+                <div class="px-5 py-4 text-white" style="background:#1E8E3E">
                     <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 opacity-80" style="color:#059669" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        <h3 class="text-sm font-bold tracking-wide" style="color:#065f46">Quick Actions</h3>
+                        <svg class="w-4 h-4 opacity-90" style="color:#ffffff" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <h3 class="text-sm font-bold tracking-wide" style="color:#ffffff">Quick Actions</h3>
                     </div>
                 </div>
-                <div class="p-3 space-y-1.5" style="background:linear-gradient(180deg,#ecfdf5,#d1fae5)">
+                <div class="p-3 space-y-1.5" style="background:#EDFAF2">
                     <a href="{{ route('jobs.search') }}" class="quick-action flex items-center p-3 rounded-xl transition-all" style="border:1px solid transparent">
-                        <div class="p-2 rounded-xl mr-3 flex-shrink-0" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)">
-                            <svg class="w-4 h-4" style="color:#1d4ed8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-2 rounded-xl mr-3 flex-shrink-0" style="background:#EBF2FF">
+                            <svg class="w-4 h-4" style="color:#1B57C4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                             </svg>
                         </div>
-                        <span class="text-sm font-semibold" style="color:#1e3a5f">Search Jobs</span>
-                        <svg class="w-4 h-4 ml-auto" style="color:#10b981" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <span class="text-sm font-semibold" style="color:#0C2E72">Search Jobs</span>
+                        <svg class="w-4 h-4 ml-auto" style="color:#1E8E3E" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                     <a href="{{ route('profile.career.builder') }}" class="quick-action flex items-center p-3 rounded-xl transition-all" style="border:1px solid transparent">
-                        <div class="p-2 rounded-xl mr-3 flex-shrink-0" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe)">
-                            <svg class="w-4 h-4" style="color:#6d28d9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-2 rounded-xl mr-3 flex-shrink-0" style="background:#EBF2FF">
+                            <svg class="w-4 h-4" style="color:#1B57C4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                             </svg>
                         </div>
-                        <span class="text-sm font-semibold" style="color:#1e3a5f">Edit Profile</span>
-                        <svg class="w-4 h-4 ml-auto" style="color:#10b981" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <span class="text-sm font-semibold" style="color:#0C2E72">Edit Profile</span>
+                        <svg class="w-4 h-4 ml-auto" style="color:#1E8E3E" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                     <a href="{{ route('jobs.saved') }}" class="quick-action flex items-center p-3 rounded-xl transition-all" style="border:1px solid transparent">
-                        <div class="p-2 rounded-xl mr-3 flex-shrink-0" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">
-                            <svg class="w-4 h-4" style="color:#b45309" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-2 rounded-xl mr-3 flex-shrink-0" style="background:#FFF8EC">
+                            <svg class="w-4 h-4" style="color:#E37400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
                             </svg>
                         </div>
-                        <span class="text-sm font-semibold" style="color:#1e3a5f">Saved Jobs</span>
-                        <svg class="w-4 h-4 ml-auto" style="color:#10b981" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <span class="text-sm font-semibold" style="color:#0C2E72">Saved Jobs</span>
+                        <svg class="w-4 h-4 ml-auto" style="color:#1E8E3E" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                     <a href="{{ route('profile.edit') }}" class="quick-action flex items-center p-3 rounded-xl transition-all" style="border:1px solid transparent">
-                        <div class="p-2 rounded-xl mr-3 flex-shrink-0" style="background:linear-gradient(135deg,#ffe4e6,#fecdd3)">
-                            <svg class="w-4 h-4" style="color:#be123c" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-2 rounded-xl mr-3 flex-shrink-0" style="background:#FEF2F2">
+                            <svg class="w-4 h-4" style="color:#2D6CDF" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
                         </div>
-                        <span class="text-sm font-semibold" style="color:#1e3a5f">Settings</span>
-                        <svg class="w-4 h-4 ml-auto" style="color:#10b981" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <span class="text-sm font-semibold" style="color:#0C2E72">Settings</span>
+                        <svg class="w-4 h-4 ml-auto" style="color:#1E8E3E" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                 </div>
             </div>

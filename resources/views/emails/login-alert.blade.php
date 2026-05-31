@@ -5,23 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>New sign-in detected</title>
 <style>
-  body { margin:0; padding:0; background:#f5f5f5; font-family:'Google Sans',Arial,sans-serif; }
-  .wrapper { max-width:600px; margin:32px auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.08); }
-  .header { background:linear-gradient(135deg,#1A73E8 0%,#1557b0 100%); padding:40px 40px 32px; text-align:center; }
+  body { margin:0; padding:0; background:#F0F0EE; font-family:'Google Sans',Arial,sans-serif; }
+  .wrapper { max-width:600px; margin:32px auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow: none; }
+  .header { background:#2D6CDF; padding:40px 40px 32px; text-align:center; }
   .header .logo { font-size:26px; font-weight:700; color:#fff; letter-spacing:-0.5px; }
   .header .logo span { color:#a8c7fa; }
   .header h1 { margin:16px 0 6px; color:#fff; font-size:22px; font-weight:600; }
   .header p { margin:0; color:rgba(255,255,255,.85); font-size:14px; }
   .body { padding:36px 40px; }
-  .greeting { font-size:16px; color:#3c4043; font-weight:500; margin-bottom:6px; }
-  .intro { font-size:14px; color:#5f6368; line-height:1.7; margin-bottom:24px; }
+  .greeting { font-size:16px; color:#3D3D3D; font-weight:500; margin-bottom:6px; }
+  .intro { font-size:14px; color:#737373; line-height:1.7; margin-bottom:24px; }
   .detail-row { display:table; width:100%; border-collapse:collapse; margin-bottom:8px; }
-  .detail-label { display:table-cell; width:130px; padding:10px 12px; font-size:12px; font-weight:600; color:#80868b; background:#f8f9fa; border-radius:8px 0 0 8px; }
-  .detail-value { display:table-cell; padding:10px 12px; font-size:13px; color:#202124; background:#f8f9fa; border-radius:0 8px 8px 0; }
-  .tip-box { background:#FCE8E6; border-left:4px solid #D93025; padding:14px 16px; border-radius:0 8px 8px 0; margin:24px 0 0; }
-  .tip-box p { margin:0; font-size:13px; color:#C5221F; line-height:1.6; }
-  .footer { background:#f8f9fa; padding:20px 40px; border-top:1px solid #e8eaed; text-align:center; }
-  .footer p { margin:0; color:#80868b; font-size:11px; line-height:1.8; }
+  .detail-label { display:table-cell; width:130px; padding:10px 12px; font-size:12px; font-weight:600; color:#737373; background:#F0F0EE; border-radius:8px 0 0 8px; }
+  .detail-value { display:table-cell; padding:10px 12px; font-size:13px; color:#0C0C0C; background:#F0F0EE; border-radius:0 8px 8px 0; }
+  .tip-box { background:#FEF2F2; border-left:4px solid #D93025; padding:14px 16px; border-radius:0 8px 8px 0; margin:24px 0 0; }
+  .tip-box p { margin:0; font-size:13px; color:#2D6CDF; line-height:1.6; }
+  .footer { background:#F0F0EE; padding:20px 40px; border-top:1px solid #E2E2E0; text-align:center; }
+  .footer p { margin:0; color:#737373; font-size:11px; line-height:1.8; }
 </style>
 </head>
 <body>

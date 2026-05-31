@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Agent Performance Metrics')
 
@@ -232,8 +232,8 @@
     const applicationsCtx = document.getElementById('applicationsChart');
     if (applicationsCtx) {
         const appGrad = applicationsCtx.getContext('2d').createLinearGradient(0, 0, 0, 300);
-        appGrad.addColorStop(0, 'rgba(99,102,241,0.45)');
-        appGrad.addColorStop(1, 'rgba(99,102,241,0.02)');
+        appGrad.addColorStop(0, 'rgba(20, 71, 186,0.45)');
+        appGrad.addColorStop(1, 'rgba(20, 71, 186,0.02)');
         new Chart(applicationsCtx, {
             type: 'line',
             data: {
@@ -241,12 +241,12 @@
                 datasets: [{
                     label: 'Applications',
                     data: {!! json_encode($applicationsOverTime['data']) !!},
-                    borderColor: '#6366f1',
+                    borderColor: '#2D6CDF',
                     backgroundColor: appGrad,
                     borderWidth: 3,
                     tension: 0.45,
                     fill: true,
-                    pointBackgroundColor: '#6366f1',
+                    pointBackgroundColor: '#2D6CDF',
                     pointRadius: 5,
                     pointHoverRadius: 8,
                     pointBorderColor: '#fff',
@@ -260,18 +260,18 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: 'rgba(99,102,241,0.9)',
-                        titleColor: '#fff', bodyColor: '#e0e7ff',
+                        backgroundColor: 'rgba(20, 71, 186,0.9)',
+                        titleColor: '#fff', bodyColor: '#EBF2FF',
                         cornerRadius: 10, padding: 12,
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: { stepSize: 1, color: '#6b7280' },
-                        grid: { color: 'rgba(99,102,241,0.08)' }
+                        ticks: { stepSize: 1, color: '#737373' },
+                        grid: { color: 'rgba(20, 71, 186,0.08)' }
                     },
-                    x: { ticks: { color: '#6b7280' }, grid: { display: false } }
+                    x: { ticks: { color: '#737373' }, grid: { display: false } }
                 }
             }
         });
@@ -287,18 +287,18 @@
                 datasets: [{
                     data: {!! json_encode($outcomeDistribution['data']) !!},
                     backgroundColor: [
-                        'rgba(34,197,94,0.85)',
-                        'rgba(239,68,68,0.85)',
+                        'rgba(15, 107, 49,0.85)',
+                        'rgba(185, 28, 28,0.85)',
                         'rgba(251,191,36,0.85)',
-                        'rgba(156,163,175,0.85)',
-                        'rgba(99,102,241,0.85)',
+                        'rgba(168, 168, 168,0.85)',
+                        'rgba(20, 71, 186,0.85)',
                     ],
                     hoverBackgroundColor: [
-                        'rgba(34,197,94,1)',
-                        'rgba(239,68,68,1)',
+                        'rgba(15, 107, 49,1)',
+                        'rgba(185, 28, 28,1)',
                         'rgba(251,191,36,1)',
-                        'rgba(156,163,175,1)',
-                        'rgba(99,102,241,1)',
+                        'rgba(168, 168, 168,1)',
+                        'rgba(20, 71, 186,1)',
                     ],
                     borderWidth: 3,
                     borderColor: '#fff',
@@ -312,11 +312,11 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, color: '#374151' }
+                        labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, color: '#3D3D3D' }
                     },
                     tooltip: {
                         backgroundColor: 'rgba(30,27,75,0.92)',
-                        titleColor: '#c7d2fe', bodyColor: '#e0e7ff',
+                        titleColor: '#BFCFEE', bodyColor: '#EBF2FF',
                         cornerRadius: 10, padding: 12,
                     }
                 }
@@ -329,9 +329,9 @@
     if (learningCtx) {
         const ctx2d = learningCtx.getContext('2d');
         const srGrad = ctx2d.createLinearGradient(0, 0, 0, 300);
-        srGrad.addColorStop(0, 'rgba(34,197,94,0.35)'); srGrad.addColorStop(1, 'rgba(34,197,94,0.02)');
+        srGrad.addColorStop(0, 'rgba(15, 107, 49,0.35)'); srGrad.addColorStop(1, 'rgba(15, 107, 49,0.02)');
         const msGrad = ctx2d.createLinearGradient(0, 0, 0, 300);
-        msGrad.addColorStop(0, 'rgba(99,102,241,0.35)'); msGrad.addColorStop(1, 'rgba(99,102,241,0.02)');
+        msGrad.addColorStop(0, 'rgba(20, 71, 186,0.35)'); msGrad.addColorStop(1, 'rgba(20, 71, 186,0.02)');
         new Chart(learningCtx, {
             type: 'line',
             data: {
@@ -340,12 +340,12 @@
                     {
                         label: 'Success Rate',
                         data: {!! json_encode($learningMetrics['success_rate'] ?? []) !!},
-                        borderColor: '#22c55e',
+                        borderColor: '#1E8E3E',
                         backgroundColor: srGrad,
                         borderWidth: 3,
                         tension: 0.45,
                         fill: true,
-                        pointBackgroundColor: '#22c55e',
+                        pointBackgroundColor: '#1E8E3E',
                         pointRadius: 4, pointHoverRadius: 7,
                         pointBorderColor: '#fff', pointBorderWidth: 2,
                         yAxisID: 'y'
@@ -353,12 +353,12 @@
                     {
                         label: 'Avg Match Score',
                         data: {!! json_encode($learningMetrics['avg_score'] ?? []) !!},
-                        borderColor: '#6366f1',
+                        borderColor: '#2D6CDF',
                         backgroundColor: msGrad,
                         borderWidth: 3,
                         tension: 0.45,
                         fill: true,
-                        pointBackgroundColor: '#6366f1',
+                        pointBackgroundColor: '#2D6CDF',
                         pointRadius: 4, pointHoverRadius: 7,
                         pointBorderColor: '#fff', pointBorderWidth: 2,
                         yAxisID: 'y'
@@ -373,11 +373,11 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, color: '#374151' }
+                        labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, color: '#3D3D3D' }
                     },
                     tooltip: {
                         backgroundColor: 'rgba(30,27,75,0.92)',
-                        titleColor: '#c7d2fe', bodyColor: '#e0e7ff',
+                        titleColor: '#BFCFEE', bodyColor: '#EBF2FF',
                         cornerRadius: 10, padding: 12,
                     }
                 },
@@ -385,10 +385,10 @@
                     y: {
                         type: 'linear', display: true, position: 'left',
                         min: 0, max: 100,
-                        ticks: { color: '#6b7280', callback: function(v){ return v+'%'; } },
-                        grid: { color: 'rgba(99,102,241,0.07)' }
+                        ticks: { color: '#737373', callback: function(v){ return v+'%'; } },
+                        grid: { color: 'rgba(20, 71, 186,0.07)' }
                     },
-                    x: { ticks: { color: '#6b7280' }, grid: { display: false } }
+                    x: { ticks: { color: '#737373' }, grid: { display: false } }
                 }
             }
         });

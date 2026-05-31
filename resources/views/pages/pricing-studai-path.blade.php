@@ -31,7 +31,7 @@
         }
         .plan-card:hover {
             transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 20px 48px rgba(99,102,241,.15), 0 8px 16px rgba(0,0,0,.08);
+            box-shadow: none;
         }
         /* Colored outline button variants */
         .btn-free {
@@ -39,65 +39,65 @@
             gap:0.5rem;font-weight:600;border-radius:0.5rem;
             transition:all 0.2s ease;cursor:pointer;
             padding:0.625rem 1.25rem;font-size:0.875rem;
-            background:linear-gradient(135deg,#374151,#1f2937);
+            background:#3D3D3D;
             color:#fff;border:none;width:100%;margin-bottom:2rem;
         }
-        .btn-free:hover { background:linear-gradient(135deg,#4b5563,#374151); transform:scale(0.98); box-shadow:0 4px 14px rgba(31,41,55,.35); }
+        .btn-free:hover { background:#3D3D3D; transform:scale(0.98); box-shadow: none; }
         .btn-executive {
             display:inline-flex;align-items:center;justify-content:center;
             gap:0.5rem;font-weight:600;border-radius:0.5rem;
             transition:all 0.2s ease;cursor:pointer;
             padding:0.625rem 1.25rem;font-size:0.875rem;
-            background:linear-gradient(135deg,#c9941a,#e3b62f);
+            background:#2D6CDF;
             color:#fff;border:none;width:100%;margin-bottom:2rem;
         }
-        .btn-executive:hover { background:linear-gradient(135deg,#b3830f,#c9941a); transform:scale(0.98); box-shadow:0 4px 14px rgba(227,182,47,.4); }
+        .btn-executive:hover { background:#E37400; transform:scale(0.98); box-shadow: none; }
         .btn-starter {
             display:inline-flex;align-items:center;justify-content:center;
             gap:0.5rem;font-weight:600;border-radius:0.5rem;
             transition:all 0.2s ease;cursor:pointer;
             padding:0.625rem 1.25rem;font-size:0.875rem;
-            background:linear-gradient(135deg,#374151,#1f2937);
+            background:#3D3D3D;
             color:#fff;border:none;width:100%;margin-bottom:2rem;
         }
-        .btn-starter:hover { background:linear-gradient(135deg,#4b5563,#374151); transform:scale(0.98); box-shadow:0 4px 14px rgba(31,41,55,.35); }
+        .btn-starter:hover { background:#3D3D3D; transform:scale(0.98); box-shadow: none; }
         .btn-enterprise {
             display:inline-flex;align-items:center;justify-content:center;
             gap:0.5rem;font-weight:600;border-radius:0.5rem;
             transition:all 0.2s ease;cursor:pointer;
             padding:0.625rem 1.25rem;font-size:0.875rem;
-            background:linear-gradient(135deg,#0f172a,#1e293b);
+            background:#0C0C0C;
             color:#fff;border:none;width:100%;margin-bottom:2rem;
         }
-        .btn-enterprise:hover { background:linear-gradient(135deg,#1e293b,#0f172a); transform:scale(0.98); box-shadow:0 4px 14px rgba(15,23,42,.4); }
+        .btn-enterprise:hover { background:#0C0C0C; transform:scale(0.98); box-shadow: none; }
         /* Colored plan card themes */
-        .card-free   { background: linear-gradient(145deg, #f0fdf4, #dcfce7, #d1fae5); border-color: #86efac; }
-        .card-pro    { background: linear-gradient(145deg, #eff6ff, #dbeafe, #e0e7ff); border-color: #93c5fd; }
-        .card-exec   { background: linear-gradient(145deg, #fffdf5, #fbf2d6, #fdf6e3); border-color: #e3b62f; }
-        .card-starter{ background: linear-gradient(145deg, #fff7ed, #ffedd5, #fef3c7); border-color: #fbbf24; }
-        .card-growth { background: linear-gradient(145deg, #eff6ff, #dbeafe, #e0e7ff); border-color: #3b82f6; }
-        .card-enterprise{ background: linear-gradient(145deg, #07121d, #0c1c2c, #14283d); border-color: #2f5fb0; }
-        .card-enterprise h3, .card-enterprise p, .card-enterprise span { color: #e2e8f0 !important; }
-        .card-enterprise .price-label { color: #a9c4ec !important; }
+        .card-free   { background: #EDFAF2; border-color: #A3D9B4; }
+        .card-pro    { background: #EBF2FF; border-color: #BFCFEE; }
+        .card-exec   { background: #FFF8EC; border-color: #E37400; }
+        .card-starter{ background: #FFF8EC; border-color: #E37400; }
+        .card-growth { background: #EBF2FF; border-color: #2D6CDF; }
+        .card-enterprise{ background: #0C0C0C; border-color: #2D6CDF; }
+        .card-enterprise h3, .card-enterprise p, .card-enterprise span { color: #E2E2E0 !important; }
+        .card-enterprise .price-label { color: #BFCFEE !important; }
         .plan-icon { width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px;flex-shrink:0; }
-        .icon-free    { background:linear-gradient(135deg,#22c55e,#16a34a); }
-        .icon-pro     { background:linear-gradient(135deg,#3a6bc0,#2f5fb0); }
-        .icon-exec    { background:linear-gradient(135deg,#e3b62f,#c9941a); }
-        .icon-starter { background:linear-gradient(135deg,#f59e0b,#ea580c); }
-        .icon-growth  { background:linear-gradient(135deg,#3a6bc0,#2f5fb0); }
-        .icon-ent     { background:linear-gradient(135deg,#2f5fb0,#1c344d); }
-        .price-free   { background:linear-gradient(135deg,#16a34a,#15803d); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-        .price-pro    { background:linear-gradient(135deg,#2f5fb0,#1f3f7a); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-        .price-exec   { background:linear-gradient(135deg,#c9941a,#b3830f); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-        .price-starter{ background:linear-gradient(135deg,#b45309,#d97706); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-        .price-growth { background:linear-gradient(135deg,#2f5fb0,#3a6bc0); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-        .check-free   { color:#16a34a !important; }
-        .check-pro    { color:#2f5fb0 !important; }
-        .check-exec   { color:#c9941a !important; }
-        .check-starter{ color:#d97706 !important; }
-        .check-growth { color:#2f5fb0 !important; }
-        .check-ent    { color:#a9c4ec !important; }
-        .card-enterprise li { color:#cbd5e1 !important; }
+        .icon-free    { background:#1E8E3E; }
+        .icon-pro     { background:#1B57C4; }
+        .icon-exec    { background:#E37400; }
+        .icon-starter { background:#E37400; }
+        .icon-growth  { background:#1B57C4; }
+        .icon-ent     { background:#2D6CDF; }
+        .price-free   { background:#1E8E3E; -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .price-pro    { background:#2D6CDF; -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .price-exec   { background:#2D6CDF; -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .price-starter{ background:#E37400; -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .price-growth { background:#2D6CDF; -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .check-free   { color:#1E8E3E !important; }
+        .check-pro    { color:#2D6CDF !important; }
+        .check-exec   { color:#2D6CDF !important; }
+        .check-starter{ color:#E37400 !important; }
+        .check-growth { color:#2D6CDF !important; }
+        .check-ent    { color:#BFCFEE !important; }
+        .card-enterprise li { color:#C8C8C5 !important; }
         /* Fade-in-up animation for plan cards */
         @keyframes fadeInUp {
             from { opacity:0; transform:translateY(24px); }
@@ -109,32 +109,32 @@
         .plan-card:nth-child(3) { animation-delay:0.25s; }
         /* Badge pulse on popular card */
         .popular-badge { animation: pulse 2s ease-in-out infinite; }
-        @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(26,115,232,.4);} 50%{box-shadow:0 0 0 8px rgba(26,115,232,0);} }
+        @keyframes pulse { 0%,100%{box-shadow: none;} 50%{box-shadow: none;} }
         /* "Best for" tag under plan name */
         .best-for { display:inline-flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:600;letter-spacing:.02em;text-transform:uppercase;padding:4px 10px;border-radius:999px;margin-top:8px; }
-        .best-for-free { background:rgba(22,163,74,.12); color:#15803d; }
-        .best-for-pro  { background:rgba(47,95,176,.12); color:#2f5fb0; }
-        .best-for-exec { background:rgba(227,182,47,.16); color:#b3830f; }
+        .best-for-free { background:rgba(15, 107, 49,.12); color:#1E8E3E; }
+        .best-for-pro  { background:rgba(47,95,176,.12); color:#2D6CDF; }
+        .best-for-exec { background:rgba(227,182,47,.16); color:#E37400; }
         /* Credit allotment pill */
         .credit-pill { display:flex;align-items:center;gap:8px;font-size:0.8rem;font-weight:600;padding:8px 12px;border-radius:10px;margin-bottom:18px; }
-        .credit-pill-free { background:rgba(22,163,74,.10); color:#15803d; border:1px solid rgba(22,163,74,.25); }
-        .credit-pill-pro  { background:rgba(47,95,176,.10); color:#2f5fb0; border:1px solid rgba(47,95,176,.25); }
-        .credit-pill-exec { background:rgba(227,182,47,.12); color:#b3830f; border:1px solid rgba(227,182,47,.30); }
+        .credit-pill-free { background:rgba(15, 107, 49,.10); color:#1E8E3E; border:1px solid rgba(15, 107, 49,.25); }
+        .credit-pill-pro  { background:rgba(47,95,176,.10); color:#2D6CDF; border:1px solid rgba(47,95,176,.25); }
+        .credit-pill-exec { background:rgba(227,182,47,.12); color:#E37400; border:1px solid rgba(227,182,47,.30); }
         /* Value highlight strip */
         .value-strip { display:flex;align-items:flex-start;gap:8px;font-size:0.8rem;font-weight:500;line-height:1.35;padding:10px 12px;border-radius:10px;margin-bottom:18px;background:rgba(255,255,255,.55); }
-        .value-strip-free { color:#166534; }
-        .value-strip-pro  { color:#1e40af; }
-        .value-strip-exec { color:#8a6d12; }
+        .value-strip-free { color:#1E8E3E; }
+        .value-strip-pro  { color:#1B57C4; }
+        .value-strip-exec { color:#E37400; }
         /* Comparison table */
         .compare-table { width:100%;border-collapse:separate;border-spacing:0;font-size:0.875rem; }
-        .compare-table th, .compare-table td { padding:14px 16px;text-align:center;border-bottom:1px solid #e5e7eb; }
-        .compare-table th:first-child, .compare-table td:first-child { text-align:left;font-weight:600;color:#374151; }
-        .compare-table thead th { font-size:0.95rem;font-weight:700;color:#1f2937; }
-        .compare-table thead th.col-pro { color:#2f5fb0; }
-        .compare-table tbody tr:hover { background:#f8fafc; }
-        .compare-table .col-pro { background:rgba(37,99,235,.04); }
-        .compare-yes { color:#16a34a;font-weight:700; }
-        .compare-no  { color:#cbd5e1; }
+        .compare-table th, .compare-table td { padding:14px 16px;text-align:center;border-bottom:1px solid #E2E2E0; }
+        .compare-table th:first-child, .compare-table td:first-child { text-align:left;font-weight:600;color:#3D3D3D; }
+        .compare-table thead th { font-size:0.95rem;font-weight:700;color:#0C0C0C; }
+        .compare-table thead th.col-pro { color:#2D6CDF; }
+        .compare-table tbody tr:hover { background:#F7F7F5; }
+        .compare-table .col-pro { background:rgba(15, 55, 153,.04); }
+        .compare-yes { color:#1E8E3E;font-weight:700; }
+        .compare-no  { color:#C8C8C5; }
     </style>
 </head>
 @php
@@ -224,7 +224,7 @@
                     </div>
 
                     {{-- Pro Plan --}}
-                    <div class="plan-card card-pro rounded-2xl border-2 shadow-elevation-3 p-8 relative" style="border-color:#3b82f6;">
+                    <div class="plan-card card-pro rounded-2xl border-2 shadow-elevation-3 p-8 relative" style="border-color:#2D6CDF;">
                         <div class="absolute -top-3 left-1/2 -translate-x-1/2">
                             <span class="popular-badge px-4 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">Most Popular</span>
                         </div>
@@ -457,7 +457,7 @@
                     </div>
 
                     {{-- Growth --}}
-                    <div class="plan-card card-growth rounded-2xl border-2 shadow-elevation-3 p-8 relative" style="border-color:#3b82f6;">
+                    <div class="plan-card card-growth rounded-2xl border-2 shadow-elevation-3 p-8 relative" style="border-color:#2D6CDF;">
                         <div class="absolute -top-3 left-1/2 -translate-x-1/2">
                             <span class="popular-badge px-4 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">Best Value</span>
                         </div>
@@ -495,18 +495,18 @@
                     <div class="plan-card card-enterprise rounded-2xl border shadow-card p-8">
                         <div class="plan-icon icon-ent">🌐</div>
                         <div class="mb-6">
-                            <h3 class="text-xl font-bold mb-1" style="color:#e2e8f0">Enterprise</h3>
-                            <p class="text-sm" style="color:#94a3b8">For large organizations with complex needs.</p>
+                            <h3 class="text-xl font-bold mb-1" style="color:#E2E2E0">Enterprise</h3>
+                            <p class="text-sm" style="color:#A8A8A8">For large organizations with complex needs.</p>
                         </div>
                         <div class="mb-6">
-                            <span class=\"text-4xl font-extrabold\" style=\"color:#a9c4ec\">Custom</span>
+                            <span class=\"text-4xl font-extrabold\" style=\"color:#BFCFEE\">Custom</span>
                         </div>
                         <a href="{{ route('contact') }}" class="btn-enterprise">
                             Contact Sales
                         </a>
                         <ul class="space-y-3">
                             @foreach(['Everything in Growth', 'Custom integrations (HRIS, ATS)', 'Dedicated account manager', 'Advanced analytics & reporting', 'SSO & advanced security', 'Custom SLAs', 'On-premise deployment option'] as $feature)
-                            <li class="flex items-start gap-3 text-sm" style="color:#cbd5e1">
+                            <li class="flex items-start gap-3 text-sm" style="color:#C8C8C5">
                                 <svg class="w-5 h-5 check-ent flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>

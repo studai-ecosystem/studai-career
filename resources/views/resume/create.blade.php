@@ -47,24 +47,24 @@
             {{-- Template Preview Modal --}}
             <div x-data="{ open: false, tpl: null }" @keydown.escape.window="open=false">
                 <div x-show="open" x-transition.opacity style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:24px;" @click.self="open=false">
-                    <div style="background:#fff;border-radius:16px;width:100%;max-width:760px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.35);">
+                    <div style="background:#fff;border-radius:16px;width:100%;max-width:760px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow: none;">
                         {{-- Modal header --}}
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid #E2E2E0;">
                             <div>
-                                <h3 x-text="tpl?.name" style="font-size:18px;font-weight:700;color:#111827;margin:0"></h3>
-                                <p x-text="tpl?.description" style="font-size:13px;color:#6b7280;margin:4px 0 0 0"></p>
+                                <h3 x-text="tpl?.name" style="font-size:18px;font-weight:700;color:#0C0C0C;margin:0"></h3>
+                                <p x-text="tpl?.description" style="font-size:13px;color:#737373;margin:4px 0 0 0"></p>
                             </div>
                             <div style="display:flex;gap:10px;align-items:center;">
-                                <label style="display:inline-flex;align-items:center;gap:8px;padding:9px 20px;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-size:13px;font-weight:700;border-radius:9px;cursor:pointer;border:none;">
+                                <label style="display:inline-flex;align-items:center;gap:8px;padding:9px 20px;background:#2D6CDF;color:#fff;font-size:13px;font-weight:700;border-radius:9px;cursor:pointer;border:none;">
                                     <input type="radio" name="template_id" :value="tpl?.id" x-model="formData.template_id" class="sr-only" @change="open=false">
                                     ✓ Use This Template
                                 </label>
-                                <button type="button" @click="open=false" style="background:#f3f4f6;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:18px;color:#6b7280;">✕</button>
+                                <button type="button" @click="open=false" style="background:#F0F0EE;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:18px;color:#737373;">✕</button>
                             </div>
                         </div>
                         {{-- Resume preview --}}
-                        <div style="overflow-y:auto;padding:24px;background:#f8fafc;">
-                            <div x-show="tpl" style="background:#fff;border-radius:8px;box-shadow:0 2px 16px rgba(0,0,0,.08);overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;">
+                        <div style="overflow-y:auto;padding:24px;background:#F7F7F5;">
+                            <div x-show="tpl" style="background:#fff;border-radius:8px;box-shadow: none;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;">
                                 {{-- Dynamic preview rendered from Alpine tpl data --}}
                                 <template x-if="tpl">
                                     <div>
@@ -83,7 +83,7 @@
                                         <div :style="tpl.cols==2 ? 'display:flex;' : ''">
                                             {{-- Sidebar (2-col only) --}}
                                             <template x-if="tpl.cols==2">
-                                                <div :style="'width:220px;flex-shrink:0;padding:20px 18px;background:'+tpl.secondary+'15;border-right:1px solid #e5e7eb;'">
+                                                <div :style="'width:220px;flex-shrink:0;padding:20px 18px;background:'+tpl.secondary+'15;border-right:1px solid #E2E2E0;'">
                                                     <div :style="'font-size:10px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:8px;'">Skills</div>
                                                     <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px;">
                                                         <template x-for="s in ['Laravel','React','Python','MySQL','Docker','AWS','Git','REST API']">
@@ -91,28 +91,28 @@
                                                         </template>
                                                     </div>
                                                     <div :style="'font-size:10px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:8px;'">Education</div>
-                                                    <div style="font-size:11px;font-weight:700;color:#1f2937;">B.Tech Computer Science</div>
-                                                    <div style="font-size:11px;color:#6b7280;">IIT Bombay · 2019–2023</div>
-                                                    <div style="font-size:11px;color:#6b7280;">CGPA: 8.7 / 10</div>
+                                                    <div style="font-size:11px;font-weight:700;color:#0C0C0C;">B.Tech Computer Science</div>
+                                                    <div style="font-size:11px;color:#737373;">IIT Bombay · 2019–2023</div>
+                                                    <div style="font-size:11px;color:#737373;">CGPA: 8.7 / 10</div>
                                                     <div :style="'font-size:10px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin:14px 0 8px;'">Languages</div>
-                                                    <div style="font-size:11px;color:#374151;">English · Native</div>
-                                                    <div style="font-size:11px;color:#374151;">Hindi · Fluent</div>
+                                                    <div style="font-size:11px;color:#3D3D3D;">English · Native</div>
+                                                    <div style="font-size:11px;color:#3D3D3D;">Hindi · Fluent</div>
                                                 </div>
                                             </template>
                                             {{-- Main content --}}
                                             <div style="flex:1;padding:20px 24px;">
                                                 {{-- Summary --}}
                                                 <div :style="'font-size:11px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:6px;'">Professional Summary</div>
-                                                <p style="font-size:12px;color:#374151;line-height:1.6;margin-bottom:18px;">Full-stack software engineer with 4+ years building scalable SaaS products. Expert in Laravel, React, and cloud infrastructure. Led 3 cross-functional teams delivering ₹2Cr+ revenue impact. Passionate about clean code and developer experience.</p>
+                                                <p style="font-size:12px;color:#3D3D3D;line-height:1.6;margin-bottom:18px;">Full-stack software engineer with 4+ years building scalable SaaS products. Expert in Laravel, React, and cloud infrastructure. Led 3 cross-functional teams delivering ₹2Cr+ revenue impact. Passionate about clean code and developer experience.</p>
                                                 {{-- Experience --}}
                                                 <div :style="'font-size:11px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:10px;'">Work Experience</div>
                                                 <div style="margin-bottom:14px;">
                                                     <div style="display:flex;justify-content:space-between;align-items:baseline;">
-                                                        <div style="font-size:13px;font-weight:700;color:#111827;">Senior Software Engineer</div>
-                                                        <div style="font-size:11px;color:#6b7280;">Jan 2023 – Present</div>
+                                                        <div style="font-size:13px;font-weight:700;color:#0C0C0C;">Senior Software Engineer</div>
+                                                        <div style="font-size:11px;color:#737373;">Jan 2023 – Present</div>
                                                     </div>
-                                                    <div style="font-size:12px;font-weight:600;color:#6b7280;margin-bottom:5px;">Infosys · Bengaluru, India</div>
-                                                    <ul style="font-size:11px;color:#374151;padding-left:16px;line-height:1.7;margin:0;">
+                                                    <div style="font-size:12px;font-weight:600;color:#737373;margin-bottom:5px;">Infosys · Bengaluru, India</div>
+                                                    <ul style="font-size:11px;color:#3D3D3D;padding-left:16px;line-height:1.7;margin:0;">
                                                         <li>Reduced API response time by 45% via Redis caching, improving UX for 50K+ users</li>
                                                         <li>Led migration of monolith to microservices, cutting deployment time from 2h to 12min</li>
                                                         <li>Mentored 5 junior engineers; introduced code-review culture reducing bugs by 30%</li>
@@ -120,11 +120,11 @@
                                                 </div>
                                                 <div style="margin-bottom:14px;">
                                                     <div style="display:flex;justify-content:space-between;align-items:baseline;">
-                                                        <div style="font-size:13px;font-weight:700;color:#111827;">Software Engineer</div>
-                                                        <div style="font-size:11px;color:#6b7280;">Jun 2020 – Dec 2022</div>
+                                                        <div style="font-size:13px;font-weight:700;color:#0C0C0C;">Software Engineer</div>
+                                                        <div style="font-size:11px;color:#737373;">Jun 2020 – Dec 2022</div>
                                                     </div>
-                                                    <div style="font-size:12px;font-weight:600;color:#6b7280;margin-bottom:5px;">Razorpay · Bengaluru, India</div>
-                                                    <ul style="font-size:11px;color:#374151;padding-left:16px;line-height:1.7;margin:0;">
+                                                    <div style="font-size:12px;font-weight:600;color:#737373;margin-bottom:5px;">Razorpay · Bengaluru, India</div>
+                                                    <ul style="font-size:11px;color:#3D3D3D;padding-left:16px;line-height:1.7;margin:0;">
                                                         <li>Built payment reconciliation engine processing ₹500Cr/month with 99.99% accuracy</li>
                                                         <li>Integrated 12 banking partners via REST APIs; cut integration time by 60%</li>
                                                     </ul>
@@ -139,7 +139,7 @@
                                                             </template>
                                                         </div>
                                                         <div :style="'font-size:11px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:8px;'">Education</div>
-                                                        <div style="font-size:12px;font-weight:700;color:#111827;">B.Tech Computer Science · IIT Bombay · 2019–2023 · CGPA 8.7</div>
+                                                        <div style="font-size:12px;font-weight:700;color:#0C0C0C;">B.Tech Computer Science · IIT Bombay · 2019–2023 · CGPA 8.7</div>
                                                     </div>
                                                 </template>
                                             </div>
@@ -157,9 +157,9 @@
                 @foreach($templates as $template)
                     @php
                         $colors = is_array($template->color_scheme) ? $template->color_scheme : (json_decode($template->color_scheme, true) ?? []);
-                        $primary   = $colors['primary']   ?? '#1a202c';
-                        $secondary = $colors['secondary'] ?? '#2d3748';
-                        $accent    = $colors['accent']    ?? '#4a5568';
+                        $primary   = $colors['primary']   ?? '#0C0C0C';
+                        $secondary = $colors['secondary'] ?? '#3D3D3D';
+                        $accent    = $colors['accent']    ?? '#3D3D3D';
                         $layout    = is_array($template->layout_config) ? $template->layout_config : (json_decode($template->layout_config, true) ?? []);
                         $cols      = $layout['columns'] ?? 1;
                         $tplData   = json_encode([
@@ -182,7 +182,7 @@
                             <div class="border-2 rounded-xl p-0 overflow-hidden transition-all"
                                  :class="formData.template_id == {{ $template->id }} ? 'border-purple-600 ring-2 ring-purple-300' : 'border-gray-200 hover:border-purple-300'">
                                 {{-- Mini preview thumbnail --}}
-                                <div class="h-52 relative overflow-hidden" style="background:#f8fafc;">
+                                <div class="h-52 relative overflow-hidden" style="background:#F7F7F5;">
                                     @if($template->preview_image)
                                         <img src="{{ asset('storage/' . $template->preview_image) }}" alt="{{ $template->name }}" class="w-full h-full object-cover">
                                     @else
@@ -198,32 +198,32 @@
                                             </div>
                                             @if($cols == 2)
                                             <div style="display:flex;flex:1;overflow:hidden;">
-                                                <div style="width:38%;padding:6px;background:{{ $secondary }}18;border-right:1px solid #e5e7eb;">
-                                                    @for($i=0;$i<5;$i++)<div style="width:100%;height:{{ $i%3==0?'3px':'2px' }};background:{{ $i%3==0 ? $accent : '#d1d5db' }};border-radius:1px;margin-bottom:3px;"></div>@endfor
+                                                <div style="width:38%;padding:6px;background:{{ $secondary }}18;border-right:1px solid #E2E2E0;">
+                                                    @for($i=0;$i<5;$i++)<div style="width:100%;height:{{ $i%3==0?'3px':'2px' }};background:{{ $i%3==0 ? $accent : '#C8C8C5' }};border-radius:1px;margin-bottom:3px;"></div>@endfor
                                                     <div style="width:100%;height:3px;background:{{ $accent }};border-radius:1px;margin:5px 0 3px;"></div>
-                                                    @for($i=0;$i<3;$i++)<div style="width:100%;height:2px;background:#d1d5db;border-radius:1px;margin-bottom:3px;"></div>@endfor
+                                                    @for($i=0;$i<3;$i++)<div style="width:100%;height:2px;background:#C8C8C5;border-radius:1px;margin-bottom:3px;"></div>@endfor
                                                 </div>
                                                 <div style="flex:1;padding:6px;">
-                                                    @for($s=0;$s<3;$s++)<div style="width:50%;height:3px;background:{{ $primary }};border-radius:1px;margin-bottom:3px;"></div>@for($i=0;$i<3;$i++)<div style="width:100%;height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px;"></div>@endfor<div style="margin-bottom:5px;"></div>@endfor
+                                                    @for($s=0;$s<3;$s++)<div style="width:50%;height:3px;background:{{ $primary }};border-radius:1px;margin-bottom:3px;"></div>@for($i=0;$i<3;$i++)<div style="width:100%;height:2px;background:#E2E2E0;border-radius:1px;margin-bottom:2px;"></div>@endfor<div style="margin-bottom:5px;"></div>@endfor
                                                 </div>
                                             </div>
                                             @else
                                             <div style="flex:1;padding:8px;">
-                                                @for($s=0;$s<4;$s++)<div style="width:35%;height:3px;background:{{ $primary }};border-radius:1px;margin-bottom:3px;"></div>@for($i=0;$i<3;$i++)<div style="width:100%;height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px;"></div>@endfor<div style="margin-bottom:6px;"></div>@endfor
+                                                @for($s=0;$s<4;$s++)<div style="width:35%;height:3px;background:{{ $primary }};border-radius:1px;margin-bottom:3px;"></div>@for($i=0;$i<3;$i++)<div style="width:100%;height:2px;background:#E2E2E0;border-radius:1px;margin-bottom:2px;"></div>@endfor<div style="margin-bottom:6px;"></div>@endfor
                                             </div>
                                             @endif
                                             <div style="height:3px;background:{{ $accent }};flex-shrink:0;"></div>
                                         </div>
                                     @endif
                                     {{-- Selected checkmark --}}
-                                    <div x-show="formData.template_id == {{ $template->id }}" style="position:absolute;top:8px;right:8px;background:#6366f1;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">✓</div>
+                                    <div x-show="formData.template_id == {{ $template->id }}" style="position:absolute;top:8px;right:8px;background:#2D6CDF;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;">✓</div>
                                     {{-- Category badge --}}
                                     <span style="position:absolute;top:8px;left:8px;background:{{ $primary }};color:#fff;font-size:8px;font-weight:700;padding:3px 7px;border-radius:4px;">{{ ucfirst($template->category ?? 'classic') }}</span>
                                     {{-- Preview button overlay --}}
                                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                                         <button type="button"
                                                 @click.prevent="tpl = {{ $tplData }}; open = true"
-                                                style="background:#fff;color:#6366f1;font-size:12px;font-weight:700;padding:8px 16px;border-radius:8px;border:2px solid #6366f1;cursor:pointer;">
+                                                style="background:#fff;color:#2D6CDF;font-size:12px;font-weight:700;padding:8px 16px;border-radius:8px;border:2px solid #2D6CDF;cursor:pointer;">
                                             👁 Full Preview
                                         </button>
                                     </div>
@@ -231,16 +231,16 @@
                                 {{-- Card footer --}}
                                 <div style="padding:12px 14px;">
                                     <div style="display:flex;align-items:center;justify-content:space-between;">
-                                        <h3 style="font-size:14px;font-weight:700;color:#111827;margin:0;">{{ $template->name }}</h3>
+                                        <h3 style="font-size:14px;font-weight:700;color:#0C0C0C;margin:0;">{{ $template->name }}</h3>
                                         <div style="display:flex;gap:4px;">
-                                            @if($template->is_ats_friendly)<span style="font-size:10px;background:#dcfce7;color:#15803d;padding:2px 7px;border-radius:4px;font-weight:700;">ATS ✓</span>@endif
-                                            @if($template->is_premium)<span style="font-size:10px;background:#f3e8ff;color:#7c3aed;padding:2px 7px;border-radius:4px;font-weight:700;">Pro</span>@endif
+                                            @if($template->is_ats_friendly)<span style="font-size:10px;background:#EDFAF2;color:#1E8E3E;padding:2px 7px;border-radius:4px;font-weight:700;">ATS ✓</span>@endif
+                                            @if($template->is_premium)<span style="font-size:10px;background:#EBF2FF;color:#2D6CDF;padding:2px 7px;border-radius:4px;font-weight:700;">Pro</span>@endif
                                         </div>
                                     </div>
-                                    <p style="font-size:12px;color:#6b7280;margin:4px 0 10px;">{{ Str::limit($template->description, 60) }}</p>
+                                    <p style="font-size:12px;color:#737373;margin:4px 0 10px;">{{ Str::limit($template->description, 60) }}</p>
                                     <button type="button"
                                             @click.prevent="tpl = {{ $tplData }}; open = true"
-                                            style="width:100%;padding:7px;border:1.5px solid #e9d5ff;border-radius:7px;background:#faf5ff;color:#7c3aed;font-size:12px;font-weight:600;cursor:pointer;">
+                                            style="width:100%;padding:7px;border:1.5px solid #BFCFEE;border-radius:7px;background:#EBF2FF;color:#2D6CDF;font-size:12px;font-weight:600;cursor:pointer;">
                                         👁 See Full Resume Preview
                                     </button>
                                 </div>

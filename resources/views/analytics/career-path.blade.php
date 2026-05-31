@@ -4,13 +4,13 @@
 
 @push('styles')
 <style>
-    #career-graph { height: 600px; background: linear-gradient(to bottom, #f8fafc, #f1f5f9); }
+    #career-graph { height: 600px; background: #F7F7F5; }
     .node-tooltip { 
         position: absolute; 
         background: white; 
         padding: 16px; 
         border-radius: 12px; 
-        box-shadow: 0 10px 40px rgba(0,0,0,0.15); 
+        box-shadow: none; 
         z-index: 1000;
         min-width: 250px;
     }
@@ -158,12 +158,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('career-graph');
         
         const levelColors = {
-            1: { background: '#d1fae5', border: '#10b981' },
-            2: { background: '#dbeafe', border: '#3b82f6' },
-            3: { background: '#ede9fe', border: '#8b5cf6' },
-            4: { background: '#ffedd5', border: '#f97316' },
-            5: { background: '#fee2e2', border: '#ef4444' },
-            6: { background: '#374151', border: '#1f2937' }
+            1: { background: '#EDFAF2', border: '#1E8E3E' },
+            2: { background: '#EBF2FF', border: '#2D6CDF' },
+            3: { background: '#EBF2FF', border: '#2D6CDF' },
+            4: { background: '#FFF8EC', border: '#E37400' },
+            5: { background: '#FEF2F2', border: '#2D6CDF' },
+            6: { background: '#3D3D3D', border: '#0C0C0C' }
         };
 
         const nodes = new vis.DataSet(data.nodes.map(node => ({
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
             from: edge.from,
             to: edge.to,
             arrows: 'to',
-            color: { color: '#cbd5e1', highlight: '#8b5cf6' },
+            color: { color: '#C8C8C5', highlight: '#2D6CDF' },
             width: Math.max(1, Math.min(5, (edge.value || 10) / 20)),
             title: edge.label || '',
             smooth: { type: 'cubicBezier', forceDirection: 'horizontal' }

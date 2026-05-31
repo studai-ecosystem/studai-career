@@ -11,7 +11,7 @@
 <body class="bg-gray-50 min-h-screen flex items-center justify-center px-4">
     <div class="max-w-lg w-full">
         <div class="text-center mb-6">
-            <span class="text-[#1A73E8] font-bold text-xl">StudAI Hire</span>
+            <span class="text-[#2D6CDF] font-bold text-xl">StudAI Hire</span>
             <span class="text-gray-400 text-sm ml-2">| Powered by Orin™</span>
         </div>
 
@@ -21,7 +21,7 @@
                 <span class="text-5xl">🔍</span>
                 <h1 class="text-xl font-bold text-gray-900 mt-4">Application not found</h1>
                 <p class="text-gray-500 mt-2 text-sm">We couldn't find an application associated with your session.</p>
-                <a href="{{ route('apply.show', $token) }}" class="inline-block mt-6 px-6 py-3 bg-[#1A73E8] text-white rounded-xl font-semibold">
+                <a href="{{ route('apply.show', $token) }}" class="inline-block mt-6 px-6 py-3 bg-[#2D6CDF] text-white rounded-xl font-semibold">
                     Back to Job Listing
                 </a>
             </div>
@@ -61,7 +61,7 @@
                 <p class="text-gray-400 text-sm mt-3">
                     Don't be discouraged — there are many opportunities on StudAI Hire.
                 </p>
-                <a href="{{ route('jobs.search') }}" class="inline-block mt-6 px-6 py-3 bg-[#1A73E8] text-white rounded-xl font-semibold">
+                <a href="{{ route('jobs.search') }}" class="inline-block mt-6 px-6 py-3 bg-[#2D6CDF] text-white rounded-xl font-semibold">
                     Browse More Jobs
                 </a>
             </div>

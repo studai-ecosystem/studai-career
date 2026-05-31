@@ -49,15 +49,15 @@
 
     <style>
         :root {
-            --brand: #6366f1;
-            --brand-dark: #4f46e5;
+            --brand: #2D6CDF;
+            --brand-dark: #1B57C4;
         }
         html { scroll-behavior: smooth; }
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#6366f1,#a855f7); border-radius:999px; }
+        ::-webkit-scrollbar-track { background: #F0F0EE; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#2D6CDF,#2D6CDF); border-radius:999px; }
         .gradient-text {
-            background-image: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            background-image: linear-gradient(135deg, #2D6CDF, #2D6CDF, #2D6CDF);
             -webkit-background-clip: text; background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -92,10 +92,10 @@
                     <a href="{{ route('contact') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Contact</a>
                     @endif
                     @auth
-                        <a href="{{ route('dashboard') }}" class="px-4 py-2 rounded-full text-white text-sm font-semibold transition-all hover:shadow-lg hover:opacity-90" style="background:linear-gradient(135deg,#6366f1,#7c3aed)">Dashboard →</a>
+                        <a href="{{ route('dashboard') }}" class="px-4 py-2 rounded-full text-white text-sm font-semibold transition-all hover:shadow-lg hover:opacity-90" style="background:linear-gradient(135deg,#2D6CDF,#2D6CDF)">Dashboard →</a>
                     @else
                         <a href="{{ route('login') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Login</a>
-                        <a href="{{ route('register') }}" class="px-4 py-2 rounded-full text-white text-sm font-semibold transition-all hover:shadow-lg hover:opacity-90" style="background:linear-gradient(135deg,#6366f1,#7c3aed)">Get Started Free</a>
+                        <a href="{{ route('register') }}" class="px-4 py-2 rounded-full text-white text-sm font-semibold transition-all hover:shadow-lg hover:opacity-90" style="background:linear-gradient(135deg,#2D6CDF,#2D6CDF)">Get Started Free</a>
                     @endauth
                 </div>
 
@@ -123,10 +123,10 @@
                 <a href="{{ route('about') }}" class="block px-4 py-2.5 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition font-medium">About</a>
                 @endif
                 @auth
-                    <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-white rounded-xl font-semibold text-center mt-2" style="background:linear-gradient(135deg,#6366f1,#7c3aed)">Dashboard →</a>
+                    <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-white rounded-xl font-semibold text-center mt-2" style="background:linear-gradient(135deg,#2D6CDF,#2D6CDF)">Dashboard →</a>
                 @else
                     <a href="{{ route('login') }}" class="block px-4 py-2.5 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition font-medium">Login</a>
-                    <a href="{{ route('register') }}" class="block px-4 py-2.5 text-white rounded-xl font-semibold text-center mt-2" style="background:linear-gradient(135deg,#6366f1,#7c3aed)">Get Started Free</a>
+                    <a href="{{ route('register') }}" class="block px-4 py-2.5 text-white rounded-xl font-semibold text-center mt-2" style="background:linear-gradient(135deg,#2D6CDF,#2D6CDF)">Get Started Free</a>
                 @endauth
             </div>
         </div>
@@ -138,7 +138,7 @@
     </main>
 
     {{-- Footer --}}
-    <footer style="background:#f7f7fc; border-top:1px solid #ebebf5;">
+    <footer style="background:#EBF2FF; border-top:1px solid #EBF2FF;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
                 {{-- Brand --}}

@@ -10,7 +10,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
@@ -18,20 +18,20 @@
 
     <style>
         :root {
-            --brand:      #2f5fb0;
-            --brand-dark: #284f95;
-            --brand-lite: #eaf0fa;
-            --bg:         #f7f8fa;
-            --surface:    #ffffff;
-            --border:     #e0e3ea;
-            --text:       #15233a;
-            --text-2:     #5c6a82;
-            --text-3:     #7e879a;
+            --brand:      var(--color-accent, #2D6CDF);
+            --brand-dark: var(--color-accent-hover, #1B57C4);
+            --brand-lite: var(--color-accent-subtle, #EBF2FF);
+            --bg:         var(--color-canvas, #F7F7F5);
+            --surface:    var(--color-surface, #FFFFFF);
+            --border:     var(--color-border, #E2E2E0);
+            --text:       var(--color-ink-1,#2D6CDF);
+            --text-2:     var(--color-ink-3, #737373);
+            --text-3:     var(--color-ink-4, #A8A8A8);
         }
 
         html { font-size:14px; }
         body {
-            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+            font-family: 'DM Sans', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
             -webkit-font-smoothing: antialiased;
@@ -43,32 +43,26 @@
         @keyframes floatY    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
         @keyframes blobMove  { 0%,100%{transform:translate(0,0)scale(1)} 33%{transform:translate(30px,-40px)scale(1.05)} 66%{transform:translate(-20px,20px)scale(.97)} }
 
-        /* ── GRAD TEXT ───────────────────────────── */
+        /* ── GRAD TEXT (MERIDIAN: solid accent) ─── */
         .g-text {
-            background: linear-gradient(135deg,#2f5fb0,#1c344d);
-            background-size: 200%;
-            -webkit-background-clip: text; background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradShift 4s ease infinite;
+            color: var(--color-accent);
+            -webkit-text-fill-color: currentColor;
         }
 
-        /* ── AUTH CARD ───────────────────────────── */
+        /* ── AUTH CARD (MERIDIAN: flat) ──────────── */
         .auth-card {
-            background: white;
+            background: var(--color-surface);
             border: 1px solid var(--border);
-            border-radius: 24px;
-            box-shadow:
-                0 2px 4px rgba(21,35,58,.04),
-                0 16px 48px rgba(21,35,58,.10),
-                0 0 0 1px rgba(47,95,176,.04);
+            border-radius: 16px;
+            box-shadow: none;
             animation: fadeInUp .5s ease both;
         }
 
         /* ── ROLE CARDS ──────────────────────────── */
         .role-card {
             border: 1.5px solid var(--border);
-            border-radius: 14px;
-            background: #f7f8fa;
+            border-radius: 12px;
+            background: var(--color-surface);
             padding: 14px;
             cursor: pointer;
             transition: all .2s ease;
@@ -76,18 +70,18 @@
             overflow: hidden;
         }
         .role-card:hover {
-            border-color: rgba(47,95,176,.4);
-            background: #eaf0fa;
+            border-color: var(--color-accent-muted);
+            background: var(--color-accent-subtle);
             transform: translateY(-2px);
             box-shadow: 0 4px 16px rgba(47,95,176,.12);
         }
         .role-card.active-seeker {
-            border-color: #2f5fb0 !important;
-            background: #eaf0fa !important;
+            border-color: #2D6CDF !important;
+            background: #EBF2FF !important;
             box-shadow: 0 0 0 3px rgba(47,95,176,.15), 0 4px 16px rgba(47,95,176,.12) !important;
         }
         .role-card.active-employer {
-            border-color: #1c344d !important;
+            border-color: #0C0C0C !important;
             background: #eef1f5 !important;
             box-shadow: 0 0 0 3px rgba(28,52,77,.15), 0 4px 16px rgba(28,52,77,.12) !important;
         }
@@ -95,7 +89,7 @@
         /* ── AUTH INPUTS ─────────────────────────── */
         .auth-input {
             width: 100%;
-            background: #f7f8fa;
+            background: #F7F7F5;
             border: 1.5px solid var(--border);
             border-radius: 12px;
             padding: 11px 14px;
@@ -106,7 +100,7 @@
             transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
         }
         .auth-input:focus {
-            border-color: #2f5fb0;
+            border-color: #2D6CDF;
             box-shadow: 0 0 0 3px rgba(47,95,176,.15);
             background: white;
         }
@@ -123,22 +117,22 @@
             border: none;
             cursor: pointer;
             transition: background .15s ease, transform .2s ease, box-shadow .2s ease;
-            background: #2f5fb0;
+            background: #2D6CDF;
             box-shadow: 0 4px 18px rgba(47,95,176,.30);
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
         .btn-auth:hover {
             transform: translateY(-1px);
-            background: #284f95;
+            background: #1B57C4;
             box-shadow: 0 6px 22px rgba(47,95,176,.38);
         }
-        .btn-auth:active { transform: translateY(0) scale(.99); background: #21426f; }
+        .btn-auth:active { transform: translateY(0) scale(.99); background: #0C2E72; }
         .btn-auth.employer-btn {
-            background: #1c344d;
+            background: #0C0C0C;
             box-shadow: 0 4px 18px rgba(28,52,77,.30);
         }
-        .btn-auth.employer-btn:hover { background: #14283d; box-shadow: 0 6px 22px rgba(28,52,77,.38); }
-        .btn-auth.employer-btn:active { background: #0c1c2c; }
+        .btn-auth.employer-btn:hover { background: #0C2E72; box-shadow: 0 6px 22px rgba(28,52,77,.38); }
+        .btn-auth.employer-btn:active { background: #0C2E72; }
 
         /* ── DIVIDER ─────────────────────────────── */
         .auth-divider {
@@ -163,7 +157,7 @@
 </head>
 <body>
 
-    <div class="relative min-h-screen flex items-center justify-center py-12 px-4 overflow-hidden" style="background:#f7f8fa">
+    <div class="relative min-h-screen flex items-center justify-center py-12 px-4 overflow-hidden" style="background:#F7F7F5">
 
         {{-- Soft decorative blobs --}}
         <div class="blob-auth w-[500px] h-[500px] -top-48 -left-32 opacity-30"
@@ -186,7 +180,7 @@
                 </a>
 
                 {{-- Tagline pill --}}
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold" style="background:#eaf0fa; border:1.5px solid rgba(47,95,176,.2); color:#2f5fb0">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold" style="background:#EBF2FF; border:1.5px solid rgba(47,95,176,.2); color:#2D6CDF">
                     <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 100 19 9.5 9.5 0 000-19zm1 12.28l-3.14-3.15A.75.75 0 019.5 8.5h1V5.25a.75.75 0 011.5 0V8.5h1a.75.75 0 01.53 1.28l-2.03 2.03z"/></svg>
                     Your Career. On Autopilot.
                 </div>
@@ -198,8 +192,8 @@
             </div>
 
             {{-- Footer --}}
-            <p class="text-xs text-center" style="color:#9ca3af">
-                &copy; {{ date('Y') }} <span class="g-text font-semibold">StudAI Hire</span>. Powered by <span style="color:#2f5fb0; font-weight:600">Orin™ AI</span>.
+            <p class="text-xs text-center" style="color:#A8A8A8">
+                &copy; {{ date('Y') }} <span class="g-text font-semibold">StudAI Hire</span>. Powered by <span style="color:#2D6CDF; font-weight:600">Orin™ AI</span>.
             </p>
         </div>
     </div>

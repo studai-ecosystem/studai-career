@@ -223,13 +223,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         label: 'Current Demand',
                         data: currentData,
-                        backgroundColor: '#3b82f6',
+                        backgroundColor: '#2D6CDF',
                         borderRadius: 4
                     },
                     {
                         label: '90-Day Forecast',
                         data: forecastData,
-                        backgroundColor: '#10b981',
+                        backgroundColor: '#1E8E3E',
                         borderRadius: 4
                     }
                 ]

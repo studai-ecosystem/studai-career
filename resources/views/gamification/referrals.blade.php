@@ -8,7 +8,7 @@
 <div class="space-y-6">
 
     {{-- Header --}}
-    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:linear-gradient(135deg,#1A73E8,#0B57D0);box-shadow:0 8px 32px rgba(26,115,232,.3)">
+    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:#2D6CDF;box-shadow: none">
         <h1 class="text-2xl font-bold mb-1">Referral Program</h1>
         <p class="text-blue-100 text-sm">Invite friends to StudAI Hire and earn bonus points for every signup</p>
     </div>
@@ -17,12 +17,12 @@
     <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
         <h2 class="font-bold text-gray-900 dark:text-white mb-4 text-lg">Your Referral Code</h2>
         <div class="flex items-center gap-3">
-            <div class="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded-xl px-5 py-3 font-mono text-xl font-bold tracking-widest text-center" style="color:#1A73E8">
+            <div class="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded-xl px-5 py-3 font-mono text-xl font-bold tracking-widest text-center" style="color:#2D6CDF">
                 {{ strtoupper($referralCode) }}
             </div>
             <button onclick="copyCode('{{ strtoupper($referralCode) }}')"
                     class="px-5 py-3 rounded-xl text-sm font-semibold text-white flex-shrink-0 transition-all"
-                    style="background:linear-gradient(135deg,#1A73E8,#0B57D0)">
+                    style="background:#2D6CDF">
                 Copy
             </button>
         </div>
@@ -53,7 +53,7 @@
     {{-- Stats --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-center shadow-sm">
-            <p class="text-2xl font-bold" style="color:#1A73E8">{{ $stats['total_referrals'] ?? 0 }}</p>
+            <p class="text-2xl font-bold" style="color:#2D6CDF">{{ $stats['total_referrals'] ?? 0 }}</p>
             <p class="text-xs text-gray-500 mt-1">Total Referrals</p>
         </div>
         <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-center shadow-sm">

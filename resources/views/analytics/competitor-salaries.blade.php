@@ -270,19 +270,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         label: 'Base Salary',
                         data: competitors.map(c => c.base),
-                        backgroundColor: '#f97316',
+                        backgroundColor: '#E37400',
                         borderRadius: 4
                     },
                     {
                         label: 'Bonus',
                         data: competitors.map(c => c.bonus),
-                        backgroundColor: '#fb923c',
+                        backgroundColor: '#E37400',
                         borderRadius: 4
                     },
                     {
                         label: 'Equity',
                         data: competitors.map(c => c.equity),
-                        backgroundColor: '#fcd34d',
+                        backgroundColor: '#E37400',
                         borderRadius: 4
                     }
                 ]
@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: ['Base Salary', 'Bonus', 'Equity'],
                 datasets: [{
                     data: [mix.base || 70, mix.bonus || 15, mix.equity || 15],
-                    backgroundColor: ['#f97316', '#fb923c', '#fcd34d']
+                    backgroundColor: ['#E37400', '#E37400', '#E37400']
                 }]
             },
             options: {
@@ -359,8 +359,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     label: 'Average Salary',
                     data: trends.map(t => t.salary),
-                    borderColor: '#f97316',
-                    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                    borderColor: '#E37400',
+                    backgroundColor: 'rgba(146, 80, 10, 0.1)',
                     fill: true,
                     tension: 0.4
                 }]

@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     label: 'Days',
                     data: data.map(d => d.days),
                     backgroundColor: [
-                        '#f97316', '#fb923c', '#fdba74', '#fcd34d', '#fbbf24', '#f59e0b'
+                        '#E37400', '#E37400', '#E37400', '#E37400', '#E37400', '#E37400'
                     ],
                     borderRadius: 8
                 }]
@@ -247,8 +247,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     label: 'Time to Hire',
                     data: data.map(d => d.days),
-                    borderColor: '#f97316',
-                    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                    borderColor: '#E37400',
+                    backgroundColor: 'rgba(146, 80, 10, 0.1)',
                     fill: true,
                     tension: 0.4,
                     pointRadius: 6
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: data.map(d => d.name),
                 datasets: [{
                     data: data.map(d => d.days),
-                    backgroundColor: ['#f97316', '#3b82f6', '#8b5cf6', '#10b981']
+                    backgroundColor: ['#E37400', '#2D6CDF', '#2D6CDF', '#1E8E3E']
                 }]
             },
             options: {
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     label: 'Avg Days',
                     data: data.map(d => d.days),
-                    backgroundColor: ['#f97316', '#fb923c', '#fdba74'],
+                    backgroundColor: ['#E37400', '#E37400', '#E37400'],
                     borderRadius: 8
                 }]
             },

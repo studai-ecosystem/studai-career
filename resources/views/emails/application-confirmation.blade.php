@@ -5,38 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Application Received</title>
 <style>
-  body { margin:0; padding:0; background:#f4f6fb; font-family:'Segoe UI',Arial,sans-serif; }
-  .wrapper { max-width:600px; margin:40px auto; background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 4px 24px rgba(0,0,0,.08); }
-  .header { background:linear-gradient(135deg,#1A73E8,#6366f1); padding:36px 40px; text-align:center; }
+  body { margin:0; padding:0; background:#EBF2FF; font-family:'Segoe UI',Arial,sans-serif; }
+  .wrapper { max-width:600px; margin:40px auto; background:#fff; border-radius:16px; overflow:hidden; box-shadow: none; }
+  .header { background:#2D6CDF; padding:36px 40px; text-align:center; }
   .header img { width:44px; height:44px; margin-bottom:12px; }
   .header h1 { color:#fff; font-size:22px; margin:0; font-weight:700; }
   .header p { color:rgba(255,255,255,.85); font-size:14px; margin:6px 0 0; }
   .body { padding:36px 40px; }
-  .greeting { font-size:18px; font-weight:700; color:#1a1a2e; margin-bottom:6px; }
-  .subtitle { color:#6b7280; font-size:14px; margin-bottom:24px; }
-  .success-badge { display:inline-flex; align-items:center; gap:8px; background:#ecfdf5; color:#065f46; border:1px solid #6ee7b7; border-radius:50px; padding:8px 18px; font-size:14px; font-weight:600; margin-bottom:28px; }
+  .greeting { font-size:18px; font-weight:700; color:#0C0C0C; margin-bottom:6px; }
+  .subtitle { color:#737373; font-size:14px; margin-bottom:24px; }
+  .success-badge { display:inline-flex; align-items:center; gap:8px; background:#EDFAF2; color:#1E8E3E; border:1px solid #A3D9B4; border-radius:50px; padding:8px 18px; font-size:14px; font-weight:600; margin-bottom:28px; }
   .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:28px; }
-  .info-card { background:#f8f9ff; border-radius:12px; padding:16px 18px; border-left:4px solid #1A73E8; }
-  .info-card.orange { border-left-color:#f59e0b; }
-  .info-card.green { border-left-color:#10b981; }
-  .info-card.purple { border-left-color:#8b5cf6; }
-  .info-label { font-size:11px; color:#9ca3af; text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px; }
-  .info-value { font-size:15px; font-weight:700; color:#1a1a2e; }
+  .info-card { background:#EBF2FF; border-radius:12px; padding:16px 18px; border-left:4px solid #2D6CDF; }
+  .info-card.orange { border-left-color:#E37400; }
+  .info-card.green { border-left-color:#1E8E3E; }
+  .info-card.purple { border-left-color:#2D6CDF; }
+  .info-label { font-size:11px; color:#A8A8A8; text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px; }
+  .info-value { font-size:15px; font-weight:700; color:#0C0C0C; }
   .timeline { margin:24px 0; }
-  .timeline-title { font-size:15px; font-weight:700; color:#1a1a2e; margin-bottom:16px; }
+  .timeline-title { font-size:15px; font-weight:700; color:#0C0C0C; margin-bottom:16px; }
   .timeline-step { display:flex; align-items:flex-start; gap:14px; margin-bottom:16px; }
   .step-dot { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
-  .step-dot.blue { background:#dbeafe; }
-  .step-dot.amber { background:#fef3c7; }
-  .step-dot.green { background:#dcfce7; }
+  .step-dot.blue { background:#EBF2FF; }
+  .step-dot.amber { background:#FFF8EC; }
+  .step-dot.green { background:#EDFAF2; }
   .step-content { flex:1; padding-top:4px; }
-  .step-title { font-size:14px; font-weight:600; color:#1a1a2e; }
-  .step-desc { font-size:12px; color:#6b7280; margin-top:2px; }
-  .tip-box { background:linear-gradient(135deg,#ede9fe,#fdf4ff); border-radius:12px; padding:18px 20px; margin:24px 0; }
-  .tip-box p { font-size:13px; color:#4c1d95; margin:0; }
-  .footer { background:#f8f9ff; padding:24px 40px; text-align:center; border-top:1px solid #e5e7eb; }
-  .footer p { font-size:12px; color:#9ca3af; margin:0; }
-  .footer a { color:#1A73E8; text-decoration:none; }
+  .step-title { font-size:14px; font-weight:600; color:#0C0C0C; }
+  .step-desc { font-size:12px; color:#737373; margin-top:2px; }
+  .tip-box { background:#EBF2FF; border-radius:12px; padding:18px 20px; margin:24px 0; }
+  .tip-box p { font-size:13px; color:#0C2E72; margin:0; }
+  .footer { background:#EBF2FF; padding:24px 40px; text-align:center; border-top:1px solid #E2E2E0; }
+  .footer p { font-size:12px; color:#A8A8A8; margin:0; }
+  .footer a { color:#2D6CDF; text-decoration:none; }
 </style>
 </head>
 <body>
@@ -105,7 +105,7 @@
       <p>💡 <strong>Pro Tip:</strong> While you wait, keep your profile updated on StudAI Hire and practice with our Interview Lab to ace the upcoming stages!</p>
     </div>
 
-    <p style="color:#6b7280;font-size:13px;margin-top:20px;">We'll email you at every important milestone. Good luck — we're rooting for you! 🚀</p>
+    <p style="color:#737373;font-size:13px;margin-top:20px;">We'll email you at every important milestone. Good luck — we're rooting for you! 🚀</p>
   </div>
   <div class="footer">
     <p>You're receiving this because you applied via <a href="{{ url('/') }}">StudAI Hire</a>.</p>

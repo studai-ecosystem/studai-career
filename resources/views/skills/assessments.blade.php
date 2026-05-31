@@ -338,18 +338,18 @@ if (gradedAssessments.length > 0) {
                 label: 'Number of Assessments',
                 data: [gradeCounts.A, gradeCounts.B, gradeCounts.C, gradeCounts.D, gradeCounts.F],
                 backgroundColor: [
-                    'rgba(34, 197, 94, 0.8)',
-                    'rgba(59, 130, 246, 0.8)',
+                    'rgba(15, 107, 49, 0.8)',
+                    'rgba(20, 71, 186, 0.8)',
                     'rgba(234, 179, 8, 0.8)',
-                    'rgba(249, 115, 22, 0.8)',
-                    'rgba(239, 68, 68, 0.8)'
+                    'rgba(146, 80, 10, 0.8)',
+                    'rgba(185, 28, 28, 0.8)'
                 ],
                 borderColor: [
-                    'rgb(34, 197, 94)',
-                    'rgb(59, 130, 246)',
+                    'rgb(15, 107, 49)',
+                    'rgb(20, 71, 186)',
                     'rgb(234, 179, 8)',
-                    'rgb(249, 115, 22)',
-                    'rgb(239, 68, 68)'
+                    'rgb(146, 80, 10)',
+                    'rgb(185, 28, 28)'
                 ],
                 borderWidth: 2
             }]

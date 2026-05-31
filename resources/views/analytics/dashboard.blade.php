@@ -258,8 +258,8 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Chart.js default styling for dark mode support
-    Chart.defaults.color = document.documentElement.classList.contains('dark') ? '#9ca3af' : '#6b7280';
-    Chart.defaults.borderColor = document.documentElement.classList.contains('dark') ? '#374151' : '#e5e7eb';
+    Chart.defaults.color = document.documentElement.classList.contains('dark') ? '#A8A8A8' : '#737373';
+    Chart.defaults.borderColor = document.documentElement.classList.contains('dark') ? '#3D3D3D' : '#E2E2E0';
 
     // Initialize mini map
     const miniMap = L.map('mini-map').setView([39.8283, -98.5795], 4);
@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const size = Math.min(25, Math.max(8, point.jobCount / 15));
                         L.circleMarker([point.lat, point.lng], {
                             radius: size,
-                            fillColor: '#1A73E8',
+                            fillColor: '#2D6CDF',
                             color: '#fff',
                             weight: 2,
                             opacity: 1,
@@ -335,13 +335,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     datasets: [{
                         label: 'Average Salary',
                         data: data.data || [85000, 87000, 86500, 88000, 89500, 91000, 90500, 92000, 93500, 95000, 96000, 98000],
-                        borderColor: '#1A73E8',
-                        backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                        borderColor: '#2D6CDF',
+                        backgroundColor: 'rgba(20, 71, 186, 0.1)',
                         fill: true,
                         tension: 0.4,
                         borderWidth: 2,
                         pointRadius: 4,
-                        pointBackgroundColor: '#1A73E8'
+                        pointBackgroundColor: '#2D6CDF'
                     }]
                 },
                 options: {
@@ -458,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     labels: sources.map(s => s.source),
                     datasets: [{
                         data: sources.map(s => s.applications),
-                        backgroundColor: ['#1A73E8', '#34A853', '#FBBC04', '#EA4335', '#9333EA'],
+                        backgroundColor: ['#2D6CDF', '#1E8E3E', '#FBBC04', '#2D6CDF', '#1B57C4'],
                         borderWidth: 0
                     }]
                 },

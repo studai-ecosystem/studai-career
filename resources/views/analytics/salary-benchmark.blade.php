@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         datasets: [{
                             label: 'Median Salary',
                             data: Object.values(sizes),
-                            backgroundColor: ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5'],
+                            backgroundColor: ['#1E8E3E', '#1E8E3E', '#A3D9B4', '#A3D9B4', '#EDFAF2'],
                             borderRadius: 8
                         }]
                     },

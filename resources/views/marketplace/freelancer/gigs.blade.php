@@ -2,7 +2,7 @@
 @section('title', 'My Services - StudAI Hire')
 
 @section('content')
-<div class="min-h-screen" style="background:#f9f9f9;">
+<div class="min-h-screen" style="background:#F0F0EE;">
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
     {{-- Header --}}
@@ -14,14 +14,14 @@
         @if($profile)
             <a href="{{ route('marketplace.freelancer.create-gig') }}"
                class="inline-flex items-center gap-2 px-5 py-2.5 text-white font-bold rounded-xl hover:opacity-90 transition text-sm"
-               style="background:#1A73E8;">
+               style="background:#2D6CDF;">
                 + Create New Service
             </a>
         @endif
     </div>
 
     @if(session('success'))
-        <div class="mb-5 px-5 py-3 rounded-xl text-sm font-medium" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;">
+        <div class="mb-5 px-5 py-3 rounded-xl text-sm font-medium" style="background:#EDFAF2;color:#1E8E3E;border:1px solid #A3D9B4;">
             ✓ {{ session('success') }}
         </div>
     @endif
@@ -34,7 +34,7 @@
             <p class="text-gray-500 text-sm mb-6">You need a freelancer profile before you can offer services to companies.</p>
             <a href="{{ route('marketplace.freelancer.profile') }}"
                class="inline-flex items-center gap-2 px-6 py-3 text-white font-bold rounded-xl transition hover:opacity-90"
-               style="background:#1A73E8;">
+               style="background:#2D6CDF;">
                 Create Profile
             </a>
         </div>
@@ -45,7 +45,7 @@
             <p class="text-gray-500 text-sm mb-6">Create a service listing and let companies find and hire you directly — no bidding required!</p>
             <a href="{{ route('marketplace.freelancer.create-gig') }}"
                class="inline-flex items-center gap-2 px-6 py-3 text-white font-bold rounded-xl transition hover:opacity-90"
-               style="background:#1A73E8;">
+               style="background:#2D6CDF;">
                 + Create Your First Service
             </a>
         </div>
@@ -59,7 +59,7 @@
                 $totalViews  = $gigs->sum('views_count');
             @endphp
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-center">
-                <div class="text-2xl font-extrabold" style="color:#1A73E8;">{{ $activeGigs }}</div>
+                <div class="text-2xl font-extrabold" style="color:#2D6CDF;">{{ $activeGigs }}</div>
                 <div class="text-xs text-gray-500 mt-1">Active Services</div>
             </div>
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-center">
@@ -67,7 +67,7 @@
                 <div class="text-xs text-gray-500 mt-1">Total Orders</div>
             </div>
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-center">
-                <div class="text-2xl font-extrabold" style="color:#ffb33e;">{{ $avgRating ? number_format($avgRating,1) : '—' }}</div>
+                <div class="text-2xl font-extrabold" style="color:#E37400;">{{ $avgRating ? number_format($avgRating,1) : '—' }}</div>
                 <div class="text-xs text-gray-500 mt-1">Avg Rating</div>
             </div>
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-center">
@@ -81,16 +81,16 @@
             @foreach($gigs as $gig)
                 @php
                     $catStyles = [
-                        'web_development'    => ['bg'=>'linear-gradient(135deg,#3b82f6,#4f46e5)','icon'=>'💻'],
-                        'mobile_development' => ['bg'=>'linear-gradient(135deg,#a855f7,#ec4899)','icon'=>'📱'],
-                        'design'             => ['bg'=>'linear-gradient(135deg,#ec4899,#f43f5e)','icon'=>'🎨'],
-                        'writing'            => ['bg'=>'linear-gradient(135deg,#f59e0b,#f97316)','icon'=>'✍️'],
-                        'marketing'          => ['bg'=>'linear-gradient(135deg,#22c55e,#14b8a6)','icon'=>'📣'],
-                        'data_science'       => ['bg'=>'linear-gradient(135deg,#06b6d4,#3b82f6)','icon'=>'📊'],
-                        'ai_ml'              => ['bg'=>'linear-gradient(135deg,#7c3aed,#9333ea)','icon'=>'🤖'],
-                        'devops'             => ['bg'=>'linear-gradient(135deg,#64748b,#374151)','icon'=>'⚙️'],
+                        'web_development'    => ['bg'=>'#2D6CDF','icon'=>'💻'],
+                        'mobile_development' => ['bg'=>'#2D6CDF','icon'=>'📱'],
+                        'design'             => ['bg'=>'#2D6CDF','icon'=>'🎨'],
+                        'writing'            => ['bg'=>'#E37400','icon'=>'✍️'],
+                        'marketing'          => ['bg'=>'#1E8E3E','icon'=>'📣'],
+                        'data_science'       => ['bg'=>'#2D6CDF','icon'=>'📊'],
+                        'ai_ml'              => ['bg'=>'#2D6CDF','icon'=>'🤖'],
+                        'devops'             => ['bg'=>'#737373','icon'=>'⚙️'],
                     ];
-                    $cs = $catStyles[$gig->category] ?? ['bg'=>'linear-gradient(135deg,#3b82f6,#4f46e5)','icon'=>'💼'];
+                    $cs = $catStyles[$gig->category] ?? ['bg'=>'#2D6CDF','icon'=>'💼'];
                 @endphp
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-row">
                     {{-- Icon column --}}
@@ -104,18 +104,18 @@
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2 flex-wrap mb-1">
                                 <span class="text-xs font-bold px-2 py-0.5 rounded-full"
-                                      style="background:{{ $gig->status==='active'?'#f0fdf4':'#f3f4f6' }};color:{{ $gig->status==='active'?'#15803d':'#374151' }};">
+                                      style="background:{{ $gig->status==='active'?'#EDFAF2':'#F0F0EE' }};color:{{ $gig->status==='active'?'#1E8E3E':'#3D3D3D' }};">
                                     {{ $gig->status === 'active' ? '● Active' : ($gig->status === 'paused' ? '⏸ Paused' : '📝 Draft') }}
                                 </span>
                                 @if($gig->is_featured)
-                                    <span class="text-xs px-2 py-0.5 rounded-full" style="background:#fefce8;color:#92400e;">⭐ Featured</span>
+                                    <span class="text-xs px-2 py-0.5 rounded-full" style="background:#FFF8EC;color:#E37400;">⭐ Featured</span>
                                 @endif
                             </div>
                             <h3 class="font-semibold text-gray-900 text-sm leading-snug" style="white-space:normal;">{{ $gig->title }}</h3>
                             <div class="flex items-center gap-2 mt-1.5 text-xs text-gray-500 flex-wrap">
                                 <span class="font-medium text-green-700">₹{{ number_format($gig->starting_price) }}</span>
                                 <span>•</span>
-                                <span style="color:#ffb33e;">★ {{ number_format($gig->average_rating,1) }}</span>
+                                <span style="color:#E37400;">★ {{ number_format($gig->average_rating,1) }}</span>
                                 <span>({{ $gig->total_reviews }})</span>
                                 <span>•</span>
                                 <span>{{ $gig->orders_count }} orders</span>
@@ -132,13 +132,13 @@
                             </a>
                             <a href="{{ route('marketplace.freelancer.edit-gig', $gig) }}"
                                class="px-3 py-1.5 rounded-lg text-xs font-medium text-white transition hover:opacity-90"
-                               style="background:#1A73E8;">
+                               style="background:#2D6CDF;">
                                 Edit
                             </a>
                             <form action="{{ route('marketplace.freelancer.toggle-gig', $gig) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium border transition"
-                                        style="{{ $gig->status==='active' ? 'border-color:#f59e0b;color:#92400e;background:#fefce8;' : 'border-color:#22c55e;color:#15803d;background:#f0fdf4;' }}">
+                                        style="{{ $gig->status==='active' ? 'border-color:#E37400;color:#E37400;background:#FFF8EC;' : 'border-color:#1E8E3E;color:#1E8E3E;background:#EDFAF2;' }}">
                                     {{ $gig->status === 'active' ? '⏸ Pause' : '▶ Activate' }}
                                 </button>
                             </form>

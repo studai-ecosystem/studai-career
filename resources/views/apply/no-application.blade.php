@@ -21,7 +21,7 @@
                 If you applied via a different browser or device, please use the same link and browser you applied from.
             </p>
             <a href="{{ route('apply.show', $token) }}"
-               class="inline-block mt-6 px-6 py-3 bg-[#1A73E8] hover:bg-[#1557b0] text-white font-semibold rounded-xl transition-colors">
+               class="inline-block mt-6 px-6 py-3 bg-[#2D6CDF] hover:bg-[#1B57C4] text-white font-semibold rounded-xl transition-colors">
                 Back to Application Page
             </a>
         </div>

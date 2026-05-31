@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Post New Job')
 
@@ -6,9 +6,9 @@
 <div x-data="jobCreator()" class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 py-10">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
-        {{-- PHASE 1 â€” AI KICKOFF (shown when aiSuccess is false)         --}}
-        {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
+        {{-- ══════════════════════════════════════════════════════════════ --}}
+        {{-- PHASE 1 — AI KICKOFF (shown when aiSuccess is false)         --}}
+        {{-- ══════════════════════════════════════════════════════════════ --}}
         <div x-show="!aiSuccess" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-4">
 
             {{-- Back link --}}
@@ -75,7 +75,7 @@
                     <button type="button" @click="skipAI()"
                         class="inline-flex items-center gap-2 text-sm text-purple-400 hover:text-purple-200 underline underline-offset-2 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                        Skip AI — Fill job details manually instead
+                        Skip AI � Fill job details manually instead
                     </button>
                 </div>
 
@@ -105,18 +105,18 @@
 
             {{-- Feature pills --}}
             <div class="flex flex-wrap justify-center gap-3">
-                @foreach(['� Job Description','�‹ Responsibilities','“ Qualifications','�  Required Skills','�° Salary Range'] as $f)
+                @foreach(['Job Description','Responsibilities','Qualifications','Required Skills','Salary Range'] as $f)
                 <span class="text-xs text-purple-300 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full">{{ $f }}</span>
                 @endforeach
             </div>
         </div>
 
-        {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
-        {{-- PHASE 2 â€” AI PREVIEW + FULL FORM (shown after generation)    --}}
-        {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
+        {{-- ══════════════════════════════════════════════════════════════ --}}
+        {{-- PHASE 2 — AI PREVIEW + FULL FORM (shown after generation)    --}}
+        {{-- ══════════════════════════════════════════════════════════════ --}}
         <div x-show="aiSuccess" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
 
-            {{-- â”€â”€ AI RESULT PREVIEW CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+            {{-- ── AI RESULT PREVIEW CARD ──────────────────────────── --}}
             <div class="bg-gradient-to-br from-fuchsia-900/80 via-purple-900/80 to-indigo-900/80 backdrop-blur-sm border border-fuchsia-500/20 rounded-3xl p-8 mb-8 relative overflow-hidden">
                 {{-- Glow blob --}}
                 <div class="absolute -top-20 -right-20 w-64 h-64 bg-fuchsia-500/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -143,13 +143,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6 relative">
                     {{-- Salary --}}
                     <div class="bg-white/10 rounded-2xl p-5 border border-white/10">
-                        <p class="text-xs text-purple-300 font-semibold uppercase tracking-wider mb-1">�° Salary Range</p>
-                        <p class="text-white font-bold text-lg" x-text="formatSalary(salaryMin) + ' — ' + formatSalary(salaryMax)"></p>
+                        <p class="text-xs text-purple-300 font-semibold uppercase tracking-wider mb-1">?� Salary Range</p>
+                        <p class="text-white font-bold text-lg" x-text="formatSalary(salaryMin) + ' � ' + formatSalary(salaryMax)"></p>
                         <p class="text-fuchsia-300 text-xs mt-0.5" x-text="salaryNote"></p>
                     </div>
                     {{-- Skills --}}
                     <div class="bg-white/10 rounded-2xl p-5 border border-white/10">
-                        <p class="text-xs text-purple-300 font-semibold uppercase tracking-wider mb-2">�  Required Skills</p>
+                        <p class="text-xs text-purple-300 font-semibold uppercase tracking-wider mb-2">?� Required Skills</p>
                         <div class="flex flex-wrap gap-1.5">
                             <template x-for="skill in skills.slice(0,6)" :key="skill">
                                 <span class="text-xs bg-fuchsia-500/30 border border-fuchsia-400/30 text-fuchsia-200 px-2.5 py-1 rounded-full font-medium" x-text="skill"></span>
@@ -161,7 +161,7 @@
 
                 {{-- Description preview --}}
                 <div class="bg-white/5 rounded-2xl p-5 border border-white/10 mb-4 relative">
-                    <p class="text-xs text-purple-300 font-semibold uppercase tracking-wider mb-2">� Job Overview</p>
+                    <p class="text-xs text-purple-300 font-semibold uppercase tracking-wider mb-2">?� Job Overview</p>
                     <p class="text-purple-100 text-sm leading-relaxed line-clamp-4" x-text="description"></p>
                 </div>
 
@@ -176,7 +176,7 @@
                 </div>
             </div>
 
-            {{-- â”€â”€ FULL EDITABLE FORM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+            {{-- ── FULL EDITABLE FORM ───────────────────────────── --}}
             <div id="edit-form">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="h-px flex-1 bg-white/10"></div>
@@ -187,7 +187,7 @@
                 <form action="{{ route('employer.jobs.store') }}" method="POST" class="space-y-5">
                     @csrf
 
-                    {{-- â”€â”€ SECTION 1: BASIC INFO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+                    {{-- ── SECTION 1: BASIC INFO ──────────────────── --}}
                     <div class="bg-white rounded-2xl shadow-sm p-6">
                         <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
                             <span class="flex h-6 w-6 items-center justify-center rounded-full bg-fuchsia-100 text-fuchsia-600 text-xs font-black">1</span>
@@ -241,7 +241,7 @@
                         </div>
                     </div>
 
-                    {{-- â”€â”€ SECTION 2: SALARY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+                    {{-- ── SECTION 2: SALARY ──────────────────────── --}}
                     <div class="bg-white rounded-2xl shadow-sm p-6">
                         <h3 class="text-base font-bold text-gray-900 mb-1 flex items-center gap-2">
                             <span class="flex h-6 w-6 items-center justify-center rounded-full bg-fuchsia-100 text-fuchsia-600 text-xs font-black">2</span>
@@ -265,7 +265,7 @@
                         </div>
                     </div>
 
-                    {{-- â”€â”€ SECTION 3: DESCRIPTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+                    {{-- ── SECTION 3: DESCRIPTION ─────────────────── --}}
                     <div class="bg-white rounded-2xl shadow-sm p-6">
                         <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
                             <span class="flex h-6 w-6 items-center justify-center rounded-full bg-fuchsia-100 text-fuchsia-600 text-xs font-black">3</span>
@@ -277,7 +277,7 @@
                         @error('description')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
 
-                    {{-- â”€â”€ SECTION 4: RESPONSIBILITIES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+                    {{-- ── SECTION 4: RESPONSIBILITIES ────────────── --}}
                     <div class="bg-white rounded-2xl shadow-sm p-6">
                         <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
                             <span class="flex h-6 w-6 items-center justify-center rounded-full bg-fuchsia-100 text-fuchsia-600 text-xs font-black">4</span>
@@ -289,7 +289,7 @@
                         @error('responsibilities')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
 
-                    {{-- â”€â”€ SECTION 5: QUALIFICATIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+                    {{-- ── SECTION 5: QUALIFICATIONS ──────────────── --}}
                     <div class="bg-white rounded-2xl shadow-sm p-6">
                         <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
                             <span class="flex h-6 w-6 items-center justify-center rounded-full bg-fuchsia-100 text-fuchsia-600 text-xs font-black">5</span>
@@ -301,7 +301,7 @@
                         @error('qualifications')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
 
-                    {{-- â”€â”€ SECTION 6: SKILLS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+                    {{-- ── SECTION 6: SKILLS ──────────────────────── --}}
                     <div class="bg-white rounded-2xl shadow-sm p-6">
                         <h3 class="text-base font-bold text-gray-900 mb-1 flex items-center gap-2">
                             <span class="flex h-6 w-6 items-center justify-center rounded-full bg-fuchsia-100 text-fuchsia-600 text-xs font-black">6</span>
@@ -327,7 +327,7 @@
                             placeholder="Add more skills &mdash; press Enter" />
                     </div>
 
-                    {{-- ── SECTION 7: APPLICATION DATES ──────────────────────── --}}
+                    {{-- -- SECTION 7: APPLICATION DATES ------------------------ --}}
                     <div class="bg-white rounded-2xl shadow-sm p-6">
                         <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
                             <span class="flex h-6 w-6 items-center justify-center rounded-full bg-fuchsia-100 text-fuchsia-600 text-xs font-black">7</span>
@@ -351,7 +351,7 @@
                         </div>
                     </div>
 
-                    {{-- ── SECTION 8: HIRING ROUNDS ──────────────────────────── --}}
+                    {{-- -- SECTION 8: HIRING ROUNDS ---------------------------- --}}
                     <div class="bg-white rounded-2xl shadow-sm p-6">
                         <h3 class="text-base font-bold text-gray-900 mb-1 flex items-center gap-2">
                             <span class="flex h-6 w-6 items-center justify-center rounded-full bg-fuchsia-100 text-fuchsia-600 text-xs font-black">8</span>
@@ -359,7 +359,7 @@
                             <button type="button" @click="suggestRounds()"
                                 :disabled="roundsLoading || !jobTitle.trim()"
                                 class="ml-auto flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full transition-all"
-                                style="background:linear-gradient(135deg,#a855f7,#6366f1);color:#fff"
+                                style="background:#2D6CDF;color:#fff"
                                 :class="roundsLoading && 'opacity-60 cursor-not-allowed'">
                                 <svg class="w-3.5 h-3.5" :class="roundsLoading && 'animate-spin'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
@@ -446,7 +446,7 @@
                         <p class="text-xs text-gray-400 mt-4">&#9432; Candidates are notified of all rounds when they apply. Emails &amp; in-app notifications are sent automatically after each evaluation date.</p>
                     </div>
 
-                    {{-- ── SECTION 9: STATUS ──────────────────────────────────── --}}
+                    {{-- -- SECTION 9: STATUS ------------------------------------ --}}
                     <div class="bg-white rounded-2xl shadow-sm p-6">
                         <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
                             <span class="flex h-6 w-6 items-center justify-center rounded-full bg-fuchsia-100 text-fuchsia-600 text-xs font-black">9</span>
@@ -470,11 +470,11 @@
                         </div>
                     </div>
 
-                    {{-- â”€â”€ SUBMIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+                    {{-- ── SUBMIT ─────────────────────────────────── --}}
                     <div class="flex gap-3 pb-10">
                         <button type="submit"
                             class="flex-1 py-4 bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white font-black text-sm rounded-2xl shadow-lg shadow-fuchsia-500/25 hover:from-fuchsia-500 hover:to-purple-500 hover:shadow-fuchsia-400/30 transition-all">
-                            € Create Job Posting
+                            � Create Job Posting
                         </button>
                         <a href="{{ route('employer.jobs.index') }}"
                             class="px-6 py-4 bg-white/10 text-purple-200 font-semibold text-sm rounded-2xl hover:bg-white/20 transition-colors border border-white/10">
@@ -487,7 +487,7 @@
     </div>
 </div>
 
-{{-- â”€â”€ AI LOADING OVERLAY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+{{-- ── AI LOADING OVERLAY ──────────────────────────────────────── --}}
 <div x-data x-show="$store.aiOverlay && $store.aiOverlay.show" x-cloak
     class="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50">
     <div class="bg-gradient-to-br from-fuchsia-900 to-purple-900 border border-fuchsia-500/30 rounded-3xl shadow-2xl p-10 max-w-sm w-full mx-4 text-center">
@@ -537,18 +537,18 @@ window.jobCreator = function() {
         // Hiring rounds
         roundsLoading: false,
         rounds: [
-            { type: 'info_test',    name: 'Company Info Test',       icon: '🏢', desc: 'Basic questions about your company culture, values & mission',    enabled: false, testDate: '', evalDays: '5', evalDate: '' },
-            { type: 'aptitude',     name: 'Aptitude Test',           icon: '🧠', desc: 'Logical reasoning, numerical & verbal ability assessment',         enabled: false, testDate: '', evalDays: '5', evalDate: '' },
-            { type: 'technical',    name: 'Technical Assessment',     icon: '💻', desc: 'Role-specific coding challenges & technical problem solving',      enabled: false, testDate: '', evalDays: '5', evalDate: '' },
-            { type: 'practical',    name: 'Non-Technical / Practical',icon: '📋', desc: 'Case studies, situational judgment & domain-specific tasks',       enabled: false, testDate: '', evalDays: '5', evalDate: '' },
-            { type: 'hr_interview', name: 'HR Interview',             icon: '🤝', desc: 'Culture fit, behavioural interview & compensation discussion',     enabled: false, testDate: '', evalDays: '5', evalDate: '' },
+            { type: 'info_test',    name: 'Company Info Test',       icon: '??', desc: 'Basic questions about your company culture, values & mission',    enabled: false, testDate: '', evalDays: '5', evalDate: '' },
+            { type: 'aptitude',     name: 'Aptitude Test',           icon: '??', desc: 'Logical reasoning, numerical & verbal ability assessment',         enabled: false, testDate: '', evalDays: '5', evalDate: '' },
+            { type: 'technical',    name: 'Technical Assessment',     icon: '??', desc: 'Role-specific coding challenges & technical problem solving',      enabled: false, testDate: '', evalDays: '5', evalDate: '' },
+            { type: 'practical',    name: 'Non-Technical / Practical',icon: '??', desc: 'Case studies, situational judgment & domain-specific tasks',       enabled: false, testDate: '', evalDays: '5', evalDate: '' },
+            { type: 'hr_interview', name: 'HR Interview',             icon: '??', desc: 'Culture fit, behavioural interview & compensation discussion',     enabled: false, testDate: '', evalDays: '5', evalDate: '' },
         ],
 
         formatSalary(val) {
-            if (!val) return '—';
+            if (!val) return '�';
             const n = parseInt(val);
-            if (n >= 100000) return '₹' + (n / 100000).toFixed(1).replace('.0','') + 'L';
-            return '₹' + n.toLocaleString('en-IN');
+            if (n >= 100000) return '?' + (n / 100000).toFixed(1).replace('.0','') + 'L';
+            return '?' + n.toLocaleString('en-IN');
         },
 
         scrollToForm() {

@@ -23,7 +23,7 @@
 .nav-bar::after {
     content: '';
     position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, #2f5fb0, #3a6bc0, #1c344d, #e3b62f, #2f5fb0);
+    background: linear-gradient(90deg, #2D6CDF, #1B57C4, #0C0C0C, #E37400, #2D6CDF);
     background-size: 300% auto;
     animation: nav-bar-grad 4s linear infinite;
 }
@@ -51,7 +51,7 @@
 }
 .nav-logo:hover .nav-logo-img { filter: drop-shadow(0 4px 14px rgba(47,95,176,.55)) brightness(1.05); }
 .nav-logo-text {
-    background: linear-gradient(135deg, #284f95 0%, #2f5fb0 40%, #1c344d 70%, #284f95 100%);
+    background: linear-gradient(135deg, #1B57C4 0%, #2D6CDF 40%, #0C0C0C 70%, #1B57C4 100%);
     background-size: 200%;
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     animation: nav-shine 4s linear infinite;
@@ -62,9 +62,9 @@
 .nav-pill {
     display: inline-flex; align-items: center; gap: .45rem;
     padding: .35rem .95rem; border-radius: 999px;
-    background: #eaf0fa;
+    background: #EBF2FF;
     border: 1.5px solid rgba(47,95,176,.2);
-    color: #284f95; font-size: .8rem; font-weight: 700;
+    color: #1B57C4; font-size: .8rem; font-weight: 700;
     text-decoration: none;
     transition: all .25s cubic-bezier(.34,1.56,.64,1);
     animation: nav-fadein .5s ease .1s both;
@@ -76,27 +76,27 @@
     background: linear-gradient(135deg, rgba(47,95,176,.12), rgba(28,52,77,.12));
     opacity: 0; transition: opacity .2s;
 }
-.nav-pill:hover { border-color: rgba(47,95,176,.5); transform: translateY(-2px) scale(1.03); box-shadow: 0 6px 20px rgba(47,95,176,.2); color: #21426f; }
+.nav-pill:hover { border-color: rgba(47,95,176,.5); transform: translateY(-2px) scale(1.03); box-shadow: 0 6px 20px rgba(47,95,176,.2); color: #0C2E72; }
 .nav-pill:hover::before { opacity: 1; }
-.nav-dot { width: 6px; height: 6px; border-radius: 50%; background: #2f5fb0; animation: nav-dot 2s ease-in-out infinite; }
+.nav-dot { width: 6px; height: 6px; border-radius: 50%; background: #2D6CDF; animation: nav-dot 2s ease-in-out infinite; }
 
 /* Breadcrumb */
-.nav-breadcrumb { color: #5c6a82; font-size: .78rem; font-weight: 600; }
+.nav-breadcrumb { color: #737373; font-size: .78rem; font-weight: 600; }
 .nav-sep { color: #9aa6bd; }
 
 /* Search icon */
 .nav-icon-btn {
     width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
-    color: #5c6a82; background: transparent; border: 1.5px solid #e0e3ea;
+    color: #737373; background: transparent; border: 1.5px solid #E2E2E0;
     transition: all .2s cubic-bezier(.34,1.56,.64,1);
 }
-.nav-icon-btn:hover { color: #284f95; border-color: rgba(47,95,176,.4); background: #eaf0fa; transform: scale(1.08); box-shadow: 0 4px 12px rgba(47,95,176,.15); }
+.nav-icon-btn:hover { color: #1B57C4; border-color: rgba(47,95,176,.4); background: #EBF2FF; transform: scale(1.08); box-shadow: 0 4px 12px rgba(47,95,176,.15); }
 
 /* Avatar with animated ring */
 .nav-avatar-wrap { position: relative; }
 .nav-avatar {
     width: 36px; height: 36px; border-radius: 50%;
-    background: linear-gradient(135deg, #284f95, #2f5fb0, #1c344d);
+    background: linear-gradient(135deg, #1B57C4, #2D6CDF,#2D6CDF);
     background-size: 200%; animation: nav-shine 3s linear infinite;
     display: flex; align-items: center; justify-content: center;
     font-weight: 800; font-size: .82rem; color: #fff;
@@ -111,9 +111,9 @@
     animation: nav-ring 2s ease-out infinite;
 }
 .nav-user-btn:hover .nav-avatar { transform: scale(1.1); box-shadow: 0 4px 20px rgba(47,95,176,.45); }
-.nav-username { font-size: .83rem; font-weight: 700; color: #38465e; }
+.nav-username { font-size: .83rem; font-weight: 700; color: #3D3D3D; }
 .nav-chevron  { color: #9aa6bd; transition: transform .2s, color .2s; }
-.nav-user-btn:hover .nav-chevron { transform: rotate(180deg); color: #2f5fb0; }
+.nav-user-btn:hover .nav-chevron { transform: rotate(180deg); color: #2D6CDF; }
 
 /* Dropdown */
 .nav-dropdown {
@@ -126,22 +126,22 @@
 }
 .nav-dropdown-header {
     padding: .75rem 1rem;
-    background: #eaf0fa;
+    background: #EBF2FF;
     border-bottom: 1px solid rgba(47,95,176,.1);
 }
 .nav-dropdown-item {
     display: flex; align-items: center; gap: .65rem;
-    padding: .6rem 1rem; color: #38465e; font-size: .83rem; font-weight: 500;
+    padding: .6rem 1rem; color: #3D3D3D; font-size: .83rem; font-weight: 500;
     transition: all .15s ease; text-decoration: none;
     border: none; width: 100%; cursor: pointer; background: transparent; text-align: left;
 }
 .nav-dropdown-item:hover {
-    background: #eaf0fa;
-    color: #284f95;
+    background: #EBF2FF;
+    color: #1B57C4;
     padding-left: 1.25rem;
 }
 .nav-dropdown-item svg { transition: transform .2s; }
-.nav-dropdown-item:hover svg { transform: scale(1.15); color: #2f5fb0; }
+.nav-dropdown-item:hover svg { transform: scale(1.15); color: #2D6CDF; }
 .nav-dropdown-divider { height: 1px; background: #eef0f4; margin: .25rem 0; }
 .nav-dropdown-item.danger { color: #cf3a3a; }
 .nav-dropdown-item.danger:hover { background: #fbe9e9; color: #9e2727; padding-left: 1.25rem; }
@@ -150,10 +150,10 @@
 <nav x-data="{ open: false }" class="nav-bar sticky top-0 z-40">
 
     {{-- Floating particles (light, subtle) --}}
-    <div class="nav-particle" style="left:15%;bottom:0;width:4px;height:4px;background:#2f5fb0;--dur:4s;--del:0s;"></div>
-    <div class="nav-particle" style="left:35%;bottom:0;width:3px;height:3px;background:#1c344d;--dur:5s;--del:1.2s;"></div>
-    <div class="nav-particle" style="left:60%;bottom:0;width:4px;height:4px;background:#e3b62f;--dur:3.5s;--del:.6s;"></div>
-    <div class="nav-particle" style="left:80%;bottom:0;width:3px;height:3px;background:#2f5fb0;--dur:4.5s;--del:2s;"></div>
+    <div class="nav-particle" style="left:15%;bottom:0;width:4px;height:4px;background:#2D6CDF;--dur:4s;--del:0s;"></div>
+    <div class="nav-particle" style="left:35%;bottom:0;width:3px;height:3px;background:#0C0C0C;--dur:5s;--del:1.2s;"></div>
+    <div class="nav-particle" style="left:60%;bottom:0;width:4px;height:4px;background:#E37400;--dur:3.5s;--del:.6s;"></div>
+    <div class="nav-particle" style="left:80%;bottom:0;width:3px;height:3px;background:#2D6CDF;--dur:4.5s;--del:2s;"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
@@ -269,12 +269,12 @@
 
     {{-- Mobile menu --}}
     <div :class="{'block': open, 'hidden': !open}" class="hidden sm:hidden"
-         style="background:#fff;border-top:1px solid #eaf0fa;box-shadow:0 8px 24px rgba(47,95,176,.1)">
+         style="background:#fff;border-top:1px solid #EBF2FF;box-shadow:0 8px 24px rgba(47,95,176,.1)">
         <div class="px-4 py-3 space-y-1">
             <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-indigo-700 bg-indigo-50">Dashboard</a>
             <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">Profile</a>
         </div>
-        <div class="px-4 py-3" style="border-top:1px solid #eaf0fa">
+        <div class="px-4 py-3" style="border-top:1px solid #EBF2FF">
             <p class="text-sm font-bold text-gray-800">{{ Auth::user()?->name ?? 'Guest' }}</p>
             <p class="text-xs mt-0.5 text-gray-400">{{ Auth::user()?->email ?? '' }}</p>
             <form method="POST" action="{{ route('logout') }}" class="mt-3">

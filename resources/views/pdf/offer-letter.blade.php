@@ -22,14 +22,14 @@
         .header {
             text-align: right;
             margin-bottom: 40px;
-            border-bottom: 2px solid #4f46e5;
+            border-bottom: 2px solid #1B57C4;
             padding-bottom: 20px;
         }
         
         .company-name {
             font-size: 24px;
             font-weight: bold;
-            color: #4f46e5;
+            color: #1B57C4;
         }
         
         .date {
@@ -48,9 +48,9 @@
         .section-title {
             font-size: 14px;
             font-weight: bold;
-            color: #4f46e5;
+            color: #1B57C4;
             margin-bottom: 10px;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #E2E2E0;
             padding-bottom: 5px;
         }
         
@@ -72,8 +72,8 @@
         }
         
         .compensation-box {
-            background-color: #f3f4f6;
-            border: 1px solid #d1d5db;
+            background-color: #F0F0EE;
+            border: 1px solid #C8C8C5;
             border-radius: 8px;
             padding: 15px;
             margin: 15px 0;
@@ -88,8 +88,8 @@
         .total-compensation {
             font-size: 16px;
             font-weight: bold;
-            color: #4f46e5;
-            border-top: 2px solid #4f46e5;
+            color: #1B57C4;
+            border-top: 2px solid #1B57C4;
             padding-top: 10px;
             margin-top: 10px;
         }
@@ -108,7 +108,7 @@
             content: "✓";
             position: absolute;
             left: 0;
-            color: #10b981;
+            color: #1E8E3E;
         }
         
         .signature-section {
@@ -126,7 +126,7 @@
         .acceptance-section {
             margin-top: 60px;
             padding: 20px;
-            border: 2px solid #4f46e5;
+            border: 2px solid #1B57C4;
             border-radius: 8px;
             page-break-inside: avoid;
         }
@@ -135,7 +135,7 @@
             font-size: 14px;
             font-weight: bold;
             margin-bottom: 15px;
-            color: #4f46e5;
+            color: #1B57C4;
         }
         
         .footer {
@@ -143,17 +143,17 @@
             text-align: center;
             color: #999;
             font-size: 10px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid #E2E2E0;
             padding-top: 20px;
         }
         
         .expiry-notice {
-            background-color: #fef3c7;
-            border: 1px solid #f59e0b;
+            background-color: #FFF8EC;
+            border: 1px solid #E37400;
             border-radius: 4px;
             padding: 10px;
             margin: 15px 0;
-            color: #92400e;
+            color: #E37400;
         }
     </style>
 </head>

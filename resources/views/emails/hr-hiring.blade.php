@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,42 +6,42 @@
 <title>{{ $emailSubject }}</title>
 <style>
   * { box-sizing:border-box; }
-  body { margin:0; padding:0; background:#f3f4f6; font-family:Arial,'Helvetica Neue',Helvetica,sans-serif; color:#374151; }
+  body { margin:0; padding:0; background:#F0F0EE; font-family:Arial,'Helvetica Neue',Helvetica,sans-serif; color:#3D3D3D; }
   .shell { max-width:680px; margin:32px auto; }
-  .card  { background:#ffffff; border:1px solid #e5e7eb; border-top:4px solid #1A73E8; }
-  .top-bar { padding:18px 36px; border-bottom:1px solid #e5e7eb; }
+  .card  { background:#ffffff; border:1px solid #E2E2E0; border-top:4px solid #2D6CDF; }
+  .top-bar { padding:18px 36px; border-bottom:1px solid #E2E2E0; }
   .top-bar table { width:100%; border-collapse:collapse; }
-  .wordmark { font-size:15px; font-weight:700; color:#111827; letter-spacing:-.3px; }
-  .wordmark span { color:#1A73E8; }
-  .top-date { font-size:11px; color:#9ca3af; text-align:right; }
-  .status-header { background:#f9fafb; border-bottom:1px solid #e5e7eb; padding:24px 36px; }
+  .wordmark { font-size:15px; font-weight:700; color:#0C0C0C; letter-spacing:-.3px; }
+  .wordmark span { color:#2D6CDF; }
+  .top-date { font-size:11px; color:#A8A8A8; text-align:right; }
+  .status-header { background:#F7F7F5; border-bottom:1px solid #E2E2E0; padding:24px 36px; }
   .status-label { display:inline-block; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:4px 12px; margin-bottom:10px; }
-  .label-shortlisted { background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; }
-  .label-hired       { background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; }
-  .label-interviewed { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
-  .label-rejected    { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
-  .status-header h2 { margin:0; font-size:19px; font-weight:700; color:#111827; line-height:1.3; }
-  .status-header p  { margin:6px 0 0; font-size:13px; color:#6b7280; }
+  .label-shortlisted { background:#EDFAF2; color:#1E8E3E; border:1px solid #A3D9B4; }
+  .label-hired       { background:#EBF2FF; color:#1B57C4; border:1px solid #BFCFEE; }
+  .label-interviewed { background:#FFF8EC; color:#E37400; border:1px solid #F0C77A; }
+  .label-rejected    { background:#fef2f2; color:#2D6CDF; border:1px solid #FCA5A5; }
+  .status-header h2 { margin:0; font-size:19px; font-weight:700; color:#0C0C0C; line-height:1.3; }
+  .status-header p  { margin:6px 0 0; font-size:13px; color:#737373; }
   .body { padding:28px 36px; }
-  hr.rule { border:none; border-top:1px solid #e5e7eb; margin:22px 0 16px; }
-  .section-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#9ca3af; margin:0 0 12px; }
-  .prose { font-size:14px; line-height:1.75; color:#374151; margin:0 0 16px; white-space:pre-line; }
+  hr.rule { border:none; border-top:1px solid #E2E2E0; margin:22px 0 16px; }
+  .section-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#A8A8A8; margin:0 0 12px; }
+  .prose { font-size:14px; line-height:1.75; color:#3D3D3D; margin:0 0 16px; white-space:pre-line; }
   table.data { width:100%; border-collapse:collapse; font-size:13px; margin-bottom:4px; }
-  table.data td { padding:9px 12px; border:1px solid #e5e7eb; vertical-align:top; line-height:1.5; }
-  table.data td.lbl { background:#f9fafb; font-weight:600; color:#111827; width:170px; white-space:nowrap; }
-  table.data td.val { color:#374151; }
-  .score-pill { display:inline-block; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; padding:2px 10px; font-size:12px; font-weight:700; }
+  table.data td { padding:9px 12px; border:1px solid #E2E2E0; vertical-align:top; line-height:1.5; }
+  table.data td.lbl { background:#F7F7F5; font-weight:600; color:#0C0C0C; width:170px; white-space:nowrap; }
+  table.data td.val { color:#3D3D3D; }
+  .score-pill { display:inline-block; background:#EBF2FF; color:#1B57C4; border:1px solid #BFCFEE; padding:2px 10px; font-size:12px; font-weight:700; }
   .skills-wrap { margin:0; padding:0; }
-  .skill { display:inline-block; background:#f3f4f6; color:#374151; border:1px solid #d1d5db; font-size:12px; padding:3px 10px; margin:2px 4px 2px 0; }
-  .text-block { background:#f9fafb; border:1px solid #e5e7eb; padding:14px 16px; font-size:13px; color:#374151; line-height:1.75; white-space:pre-line; }
-  .rejection-block { background:#fef2f2; border:1px solid #fecaca; padding:14px 16px; font-size:13px; color:#991b1b; line-height:1.6; }
+  .skill { display:inline-block; background:#F0F0EE; color:#3D3D3D; border:1px solid #C8C8C5; font-size:12px; padding:3px 10px; margin:2px 4px 2px 0; }
+  .text-block { background:#F7F7F5; border:1px solid #E2E2E0; padding:14px 16px; font-size:13px; color:#3D3D3D; line-height:1.75; white-space:pre-line; }
+  .rejection-block { background:#fef2f2; border:1px solid #FCA5A5; padding:14px 16px; font-size:13px; color:#2D6CDF; line-height:1.6; }
   .links-row { font-size:13px; }
-  .links-row a { color:#1A73E8; text-decoration:none; margin-right:16px; }
-  .btn-primary { display:inline-block; background:#1A73E8; color:#ffffff; text-decoration:none; padding:11px 26px; font-size:13px; font-weight:700; letter-spacing:.02em; }
+  .links-row a { color:#2D6CDF; text-decoration:none; margin-right:16px; }
+  .btn-primary { display:inline-block; background:#2D6CDF; color:#ffffff; text-decoration:none; padding:11px 26px; font-size:13px; font-weight:700; letter-spacing:.02em; }
   .cta-row { text-align:center; padding:20px 0 4px; }
-  .footer { background:#f9fafb; border-top:1px solid #e5e7eb; padding:16px 36px; }
-  .footer p { margin:0; font-size:11px; color:#9ca3af; line-height:1.7; text-align:center; }
-  .footer strong { color:#6b7280; }
+  .footer { background:#F7F7F5; border-top:1px solid #E2E2E0; padding:16px 36px; }
+  .footer p { margin:0; font-size:11px; color:#A8A8A8; line-height:1.7; text-align:center; }
+  .footer strong { color:#737373; }
 </style>
 </head>
 <body>
@@ -92,7 +92,7 @@
       <tr><td class="lbl">AI Match Score</td><td class="val"><span class="score-pill">{{ number_format($matchScore, 1) }}%</span></td></tr>
       @endif
       @if($eventType === 'rejected' && $rejectionReason)
-      <tr><td class="lbl">Rejection Reason</td><td class="val" style="color:#991b1b;">{{ $rejectionReason }}</td></tr>
+      <tr><td class="lbl">Rejection Reason</td><td class="val" style="color:#2D6CDF;">{{ $rejectionReason }}</td></tr>
       @endif
     </table>
 

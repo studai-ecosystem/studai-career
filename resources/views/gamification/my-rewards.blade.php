@@ -8,7 +8,7 @@
 <div class="space-y-6">
 
     {{-- Header --}}
-    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 8px 32px rgba(245,158,11,.3)">
+    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:#E37400;box-shadow: none">
         <h1 class="text-2xl font-bold mb-1">My Rewards</h1>
         <p class="text-amber-100 text-sm">Rewards you've unlocked and redeemed</p>
     </div>
@@ -23,7 +23,7 @@
         <div class="divide-y divide-gray-100 dark:divide-gray-700">
             @forelse($activeRewards as $reward)
             <div class="flex items-center gap-4 p-4">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#FFF8EC">
                     <svg class="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                     </svg>
@@ -68,7 +68,7 @@
     </div>
 
     <div class="flex gap-3">
-        <a href="{{ route('gamification.rewards') }}" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#f59e0b,#d97706)">Browse More Rewards</a>
+        <a href="{{ route('gamification.rewards') }}" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white" style="background:#E37400">Browse More Rewards</a>
         <a href="{{ route('gamification.dashboard') }}" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600">Dashboard</a>
     </div>
 </div>

@@ -15,9 +15,9 @@
             transform: translateY(-1px);
         }
         .time-slot.selected {
-            background-color: #3B82F6;
+            background-color: #2D6CDF;
             color: white;
-            border-color: #3B82F6;
+            border-color: #2D6CDF;
         }
     </style>
 </head>
@@ -26,7 +26,7 @@
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
             <div class="md:flex">
                 <!-- Left Panel - Event Info -->
-                <div class="md:w-1/3 p-8 border-r border-gray-200" style="border-top: 4px solid {{ $link->color ?? '#3B82F6' }};">
+                <div class="md:w-1/3 p-8 border-r border-gray-200" style="border-top: 4px solid {{ $link->color ?? '#2D6CDF' }};">
                     <!-- Host Info -->
                     <div class="flex items-center mb-6">
                         @if($user->avatar)

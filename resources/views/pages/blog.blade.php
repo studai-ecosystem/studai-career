@@ -33,7 +33,7 @@
 
             <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
                 Career Insights &
-                <span class="bg-gradient-to-r from-[#1A73E8] via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                <span class="bg-gradient-to-r from-[#2D6CDF] via-blue-400 to-cyan-400 bg-clip-text text-transparent">
                     Expert Guidance
                 </span>
             </h1>
@@ -70,7 +70,7 @@
                 ['name' => 'Industry Trends', 'count' => 19, 'active' => false],
                 ['name' => 'Hiring & Recruitment', 'count' => 21, 'active' => false]
             ] as $category)
-                <button class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 {{ $category['active'] ? 'bg-gradient-to-r from-[#1A73E8] to-blue-600 text-white shadow-lg' : 'bg-slate-800/50 text-gray-300 hover:bg-slate-700/50 hover:text-white' }}">
+                <button class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 {{ $category['active'] ? 'bg-gradient-to-r from-[#2D6CDF] to-blue-600 text-white shadow-lg' : 'bg-slate-800/50 text-gray-300 hover:bg-slate-700/50 hover:text-white' }}">
                     {{ $category['name'] }}
                     <span class="text-xs bg-white/20 px-2 py-1 rounded-full">{{ $category['count'] }}</span>
                 </button>
@@ -114,7 +114,7 @@
                     </p>
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 bg-gradient-to-br from-[#1A73E8] to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                            <div class="w-12 h-12 bg-gradient-to-br from-[#2D6CDF] to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
                                 AS
                             </div>
                             <div>
@@ -324,7 +324,7 @@
             </p>
             <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
                 <input type="email" placeholder="Enter your email address" class="flex-1 px-6 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <button type="submit" class="px-8 py-4 bg-gradient-to-r from-[#1A73E8] to-blue-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                <button type="submit" class="px-8 py-4 bg-gradient-to-r from-[#2D6CDF] to-blue-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
                     Subscribe
                 </button>
             </form>

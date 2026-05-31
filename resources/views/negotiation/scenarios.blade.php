@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Negotiation Scenarios - ' . $strategy->role)
 
@@ -9,7 +9,7 @@
     }
     .scenario-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        box-shadow: none;
     }
     .risk-badge {
         font-size: 0.75rem;
@@ -19,9 +19,9 @@
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
-    .risk-low { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-    .risk-medium { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-    .risk-high { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .risk-low { background: rgba(15, 107, 49, 0.2); color: #1E8E3E; }
+    .risk-medium { background: rgba(146, 80, 10, 0.2); color: #E37400; }
+    .risk-high { background: rgba(185, 28, 28, 0.2); color: #2D6CDF; }
     
     .sortable-header {
         cursor: pointer;
@@ -166,35 +166,35 @@
                     <tr class="border-b border-gray-200">
                         <th class="sortable-header px-4 py-3 text-left text-sm font-semibold text-gray-500" onclick="sortTable(0)">
                             Scenario
-                            <span class="sort-icon">↕</span>
+                            <span class="sort-icon">?</span>
                         </th>
                         <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-500" onclick="sortTable(1)">
                             Counter Amount
-                            <span class="sort-icon">↕</span>
+                            <span class="sort-icon">?</span>
                         </th>
                         <th class="sortable-header px-4 py-3 text-center text-sm font-semibold text-gray-500" onclick="sortTable(2)">
                             Risk Level
-                            <span class="sort-icon">↕</span>
+                            <span class="sort-icon">?</span>
                         </th>
                         <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-500" onclick="sortTable(3)">
                             Success %
-                            <span class="sort-icon">↕</span>
+                            <span class="sort-icon">?</span>
                         </th>
                         <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-500" onclick="sortTable(4)">
                             Expected
-                            <span class="sort-icon">↕</span>
+                            <span class="sort-icon">?</span>
                         </th>
                         <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-500" onclick="sortTable(5)">
                             Best Case
-                            <span class="sort-icon">↕</span>
+                            <span class="sort-icon">?</span>
                         </th>
                         <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-500" onclick="sortTable(6)">
                             Worst Case
-                            <span class="sort-icon">↕</span>
+                            <span class="sort-icon">?</span>
                         </th>
                         <th class="sortable-header px-4 py-3 text-right text-sm font-semibold text-gray-500" onclick="sortTable(7)">
                             ROI
-                            <span class="sort-icon">↕</span>
+                            <span class="sort-icon">?</span>
                         </th>
                         <th class="px-4 py-3 text-center text-sm font-semibold text-gray-500">Actions</th>
                     </tr>
@@ -240,7 +240,7 @@
                         </td>
                         <td class="px-4 py-4 text-center">
                             <button onclick="viewScenarioDetail({{ $scenario->id }})" class="text-primary-color hover:text-primary-light font-medium text-sm">
-                                Details →
+                                Details ?
                             </button>
                         </td>
                     </tr>
@@ -372,7 +372,7 @@
                         <ul class="space-y-2">
                             @foreach($scenario->failure_indicators as $indicator)
                             <li class="flex items-start text-sm text-gray-600">
-                                <span class="text-red-400 mr-2">⚠</span>
+                                <span class="text-red-400 mr-2">?</span>
                                 <span>{{ $indicator }}</span>
                             </li>
                             @endforeach
@@ -406,10 +406,10 @@ $scenariosChartData = $scenarios->map(function($s) use ($strategy) {
         'gain'        => $s->expected_outcome - $strategy->offered_salary,
         'probability' => $s->predicted_response_probability,
         'color'       => $s->risk_level === 'low'
-                            ? 'rgba(16, 185, 129, 0.8)'
+                            ? 'rgba(15, 107, 49, 0.8)'
                             : ($s->risk_level === 'medium'
-                                ? 'rgba(245, 158, 11, 0.8)'
-                                : 'rgba(239, 68, 68, 0.8)'),
+                                ? 'rgba(146, 80, 10, 0.8)'
+                                : 'rgba(185, 28, 28, 0.8)'),
     ];
 })->values();
 @endphp
@@ -465,14 +465,14 @@ new Chart(ctx, {
             x: {
                 title: {
                     display: true,
-                    text: 'Risk Level →',
-                    color: '#9ca3af',
+                    text: 'Risk Level ?',
+                    color: '#A8A8A8',
                     font: { size: 12 }
                 },
                 min: 0,
                 max: 100,
                 ticks: {
-                    color: '#6b7280',
+                    color: '#737373',
                     callback: function(value) {
                         if (value === 25) return 'Low';
                         if (value === 50) return 'Medium';
@@ -487,12 +487,12 @@ new Chart(ctx, {
             y: {
                 title: {
                     display: true,
-                    text: '↑ Expected Gain (₹)',
-                    color: '#9ca3af',
+                    text: '? Expected Gain (?)',
+                    color: '#A8A8A8',
                     font: { size: 12 }
                 },
                 ticks: {
-                    color: '#6b7280',
+                    color: '#737373',
                     callback: function(value) {
                         return '\u20B9' + (value / 1000).toFixed(0) + 'k';
                     }
@@ -541,10 +541,10 @@ function sortTable(columnIndex) {
     
     // Update sort icons
     document.querySelectorAll('.sortable-header .sort-icon').forEach(icon => {
-        icon.textContent = '↕';
+        icon.textContent = '?';
     });
     document.querySelectorAll('.sortable-header')[columnIndex].querySelector('.sort-icon').textContent = 
-        direction === 'asc' ? '↑' : '↓';
+        direction === 'asc' ? '?' : '?';
 }
 
 // Scenario Detail Modal Functions

@@ -1,4 +1,4 @@
-﻿<div class="flex flex-col h-full max-w-4xl mx-auto" x-data="coachChat()">
+<div class="flex flex-col h-full max-w-4xl mx-auto" x-data="coachChat()">
 
     <!-- Toast Error -->
     <div

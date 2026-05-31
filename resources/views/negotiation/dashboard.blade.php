@@ -8,15 +8,15 @@
 <div class="space-y-6">
 
     {{-- HERO --}}
-    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:linear-gradient(135deg,#4c1d95 0%,#6d28d9 40%,#a855f7 80%,#ec4899 100%);">
-        <div class="absolute inset-0" style="background-image:radial-gradient(circle at 80% 50%,rgba(255,255,255,.15) 0%,transparent 60%);"></div>
+    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:#0C2E72;">
+        <div class="absolute inset-0" style="background-image:rgba(255,255,255,.15);"></div>
         <div class="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="background:rgba(255,255,255,.2);color:#fff;">AI STRATEGIST</span>
                 <h1 class="text-2xl font-bold mt-2 text-white">AI Negotiation Strategist</h1>
                 <p class="text-sm mt-1" style="color:rgba(255,255,255,.85);">Transform job offers into competitive compensation packages.</p>
             </div>
-            <button onclick="openNewStrategyModal()" class="inline-flex items-center gap-2 px-5 py-2.5 font-semibold rounded-xl transition-all shadow-sm text-sm flex-shrink-0" style="background:#fff;color:#6d28d9;">
+            <button onclick="openNewStrategyModal()" class="inline-flex items-center gap-2 px-5 py-2.5 font-semibold rounded-xl transition-all shadow-sm text-sm flex-shrink-0" style="background:#fff;color:#1B57C4;">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                 New Strategy
             </button>
@@ -25,30 +25,30 @@
 
     {{-- STAT CARDS --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="rounded-2xl shadow-sm p-5" style="background:linear-gradient(135deg,#fdf4ff,#ede9fe);border:1.5px solid #c084fc">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:rgba(168,85,247,.18);">
-                <svg class="w-5 h-5" style="color:#7c3aed;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <div class="rounded-2xl shadow-sm p-5" style="background:#EBF2FF;border:1.5px solid #2D6CDF">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:rgba(20, 71, 186,.18);">
+                <svg class="w-5 h-5" style="color:#2D6CDF;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             </div>
-            <div class="text-3xl font-bold" style="color:#4c1d95" id="active-strategies-count">{{ $activeStrategies }}</div>
-            <div class="text-sm mt-1" style="color:#7c3aed">Active Strategies</div>
+            <div class="text-3xl font-bold" style="color:#0C2E72" id="active-strategies-count">{{ $activeStrategies }}</div>
+            <div class="text-sm mt-1" style="color:#2D6CDF">Active Strategies</div>
         </div>
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#dcfce7;">
-                <svg class="w-5 h-5" style="color:#16a34a;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#EDFAF2;">
+                <svg class="w-5 h-5" style="color:#1E8E3E;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
             <div class="text-3xl font-bold text-gray-900">{{ $completedStrategiesCount }}</div>
             <div class="text-sm text-gray-600 mt-1">Completed</div>
         </div>
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#e3f2fd;">
-                <svg class="w-5 h-5" style="color:#1976d2;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#EBF2FF;">
+                <svg class="w-5 h-5" style="color:#1B57C4;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
             <div class="text-3xl font-bold text-gray-900">{{ $totalValueGained ?? '0' }}</div>
             <div class="text-sm text-gray-600 mt-1">Value Gained</div>
         </div>
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#fce4ec;">
-                <svg class="w-5 h-5" style="color:#c62828;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background:#FEF2F2;">
+                <svg class="w-5 h-5" style="color:#2D6CDF;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
             </div>
             <div class="text-3xl font-bold text-gray-900">{{ $successRate ?? '0' }}<span class="text-lg text-gray-500 font-semibold">%</span></div>
             <div class="text-sm text-gray-600 mt-1">Success Rate</div>
@@ -63,10 +63,10 @@
             <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-base font-semibold text-gray-900">Active Strategies</h2>
-                    <button onclick="openNewStrategyModal()" class="px-3 py-1.5 text-white text-xs font-semibold rounded-xl transition-colors" style="background:linear-gradient(135deg,#7c3aed,#a855f7);" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">+ New</button>
+                    <button onclick="openNewStrategyModal()" class="px-3 py-1.5 text-white text-xs font-semibold rounded-xl transition-colors" style="background:#2D6CDF;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">+ New</button>
                 </div>
                 @forelse($strategies ?? [] as $strategy)
-                <div class="mb-3 p-4 rounded-xl transition-colors" style="background:#fdf4ff;border:1px solid #e9d5ff;" onmouseover="this.style.background='#ede9fe'" onmouseout="this.style.background='#fdf4ff'">
+                <div class="mb-3 p-4 rounded-xl transition-colors" style="background:#EBF2FF;border:1px solid #BFCFEE;" onmouseover="this.style.background='#EBF2FF'" onmouseout="this.style.background='#EBF2FF'">
                     <div class="flex items-start justify-between gap-2">
                         <div class="flex-1 min-w-0">
                             <h3 class="font-semibold text-gray-900 text-sm">{{ $strategy->company_name }}</h3>
@@ -81,21 +81,21 @@
                     </div>
                     <div class="mt-2 flex items-center gap-3 text-xs text-gray-500">
                         <span>Offer: <strong class="text-gray-900">{{ $strategy->current_offer ?? 'N/A' }}</strong></span>
-                        @if($strategy->target_salary)<span>Target: <strong style="color:#16a34a;">{{ $strategy->target_salary }}</strong></span>@endif
+                        @if($strategy->target_salary)<span>Target: <strong style="color:#1E8E3E;">{{ $strategy->target_salary }}</strong></span>@endif
                     </div>
                     <div class="mt-3 flex gap-2">
-                        <a href="{{ route('negotiation.strategy', $strategy) }}" class="px-3 py-1 text-white text-xs font-medium rounded-lg transition-colors" style="background:linear-gradient(135deg,#7c3aed,#a855f7);" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">View Strategy</a>
+                        <a href="{{ route('negotiation.strategy', $strategy) }}" class="px-3 py-1 text-white text-xs font-medium rounded-lg transition-colors" style="background:#2D6CDF;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">View Strategy</a>
                         <a href="{{ route('negotiation.coaching', $strategy) }}" class="px-3 py-1 text-gray-600 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">AI Coaching</a>
                     </div>
                 </div>
                 @empty
                 <div class="py-10 text-center">
-                    <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);">
-                        <svg class="w-6 h-6" style="color:#8b5cf6;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style="background:#EBF2FF;">
+                        <svg class="w-6 h-6" style="color:#2D6CDF;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     </div>
                     <p class="text-sm font-semibold text-gray-900">No strategies yet</p>
                     <p class="text-xs text-gray-500 mt-1 mb-4">Create your first negotiation strategy to get started</p>
-                    <button onclick="openNewStrategyModal()" class="px-4 py-2 text-white text-sm font-semibold rounded-xl transition-colors" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">Create Strategy</button>
+                    <button onclick="openNewStrategyModal()" class="px-4 py-2 text-white text-sm font-semibold rounded-xl transition-colors" style="background:#2D6CDF;">Create Strategy</button>
                 </div>
                 @endforelse
             </div>
@@ -107,25 +107,25 @@
                 $scriptsHref   = $firstStrategy ? route('negotiation.scripts',   $firstStrategy->id) : '#';
             @endphp
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <a href="{{ $scenariosHref }}" class="bg-white rounded-2xl border border-gray-200 p-5 text-center transition-all" onmouseover="this.style.background='#fdf4ff'" onmouseout="this.style.background='#fff'">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2" style="background:#fef3c7;"><span class="text-xl">&#x1F3AF;</span></div>
+                <a href="{{ $scenariosHref }}" class="bg-white rounded-2xl border border-gray-200 p-5 text-center transition-all" onmouseover="this.style.background='#EBF2FF'" onmouseout="this.style.background='#fff'">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2" style="background:#FFF8EC;"><span class="text-xl">&#x1F3AF;</span></div>
                     <div class="text-sm font-semibold text-gray-900">Practice Scenarios</div>
                     <div class="text-xs text-gray-500 mt-0.5">Simulate negotiations</div>
                 </a>
-                <a href="{{ $scriptsHref }}" class="bg-white rounded-2xl border border-gray-200 p-5 text-center transition-all" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='#fff'">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2" style="background:#e3f2fd;"><span class="text-xl">&#x1F4DD;</span></div>
+                <a href="{{ $scriptsHref }}" class="bg-white rounded-2xl border border-gray-200 p-5 text-center transition-all" onmouseover="this.style.background='#EBF2FF'" onmouseout="this.style.background='#fff'">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2" style="background:#EBF2FF;"><span class="text-xl">&#x1F4DD;</span></div>
                     <div class="text-sm font-semibold text-gray-900">Negotiation Scripts</div>
                     <div class="text-xs text-gray-500 mt-0.5">Email &amp; call templates</div>
                 </a>
-                <a href="{{ route('negotiation.coaching.active') }}" class="bg-white rounded-2xl border border-gray-200 p-5 text-center transition-all" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#fff'">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2" style="background:#dcfce7;"><span class="text-xl">&#x1F4AC;</span></div>
+                <a href="{{ route('negotiation.coaching.active') }}" class="bg-white rounded-2xl border border-gray-200 p-5 text-center transition-all" onmouseover="this.style.background='#EDFAF2'" onmouseout="this.style.background='#fff'">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2" style="background:#EDFAF2;"><span class="text-xl">&#x1F4AC;</span></div>
                     <div class="text-sm font-semibold text-gray-900">Coaching Sessions</div>
                     <div class="text-xs text-gray-500 mt-0.5">1:1 AI coaching</div>
                 </a>
-                <a href="{{ route('negotiation.chatbot') }}" class="rounded-2xl p-5 text-center transition-all" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1.5px solid #c084fc;" onmouseover="this.style.background='linear-gradient(135deg,#ede9fe,#ddd6fe)'" onmouseout="this.style.background='linear-gradient(135deg,#f5f3ff,#ede9fe)'">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);"><span class="text-xl text-white">&#x20B9;</span></div>
-                    <div class="text-sm font-semibold" style="color:#4c1d95;">AI Salary Coach</div>
-                    <div class="text-xs mt-0.5" style="color:#7c3aed;">Chat &amp; get advice</div>
+                <a href="{{ route('negotiation.chatbot') }}" class="rounded-2xl p-5 text-center transition-all" style="background:#EBF2FF;border:1.5px solid #2D6CDF;" onmouseover="this.style.background='#EBF2FF'" onmouseout="this.style.background='#EBF2FF'">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2" style="background:#2D6CDF;"><span class="text-xl text-white">&#x20B9;</span></div>
+                    <div class="text-sm font-semibold" style="color:#0C2E72;">AI Salary Coach</div>
+                    <div class="text-xs mt-0.5" style="color:#2D6CDF;">Chat &amp; get advice</div>
                 </a>
             </div>
         </div>
@@ -175,17 +175,17 @@
                             this.scrollChat();
                         }
                     }
-                }" class="rounded-2xl overflow-hidden shadow-sm" style="border:1.5px solid #7c3aed;">
+                }" class="rounded-2xl overflow-hidden shadow-sm" style="border:1.5px solid #2D6CDF;">
 
                 {{-- Toggle header --}}
                 <button @click="open = !open"
                         class="w-full flex items-center justify-between px-4 py-3.5 transition-colors"
-                        style="background:linear-gradient(135deg,#4c1d95,#7c3aed);">
+                        style="background:#0C2E72;">
                     <div class="flex items-center gap-2.5">
                         {{-- Animated pulse dot --}}
                         <span class="relative flex h-2.5 w-2.5">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background:#86efac;"></span>
-                            <span class="relative inline-flex rounded-full h-2.5 w-2.5" style="background:#4ade80;"></span>
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background:#A3D9B4;"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5" style="background:#1E8E3E;"></span>
                         </span>
                         <div class="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold text-white" style="background:rgba(255,255,255,.2);">₹</div>
                         <div class="text-left">
@@ -216,8 +216,8 @@
                         {{-- Default greeting --}}
                         <template x-if="messages.length === 0">
                             <div class="flex gap-2 items-start">
-                                <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white mt-0.5" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">₹</div>
-                                <div class="text-xs text-gray-700 rounded-xl rounded-tl-none px-3 py-2 leading-relaxed" style="background:#f5f3ff;border:1px solid #ede9fe;">
+                                <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white mt-0.5" style="background:#2D6CDF;">₹</div>
+                                <div class="text-xs text-gray-700 rounded-xl rounded-tl-none px-3 py-2 leading-relaxed" style="background:#EBF2FF;border:1px solid #EBF2FF;">
                                     Hi! I'm your AI Negotiation Agent. Ask me anything about your offer, salary ranges, or negotiation tactics. 💜
                                 </div>
                             </div>
@@ -226,22 +226,22 @@
                         <template x-for="(msg, idx) in messages" :key="idx">
                             <div>
                                 <div x-show="msg.role === 'user'" class="flex justify-end">
-                                    <div class="text-xs text-white rounded-xl rounded-tr-none px-3 py-2 max-w-[85%] leading-relaxed" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);" x-text="msg.content"></div>
+                                    <div class="text-xs text-white rounded-xl rounded-tr-none px-3 py-2 max-w-[85%] leading-relaxed" style="background:#2D6CDF;" x-text="msg.content"></div>
                                 </div>
                                 <div x-show="msg.role === 'agent'" class="flex gap-2 items-start">
-                                    <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white mt-0.5" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">₹</div>
-                                    <div class="text-xs text-gray-700 rounded-xl rounded-tl-none px-3 py-2 leading-relaxed max-w-[85%]" style="background:#f5f3ff;border:1px solid #ede9fe;" x-text="msg.content"></div>
+                                    <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white mt-0.5" style="background:#2D6CDF;">₹</div>
+                                    <div class="text-xs text-gray-700 rounded-xl rounded-tl-none px-3 py-2 leading-relaxed max-w-[85%]" style="background:#EBF2FF;border:1px solid #EBF2FF;" x-text="msg.content"></div>
                                 </div>
                             </div>
                         </template>
                         {{-- Loading dots --}}
                         <div x-show="loading" class="flex gap-2 items-start">
-                            <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">₹</div>
-                            <div class="px-3 py-2 rounded-xl rounded-tl-none" style="background:#f5f3ff;border:1px solid #ede9fe;">
+                            <div class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white" style="background:#2D6CDF;">₹</div>
+                            <div class="px-3 py-2 rounded-xl rounded-tl-none" style="background:#EBF2FF;border:1px solid #EBF2FF;">
                                 <span class="flex gap-1">
-                                    <span class="w-1.5 h-1.5 rounded-full" style="background:#7c3aed;animation:chatDot .9s infinite ease-in-out;animation-delay:0s"></span>
-                                    <span class="w-1.5 h-1.5 rounded-full" style="background:#7c3aed;animation:chatDot .9s infinite ease-in-out;animation-delay:.2s"></span>
-                                    <span class="w-1.5 h-1.5 rounded-full" style="background:#7c3aed;animation:chatDot .9s infinite ease-in-out;animation-delay:.4s"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full" style="background:#2D6CDF;animation:chatDot .9s infinite ease-in-out;animation-delay:0s"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full" style="background:#2D6CDF;animation:chatDot .9s infinite ease-in-out;animation-delay:.2s"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full" style="background:#2D6CDF;animation:chatDot .9s infinite ease-in-out;animation-delay:.4s"></span>
                                 </span>
                             </div>
                         </div>
@@ -251,20 +251,20 @@
                     <div class="px-4 pb-3 flex flex-wrap gap-1.5">
                         <button @click="question = 'How do I counter a low offer?'; $nextTick(() => sendAgentMessage())"
                                 class="text-xs px-2.5 py-1 rounded-full border transition-colors hover:text-white"
-                                style="border-color:#c4b5fd;color:#7c3aed;"
-                                onmouseover="this.style.background='#7c3aed';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='#7c3aed'">
+                                style="border-color:#BFCFEE;color:#2D6CDF;"
+                                onmouseover="this.style.background='#2D6CDF';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='#2D6CDF'">
                             Counter low offer
                         </button>
                         <button @click="question = 'What is a good salary for my role?'; $nextTick(() => sendAgentMessage())"
                                 class="text-xs px-2.5 py-1 rounded-full border transition-colors"
-                                style="border-color:#c4b5fd;color:#7c3aed;"
-                                onmouseover="this.style.background='#7c3aed';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='#7c3aed'">
+                                style="border-color:#BFCFEE;color:#2D6CDF;"
+                                onmouseover="this.style.background='#2D6CDF';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='#2D6CDF'">
                             Market salary?
                         </button>
                         <button @click="question = 'Give me a negotiation script'; $nextTick(() => sendAgentMessage())"
                                 class="text-xs px-2.5 py-1 rounded-full border transition-colors"
-                                style="border-color:#c4b5fd;color:#7c3aed;"
-                                onmouseover="this.style.background='#7c3aed';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='#7c3aed'">
+                                style="border-color:#BFCFEE;color:#2D6CDF;"
+                                onmouseover="this.style.background='#2D6CDF';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='#2D6CDF'">
                             Get script
                         </button>
                     </div>
@@ -276,12 +276,12 @@
                                    type="text"
                                    placeholder="Ask the agent..."
                                    class="flex-1 text-xs px-3 py-2 rounded-xl border bg-gray-50 focus:outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-200"
-                                   style="border-color:#ddd6fe;"
+                                   style="border-color:#BFCFEE;"
                                    :disabled="loading">
                             <button type="submit"
                                     :disabled="loading || !question.trim()"
                                     class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-opacity disabled:opacity-40"
-                                    style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">
+                                    style="background:#2D6CDF;">
                                 <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                                 </svg>
@@ -293,7 +293,7 @@
                     <div class="px-3 pb-4">
                         <a href="{{ route('negotiation.chatbot') }}"
                            class="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-xl transition-colors"
-                           style="background:linear-gradient(135deg,#4c1d95,#7c3aed);color:#fff;">
+                           style="background:#0C2E72;color:#fff;">
                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                             </svg>
@@ -304,7 +304,7 @@
             </div>
             {{-- ═══ END NEGOTIATION AGENT TOGGLE PANEL ═══ --}}
 
-            <div class="rounded-2xl p-5 text-white" style="background:linear-gradient(135deg,#4c1d95,#7c3aed,#a855f7);">
+            <div class="rounded-2xl p-5 text-white" style="background:#0C2E72;">
                 <div class="flex items-center gap-2.5 mb-4">
                     <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:rgba(255,255,255,.2);">
                         <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
@@ -324,9 +324,9 @@
                 <div class="mb-3 last:mb-0">
                     <div class="flex justify-between text-xs mb-1">
                         <span class="font-medium text-gray-900">{{ $role }}</span>
-                        <span class="font-semibold" style="color:#16a34a;">{{ $data }}</span>
+                        <span class="font-semibold" style="color:#1E8E3E;">{{ $data }}</span>
                     </div>
-                    <div class="h-1.5 bg-gray-100 rounded-full"><div class="h-full rounded-full" style="width:70%;background:linear-gradient(90deg,#7c3aed,#a855f7);"></div></div>
+                    <div class="h-1.5 bg-gray-100 rounded-full"><div class="h-full rounded-full" style="width:70%;background:#2D6CDF;"></div></div>
                 </div>
                 @endforeach
             </div>
@@ -405,7 +405,7 @@
                 <div id="strategy-error" class="hidden p-3 rounded-xl text-sm text-red-700 bg-red-50 border border-red-200"></div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="closeNewStrategyModal()" class="flex-1 px-4 py-2.5 border border-gray-200 text-gray-600 text-sm font-semibold rounded-xl hover:bg-gray-50 transition-colors">Cancel</button>
-                    <button type="submit" id="submit-strategy-btn" class="flex-1 px-4 py-2.5 text-white text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-2" style="background:linear-gradient(135deg,#7c3aed,#a855f7);" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+                    <button type="submit" id="submit-strategy-btn" class="flex-1 px-4 py-2.5 text-white text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-2" style="background:#2D6CDF;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
                         <svg id="loading-spinner" class="hidden animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
                         <span id="submit-strategy-text">Generate Strategy</span>
                     </button>
@@ -492,7 +492,7 @@ document.getElementById('new-strategy-form').addEventListener('submit', async fu
         submitBtn.disabled = false;
         spinner.classList.add('hidden');
         text.textContent = 'Generate Strategy';
-        submitBtn.onmouseout = () => submitBtn.style.background = 'linear-gradient(135deg,#7c3aed,#a855f7)';
+        submitBtn.onmouseout = () => submitBtn.style.background = '#2D6CDF';
     }
 });
 
@@ -506,10 +506,10 @@ document.addEventListener('keydown', function(e) {
 <a href="{{ route('negotiation.chatbot') }}"
    title="AI Salary Coach"
    class="fixed z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-2xl font-semibold text-sm text-white transition-all hover:scale-105 hover:shadow-purple-400/50"
-   style="bottom:28px;right:28px;background:linear-gradient(135deg,#7c3aed,#4f46e5);">
+   style="bottom:28px;right:28px;background:#2D6CDF;">
     <span class="text-lg leading-none">₹</span>
     <span>AI Salary Coach</span>
-    <span class="ml-1 w-2 h-2 rounded-full animate-pulse" style="background:#a5f3a5;"></span>
+    <span class="ml-1 w-2 h-2 rounded-full animate-pulse" style="background:#A3D9B4;"></span>
 </a>
 
 @endsection

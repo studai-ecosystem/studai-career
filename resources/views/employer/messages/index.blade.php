@@ -9,7 +9,7 @@
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold" style="color:#1a1a2e">Candidate Messages</h1>
+            <h1 class="text-2xl font-bold" style="color:#0C0C0C">Candidate Messages</h1>
             <p class="text-sm text-gray-500 mt-1">Communicate with candidates directly</p>
         </div>
     </div>
@@ -18,11 +18,11 @@
     <div class="grid grid-cols-2 gap-4">
         <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
             <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Total Conversations</p>
-            <p class="text-3xl font-bold mt-1" style="color:#1A73E8">{{ $stats['total'] }}</p>
+            <p class="text-3xl font-bold mt-1" style="color:#2D6CDF">{{ $stats['total'] }}</p>
         </div>
         <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
             <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">With Unread</p>
-            <p class="text-3xl font-bold mt-1" style="color:#ea4335">{{ $stats['unread'] }}</p>
+            <p class="text-3xl font-bold mt-1" style="color:#2D6CDF">{{ $stats['unread'] }}</p>
         </div>
     </div>
 
@@ -32,7 +32,7 @@
             @foreach(['active' => 'Active', 'archived' => 'Archived', 'all' => 'All'] as $val => $label)
                 <a href="{{ route('employer.messages.index', ['status' => $val]) }}"
                    class="px-5 py-3 text-sm font-medium transition-colors {{ $status === $val ? 'border-b-2 text-blue-600' : 'text-gray-500 hover:text-gray-700' }}"
-                   style="{{ $status === $val ? 'border-color:#1A73E8;color:#1A73E8' : '' }}">
+                   style="{{ $status === $val ? 'border-color:#2D6CDF;color:#2D6CDF' : '' }}">
                     {{ $label }}
                 </a>
             @endforeach
@@ -45,7 +45,7 @@
                     <a href="{{ route('employer.messages.show', $conv->id) }}"
                        class="flex items-start gap-4 p-4 hover:bg-gray-50 transition-colors">
                         <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                             style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
+                             style="background:#2D6CDF">
                             {{ strtoupper(substr($conv->candidate->name ?? '?', 0, 1)) }}
                         </div>
                         <div class="flex-1 min-w-0">
@@ -59,7 +59,7 @@
                             @endif
                         </div>
                         @if($conv->unread_messages_count > 0)
-                            <span class="flex-shrink-0 w-5 h-5 text-white text-xs rounded-full flex items-center justify-center font-bold" style="background:#1A73E8">
+                            <span class="flex-shrink-0 w-5 h-5 text-white text-xs rounded-full flex items-center justify-center font-bold" style="background:#2D6CDF">
                                 {{ $conv->unread_messages_count }}
                             </span>
                         @endif
@@ -74,7 +74,7 @@
                 </svg>
                 <h3 class="text-lg font-semibold text-gray-700 mb-2">No Conversations Yet</h3>
                 <p class="text-gray-400 text-sm">Start a conversation with a candidate from their application.</p>
-                <a href="{{ route('employer.applicants.index') }}" class="mt-4 inline-block px-5 py-2 text-white text-sm font-medium rounded-lg" style="background:#1A73E8">View Applicants</a>
+                <a href="{{ route('employer.applicants.index') }}" class="mt-4 inline-block px-5 py-2 text-white text-sm font-medium rounded-lg" style="background:#2D6CDF">View Applicants</a>
             </div>
         @endif
     </div>

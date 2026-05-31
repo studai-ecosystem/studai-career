@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @php
         $template = $resume->template;
-        $colors = $template->color_scheme ?? ['primary'=>'#1a202c','secondary'=>'#2d3748','accent'=>'#4a5568'];
-        $primary   = $colors['primary']   ?? '#1a202c';
-        $secondary = $colors['secondary'] ?? '#2d3748';
-        $accent    = $colors['accent']    ?? '#4a5568';
+        $colors = $template->color_scheme ?? ['primary'=>'#0C0C0C','secondary'=>'#3D3D3D','accent'=>'#3D3D3D'];
+        $primary   = $colors['primary']   ?? '#0C0C0C';
+        $secondary = $colors['secondary'] ?? '#3D3D3D';
+        $accent    = $colors['accent']    ?? '#3D3D3D';
         $slug      = $template->slug ?? 'professional-classic';
         // Layout variant
         $isTwoCol  = in_array($slug, ['modern-tech','creative-portfolio','healthcare-professional']);

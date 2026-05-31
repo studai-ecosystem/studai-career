@@ -1,4 +1,4 @@
-Ôªø@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Skill Certificate')
 
@@ -138,7 +138,7 @@
         <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
             <div class="flex items-start justify-between">
                 <div class="flex-1">
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">ù¬ê Certificate Verification</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">?ê Certificate Verification</h3>
                     <p class="text-sm text-gray-600 mb-4">This certificate is cryptographically verified and can be authenticated using the certificate ID above.</p>
                     
                     <div class="flex items-center space-x-2 text-sm">
@@ -231,7 +231,7 @@ function shareLinkedIn() {
 
 function shareTwitter() {
     const url = encodeURIComponent("{{ url()->current() }}");
-    const text = encodeURIComponent("Just earned a {{ $assessment->proficiency_awarded ?? 'proficiency' }} certificate in {{ $assessment->skill_name }}! Score: {{ $assessment->score }}% ‚Äú");
+    const text = encodeURIComponent("Just earned a {{ $assessment->proficiency_awarded ?? 'proficiency' }} certificate in {{ $assessment->skill_name }}! Score: {{ $assessment->score }}% ì");
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
 }
 
@@ -265,7 +265,7 @@ function copyLink() {
 }
 
 .border-gradient {
-    border-image: linear-gradient(to right, #fbbf24, #f59e0b, #f97316) 1;
+    border-image: #E37400 1;
 }
 
 .grayscale {

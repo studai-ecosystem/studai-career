@@ -94,8 +94,8 @@ $tierF = $tierFeatures[$plan->slug] ?? $tierFeatures['basic'];
 @endphp
 
     <div style="max-width:560px;margin:0 auto;padding:8px 0 40px">
-        <div class="rounded-2xl overflow-hidden" style="background:#fff;border:1px solid #ebebf4;box-shadow:0 4px 24px rgba(99,102,241,.10)">
-            <div style="background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:20px 24px">
+        <div class="rounded-2xl overflow-hidden" style="background:#fff;border:1px solid #EBF2FF;box-shadow: none">
+            <div style="background:#1B57C4;padding:20px 24px">
                 <a href="{{ route('pricing') }}" class="inline-flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-white mb-3" style="text-decoration:none">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
                     Back to Plans
@@ -120,12 +120,12 @@ $tierF = $tierFeatures[$plan->slug] ?? $tierFeatures['basic'];
                         @endphp
 
                         <!-- Price display -->
-                        <div class="p-5 rounded-2xl mb-4" style="background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:2px solid #a5b4fc">
+                        <div class="p-5 rounded-2xl mb-4" style="background:#EBF2FF;border:2px solid #BFCFEE">
                             <div class="flex items-baseline gap-1">
-                                <span class="text-4xl font-extrabold" style="color:#4f46e5">₹{{ $displayPrice }}</span>
+                                <span class="text-4xl font-extrabold" style="color:#1B57C4">₹{{ $displayPrice }}</span>
                                 <span class="text-gray-500 font-medium">/{{ $isYearly ? 'mo' : 'month' }}</span>
                             </div>
-                            <p class="text-sm mt-1" style="color:#6366f1">{{ $billingLabel }}</p>
+                            <p class="text-sm mt-1" style="color:#2D6CDF">{{ $billingLabel }}</p>
                         </div>
 
                         <form id="billing-form" method="POST" action="{{ route('subscriptions.subscribe') }}">
@@ -151,13 +151,13 @@ $tierF = $tierFeatures[$plan->slug] ?? $tierFeatures['basic'];
                             <!-- Payment Method -->
                             <div class="mb-5">
                                 <h4 class="font-semibold text-gray-900 mb-3 text-sm">Payment Method</h4>
-                                <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer" style="border-color:#6366f1;background:#eef2ff">
+                                <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer" style="border-color:#2D6CDF;background:#EBF2FF">
                                     <input type="radio" name="gateway" value="razorpay" class="h-4 w-4 text-indigo-600" checked>
                                     <div class="ml-3">
                                         <span class="font-semibold text-gray-900">Razorpay</span>
                                         <p class="text-xs text-gray-500 mt-0.5">Card · UPI · Net Banking · Wallets</p>
                                     </div>
-                                    <svg class="ml-auto w-8 h-8 opacity-70" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="8" fill="#072654"/><path d="M12 30l6-12h5l-4 8h6l-8 4h-5z" fill="#3395FF"/></svg>
+                                    <svg class="ml-auto w-8 h-8 opacity-70" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="8" fill="#0C2E72"/><path d="M12 30l6-12h5l-4 8h6l-8 4h-5z" fill="#2D6CDF"/></svg>
                                 </label>
                             </div>
 
@@ -171,13 +171,13 @@ $tierF = $tierFeatures[$plan->slug] ?? $tierFeatures['basic'];
                                 <button type="button" id="pay-btn"
                                         onclick="payNow({{ $planPrice }}, {{ $plan->id }})"
                                         class="flex-1 py-3.5 px-6 text-white rounded-xl font-bold text-sm transition hover:opacity-90 hover:-translate-y-0.5 hover:shadow-lg"
-                                        style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">
+                                        style="background:#1B57C4">
                                     Pay ₹{{ number_format($planPrice) }}
                                 </button>
                                 @else
                                 <button type="submit"
                                         class="flex-1 py-3.5 px-6 text-white rounded-xl font-bold text-sm transition"
-                                        style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">
+                                        style="background:#1B57C4">
                                     Activate Free Plan
                                 </button>
                                 @endif
@@ -259,7 +259,7 @@ $tierF = $tierFeatures[$plan->slug] ?? $tierFeatures['basic'];
                     email: "{{ auth()->user()->email }}"
                 },
                 notes: { plan_id: planId },
-                theme: { color: "#4F46E5" },
+                theme: { color: "#1B57C4" },
                 modal: {
                     ondismiss: function() {
                         if (btn) { btn.disabled = false; btn.textContent = 'Pay ₹{{ number_format((float)$plan->price) }}'; }

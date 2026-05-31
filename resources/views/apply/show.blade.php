@@ -15,9 +15,9 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#1A73E8',
-                        'primary-dark': '#1557b0',
-                        success: '#34A853',
+                        primary: '#2D6CDF',
+                        'primary-dark': '#1B57C4',
+                        success: '#1E8E3E',
                     }
                 }
             }
@@ -26,7 +26,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .prose h2 { font-size: 1.1rem; font-weight: 600; margin: 1rem 0 0.5rem; color: #1f2937; }
+        .prose h2 { font-size: 1.1rem; font-weight: 600; margin: 1rem 0 0.5rem; color: #0C0C0C; }
         .prose ul { list-style: disc; padding-left: 1.5rem; margin: 0.5rem 0; }
         .prose li { margin: 0.25rem 0; }
     </style>

@@ -7,7 +7,7 @@
                         <rect x="0" y="0" width="4" height="4" class="text-gray-200" fill="currentColor" />
                     </pattern>
                 </defs>
-                <rect width="404" height="404" fill="url(#85737c0e-0916-41d7-917f-596dc7edfa27)" />
+                <rect width="404" height="404" fill="url(#7373730e-0916-41d7-917f-596dc7edfa27)" />
             </svg>
             <svg class="absolute right-full bottom-0 transform -translate-x-1/2" width="404" height="404" fill="none" viewBox="0 0 404 404" aria-hidden="true">
                 <defs>
@@ -15,7 +15,7 @@
                         <rect x="0" y="0" width="4" height="4" class="text-gray-200" fill="currentColor" />
                     </pattern>
                 </defs>
-                <rect width="404" height="404" fill="url(#85737c0e-0916-41d7-917f-596dc7edfa27)" />
+                <rect width="404" height="404" fill="url(#7373730e-0916-41d7-917f-596dc7edfa27)" />
             </svg>
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Contact Us</h2>
@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <div class="sm:col-span-2">
-                        <button type="submit" class="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-[#1A73E8] hover:bg-[#1557b0] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <button type="submit" class="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-[#2D6CDF] hover:bg-[#1B57C4] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Let's talk
                         </button>
                     </div>

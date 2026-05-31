@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Bias Elimination & Ethical AI - S.C.O.U.T.')
 
@@ -132,7 +132,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">Lower is better â€¢ Target: <10%</p>
+                        <p class="text-xs text-gray-500 mt-2">Lower is better • Target: <10%</p>
                     </div>
 
                     <div class="glass-card p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
@@ -193,7 +193,7 @@
                             </div>
                             <div class="flex-1">
                                 <p class="font-semibold text-gray-800">Bias Audit Completed</p>
-                                <p class="text-sm text-gray-600">Analyzed 234 applications â€¢ Fairness Rating: Excellent</p>
+                                <p class="text-sm text-gray-600">Analyzed 234 applications • Fairness Rating: Excellent</p>
                                 <p class="text-xs text-gray-500 mt-1">2 hours ago</p>
                             </div>
                         </div>
@@ -233,7 +233,7 @@
                     <div class="glass-card p-6 rounded-xl shadow-lg">
                         <h4 class="font-semibold text-gray-700 mb-2">Selection Rate Parity</h4>
                         <p class="text-3xl font-bold text-green-600">0.87</p>
-                        <p class="text-sm text-gray-600 mt-2">Target: â‰¥0.80 (4/5ths rule)</p>
+                        <p class="text-sm text-gray-600 mt-2">Target: ≥0.80 (4/5ths rule)</p>
                         <div class="mt-4 flex items-center space-x-2">
                             <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">Passing</span>
                         </div>
@@ -499,37 +499,37 @@
     }
 
     .tab-button {
-        color: #6b7280;
+        color: #737373;
         border-bottom: 3px solid transparent;
     }
 
     .tab-button.active {
-        color: #9333ea;
-        border-bottom-color: #9333ea;
-        background: linear-gradient(to bottom, rgba(147, 51, 234, 0.05), transparent);
+        color: #1B57C4;
+        border-bottom-color: #1B57C4;
+        background: rgba(147, 51, 234, 0.05);
     }
 
     .tab-button:hover:not(.active) {
-        color: #4b5563;
+        color: #3D3D3D;
         background: rgba(243, 244, 246, 0.5);
     }
 
     .filter-btn {
         background: white;
-        border: 2px solid #e5e7eb;
-        color: #6b7280;
+        border: 2px solid #E2E2E0;
+        color: #737373;
         transition: all 0.3s;
     }
 
     .filter-btn.active {
-        background: linear-gradient(to right, #9333ea, #ec4899);
-        border-color: #9333ea;
+        background: #1B57C4;
+        border-color: #1B57C4;
         color: white;
     }
 
     .filter-btn:hover:not(.active) {
-        border-color: #d1d5db;
-        background: #f9fafb;
+        border-color: #C8C8C5;
+        background: #F7F7F5;
     }
 
     .tab-content {
@@ -694,7 +694,7 @@
                 datasets: [{
                     label: 'Fairness Score',
                     data: [88, 90, 89, 92, 91, 92],
-                    borderColor: '#9333ea',
+                    borderColor: '#1B57C4',
                     backgroundColor: 'rgba(147, 51, 234, 0.1)',
                     tension: 0.4,
                     fill: true
@@ -720,12 +720,12 @@
                 datasets: [{
                     label: 'Impact Ratio',
                     data: [0.87, 0.92, 0.88, 0.85],
-                    backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#ec4899']
+                    backgroundColor: ['#1E8E3E', '#2D6CDF', '#2D6CDF', '#2D6CDF']
                 }, {
                     label: 'Threshold',
                     data: [0.8, 0.8, 0.8, 0.8],
                     type: 'line',
-                    borderColor: '#ef4444',
+                    borderColor: '#2D6CDF',
                     borderDash: [5, 5],
                     fill: false
                 }]

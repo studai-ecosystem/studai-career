@@ -20,7 +20,7 @@
                 </div>
                 <a href="{{ route('negotiation.dashboard') }}"
                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white shadow"
-                   style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">
+                   style="background:#2D6CDF">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
@@ -32,7 +32,7 @@
         @if($tactics->isEmpty())
             {{-- Empty State --}}
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-16 text-center">
-                <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe)">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background:#EBF2FF">
                     <svg class="w-10 h-10 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
                     </svg>
@@ -41,7 +41,7 @@
                 <p class="text-gray-500 dark:text-gray-400 mb-6">The tactics library will be populated as you use the negotiation strategist.</p>
                 <a href="{{ route('negotiation.dashboard') }}"
                    class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white shadow"
-                   style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">
+                   style="background:#2D6CDF">
                     Go to Negotiation Dashboard
                 </a>
             </div>
@@ -61,7 +61,7 @@
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Low Risk</p>
                 </div>
                 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-center shadow-sm">
-                    <p class="text-2xl font-bold" style="color:#1A73E8">{{ $tactics->flatten()->where('is_active', true)->count() }}</p>
+                    <p class="text-2xl font-bold" style="color:#2D6CDF">{{ $tactics->flatten()->where('is_active', true)->count() }}</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Active</p>
                 </div>
             </div>
@@ -70,7 +70,7 @@
             @foreach($tactics as $category => $categoryTactics)
             <div class="mb-8">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#7c3aed22,#4f46e522)">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#2D6CDF22">
                         <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
@@ -120,7 +120,7 @@
                         @if($tactic->average_effectiveness)
                         <div class="flex items-center gap-2">
                             <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                                <div class="h-full rounded-full" style="width:{{ min(100, $tactic->average_effectiveness * 10) }}%;background:linear-gradient(90deg,#7c3aed,#4f46e5)"></div>
+                                <div class="h-full rounded-full" style="width:{{ min(100, $tactic->average_effectiveness * 10) }}%;background:#2D6CDF"></div>
                             </div>
                             <span class="text-xs font-medium text-gray-600 dark:text-gray-400">{{ number_format($tactic->average_effectiveness, 1) }}/10</span>
                         </div>

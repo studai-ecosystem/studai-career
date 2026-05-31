@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     data: data.map(d => d.candidates),
                     backgroundColor: [
-                        '#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444'
+                        '#E37400', '#2D6CDF', '#1E8E3E', '#2D6CDF', '#E37400', '#2D6CDF'
                     ]
                 }]
             },
@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     label: 'Cost per Hire ($)',
                     data: data.map(d => d.cost_per_hire),
-                    backgroundColor: data.map(d => d.cost_per_hire < 1000 ? '#10b981' : d.cost_per_hire < 2000 ? '#f59e0b' : '#ef4444'),
+                    backgroundColor: data.map(d => d.cost_per_hire < 1000 ? '#1E8E3E' : d.cost_per_hire < 2000 ? '#E37400' : '#2D6CDF'),
                     borderRadius: 8
                 }]
             },
@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('trends-chart').getContext('2d');
         
         const sources = Object.keys(data[0] || {}).filter(k => k !== 'month');
-        const colors = ['#f97316', '#3b82f6', '#10b981', '#8b5cf6'];
+        const colors = ['#E37400', '#2D6CDF', '#1E8E3E', '#2D6CDF'];
         
         trendsChart = new Chart(ctx, {
             type: 'line',

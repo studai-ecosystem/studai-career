@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Dynamic Adaptive Assessment - S.C.O.U.T.')
 
@@ -15,10 +15,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <style>
-    .difficulty-easy { background: linear-gradient(135deg, #10b981, #34d399); color: white; }
-    .difficulty-medium { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; }
-    .difficulty-hard { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: white; }
-    .difficulty-expert { background: linear-gradient(135deg, #8b5cf6, #a78bfa); color: white; }
+    .difficulty-easy { background: #1E8E3E; color: white; }
+    .difficulty-medium { background: #2D6CDF; color: white; }
+    .difficulty-hard { background: #E37400; color: white; }
+    .difficulty-expert { background: #2D6CDF; color: white; }
     
     .category-badge {
         display: inline-block;
@@ -26,26 +26,26 @@
         border-radius: 9999px;
         font-size: 0.75rem;
         font-weight: 600;
-        background: rgba(59, 130, 246, 0.1);
-        color: #3b82f6;
+        background: rgba(20, 71, 186, 0.1);
+        color: #2D6CDF;
     }
     
-    .proficiency-expert { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
-    .proficiency-advanced { background: linear-gradient(135deg, #10b981, #34d399); }
-    .proficiency-intermediate { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
-    .proficiency-basic { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-    .proficiency-beginner { background: linear-gradient(135deg, #ef4444, #f87171); }
+    .proficiency-expert { background: #2D6CDF; }
+    .proficiency-advanced { background: #1E8E3E; }
+    .proficiency-intermediate { background: #2D6CDF; }
+    .proficiency-basic { background: #E37400; }
+    .proficiency-beginner { background: #2D6CDF; }
     
-    .recommendation-strong { background: linear-gradient(135deg, #10b981, #34d399); }
-    .recommendation-recommend { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
-    .recommendation-consider { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-    .recommendation-not { background: linear-gradient(135deg, #ef4444, #f87171); }
+    .recommendation-strong { background: #1E8E3E; }
+    .recommendation-recommend { background: #2D6CDF; }
+    .recommendation-consider { background: #E37400; }
+    .recommendation-not { background: #2D6CDF; }
     
     .glass-panel {
         background: rgba(255, 255, 255, 0.7);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        box-shadow: none;
     }
     
     .pulse-animation {
@@ -59,7 +59,7 @@
     
     .progress-bar-animated {
         animation: progress-bar-stripes 1s linear infinite;
-        background-image: linear-gradient(45deg, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+        background-image: rgba(255,255,255,.15);
         background-size: 1rem 1rem;
     }
     
@@ -72,8 +72,8 @@
         font-family: 'Courier New', monospace;
         font-size: 0.875rem;
         line-height: 1.5;
-        background: #2d2d2d;
-        color: #f8f8f2;
+        background: #0C0C0C;
+        color: #F0F0EE;
         padding: 1rem;
         border-radius: 0.5rem;
         min-height: 200px;
@@ -476,7 +476,7 @@
         
         <div class="space-y-4 text-gray-700">
             <div>
-                <h3 class="font-bold text-lg mb-2">¯ Adaptive Difficulty System</h3>
+                <h3 class="font-bold text-lg mb-2">� Adaptive Difficulty System</h3>
                 <p>Questions automatically adjust based on your performance:</p>
                 <ul class="list-disc ml-6 mt-2 space-y-1">
                     <li><strong>80%+ accuracy:</strong> Questions get harder</li>
@@ -486,7 +486,7 @@
             </div>
             
             <div>
-                <h3 class="font-bold text-lg mb-2">�Š Difficulty Levels</h3>
+                <h3 class="font-bold text-lg mb-2">?� Difficulty Levels</h3>
                 <div class="space-y-2">
                     <div class="difficulty-easy px-3 py-2 rounded">
                         <strong>Easy:</strong> Basic concepts (80%+ pass rate)
@@ -504,7 +504,7 @@
             </div>
             
             <div>
-                <h3 class="font-bold text-lg mb-2">¯ Question Types</h3>
+                <h3 class="font-bold text-lg mb-2">� Question Types</h3>
                 <ul class="list-disc ml-6 space-y-1">
                     <li><strong>Multiple Choice:</strong> Select the best answer</li>
                     <li><strong>Coding:</strong> Write code to solve problems</li>
@@ -514,7 +514,7 @@
             </div>
             
             <div>
-                <h3 class="font-bold text-lg mb-2">â­ Weighted Scoring</h3>
+                <h3 class="font-bold text-lg mb-2">⭐ Weighted Scoring</h3>
                 <p>Harder questions are worth more points:</p>
                 <ul class="list-disc ml-6 mt-2 space-y-1">
                     <li>Easy: 1.0&times; multiplier</li>
@@ -525,7 +525,7 @@
             </div>
             
             <div>
-                <h3 class="font-bold text-lg mb-2">“ Proficiency Levels</h3>
+                <h3 class="font-bold text-lg mb-2">� Proficiency Levels</h3>
                 <ul class="list-disc ml-6 space-y-1">
                     <li><strong>Expert:</strong> 90+ score</li>
                     <li><strong>Advanced:</strong> 75-89 score</li>
@@ -536,7 +536,7 @@
             </div>
             
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                <p class="font-semibold text-blue-900">�¡ Pro Tip:</p>
+                <p class="font-semibold text-blue-900">?� Pro Tip:</p>
                 <p class="text-blue-800">No two candidates receive identical assessments. Questions are AI-generated based on the candidate's resume, experience, and the specific job requirements.</p>
             </div>
         </div>
@@ -723,7 +723,7 @@ function startAssessment() {
     // Set candidate info
     const candidateName = document.getElementById('applicationSelect').selectedOptions[0].textContent.split(' - ')[0];
     const jobTitle = document.getElementById('jobSelect').selectedOptions[0].textContent.split(' (')[0];
-    document.getElementById('candidateInfo').textContent = `${candidateName} â€¢ ${jobTitle}`;
+    document.getElementById('candidateInfo').textContent = `${candidateName} • ${jobTitle}`;
     
     // Initialize timers
     startAssessmentTimer(currentAssessment.time_limit_minutes * 60);
@@ -949,8 +949,8 @@ async function submitAnswer() {
 // Show answer feedback
 function showAnswerFeedback(evaluation) {
     const message = evaluation.is_correct 
-        ? `� Correct! Score: ${evaluation.score}/${evaluation.max_score}`
-        : `âŒ Incorrect. Score: ${evaluation.score}/${evaluation.max_score}`;
+        ? `? Correct! Score: ${evaluation.score}/${evaluation.max_score}`
+        : `❌ Incorrect. Score: ${evaluation.score}/${evaluation.max_score}`;
     
     const feedbackDiv = document.createElement('div');
     feedbackDiv.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg ${evaluation.is_correct ? 'bg-green-500' : 'bg-orange-500'} text-white font-semibold z-50`;
@@ -1107,8 +1107,8 @@ function createCategoryChart(categoryData) {
             datasets: [{
                 label: 'Accuracy %',
                 data: accuracies,
-                backgroundColor: 'rgba(59, 130, 246, 0.6)',
-                borderColor: 'rgba(59, 130, 246, 1)',
+                backgroundColor: 'rgba(20, 71, 186, 0.6)',
+                borderColor: 'rgba(20, 71, 186, 1)',
                 borderWidth: 2
             }]
         },
@@ -1141,15 +1141,15 @@ function createDifficultyChart(difficultyData) {
                 {
                     label: 'Attempted',
                     data: attempted,
-                    backgroundColor: 'rgba(156, 163, 175, 0.6)',
-                    borderColor: 'rgba(156, 163, 175, 1)',
+                    backgroundColor: 'rgba(168, 168, 168, 0.6)',
+                    borderColor: 'rgba(168, 168, 168, 1)',
                     borderWidth: 2
                 },
                 {
                     label: 'Correct',
                     data: correct,
-                    backgroundColor: 'rgba(16, 185, 129, 0.6)',
-                    borderColor: 'rgba(16, 185, 129, 1)',
+                    backgroundColor: 'rgba(15, 107, 49, 0.6)',
+                    borderColor: 'rgba(15, 107, 49, 1)',
                     borderWidth: 2
                 }
             ]

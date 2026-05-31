@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Negotiation Coaching - ' . $strategy->role)
 
@@ -22,16 +22,16 @@
         to { opacity: 1; transform: translateY(0); }
     }
     .employer-message {
-        background: linear-gradient(135deg, rgba(107, 114, 128, 0.2) 0%, rgba(75, 85, 99, 0.2) 100%);
-        border-left: 3px solid #6b7280;
+        background: rgba(115, 115, 115, 0.2);
+        border-left: 3px solid #737373;
     }
     .user-message {
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.2) 100%);
-        border-right: 3px solid #3b82f6;
+        background: rgba(20, 71, 186, 0.2);
+        border-right: 3px solid #2D6CDF;
     }
     .ai-message {
-        background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
-        border-left: 3px solid #a855f7;
+        background: rgba(20, 71, 186, 0.2);
+        border-left: 3px solid #2D6CDF;
     }
     .tone-badge {
         font-size: 0.75rem;
@@ -39,16 +39,16 @@
         border-radius: 9999px;
         font-weight: 600;
     }
-    .tone-positive { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-    .tone-neutral { background: rgba(107, 114, 128, 0.2); color: #9ca3af; }
-    .tone-negative { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .tone-positive { background: rgba(15, 107, 49, 0.2); color: #1E8E3E; }
+    .tone-neutral { background: rgba(115, 115, 115, 0.2); color: #A8A8A8; }
+    .tone-negative { background: rgba(185, 28, 28, 0.2); color: #2D6CDF; }
     .suggestion-card {
         transition: all 0.3s ease;
         cursor: pointer;
     }
     .suggestion-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 16px rgba(236, 72, 153, 0.2);
+        box-shadow: none;
     }
     .coaching-panel {
         height: calc(100vh - 300px);
@@ -73,11 +73,11 @@
         transition: all 0.3s ease;
     }
     .stage-dot.active {
-        background: #ec4899;
-        box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.2);
+        background: #2D6CDF;
+        box-shadow: none;
     }
     .stage-dot.completed {
-        background: #10b981;
+        background: #1E8E3E;
     }
     .stage-dot.pending {
         background: rgba(255, 255, 255, 0.2);
@@ -310,10 +310,10 @@
                                     <div>
                                         <p class="text-xs font-semibold text-blue-300 mb-1">Leverage Points</p>
                                         <ul class="text-xs text-gray-300 space-y-1">
-                                            <li>â€¢ Market position ({{ $strategy->market_position_percentile ?? 'N/A' }}th percentile)</li>
-                                            <li>â€¢ {{ $strategy->experience_years }} years experience</li>
+                                            <li>• Market position ({{ $strategy->market_position_percentile ?? 'N/A' }}th percentile)</li>
+                                            <li>• {{ $strategy->experience_years }} years experience</li>
                                             @if($strategy->has_other_offers)
-                                            <li>â€¢ Alternative offers available</li>
+                                            <li>• Alternative offers available</li>
                                             @endif
                                         </ul>
                                     </div>
@@ -328,9 +328,9 @@
                                     <div>
                                         <p class="text-xs font-semibold text-yellow-300 mb-1">Watch Out For</p>
                                         <ul class="text-xs text-gray-300 space-y-1">
-                                            <li>â€¢ Pressure tactics or deadlines</li>
-                                            <li>â€¢ Deflection to non-salary benefits</li>
-                                            <li>â€¢ "Take it or leave it" ultimatums</li>
+                                            <li>• Pressure tactics or deadlines</li>
+                                            <li>• Deflection to non-salary benefits</li>
+                                            <li>• "Take it or leave it" ultimatums</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -381,7 +381,7 @@
                                     </div>
                                 </div>
                                 <p class="text-sm text-gray-300 mb-2">Thank you for the offer. Based on my research and experience in similar roles, I was expecting a range of $X-Y. Can we discuss aligning the compensation with market standards?</p>
-                                <button class="text-xs text-primary-color hover:text-primary-light font-medium">Use This Response â†’</button>
+                                <button class="text-xs text-primary-color hover:text-primary-light font-medium">Use This Response →</button>
                             </div>
                             
                             <div class="suggestion-card bg-white/5 rounded-lg p-3 border border-white/10" onclick="useSuggestion(2)">
@@ -395,7 +395,7 @@
                                     </div>
                                 </div>
                                 <p class="text-sm text-gray-300 mb-2">I'm excited about this opportunity. I believe my skills in [key areas] will bring significant value. Could we explore options to reach a compensation that reflects this mutual benefit?</p>
-                                <button class="text-xs text-primary-color hover:text-primary-light font-medium">Use This Response â†’</button>
+                                <button class="text-xs text-primary-color hover:text-primary-light font-medium">Use This Response →</button>
                             </div>
                         </div>
                     </div>

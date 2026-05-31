@@ -4,21 +4,21 @@
 <meta charset="UTF-8">
 <title>Interview Details — StudAI Hire</title>
 <style>
-  body{background:#f4f6fb;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;}
-  .card{background:#fff;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,.1);padding:48px 40px;max-width:520px;width:100%;text-align:center;}
+  body{background:#EBF2FF;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+  .card{background:#fff;border-radius:20px;box-shadow: none;padding:48px 40px;max-width:520px;width:100%;text-align:center;}
   .icon{font-size:64px;margin-bottom:16px;}
-  h1{font-size:26px;font-weight:800;color:#1a1a2e;margin-bottom:8px;}
-  .subtitle{color:#6b7280;font-size:14px;margin-bottom:32px;}
-  .info-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:20px 24px;margin-bottom:16px;text-align:left;}
-  .info-box label{font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;}
-  .info-box p{font-size:16px;font-weight:700;color:#065f46;margin-top:4px;}
-  .notes-box{background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:20px 24px;margin-bottom:24px;text-align:left;}
-  .notes-box label{font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;}
-  .notes-box p{font-size:14px;color:#92400e;margin-top:4px;line-height:1.6;}
-  .tips{background:#ede9fe;border-radius:14px;padding:20px;text-align:left;margin-bottom:24px;}
-  .tips h3{font-size:14px;font-weight:700;color:#4c1d95;margin-bottom:12px;}
-  .tip{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:13px;color:#5b21b6;}
-  .back-btn{display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#1A73E8,#6366f1);color:#fff;border-radius:12px;text-decoration:none;font-weight:700;font-size:14px;}
+  h1{font-size:26px;font-weight:800;color:#0C0C0C;margin-bottom:8px;}
+  .subtitle{color:#737373;font-size:14px;margin-bottom:32px;}
+  .info-box{background:#EDFAF2;border:1px solid #A3D9B4;border-radius:14px;padding:20px 24px;margin-bottom:16px;text-align:left;}
+  .info-box label{font-size:11px;font-weight:700;color:#A8A8A8;text-transform:uppercase;letter-spacing:.5px;}
+  .info-box p{font-size:16px;font-weight:700;color:#1E8E3E;margin-top:4px;}
+  .notes-box{background:#FFF8EC;border:1px solid #F0C77A;border-radius:14px;padding:20px 24px;margin-bottom:24px;text-align:left;}
+  .notes-box label{font-size:11px;font-weight:700;color:#A8A8A8;text-transform:uppercase;letter-spacing:.5px;}
+  .notes-box p{font-size:14px;color:#E37400;margin-top:4px;line-height:1.6;}
+  .tips{background:#EBF2FF;border-radius:14px;padding:20px;text-align:left;margin-bottom:24px;}
+  .tips h3{font-size:14px;font-weight:700;color:#0C2E72;margin-bottom:12px;}
+  .tip{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:13px;color:#0C2E72;}
+  .back-btn{display:inline-block;padding:12px 28px;background:#2D6CDF;color:#fff;border-radius:12px;text-decoration:none;font-weight:700;font-size:14px;}
 </style>
 </head>
 <body>

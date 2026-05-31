@@ -10,7 +10,7 @@
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             font-size: 13px;
-            color: #1f2937;
+            color: #0C0C0C;
             background: #fff;
             padding: 32px 40px;
             max-width: 860px;
@@ -23,7 +23,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #1a73e8;
+            background: #2D6CDF;
             color: #fff;
             padding: 10px 20px;
             border-radius: 8px;
@@ -31,7 +31,7 @@
         }
         .print-bar button {
             background: #fff;
-            color: #1a73e8;
+            color: #2D6CDF;
             border: none;
             padding: 8px 20px;
             border-radius: 6px;
@@ -39,7 +39,7 @@
             font-size: 13px;
             cursor: pointer;
         }
-        .print-bar button:hover { background: #e8f0fe; }
+        .print-bar button:hover { background: #EBF2FF; }
         @media print { .print-bar { display: none !important; } }
 
         /* ─── Header ─────────────────────────────────────── */
@@ -48,30 +48,30 @@
             justify-content: space-between;
             align-items: flex-start;
             padding-bottom: 16px;
-            border-bottom: 3px solid #1a73e8;
+            border-bottom: 3px solid #2D6CDF;
             margin-bottom: 24px;
         }
-        .brand { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; }
-        .report-title { font-size: 22px; font-weight: 800; color: #1a73e8; margin: 4px 0; }
-        .report-meta { font-size: 12px; color: #6b7280; }
+        .brand { font-size: 11px; color: #737373; text-transform: uppercase; letter-spacing: 1px; }
+        .report-title { font-size: 22px; font-weight: 800; color: #2D6CDF; margin: 4px 0; }
+        .report-meta { font-size: 12px; color: #737373; }
         .score-badge {
             text-align: right;
         }
         .score-badge .score-num {
             font-size: 48px;
             font-weight: 900;
-            color: #1a73e8;
+            color: #2D6CDF;
             line-height: 1;
         }
-        .score-badge .score-label { font-size: 11px; color: #6b7280; }
+        .score-badge .score-label { font-size: 11px; color: #737373; }
         .grade-pill {
             display: inline-block;
             padding: 4px 12px;
             border-radius: 999px;
             font-weight: 700;
             font-size: 13px;
-            background: #e8f0fe;
-            color: #1a73e8;
+            background: #EBF2FF;
+            color: #2D6CDF;
             margin-top: 6px;
         }
 
@@ -81,10 +81,10 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #6b7280;
+            color: #737373;
             margin-bottom: 10px;
             padding-bottom: 4px;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #E2E2E0;
         }
 
         /* ─── Stats row ──────────────────────────────────── */
@@ -95,13 +95,13 @@
             margin-bottom: 24px;
         }
         .stat-card {
-            border: 1px solid #e5e7eb;
+            border: 1px solid #E2E2E0;
             border-radius: 8px;
             padding: 12px 14px;
             text-align: center;
         }
-        .stat-card .num { font-size: 26px; font-weight: 800; color: #1a73e8; }
-        .stat-card .lbl { font-size: 10px; color: #9ca3af; text-transform: uppercase; margin-top: 2px; }
+        .stat-card .num { font-size: 26px; font-weight: 800; color: #2D6CDF; }
+        .stat-card .lbl { font-size: 10px; color: #A8A8A8; text-transform: uppercase; margin-top: 2px; }
 
         /* ─── Insights grid ──────────────────────────────── */
         .insights-grid {
@@ -111,7 +111,7 @@
             margin-bottom: 24px;
         }
         .insight-box {
-            border: 1px solid #e5e7eb;
+            border: 1px solid #E2E2E0;
             border-radius: 8px;
             padding: 14px;
         }
@@ -122,36 +122,36 @@
             letter-spacing: 0.5px;
             margin-bottom: 8px;
         }
-        .insight-box.strength .box-title { color: #059669; }
-        .insight-box.improve  .box-title { color: #d97706; }
-        .insight-box.suggest  .box-title { color: #1a73e8; }
+        .insight-box.strength .box-title { color: #1E8E3E; }
+        .insight-box.improve  .box-title { color: #E37400; }
+        .insight-box.suggest  .box-title { color: #2D6CDF; }
 
         .insight-box ul { list-style: none; padding: 0; }
         .insight-box ul li {
             font-size: 12px;
-            color: #374151;
+            color: #3D3D3D;
             padding: 4px 0;
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid #F0F0EE;
             display: flex;
             gap: 6px;
         }
         .insight-box ul li:last-child { border-bottom: none; }
         .dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-        .dot-green  { background: #10b981; }
-        .dot-amber  { background: #f59e0b; }
-        .dot-blue   { background: #1a73e8; }
+        .dot-green  { background: #1E8E3E; }
+        .dot-amber  { background: #E37400; }
+        .dot-blue   { background: #2D6CDF; }
 
         /* ─── Q&A section ────────────────────────────────── */
         .qa-section { margin-bottom: 24px; }
         .qa-item {
-            border: 1px solid #e5e7eb;
+            border: 1px solid #E2E2E0;
             border-radius: 8px;
             margin-bottom: 12px;
             overflow: hidden;
             page-break-inside: avoid;
         }
         .qa-head {
-            background: #f9fafb;
+            background: #F7F7F5;
             padding: 10px 14px;
             display: flex;
             justify-content: space-between;
@@ -162,27 +162,27 @@
             font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
-            color: #9ca3af;
+            color: #A8A8A8;
             white-space: nowrap;
         }
-        .qa-head .q-text { font-weight: 600; font-size: 13px; color: #111827; flex: 1; }
+        .qa-head .q-text { font-weight: 600; font-size: 13px; color: #0C0C0C; flex: 1; }
         .qa-head .q-score {
             font-size: 16px;
             font-weight: 800;
-            color: #1a73e8;
+            color: #2D6CDF;
             white-space: nowrap;
         }
         .qa-body { padding: 12px 14px; }
-        .qa-answer-label { font-size: 10px; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px; }
-        .qa-answer { font-size: 12px; color: #374151; line-height: 1.6; margin-bottom: 8px; }
-        .qa-feedback { font-size: 12px; color: #6b7280; font-style: italic; }
+        .qa-answer-label { font-size: 10px; color: #A8A8A8; text-transform: uppercase; margin-bottom: 4px; }
+        .qa-answer { font-size: 12px; color: #3D3D3D; line-height: 1.6; margin-bottom: 8px; }
+        .qa-feedback { font-size: 12px; color: #737373; font-style: italic; }
 
         /* ─── Suggestions full-width ─────────────────────── */
         .suggest-box {
-            border: 1px solid #bfdbfe;
+            border: 1px solid #BFCFEE;
             border-radius: 8px;
             padding: 14px;
-            background: #eff6ff;
+            background: #EBF2FF;
             margin-bottom: 24px;
         }
         .suggest-box .box-title {
@@ -190,13 +190,13 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #1a73e8;
+            color: #2D6CDF;
             margin-bottom: 8px;
         }
         .suggest-box ul { list-style: none; padding: 0; columns: 2; }
         .suggest-box ul li {
             font-size: 12px;
-            color: #1e3a5f;
+            color: #0C2E72;
             padding: 3px 0;
             break-inside: avoid;
             display: flex;
@@ -205,10 +205,10 @@
 
         /* ─── Footer ─────────────────────────────────────── */
         .report-footer {
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid #E2E2E0;
             padding-top: 12px;
             font-size: 10px;
-            color: #9ca3af;
+            color: #A8A8A8;
             display: flex;
             justify-content: space-between;
         }
@@ -321,7 +321,7 @@
                         <div class="q-num">Q{{ (int)$index + 1 }} &middot; {{ $meta['type'] ?? 'General' }}</div>
                         <div class="q-text">{{ $answer['question'] }}</div>
                     </div>
-                    <div class="q-score">{{ $score !== null ? $score : '—' }}<span style="font-size:11px;color:#9ca3af">/100</span></div>
+                    <div class="q-score">{{ $score !== null ? $score : '—' }}<span style="font-size:11px;color:#A8A8A8">/100</span></div>
                 </div>
                 <div class="qa-body">
                     <div class="qa-answer-label">Your Answer</div>
@@ -332,7 +332,7 @@
                 </div>
             </div>
         @empty
-            <p style="color:#9ca3af;font-size:13px;padding:12px 0;">No answers were saved in this session.</p>
+            <p style="color:#A8A8A8;font-size:13px;padding:12px 0;">No answers were saved in this session.</p>
         @endforelse
     </div>
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -11,7 +11,7 @@
             font-family: 'Georgia', 'Times New Roman', serif;
             font-size: 11pt;
             line-height: 1.8;
-            color: #1f2937;
+            color: #0C0C0C;
         }
         .letterhead {
             margin-bottom: 40px;
@@ -26,7 +26,7 @@
         }
         .sender-contact {
             font-size: 10pt;
-            color: #4b5563;
+            color: #3D3D3D;
         }
         .date {
             margin-bottom: 30px;
@@ -57,15 +57,15 @@
         }
         .highlight {
             font-weight: 600;
-            color: #1f2937;
+            color: #0C0C0C;
         }
         .ai-notice {
             font-size: 8pt;
-            color: #9ca3af;
+            color: #A8A8A8;
             text-align: center;
             margin-top: 50px;
             padding-top: 10px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid #E2E2E0;
         }
     </style>
 </head>

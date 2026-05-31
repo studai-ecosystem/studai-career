@@ -30,3 +30,6 @@ diag-*.php
 smoke-test.php
 smoke-results.txt
 ~$*
+
+# Local design-scrap / reference material (not application code)
+/hire

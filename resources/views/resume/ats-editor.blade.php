@@ -7,7 +7,7 @@
     $cats     = $analysis['categories'] ?? [];
     $score    = (int)($analysis['score'] ?? 0);
     $label    = $analysis['label'] ?? 'Fair';
-    $color    = $score >= 80 ? '#34a853' : ($score >= 60 ? '#fbbc04' : '#ea4335');
+    $color    = $score >= 80 ? '#1E8E3E' : ($score >= 60 ? '#fbbc04' : '#2D6CDF');
     $ringDash = round($score * 2.83);
 
     $cat_content  = $cats['content']  ?? [];
@@ -44,13 +44,13 @@
 
 <style>
 /* ---- Layout ---- */
-.ae-wrap{display:flex;gap:0;min-height:calc(100vh - 60px);background:#f0f4f8;}
-.ae-panel{width:300px;min-width:280px;background:#fff;border-right:1px solid #e8eaed;padding:20px 16px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;flex-shrink:0;}
+.ae-wrap{display:flex;gap:0;min-height:calc(100vh - 60px);background:#EBF2FF;}
+.ae-panel{width:300px;min-width:280px;background:#fff;border-right:1px solid #E2E2E0;padding:20px 16px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;flex-shrink:0;}
 .ae-doc-wrap{flex:1;padding:32px 40px;display:flex;justify-content:center;}
-.ae-doc{background:#fff;width:100%;max-width:820px;min-height:1000px;box-shadow:0 2px 20px rgba(0,0,0,.12);border-radius:4px;padding:56px 64px;font-family:'Georgia',serif;font-size:14px;color:#1a1a2e;line-height:1.7;}
+.ae-doc{background:#fff;width:100%;max-width:820px;min-height:1000px;box-shadow: none;border-radius:4px;padding:56px 64px;font-family:'Georgia',serif;font-size:14px;color:#0C0C0C;line-height:1.7;}
 
 /* ---- Topbar ---- */
-.ae-topbar{background:#1A73E8;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.ae-topbar{background:#2D6CDF;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:50;box-shadow: none;}
 .ae-tab{color:rgba(255,255,255,.7);font-size:13px;padding:18px 20px;text-decoration:none;border-bottom:3px solid transparent;display:inline-block;}
 .ae-tab.active{color:#fff;font-weight:700;border-bottom-color:#fff;}
 
@@ -58,74 +58,74 @@
 .ae-section{margin-bottom:28px;}
 .ae-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#aaa;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
 .ae-field{outline:none;border:2px solid transparent;border-radius:4px;padding:6px 8px;transition:border .2s,background .2s;cursor:text;min-height:24px;}
-.ae-field:hover{border-color:#e0e0e0;background:#fafafa;}
-.ae-field:focus{border-color:#1A73E8;background:#f0f4ff;cursor:auto;}
-.ae-field[data-dirty="true"]{border-color:#fbbc04;background:#fffbf0;}
+.ae-field:hover{border-color:#E2E2E0;background:#F0F0EE;}
+.ae-field:focus{border-color:#2D6CDF;background:#EBF2FF;cursor:auto;}
+.ae-field[data-dirty="true"]{border-color:#fbbc04;background:#FFF8EC;}
 
 /* ---- Highlight flags ---- */
-.ae-flag{background:#fff3e0;border-bottom:2px solid #fbbc04;cursor:pointer;border-radius:2px;transition:background .2s;}
-.ae-flag:hover{background:#ffe0b2;}
-.ae-flag-bz{background:#fce8e6;border-bottom:2px solid #ea4335;}
+.ae-flag{background:#FFF8EC;border-bottom:2px solid #fbbc04;cursor:pointer;border-radius:2px;transition:background .2s;}
+.ae-flag:hover{background:#FFF8EC;}
+.ae-flag-bz{background:#FEF2F2;border-bottom:2px solid #2D6CDF;}
 .ae-flag-bz:hover{background:#fcc;}
 
 /* ---- Resume typography ---- */
-.ae-name{font-size:26px;font-weight:700;letter-spacing:.3px;font-family:'Arial',sans-serif;color:#1a1a2e;line-height:1.2;}
-.ae-jobtitle{font-size:15px;color:#1A73E8;font-weight:600;font-family:'Arial',sans-serif;margin-top:2px;}
+.ae-name{font-size:26px;font-weight:700;letter-spacing:.3px;font-family:'Arial',sans-serif;color:#0C0C0C;line-height:1.2;}
+.ae-jobtitle{font-size:15px;color:#2D6CDF;font-weight:600;font-family:'Arial',sans-serif;margin-top:2px;}
 .ae-contact{font-size:12px;color:#555;margin-top:8px;font-family:'Arial',sans-serif;}
-.ae-divider{border:none;border-top:2px solid #1A73E8;margin:18px 0 14px;}
-.ae-sec-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#1A73E8;font-family:'Arial',sans-serif;margin-bottom:10px;}
+.ae-divider{border:none;border-top:2px solid #2D6CDF;margin:18px 0 14px;}
+.ae-sec-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#2D6CDF;font-family:'Arial',sans-serif;margin-bottom:10px;}
 .ae-exp-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;}
 .ae-exp-company{font-weight:700;font-size:14px;font-family:'Arial',sans-serif;}
 .ae-exp-date{font-size:12px;color:#888;font-family:'Arial',sans-serif;}
 .ae-exp-pos{font-size:13px;color:#555;font-family:'Arial',sans-serif;font-style:italic;}
 .ae-bullet-list{margin:6px 0 0 16px;padding:0;}
 .ae-bullet-list li{margin-bottom:3px;font-size:13px;}
-.ae-skill-chip{display:inline-block;background:#e8f0fe;color:#1557b0;border-radius:4px;padding:2px 8px;margin:2px;font-size:12px;font-family:'Arial',sans-serif;}
+.ae-skill-chip{display:inline-block;background:#EBF2FF;color:#1B57C4;border-radius:4px;padding:2px 8px;margin:2px;font-size:12px;font-family:'Arial',sans-serif;}
 
 /* ---- Save banner ---- */
-#ae-save-banner{position:fixed;bottom:0;left:0;right:0;background:#1A73E8;color:#fff;padding:12px 32px;display:flex;align-items:center;justify-content:space-between;transform:translateY(100%);transition:transform .3s;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.2);}
+#ae-save-banner{position:fixed;bottom:0;left:0;right:0;background:#2D6CDF;color:#fff;padding:12px 32px;display:flex;align-items:center;justify-content:space-between;transform:translateY(100%);transition:transform .3s;z-index:100;box-shadow: none;}
 #ae-save-banner.visible{transform:translateY(0);}
 
 /* ---- Suggestion hint card ---- */
-.ae-hint{background:#fff8f0;border:1px solid #fbbc04;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#555;}
-.ae-hint strong{color:#b06000;}
+.ae-hint{background:#FFF8EC;border:1px solid #fbbc04;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#555;}
+.ae-hint strong{color:#E37400;}
 
 /* ---- Floating suggestion popup ---- */
-#ae-suggestion-card{position:fixed;z-index:2000;background:#fff;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:18px 18px 14px;width:320px;border:1px solid #e8eaed;animation:ae-pop .15s ease;}
+#ae-suggestion-card{position:fixed;z-index:2000;background:#fff;border-radius:14px;box-shadow: none;padding:18px 18px 14px;width:320px;border:1px solid #E2E2E0;animation:ae-pop .15s ease;}
 @keyframes ae-pop{from{opacity:0;transform:scale(.94) translateY(-4px)}to{opacity:1;transform:none}}
-.ae-sug-option{padding:9px 12px;margin-bottom:4px;border-radius:8px;border:1px solid #e0e0e0;cursor:pointer;font-size:12px;color:#1a1a2e;transition:background .12s;display:block;width:100%;text-align:left;background:#fff;}
-.ae-sug-option:hover{background:#f0f4ff;border-color:#1A73E8;}
-.ae-sug-option.yellow{border-color:#fbbc04;background:#fffbf0;color:#b06000;}
-.ae-sug-option.yellow:hover{background:#fff3cd;}
-.ae-sug-verb{display:inline-block;padding:5px 10px;margin:3px;border-radius:6px;border:1px solid #1A73E8;color:#1A73E8;background:#fff;cursor:pointer;font-size:12px;transition:background .12s;}
-.ae-sug-verb:hover{background:#e8f0fe;}
+.ae-sug-option{padding:9px 12px;margin-bottom:4px;border-radius:8px;border:1px solid #E2E2E0;cursor:pointer;font-size:12px;color:#0C0C0C;transition:background .12s;display:block;width:100%;text-align:left;background:#fff;}
+.ae-sug-option:hover{background:#EBF2FF;border-color:#2D6CDF;}
+.ae-sug-option.yellow{border-color:#fbbc04;background:#FFF8EC;color:#E37400;}
+.ae-sug-option.yellow:hover{background:#FFF8EC;}
+.ae-sug-verb{display:inline-block;padding:5px 10px;margin:3px;border-radius:6px;border:1px solid #2D6CDF;color:#2D6CDF;background:#fff;cursor:pointer;font-size:12px;transition:background .12s;}
+.ae-sug-verb:hover{background:#EBF2FF;}
 .ae-flag,.ae-flag-bz{cursor:pointer;}
 
 /* ---- Suggestion cards (left panel) ---- */
-.ae-sc{background:#fff;border:1px solid #e8eaed;border-radius:10px;margin-bottom:8px;overflow:hidden;}
+.ae-sc{background:#fff;border:1px solid #E2E2E0;border-radius:10px;margin-bottom:8px;overflow:hidden;}
 .ae-sc-head{padding:10px 12px 8px;cursor:pointer;}
-.ae-sc-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#b06000;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
-.ae-sc-tag.red{color:#c5221f;}
-.ae-sc-tag.blue{color:#1557b0;}
-.ae-sc-pts{background:#e8f0fe;color:#1557b0;border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700;}
-.ae-sc-pts.green{background:#e6f4ea;color:#137333;}
+.ae-sc-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#E37400;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.ae-sc-tag.red{color:#2D6CDF;}
+.ae-sc-tag.blue{color:#1B57C4;}
+.ae-sc-pts{background:#EBF2FF;color:#1B57C4;border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700;}
+.ae-sc-pts.green{background:#EDFAF2;color:#1E8E3E;}
 .ae-sc-excerpt{font-size:11px;color:#555;font-style:italic;line-height:1.5;}
 .ae-sc-actions{display:flex;gap:6px;padding:0 12px 10px;}
-.ae-sc-btn-ai{flex:1;background:#1A73E8;color:#fff;border:none;border-radius:6px;padding:6px 0;font-size:11px;font-weight:700;cursor:pointer;transition:background .15s;}
-.ae-sc-btn-ai:hover{background:#1557b0;}
+.ae-sc-btn-ai{flex:1;background:#2D6CDF;color:#fff;border:none;border-radius:6px;padding:6px 0;font-size:11px;font-weight:700;cursor:pointer;transition:background .15s;}
+.ae-sc-btn-ai:hover{background:#1B57C4;}
 .ae-sc-btn-dismiss{background:none;border:none;color:#888;font-size:11px;cursor:pointer;padding:6px 8px;}
-.ae-sc-btn-dismiss:hover{color:#c5221f;}
+.ae-sc-btn-dismiss:hover{color:#2D6CDF;}
 .ae-sc-suggestions{padding:0 12px;display:none;}
-.ae-sc-sug-item{border:1px solid #e0e0e0;border-radius:8px;padding:9px 10px;margin-bottom:6px;font-size:11px;color:#1a1a2e;line-height:1.5;}
+.ae-sc-sug-item{border:1px solid #E2E2E0;border-radius:8px;padding:9px 10px;margin-bottom:6px;font-size:11px;color:#0C0C0C;line-height:1.5;}
 .ae-sc-sug-btns{display:flex;gap:6px;margin-top:7px;}
-.ae-sc-apply{background:#34a853;color:#fff;border:none;border-radius:5px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;}
-.ae-sc-apply:hover{background:#137333;}
+.ae-sc-apply{background:#1E8E3E;color:#fff;border:none;border-radius:5px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;}
+.ae-sc-apply:hover{background:#1E8E3E;}
 .ae-sc-sdismiss{background:none;border:none;color:#888;font-size:11px;cursor:pointer;padding:4px 6px;}
 .ae-sc-loading{padding:10px 0;text-align:center;color:#888;font-size:11px;}
 
 /* ---- Score mini ring ---- */
 .ae-mini-score{text-align:center;padding:12px 0 8px;}
-.ae-cat-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:12px;}
+.ae-cat-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #F0F0EE;font-size:12px;}
 .ae-cat-row:last-child{border-bottom:none;}
 .ae-cat-bar-bg{height:4px;background:#eee;border-radius:2px;overflow:hidden;flex:1;margin:0 8px;}
 .ae-cat-bar-fg{height:100%;border-radius:2px;}
@@ -144,12 +144,12 @@
         <span id="ae-score-pill" style="background:rgba(255,255,255,.15);color:#fff;border-radius:20px;padding:5px 14px;font-size:13px;font-weight:700;">
             {{ $score }}/100 {{ $label }}
         </span>
-        <button id="ae-save-btn" onclick="saveResume()" style="background:#fff;color:#1A73E8;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;display:none;">
+        <button id="ae-save-btn" onclick="saveResume()" style="background:#fff;color:#2D6CDF;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;display:none;">
             💾 Save Changes
         </button>
         <span id="ae-saving-text" style="color:rgba(255,255,255,.7);font-size:12px;display:none;">Saving…</span>
-        <span id="ae-saved-text" style="color:#81c995;font-size:12px;display:none;">✔ Saved</span>
-        <button onclick="saveAndGoToDashboard()" style="background:#34a853;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">
+        <span id="ae-saved-text" style="color:#A3D9B4;font-size:12px;display:none;">✔ Saved</span>
+        <button onclick="saveAndGoToDashboard()" style="background:#1E8E3E;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">
             Finish &amp; Dashboard →
         </button>
     </div>
@@ -166,22 +166,22 @@
                 <circle cx="45" cy="45" r="36" fill="none" stroke="{{ $color }}" stroke-width="8"
                     stroke-dasharray="{{ round($score * 2.26) }} 226" stroke-linecap="round"
                     transform="rotate(-90 45 45)"/>
-                <text x="45" y="41" text-anchor="middle" font-size="20" font-weight="800" fill="#1a1a2e">{{ $score }}</text>
+                <text x="45" y="41" text-anchor="middle" font-size="20" font-weight="800" fill="#0C0C0C">{{ $score }}</text>
                 <text x="45" y="53" text-anchor="middle" font-size="10" fill="#888">/100</text>
             </svg>
             <div style="font-size:14px;font-weight:800;color:{{ $color }};">{{ $label }}</div>
             <div style="font-size:11px;color:#aaa;margin-top:2px;">{{ $totalSuggestions }} things to fix</div>
         </div>
 
-        <hr style="border:none;border-top:1px solid #f0f0f0;margin:10px 0;">
+        <hr style="border:none;border-top:1px solid #F0F0EE;margin:10px 0;">
 
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#aaa;margin-bottom:8px;">Fix these issues</div>
 
         {{-- Measurable Results — actionable suggestion cards --}}
         @if(!($mr['pass'] ?? true))
             <div style="margin-bottom:12px;">
-                <div style="font-size:11px;font-weight:700;color:#b06000;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
-                    📊 Add Metrics <span style="background:#fff3e0;border-radius:10px;padding:1px 7px;font-size:10px;">{{ max(1, count($mr['suggestions'] ?? [])) }}</span>
+                <div style="font-size:11px;font-weight:700;color:#E37400;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
+                    📊 Add Metrics <span style="background:#FFF8EC;border-radius:10px;padding:1px 7px;font-size:10px;">{{ max(1, count($mr['suggestions'] ?? [])) }}</span>
                 </div>
                 @forelse($mr['suggestions'] ?? [] as $si => $s)
                     <div class="ae-sc" id="sc-metric-{{ $si }}">
@@ -215,18 +215,18 @@
         {{-- Buzzwords --}}
         @if(!($bz['pass'] ?? true) && !empty($bz['found']))
             <div style="margin-bottom:12px;">
-                <div style="font-size:11px;font-weight:700;color:#c5221f;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
-                    🚫 Replace Buzzwords <span style="background:#fce8e6;border-radius:10px;padding:1px 7px;font-size:10px;">{{ count($bz['found']) }}</span>
+                <div style="font-size:11px;font-weight:700;color:#2D6CDF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
+                    🚫 Replace Buzzwords <span style="background:#FEF2F2;border-radius:10px;padding:1px 7px;font-size:10px;">{{ count($bz['found']) }}</span>
                 </div>
                 @foreach($bz['found'] as $wi => $w)
                     <div class="ae-sc" id="sc-bz-{{ $wi }}">
                         <div class="ae-sc-head">
-                            <div class="ae-sc-tag red">Buzzword <span class="ae-sc-pts" style="background:#fce8e6;color:#c5221f;">+1 pt</span></div>
+                            <div class="ae-sc-tag red">Buzzword <span class="ae-sc-pts" style="background:#FEF2F2;color:#2D6CDF;">+1 pt</span></div>
                             <div class="ae-sc-excerpt">"{{ $w }}" — overused, lacks impact</div>
                         </div>
                         <div class="ae-sc-suggestions" id="sc-sug-bz-{{ $wi }}"></div>
                         <div class="ae-sc-actions">
-                            <button class="ae-sc-btn-ai" onclick="fetchPanelSuggestions('buzzword', {{ $wi }}, null, {{ json_encode($w) }})" style="background:#ea4335;">✨ Get Replacements</button>
+                            <button class="ae-sc-btn-ai" onclick="fetchPanelSuggestions('buzzword', {{ $wi }}, null, {{ json_encode($w) }})" style="background:#2D6CDF;">✨ Get Replacements</button>
                             <button class="ae-sc-btn-dismiss" onclick="dismissCard('sc-bz-{{ $wi }}')">Dismiss</button>
                         </div>
                     </div>
@@ -237,8 +237,8 @@
         {{-- Passive voice --}}
         @if(!($vo['pass'] ?? true) && !empty($vo['found']))
             <div style="margin-bottom:12px;">
-                <div style="font-size:11px;font-weight:700;color:#b06000;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
-                    ⚡ Use Action Verbs <span style="background:#fff3e0;border-radius:10px;padding:1px 7px;font-size:10px;">{{ count($vo['found']) }}</span>
+                <div style="font-size:11px;font-weight:700;color:#E37400;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
+                    ⚡ Use Action Verbs <span style="background:#FFF8EC;border-radius:10px;padding:1px 7px;font-size:10px;">{{ count($vo['found']) }}</span>
                 </div>
                 @foreach(array_slice($vo['found'], 0, 3) as $vi => $vt)
                     <div class="ae-sc" id="sc-vo-{{ $vi }}">
@@ -259,18 +259,18 @@
         {{-- Missing sections --}}
         @if($sugg['sections'] > 0)
             <div style="margin-bottom:12px;">
-                <div style="font-size:11px;font-weight:700;color:#1557b0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
-                    📋 Missing Sections <span style="background:#e8f0fe;border-radius:10px;padding:1px 7px;font-size:10px;">{{ $sugg['sections'] }}</span>
+                <div style="font-size:11px;font-weight:700;color:#1B57C4;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
+                    📋 Missing Sections <span style="background:#EBF2FF;border-radius:10px;padding:1px 7px;font-size:10px;">{{ $sugg['sections'] }}</span>
                 </div>
                 @foreach($cat_sections['missing'] ?? [] as $mi => $m)
                     <div class="ae-sc" id="sc-sec-{{ $mi }}">
                         <div class="ae-sc-head">
                             <div class="ae-sc-tag blue">Sections <span class="ae-sc-pts green">+2 pts</span></div>
-                            <div style="font-size:12px;font-weight:600;color:#1a1a2e;margin-bottom:2px;">Add {{ $m }}</div>
+                            <div style="font-size:12px;font-weight:600;color:#0C0C0C;margin-bottom:2px;">Add {{ $m }}</div>
                             <div class="ae-sc-excerpt">Include this section to complete your resume.</div>
                         </div>
                         <div class="ae-sc-actions">
-                            <button class="ae-sc-btn-ai" onclick="applySection({{ json_encode($m) }}, 'sc-sec-{{ $mi }}')" style="background:#1A73E8;">Apply</button>
+                            <button class="ae-sc-btn-ai" onclick="applySection({{ json_encode($m) }}, 'sc-sec-{{ $mi }}')" style="background:#2D6CDF;">Apply</button>
                             <button class="ae-sc-btn-dismiss" onclick="dismissCard('sc-sec-{{ $mi }}')">Dismiss</button>
                         </div>
                     </div>
@@ -287,8 +287,8 @@
         @endphp
         @if($fmtCount > 0)
             <div style="margin-bottom:12px;">
-                <div style="font-size:11px;font-weight:700;color:#b06000;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
-                    📐 Format <span style="background:#fff3e0;border-radius:10px;padding:1px 7px;font-size:10px;">{{ $fmtCount }}</span>
+                <div style="font-size:11px;font-weight:700;color:#E37400;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
+                    📐 Format <span style="background:#FFF8EC;border-radius:10px;padding:1px 7px;font-size:10px;">{{ $fmtCount }}</span>
                 </div>
                 @if(!($fmt_date['pass'] ?? true) && !empty($fmt_date['issue']))
                     <div class="ae-sc" id="sc-fmt-date">
@@ -309,7 +309,7 @@
                             <div class="ae-sc-excerpt">{{ $fmt_len['issue'] }}</div>
                         </div>
                         <div class="ae-sc-actions">
-                            <button class="ae-sc-btn-dismiss" onclick="dismissCard('sc-fmt-len')" style="flex:1;text-align:center;color:#5f6368;">Got it</button>
+                            <button class="ae-sc-btn-dismiss" onclick="dismissCard('sc-fmt-len')" style="flex:1;text-align:center;color:#737373;">Got it</button>
                         </div>
                     </div>
                 @endif
@@ -334,17 +334,17 @@
         {{-- Grammar issues --}}
         @if(!($sg['pass'] ?? true) && !empty($sg['issues']))
             <div style="margin-bottom:12px;">
-                <div style="font-size:11px;font-weight:700;color:#5f6368;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
-                    ✏️ Grammar <span style="background:#f1f3f4;border-radius:10px;padding:1px 7px;font-size:10px;">{{ count($sg['issues']) }}</span>
+                <div style="font-size:11px;font-weight:700;color:#737373;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
+                    ✏️ Grammar <span style="background:#F0F0EE;border-radius:10px;padding:1px 7px;font-size:10px;">{{ count($sg['issues']) }}</span>
                 </div>
                 @foreach($sg['issues'] as $gi => $gissue)
                     <div class="ae-sc" id="sc-gr-{{ $gi }}">
                         <div class="ae-sc-head">
-                            <div class="ae-sc-tag" style="color:#5f6368;">Grammar issue <span class="ae-sc-pts">+1 pt</span></div>
+                            <div class="ae-sc-tag" style="color:#737373;">Grammar issue <span class="ae-sc-pts">+1 pt</span></div>
                             <div class="ae-sc-excerpt">{{ $gissue }}</div>
                         </div>
                         <div class="ae-sc-actions">
-                            <button class="ae-sc-btn-dismiss" onclick="dismissCard('sc-gr-{{ $gi }}')" style="flex:1;text-align:center;color:#5f6368;">Got it</button>
+                            <button class="ae-sc-btn-dismiss" onclick="dismissCard('sc-gr-{{ $gi }}')" style="flex:1;text-align:center;color:#737373;">Got it</button>
                         </div>
                     </div>
                 @endforeach
@@ -356,8 +356,8 @@
         @if(!($hs['pass'] ?? true) || !($ss['pass'] ?? true))
             @if(!empty($missingSkills))
                 <div style="margin-bottom:12px;">
-                    <div style="font-size:11px;font-weight:700;color:#1557b0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
-                        🛠 Add Skills <span style="background:#e8f0fe;border-radius:10px;padding:1px 7px;font-size:10px;">{{ count($missingSkills) }}</span>
+                    <div style="font-size:11px;font-weight:700;color:#1B57C4;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
+                        🛠 Add Skills <span style="background:#EBF2FF;border-radius:10px;padding:1px 7px;font-size:10px;">{{ count($missingSkills) }}</span>
                     </div>
                     <div class="ae-sc" id="sc-skills-0">
                         <div class="ae-sc-head">
@@ -367,7 +367,7 @@
                         <div style="padding:4px 12px 10px;display:flex;flex-wrap:wrap;gap:4px;">
                             @foreach($missingSkills as $sk)
                                 <span onclick="appendSkill({{ json_encode($sk) }}, this)"
-                                      style="background:#e8f0fe;color:#1557b0;border:1px solid #c5d8fb;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:600;">+ {{ $sk }}</span>
+                                      style="background:#EBF2FF;color:#1B57C4;border:1px solid #BFCFEE;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:600;">+ {{ $sk }}</span>
                             @endforeach
                         </div>
                         <div class="ae-sc-actions" style="padding-top:0;">
@@ -378,7 +378,7 @@
             @endif
         @endif
 
-        <hr style="border:none;border-top:1px solid #f0f0f0;margin:10px 0;">
+        <hr style="border:none;border-top:1px solid #F0F0EE;margin:10px 0;">
 
         {{-- Category scores --}}
         @foreach([
@@ -388,16 +388,16 @@
             ['Sections','sections',$sugg['sections'],$cat_sections['score'] ?? 0, $cat_sections['max'] ?? 20, $cat_sections['label'] ?? 'Needs Work'],
             ['Style',   'style',   $sugg['style'],   $cat_style['score']   ?? 0, $cat_style['max']   ?? 15, $cat_style['label']   ?? 'Needs Work'],
         ] as [$cn, $ck, $cSugg, $cScore, $cMax, $cLabel])
-            @php $cPct = $cMax > 0 ? round($cScore / $cMax * 100) : 0; $cColor = match(true){$cLabel==='Excellent','Pass'=>'#34a853',$cLabel==='Good'=>'#fbbc04',default=>'#ea4335'}; @endphp
+            @php $cPct = $cMax > 0 ? round($cScore / $cMax * 100) : 0; $cColor = match(true){$cLabel==='Excellent','Pass'=>'#1E8E3E',$cLabel==='Good'=>'#fbbc04',default=>'#2D6CDF'}; @endphp
             <div class="ae-cat-row">
-                <span style="color:#1a1a2e;font-weight:600;">{{ $cn }}</span>
+                <span style="color:#0C0C0C;font-weight:600;">{{ $cn }}</span>
                 <div class="ae-cat-bar-bg"><div id="cat-bar-{{ $ck }}" class="ae-cat-bar-fg" style="width:{{ $cPct }}%;background:{{ $cColor }};transition:width .5s ease,background .5s ease;"></div></div>
                 <span id="cat-score-{{ $ck }}" style="font-weight:700;color:{{ $cColor }};min-width:32px;text-align:right;">{{ $cScore }}/{{ $cMax }}</span>
             </div>
         @endforeach
 
-        <a href="{{ route('resume.ats.show', $resume) }}" style="display:block;margin-top:14px;background:#f0f4f8;color:#1A73E8;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;">← View Full Report</a>
-        <button onclick="saveAndGoToDashboard()" style="display:block;width:100%;margin-top:8px;background:#34a853;color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;">💾 Save &amp; Go to Dashboard →</button>
+        <a href="{{ route('resume.ats.show', $resume) }}" style="display:block;margin-top:14px;background:#EBF2FF;color:#2D6CDF;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;">← View Full Report</a>
+        <button onclick="saveAndGoToDashboard()" style="display:block;width:100%;margin-top:8px;background:#1E8E3E;color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;">💾 Save &amp; Go to Dashboard →</button>
     </div>
 
     {{-- RIGHT PANEL: Editable resume document --}}
@@ -433,7 +433,7 @@
                     @if($resume->linkedin_url)
                         <span class="ae-field {{ in_array('LinkedIn URL', $cat_sections['missing'] ?? []) ? 'ae-flag' : '' }}"
                               contenteditable="true" data-field="linkedin_url" id="field-linkedin_url"
-                              style="padding:2px 4px;color:#1A73E8;">{{ $resume->linkedin_url ?: '+ Add LinkedIn' }}</span>
+                              style="padding:2px 4px;color:#2D6CDF;">{{ $resume->linkedin_url ?: '+ Add LinkedIn' }}</span>
                     @endif
                 </div>
                 @if(!$resume->location)
@@ -508,7 +508,7 @@
                                             style="padding:2px 4px;">{{ $bullet }}</li>
                                     @endforeach
                                     <li style="list-style:none;margin-top:4px;">
-                                        <span onclick="addBullet({{ $idx }})" style="font-size:12px;color:#1A73E8;cursor:pointer;">+ Add bullet point</span>
+                                        <span onclick="addBullet({{ $idx }})" style="font-size:12px;color:#2D6CDF;cursor:pointer;">+ Add bullet point</span>
                                     </li>
                                 </ul>
                             @else
@@ -528,7 +528,7 @@
                 <div id="section-experience" class="ae-section">
                     <div class="ae-sec-title">Experience</div>
                     <div style="color:#aaa;font-size:13px;font-style:italic;padding:12px;border:2px dashed #eee;border-radius:6px;text-align:center;">
-                        No experience added yet. <a href="{{ route('resume.edit', $resume) }}" style="color:#1A73E8;">Add in the editor →</a>
+                        No experience added yet. <a href="{{ route('resume.edit', $resume) }}" style="color:#2D6CDF;">Add in the editor →</a>
                     </div>
                 </div>
             @endif
@@ -550,7 +550,7 @@
                         </div>
                     @endforeach
                     <div style="margin-top:4px;">
-                        <a href="{{ route('resume.edit', $resume) }}#education" style="font-size:12px;color:#1A73E8;">✏️ Edit in full editor</a>
+                        <a href="{{ route('resume.edit', $resume) }}#education" style="font-size:12px;color:#2D6CDF;">✏️ Edit in full editor</a>
                     </div>
                 </div>
             @endif
@@ -572,15 +572,15 @@
                     @if(!($hs['pass'] ?? true))
                         @foreach(array_slice($hs['missing'] ?? [], 0, 3) as $ms)
                             <span onclick="appendSkill({{ json_encode($ms) }}, this)" class="ae-skill-chip"
-                                  style="background:#f0f4f8;color:#aaa;cursor:pointer;border:1px dashed #ccc;">+ {{ $ms }}</span>
+                                  style="background:#EBF2FF;color:#aaa;cursor:pointer;border:1px dashed #ccc;">+ {{ $ms }}</span>
                         @endforeach
                     @endif
                 </div>
                 <div style="display:flex;gap:8px;align-items:center;">
                     <input id="new-skill-input" type="text" placeholder="Type a skill and press Enter"
-                           style="border:1px solid #e0e0e0;border-radius:6px;padding:6px 12px;font-size:12px;flex:1;outline:none;"
+                           style="border:1px solid #E2E2E0;border-radius:6px;padding:6px 12px;font-size:12px;flex:1;outline:none;"
                            onkeydown="if(event.key==='Enter'){appendSkillFromInput();event.preventDefault();}">
-                    <button onclick="appendSkillFromInput()" style="background:#1A73E8;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;">Add</button>
+                    <button onclick="appendSkillFromInput()" style="background:#2D6CDF;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;">Add</button>
                 </div>
             </div>
 
@@ -605,7 +605,7 @@
 {{-- ===== FLOATING SUGGESTION CARD ===== --}}
 <div id="ae-suggestion-card" style="display:none;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <span id="ae-card-title" style="font-size:13px;font-weight:700;color:#1a1a2e;"></span>
+        <span id="ae-card-title" style="font-size:13px;font-weight:700;color:#0C0C0C;"></span>
         <button onclick="closeSuggestionCard()" style="background:none;border:none;cursor:pointer;font-size:18px;color:#aaa;line-height:1;padding:0 2px;">✕</button>
     </div>
     <div id="ae-card-body"></div>
@@ -664,7 +664,7 @@ function showSuggestionCard(anchorEl, type, context) {
     const typeLabels = { metric: '\uD83D\uDCCA Improve Metric', passive: '\u26A1 Strengthen Verb', buzzword: '\uD83D\uDD04 Replace Buzzword' };
     title.innerHTML = typeLabels[type] || 'Improve';
     body.innerHTML = '<div class="ae-sc-loading" style="padding:16px 0;text-align:center;">'
-        + '<svg style="animation:spin 1s linear infinite;width:18px;height:18px;display:inline-block;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="#1A73E8" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>'
+        + '<svg style="animation:spin 1s linear infinite;width:18px;height:18px;display:inline-block;vertical-align:middle;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="#2D6CDF" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>'
         + '<span style="color:#888;font-size:12px;">Getting AI suggestions\u2026</span></div>';
 
     // Position popup
@@ -701,7 +701,7 @@ function renderPopupSuggestions(body, suggestions, type, word) {
     let html = '<div style="font-size:11px;color:#888;margin-bottom:8px;">Click a suggestion to apply it:</div>';
     suggestions.forEach((s, i) => {
         html += '<div class="ae-sc-sug-item" style="margin-bottom:8px;">'
-            + '<div style="font-size:12px;color:#1a1a2e;line-height:1.5;margin-bottom:6px;">' + escHtml(s) + '</div>'
+            + '<div style="font-size:12px;color:#0C0C0C;line-height:1.5;margin-bottom:6px;">' + escHtml(s) + '</div>'
             + '<div style="display:flex;gap:6px;">'
             + '<button class="ae-sc-apply" data-sug-idx="' + i + '" data-type="' + type + '">Apply</button>'
             + '<button class="ae-sc-sdismiss">Dismiss</button>'
@@ -733,7 +733,7 @@ function applyPopupSuggestion(newText, type, word) {
     }
     markDirty(el);
     closeSuggestionCard();
-    el.style.outline = '2px solid #34a853';
+    el.style.outline = '2px solid #1E8E3E';
     setTimeout(() => { el.style.outline = ''; el.classList.remove('ae-flag', 'ae-flag-bz'); }, 1800);
 }
 
@@ -767,7 +767,7 @@ async function fetchPanelSuggestions(type, idx, text, word) {
         const suggestions = await fetchAISuggestions(lookupText, type, word);
         renderPanelSuggestions(sugBox, suggestions, type, word, lookupText, idx);
     } catch (e) {
-        sugBox.innerHTML = '<div style="padding:8px;font-size:11px;color:#ea4335;">Could not get suggestions. Click a highlighted bullet in the document to try again.</div>';
+        sugBox.innerHTML = '<div style="padding:8px;font-size:11px;color:#2D6CDF;">Could not get suggestions. Click a highlighted bullet in the document to try again.</div>';
         if (actionEl) actionEl.style.display = 'flex';
     }
 }
@@ -776,7 +776,7 @@ function renderPanelSuggestions(container, suggestions, type, word, originalText
     let html = '';
     suggestions.forEach((s, i) => {
         html += '<div class="ae-sc-sug-item">'
-            + '<div style="font-size:11px;color:#1a1a2e;line-height:1.5;margin-bottom:6px;">' + escHtml(s) + '</div>'
+            + '<div style="font-size:11px;color:#0C0C0C;line-height:1.5;margin-bottom:6px;">' + escHtml(s) + '</div>'
             + '<div class="ae-sc-sug-btns">'
             + '<button class="ae-sc-apply" data-si="' + i + '">Apply</button>'
             + '<button class="ae-sc-sdismiss">Dismiss</button>'
@@ -807,7 +807,7 @@ function applyPanelSuggestion(newText, type, word, originalText, container) {
         }
         markDirty(targetEl);
         targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        targetEl.style.outline = '2px solid #34a853';
+        targetEl.style.outline = '2px solid #1E8E3E';
         setTimeout(() => { targetEl.style.outline = ''; targetEl.classList.remove('ae-flag', 'ae-flag-bz'); }, 2000);
     }
 
@@ -856,7 +856,7 @@ function applySection(sectionName, cardId) {
         if (loc) {
             loc.focus();
             loc.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            loc.style.outline = '2px solid #1A73E8';
+            loc.style.outline = '2px solid #2D6CDF';
             setTimeout(() => loc.style.outline = '', 2000);
         }
         const url = prompt('Enter your portfolio or website URL:');
@@ -998,7 +998,7 @@ async function saveResume() {
                 const s = catData.score ?? 0;
                 const m = catData.max ?? meta.max;
                 const lbl = catData.label ?? '';
-                const color = lbl === 'Excellent' || lbl === 'Pass' ? '#34a853' : lbl === 'Good' ? '#fbbc04' : '#ea4335';
+                const color = lbl === 'Excellent' || lbl === 'Pass' ? '#1E8E3E' : lbl === 'Good' ? '#fbbc04' : '#2D6CDF';
                 const pct = m > 0 ? Math.round(s / m * 100) : 0;
                 const bar = document.getElementById('cat-bar-' + key);
                 const sc  = document.getElementById('cat-score-' + key);
@@ -1010,7 +1010,7 @@ async function saveResume() {
             const ringCircle = document.querySelector('.ae-mini-score circle:nth-child(2)');
             const ringText   = document.querySelector('.ae-mini-score text:nth-child(1)');
             const newScore   = json.score;
-            const newColor   = newScore >= 80 ? '#34a853' : newScore >= 60 ? '#fbbc04' : '#ea4335';
+            const newColor   = newScore >= 80 ? '#1E8E3E' : newScore >= 60 ? '#fbbc04' : '#2D6CDF';
             if (ringCircle) { ringCircle.setAttribute('stroke', newColor); ringCircle.setAttribute('stroke-dasharray', Math.round(newScore * 2.26) + ' 226'); }
             if (ringText)   { ringText.textContent = newScore; }
 

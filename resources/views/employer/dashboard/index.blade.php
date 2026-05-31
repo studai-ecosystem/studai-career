@@ -1,22 +1,22 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Employer Dashboard')
 @section('page-title', 'Employer Dashboard')
 
 @push('styles')
 <style>
-/* ══════════════════════════════════════════
+/* ------------------------------------------
    LIGHT COLORFUL EMPLOYER DASHBOARD
-══════════════════════════════════════════ */
+------------------------------------------ */
 
 /* Page wrapper */
 .emp-dash {
     padding: 1.5rem;
-    background: linear-gradient(160deg, #f0f4ff 0%, #f5f3ff 35%, #fff0fb 65%, #f0fff8 100%);
+    background: #EBF2FF;
     min-height: 100%;
 }
 
-/* ── Entrance animations ── */
+/* -- Entrance animations -- */
 @keyframes fadeUp {
     from { opacity:0; transform:translateY(18px); }
     to   { opacity:1; transform:translateY(0); }
@@ -50,18 +50,17 @@
 .anim-5 { animation: fadeUp .45s ease both; animation-delay:.33s; }
 .anim-6 { animation: fadeUp .45s ease both; animation-delay:.4s; }
 
-/* ── HERO ── */
+/* -- HERO -- */
 .emp-hero {
     border-radius: 1.5rem;
     padding: 2rem;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 40%, #fdf2f8 75%, #fff7ed 100%);
+    background: #2D6CDF;
     background-size: 250% 250%;
     animation: gradFlow 8s ease infinite;
-    border: 1.5px solid rgba(99,102,241,.12);
-    box-shadow: 0 8px 30px rgba(99,102,241,.12), 0 2px 12px rgba(0,0,0,.04);
-    color: #1e293b;
+    box-shadow: none;
+    color: #fff;
 }
 .emp-hero::before {
     content:'';
@@ -87,34 +86,34 @@
 /* Funnel bars */
 .funnel-bar { border-radius:.4rem .4rem 0 0; transition:height .6s cubic-bezier(.22,.68,0,1.2); }
 
-/* ── STAT CARDS ── */
+/* -- STAT CARDS -- */
 .emp-stat {
     border-radius: 1.25rem;
     padding: 1.4rem;
     position: relative;
     overflow: hidden;
     border: none;
-    box-shadow: 0 4px 24px rgba(0,0,0,.1);
+    box-shadow: none;
     transition: transform .25s cubic-bezier(.22,.68,0,1.2), box-shadow .25s;
     animation: popIn .4s ease both;
     color: #475569;
 }
 .emp-stat:hover {
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 18px 48px rgba(0,0,0,.18);
+    box-shadow: none;
 }
 
-/* Card backgrounds — pastel */
-.stat-blue   { background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); color:#6366f1; }
-.stat-violet { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); color:#8b5cf6; }
-.stat-amber  { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); color:#d97706; }
-.stat-rose   { background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%); color:#f43f5e; }
+/* Card backgrounds — solid light, on-brand */
+.stat-blue   { background: #EBF2FF; color:#2D6CDF; }
+.stat-violet { background: #EBF2FF; color:#2D6CDF; }
+.stat-amber  { background: #FFF8EC; color:#E37400; }
+.stat-rose   { background: #EBF2FF; color:#2D6CDF; }
 
 /* Soft sheen overlay */
 .emp-stat::before {
     content:'';
     position:absolute; inset:0;
-    background: linear-gradient(135deg, rgba(255,255,255,.5) 0%, transparent 70%);
+    background: rgba(255,255,255,.18);
     pointer-events:none;
 }
 
@@ -164,25 +163,25 @@
 .stat-action-link { color: currentColor !important; font-weight:700; text-decoration:none; }
 .stat-action-link:hover { opacity:.8; }
 
-/* ── MAIN CARD ── */
+/* -- MAIN CARD -- */
 .emp-card {
-    background: linear-gradient(135deg, #fdfcff 0%, #f5f3ff 50%, #fdf4ff 100%);
-    border: 1.5px solid rgba(99,102,241,.15);
+    background: #EBF2FF;
+    border: 1.5px solid rgba(20, 71, 186,.15);
     border-radius: 1.25rem;
     overflow: hidden;
-    box-shadow: 0 4px 24px rgba(99,102,241,.13), 0 1px 4px rgba(139,92,246,.07);
+    box-shadow: none;
 }
 .emp-card-header {
-    background: linear-gradient(135deg, #f8f7ff 0%, #fdf4ff 100%);
-    border-bottom: 1px solid rgba(99,102,241,.1);
+    background: #EBF2FF;
+    border-bottom: 1px solid rgba(20, 71, 186,.1);
     padding: 1rem 1.5rem;
     display:flex; align-items:center; justify-content:space-between;
 }
-.emp-card-header h2 { font-size:.925rem; font-weight:700; color:#1a1a2e; }
-.emp-card-header a  { font-size:.8rem; font-weight:600; color:#6366f1; transition:color .15s; text-decoration:none; }
-.emp-card-header a:hover { color:#8b5cf6; }
+.emp-card-header h2 { font-size:.925rem; font-weight:700; color:#0C0C0C; }
+.emp-card-header a  { font-size:.8rem; font-weight:600; color:#2D6CDF; transition:color .15s; text-decoration:none; }
+.emp-card-header a:hover { color:#2D6CDF; }
 
-/* ── KANBAN ── */
+/* -- KANBAN -- */
 .kanban-col-wrap { display:grid; grid-template-columns:repeat(2,1fr); gap:.75rem; }
 @media (min-width:640px) { .kanban-col-wrap { grid-template-columns:repeat(4,1fr); } }
 .kanban-col { border-radius:.875rem; overflow:hidden; }
@@ -191,105 +190,105 @@
     display:flex; align-items:center; justify-content:space-between;
     font-size:.72rem; font-weight:700; letter-spacing:.03em;
 }
-.kanban-col.col-blue   { background:#fafafe; border:1.5px solid rgba(99,102,241,.2); }
-.kanban-col.col-amber  { background:#fffdf7; border:1.5px solid rgba(245,158,11,.2); }
-.kanban-col.col-cyan   { background:#f7fffe; border:1.5px solid rgba(6,182,212,.2); }
-.kanban-col.col-rose   { background:#fff7f8; border:1.5px solid rgba(244,63,94,.2); }
-.kanban-col.col-blue  .kanban-col-head { background:linear-gradient(135deg,#eef2ff,#e0e7ff); color:#6366f1; }
-.kanban-col.col-amber .kanban-col-head { background:linear-gradient(135deg,#fffbeb,#fef3c7); color:#d97706; }
-.kanban-col.col-cyan  .kanban-col-head { background:linear-gradient(135deg,#ecfeff,#cffafe); color:#0891b2; }
-.kanban-col.col-rose  .kanban-col-head { background:linear-gradient(135deg,#fff1f2,#ffe4e6); color:#f43f5e; }
+.kanban-col.col-blue   { background:#EBF2FF; border:1.5px solid rgba(20, 71, 186,.2); }
+.kanban-col.col-amber  { background:#FFF8EC; border:1.5px solid rgba(146, 80, 10,.2); }
+.kanban-col.col-cyan   { background:#EDFAF2; border:1.5px solid rgba(6,182,212,.2); }
+.kanban-col.col-rose   { background:#FEF2F2; border:1.5px solid rgba(244,63,94,.2); }
+.kanban-col.col-blue  .kanban-col-head { background:#EBF2FF; color:#2D6CDF; }
+.kanban-col.col-amber .kanban-col-head { background:#FFF8EC; color:#E37400; }
+.kanban-col.col-cyan  .kanban-col-head { background:#EBF2FF; color:#2D6CDF; }
+.kanban-col.col-rose  .kanban-col-head { background:#FEF2F2; color:#2D6CDF; }
 .kanban-col-body { padding:.5rem; }
 .kanban-candidate {
-    background: linear-gradient(135deg, #faf9ff 0%, #f3f1ff 100%);
-    border:1px solid rgba(99,102,241,.13);
+    background: #EBF2FF;
+    border:1px solid rgba(20, 71, 186,.13);
     border-radius:.5rem; padding:.5rem .65rem;
     font-size:.72rem; margin-bottom:.4rem;
-    box-shadow: 0 2px 8px rgba(99,102,241,.09);
+    box-shadow: none;
     transition: box-shadow .2s, transform .2s;
 }
-.kanban-candidate:hover { box-shadow:0 6px 20px rgba(99,102,241,.18); transform:translateY(-2px); }
-.kanban-candidate .cn { font-weight:600; color:#1a1a2e; }
-.kanban-candidate .ca { color:#9ca3af; margin-top:.15rem; }
-.kanban-more { text-align:center; font-size:.7rem; color:#6366f1; font-weight:600; padding:.3rem 0; }
+.kanban-candidate:hover { box-shadow: none; transform:translateY(-2px); }
+.kanban-candidate .cn { font-weight:600; color:#0C0C0C; }
+.kanban-candidate .ca { color:#A8A8A8; margin-top:.15rem; }
+.kanban-more { text-align:center; font-size:.7rem; color:#2D6CDF; font-weight:600; padding:.3rem 0; }
 
-/* ── RECENT APPS ── */
+/* -- RECENT APPS -- */
 .app-row {
     display:flex; align-items:center; gap:1rem;
     padding:.875rem 1.5rem;
-    border-bottom:1px solid rgba(99,102,241,.06);
+    border-bottom:1px solid rgba(20, 71, 186,.06);
     transition:background .15s;
 }
 .app-row:last-child { border-bottom:none; }
-.app-row:hover { background:linear-gradient(90deg,rgba(99,102,241,.04),rgba(139,92,246,.03)); }
-.app-name { font-size:.875rem; font-weight:600; color:#1a1a2e; }
-.app-meta { font-size:.72rem; color:#9ca3af; }
-.app-link { font-size:.75rem; font-weight:700; color:#6366f1; white-space:nowrap; text-decoration:none; transition:color .15s; }
-.app-link:hover { color:#8b5cf6; }
+.app-row:hover { background:rgba(20, 71, 186,.04); }
+.app-name { font-size:.875rem; font-weight:600; color:#0C0C0C; }
+.app-meta { font-size:.72rem; color:#A8A8A8; }
+.app-link { font-size:.75rem; font-weight:700; color:#2D6CDF; white-space:nowrap; text-decoration:none; transition:color .15s; }
+.app-link:hover { color:#2D6CDF; }
 .app-badge { font-size:.7rem; font-weight:700; padding:.25rem .75rem; border-radius:9999px; white-space:nowrap; }
-.badge-hired       { background:#f0fdf4; color:#16a34a; border:1px solid rgba(22,163,74,.2); }
-.badge-rejected    { background:#fff1f2; color:#f43f5e; border:1px solid rgba(244,63,94,.2); }
-.badge-shortlisted { background:#eef2ff; color:#6366f1; border:1px solid rgba(99,102,241,.2); }
-.badge-interviewed { background:#ecfeff; color:#0891b2; border:1px solid rgba(6,182,212,.2); }
-.badge-pending     { background:#fffbeb; color:#d97706; border:1px solid rgba(245,158,11,.2); }
+.badge-hired       { background:#EDFAF2; color:#1E8E3E; border:1px solid rgba(15, 107, 49,.2); }
+.badge-rejected    { background:#FEF2F2; color:#2D6CDF; border:1px solid rgba(244,63,94,.2); }
+.badge-shortlisted { background:#EBF2FF; color:#2D6CDF; border:1px solid rgba(20, 71, 186,.2); }
+.badge-interviewed { background:#EBF2FF; color:#2D6CDF; border:1px solid rgba(6,182,212,.2); }
+.badge-pending     { background:#FFF8EC; color:#E37400; border:1px solid rgba(146, 80, 10,.2); }
 
-/* ── SCOUT PANEL ── */
+/* -- SCOUT PANEL -- */
 .scout-panel {
-    background: linear-gradient(145deg, #fdf4ff 0%, #f5f3ff 50%, #eef2ff 100%);
-    border: 1.5px solid rgba(139,92,246,.18);
+    background: #EBF2FF;
+    border: 1.5px solid rgba(20, 71, 186,.18);
     border-radius: 1.25rem;
     padding: 1.25rem;
     position:relative; overflow:hidden;
-    box-shadow: 0 4px 20px rgba(139,92,246,.1);
+    box-shadow: none;
 }
 .scout-panel::before {
     content:'';
     position:absolute; top:-30px; right:-30px;
     width:130px; height:130px; border-radius:50%;
-    background: radial-gradient(circle, rgba(168,85,247,.15) 0%, transparent 70%);
+    background: rgba(20, 71, 186,.15);
     pointer-events:none;
 }
 .scout-panel::after {
     content:'';
     position:absolute; bottom:-40px; left:-20px;
     width:100px; height:100px; border-radius:50%;
-    background: radial-gradient(circle, rgba(99,102,241,.1) 0%, transparent 70%);
+    background: rgba(20, 71, 186,.1);
     pointer-events:none;
 }
-.scout-skill-track { height:7px; background:rgba(139,92,246,.1); border-radius:9999px; overflow:hidden; }
+.scout-skill-track { height:7px; background:rgba(20, 71, 186,.1); border-radius:9999px; overflow:hidden; }
 .scout-skill-fill  {
     height:100%; border-radius:9999px;
-    background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899);
+    background:#2D6CDF;
     background-size:200%;
     animation: shimmer 3s linear infinite;
     transition:width .9s cubic-bezier(.22,.68,0,1.2);
 }
 
-/* ── SUB CARDS ── */
+/* -- SUB CARDS -- */
 .emp-subcard {
-    background: linear-gradient(135deg, #fdfcff 0%, #f5f3ff 60%, #fdf4ff 100%);
-    border: 1.5px solid rgba(99,102,241,.13);
+    background: #EBF2FF;
+    border: 1.5px solid rgba(20, 71, 186,.13);
     border-radius: 1.25rem;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(99,102,241,.11);
+    box-shadow: none;
 }
 .emp-subcard-p { padding: 1.25rem; }
 
-/* ── JOB ITEMS ── */
+/* -- JOB ITEMS -- */
 .job-item { display:flex; align-items:flex-start; gap:.75rem; padding:.625rem 0; }
-.job-item + .job-item { border-top:1px solid rgba(99,102,241,.07); }
+.job-item + .job-item { border-top:1px solid rgba(20, 71, 186,.07); }
 .job-letter {
     width:2rem; height:2rem; border-radius:.5rem; flex-shrink:0;
-    background: linear-gradient(135deg,#6366f1,#a855f7);
+    background: #2D6CDF;
     display:flex; align-items:center; justify-content:center;
     color:#fff; font-size:.75rem; font-weight:700;
-    box-shadow: 0 2px 6px rgba(99,102,241,.25);
+    box-shadow: none;
 }
-.job-title { font-size:.875rem; font-weight:600; color:#1a1a2e; display:block; text-decoration:none; transition:color .15s; }
-.job-title:hover { color:#6366f1; }
-.job-meta { font-size:.7rem; color:#9ca3af; }
+.job-title { font-size:.875rem; font-weight:600; color:#0C0C0C; display:block; text-decoration:none; transition:color .15s; }
+.job-title:hover { color:#2D6CDF; }
+.job-meta { font-size:.7rem; color:#A8A8A8; }
 
-/* ── ACTION ITEMS ── */
+/* -- ACTION ITEMS -- */
 .action-item {
     display:flex; align-items:center; gap:.65rem;
     padding:.625rem .875rem; border-radius:.75rem; border:1.5px solid;
@@ -297,15 +296,15 @@
     transition: transform .2s cubic-bezier(.22,.68,0,1.2), box-shadow .2s;
 }
 .action-item:hover { transform:translateX(4px); }
-.action-blue  { background:#f0f0ff; border-color:rgba(99,102,241,.2);  color:#5b4fe8; box-shadow:0 1px 6px rgba(99,102,241,.08); }
-.action-cyan  { background:#ecfeff; border-color:rgba(6,182,212,.2);   color:#0e7490; box-shadow:0 1px 6px rgba(6,182,212,.08); }
-.action-amber { background:#fffbeb; border-color:rgba(245,158,11,.2);  color:#b45309; box-shadow:0 1px 6px rgba(245,158,11,.08); }
-.action-rose  { background:#fff1f2; border-color:rgba(244,63,94,.2);   color:#be185d; box-shadow:0 1px 6px rgba(244,63,94,.08); }
+.action-blue  { background:#EBF2FF; border-color:rgba(20, 71, 186,.2);  color:#2D6CDF; box-shadow: none; }
+.action-cyan  { background:#EBF2FF; border-color:rgba(6,182,212,.2);   color:#1B57C4; box-shadow: none; }
+.action-amber { background:#FFF8EC; border-color:rgba(146, 80, 10,.2);  color:#E37400; box-shadow: none; }
+.action-rose  { background:#FEF2F2; border-color:rgba(244,63,94,.2);   color:#2D6CDF; box-shadow: none; }
 .action-dot { width:.5rem; height:.5rem; border-radius:50%; flex-shrink:0; }
-.action-blue  .action-dot { background:#6366f1; }
-.action-cyan  .action-dot { background:#06b6d4; }
-.action-amber .action-dot { background:#f59e0b; }
-.action-rose  .action-dot { background:#f43f5e; }
+.action-blue  .action-dot { background:#2D6CDF; }
+.action-cyan  .action-dot { background:#2D6CDF; }
+.action-amber .action-dot { background:#E37400; }
+.action-rose  .action-dot { background:#2D6CDF; }
 
 /* Ping indicator */
 .ping-dot { position:relative; display:inline-flex; width:.625rem; height:.625rem; }
@@ -321,7 +320,7 @@
 <div class="emp-dash">
     <div class="space-y-5">
 
-    {{-- HERO ── anim-1 --}}
+    {{-- HERO -- anim-1 --}}
     <div class="emp-hero anim-1">
         <div class="emp-hero-blob2"></div>
         <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -354,7 +353,7 @@
             <div class="flex gap-3">
                 <a href="{{ route('employer.jobs.create') }}"
                    class="inline-flex items-center gap-2 px-4 py-2.5 font-bold rounded-xl text-sm transition-all hover:-translate-y-0.5 hover:shadow-xl"
-                   style="background:#fff;color:#6366f1;border:1.5px solid rgba(99,102,241,.2);box-shadow:0 2px 10px rgba(99,102,241,.12);">
+                   style="background:#fff;color:#2D6CDF;box-shadow: none;">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                     </svg>
@@ -362,7 +361,7 @@
                 </a>
                 <a href="{{ route('employer.applicants.index') }}"
                    class="inline-flex items-center gap-2 px-4 py-2.5 font-semibold rounded-xl text-sm transition-all hover:-translate-y-0.5"
-                   style="background:rgba(99,102,241,.08);color:#6366f1;border:1.5px solid rgba(99,102,241,.2);">
+                   style="background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.4);">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
@@ -387,8 +386,8 @@
             </div>
             <div class="stat-num">{{ $totalJobs ?? 0 }}</div>
             <div class="stat-lbl">Total Jobs</div>
-            <div class="mt-3 h-1.5 rounded-full" style="background:#eef2ff">
-                <div class="h-full rounded-full" style="width:{{ min(100,($activeJobs??0)/max(1,$totalJobs??1)*100) }}%;background:linear-gradient(90deg,#6366f1,#818cf8);transition:width 1s ease;"></div>
+            <div class="mt-3 h-1.5 rounded-full" style="background:#EBF2FF">
+                <div class="h-full rounded-full" style="width:{{ min(100,($activeJobs??0)/max(1,$totalJobs??1)*100) }}%;background:#2D6CDF;transition:width 1s ease;"></div>
             </div>
         </div>
 
@@ -407,7 +406,7 @@
             <div class="mt-3 flex gap-0.5">
                 @for($i=0;$i<10;$i++)
                 <div class="flex-1 h-1.5 rounded-full"
-                     style="background:{{ $i < min(10,($totalApplications??0)/5) ? 'linear-gradient(90deg,#8b5cf6,#ec4899)' : 'rgba(139,92,246,.12)' }};transition:background .3s;"></div>
+                     style="background:{{ $i < min(10,($totalApplications??0)/5) ? '#2D6CDF' : 'rgba(20, 71, 186,.12)' }};transition:background .3s;"></div>
                 @endfor
             </div>
         </div>
@@ -421,15 +420,15 @@
                     </svg>
                 </div>
                 <span class="ping-dot" style="margin-top:.25rem;">
-                    <span class="ping-dot-ring" style="background:rgba(245,158,11,.4);"></span>
-                    <span class="ping-dot-inner" style="background:#f59e0b;"></span>
+                    <span class="ping-dot-ring" style="background:rgba(146, 80, 10,.4);"></span>
+                    <span class="ping-dot-inner" style="background:#E37400;"></span>
                 </span>
             </div>
             <div class="stat-num">{{ $applicationsByStatus['pending'] ?? 0 }}</div>
             <div class="stat-lbl">Pending Review</div>
             <a href="{{ route('employer.applicants.index', ['status' => 'pending']) }}"
                class="mt-2 text-xs font-bold inline-block transition-all hover:translate-x-1"
-               style="color:#d97706;text-decoration:none;">Review Now &#8594;</a>
+               style="color:#E37400;text-decoration:none;">Review Now &#8594;</a>
         </div>
 
         {{-- Shortlisted --}}
@@ -446,7 +445,7 @@
             <div class="stat-lbl">Shortlisted</div>
             <a href="{{ route('employer.applicants.index', ['status' => 'shortlisted']) }}"
                class="mt-2 text-xs font-bold inline-block transition-all hover:translate-x-1"
-               style="color:#f43f5e;text-decoration:none;">View All &#8594;</a>
+               style="color:#2D6CDF;text-decoration:none;">View All &#8594;</a>
         </div>
     </div>
 
@@ -478,7 +477,7 @@
                             </div>
                             <div class="kanban-col-body">
                                 @if($col['count'] === 0)
-                                <div class="text-center py-4 text-xs" style="color:#9ca3af">No candidates</div>
+                                <div class="text-center py-4 text-xs" style="color:#A8A8A8">No candidates</div>
                                 @else
                                 @php
                                     $statusMap = ['Applied'=>'pending','Screening'=>'reviewing','Interview'=>'interviewed','Shortlisted'=>'shortlisted'];
@@ -510,8 +509,8 @@
                 </div>
                 @if(isset($recentApplications) && $recentApplications->isEmpty())
                 <div class="py-12 text-center">
-                    <div style="width:3.5rem;height:3.5rem;border-radius:1rem;background:linear-gradient(135deg,#eef2ff,#f5f3ff);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
-                        <svg class="w-7 h-7" style="color:#a5b4fc" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <div style="width:3.5rem;height:3.5rem;border-radius:1rem;background:#EBF2FF;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                        <svg class="w-7 h-7" style="color:#BFCFEE" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
                     </div>
@@ -551,19 +550,19 @@
             <div class="scout-panel">
                 <div class="flex items-center gap-3 mb-4 relative z-10">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                         style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);box-shadow:0 2px 8px rgba(139,92,246,.2);">
-                        <svg class="w-5 h-5" style="color:#8b5cf6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                         style="background:#EBF2FF;box-shadow: none;">
+                        <svg class="w-5 h-5" style="color:#2D6CDF" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                         </svg>
                     </div>
                     <div>
-                        <div class="font-bold text-sm" style="color:#1a1a2e">S.C.O.U.T. AI</div>
+                        <div class="font-bold text-sm" style="color:#0C0C0C">S.C.O.U.T. AI</div>
                         <div class="flex items-center gap-1.5 mt-0.5">
                             <span class="ping-dot">
-                                <span class="ping-dot-ring" style="background:rgba(34,197,94,.45);"></span>
-                                <span class="ping-dot-inner" style="background:#22c55e;"></span>
+                                <span class="ping-dot-ring" style="background:rgba(15, 107, 49,.45);"></span>
+                                <span class="ping-dot-inner" style="background:#1E8E3E;"></span>
                             </span>
-                            <span class="text-xs font-medium" style="color:#6b7280">Active &middot; Matching candidates</span>
+                            <span class="text-xs font-medium" style="color:#737373">Active &middot; Matching candidates</span>
                         </div>
                     </div>
                 </div>
@@ -581,8 +580,8 @@
                     @foreach($scoutSkills as $skill => $pct)
                     <div>
                         <div class="flex justify-between text-xs mb-1.5">
-                            <span class="font-500" style="color:#6b7280">{{ $skill }}</span>
-                            <span class="font-bold" style="color:#8b5cf6">{{ $pct }}%</span>
+                            <span class="font-500" style="color:#737373">{{ $skill }}</span>
+                            <span class="font-bold" style="color:#2D6CDF">{{ $pct }}%</span>
                         </div>
                         <div class="scout-skill-track">
                             <div class="scout-skill-fill" style="width:{{ $pct }}%"></div>
@@ -590,13 +589,13 @@
                     </div>
                     @endforeach
                     @else
-                    <p class="text-xs text-center py-3" style="color:#9ca3af">Metrics will appear once candidates apply to your jobs.</p>
+                    <p class="text-xs text-center py-3" style="color:#A8A8A8">Metrics will appear once candidates apply to your jobs.</p>
                     @endif
                 </div>
 
                 <a href="{{ route('employer.scout.dashboard') }}"
                    class="flex items-center justify-center gap-1.5 text-sm font-bold relative z-10 transition-all hover:-translate-y-0.5"
-                   style="color:#8b5cf6;text-decoration:none;">
+                   style="color:#2D6CDF;text-decoration:none;">
                     Full S.C.O.U.T. Report
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
@@ -607,13 +606,13 @@
             {{-- Active Jobs --}}
             <div class="emp-subcard emp-subcard-p">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-sm font-bold" style="color:#1a1a2e">Active Job Postings</h3>
+                    <h3 class="text-sm font-bold" style="color:#0C0C0C">Active Job Postings</h3>
                     <a href="{{ route('employer.jobs.create') }}"
                        class="text-xs font-bold px-2.5 py-1 rounded-full transition-all hover:-translate-y-0.5"
-                       style="background:#eef2ff;color:#6366f1;border:1px solid rgba(99,102,241,.2);text-decoration:none;">+ Post</a>
+                       style="background:#2D6CDF;color:#fff;text-decoration:none;box-shadow: none;">+ Post</a>
                 </div>
                 @if(isset($recentJobs) && $recentJobs->isEmpty())
-                <p class="text-xs text-center py-4" style="color:#9ca3af">No active job postings</p>
+                <p class="text-xs text-center py-4" style="color:#A8A8A8">No active job postings</p>
                 @else
                 <div>
                     @foreach($recentJobs ?? [] as $job)
@@ -631,7 +630,7 @@
 
             {{-- Action Items --}}
             <div class="emp-subcard emp-subcard-p">
-                <h3 class="text-sm font-bold mb-3" style="color:#1a1a2e">Action Items</h3>
+                <h3 class="text-sm font-bold mb-3" style="color:#0C0C0C">Action Items</h3>
                 <div class="space-y-2">
                     @php
                         $actions = [];

@@ -8,11 +8,11 @@
     $showFactors ??= true;
 
     $recommendationColor = match ($log->recommendation ?? '') {
-        'shortlist' => '#137333',  // green
-        'reject'    => '#c5221f',  // red
+        'shortlist' => '#1E8E3E',  // green
+        'reject'    => '#2D6CDF',  // red
         'review'    => '#e37400',  // amber
-        'hold'      => '#5f6368',  // gray
-        default     => '#1a73e8',
+        'hold'      => '#737373',  // gray
+        default     => '#2D6CDF',
     };
 
     $scorePercent = round(($log->ai_score ?? 0) * 100);
@@ -26,7 +26,7 @@
 <div class="ai-score-explanation rounded-xl border border-gray-200 bg-white shadow-sm">
     {{-- Header bar --}}
     <div class="flex items-center justify-between rounded-t-xl px-4 py-3"
-         style="background: #f8f9fa; border-bottom: 1px solid #e2e8f0;">
+         style="background: #F0F0EE; border-bottom: 1px solid #E2E2E0;">
         <div class="flex items-center gap-2">
             <svg class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -46,7 +46,7 @@
             {{-- Score circle --}}
             <div class="flex flex-col items-center">
                 <div class="relative flex h-16 w-16 items-center justify-center rounded-full"
-                     style="background: conic-gradient({{ $recommendationColor }} {{ $scorePercent }}%, #e2e8f0 0%);">
+                     style="background: #E2E2E0;">
                     <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white">
                         <span class="text-lg font-bold" style="color: {{ $recommendationColor }};">
                             {{ $scorePercent }}
@@ -106,7 +106,7 @@
                     @foreach ($factors as $factor)
                         @php
                             $weight    = round(($factor['weight'] ?? 0) * 100);
-                            $direction = ($factor['direction'] ?? 'positive') === 'positive' ? '#137333' : '#c5221f';
+                            $direction = ($factor['direction'] ?? 'positive') === 'positive' ? '#1E8E3E' : '#2D6CDF';
                             $label     = $factor['label'] ?? $factor['factor'] ?? 'Unknown';
                             $detail    = $factor['detail'] ?? null;
                         @endphp

@@ -5,32 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Welcome to StudAI Hire</title>
 <style>
-  body { margin:0; padding:0; background:#f5f5f5; font-family:'Google Sans',Arial,sans-serif; }
-  .wrapper { max-width:600px; margin:32px auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.08); }
-  .header { background:linear-gradient(135deg,#1A73E8 0%,#0d47a1 100%); padding:40px 40px 32px; text-align:center; }
+  body { margin:0; padding:0; background:#F0F0EE; font-family:'Google Sans',Arial,sans-serif; }
+  .wrapper { max-width:600px; margin:32px auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow: none; }
+  .header { background:#2D6CDF; padding:40px 40px 32px; text-align:center; }
   .header .logo { font-size:26px; font-weight:700; color:#fff; letter-spacing:-0.5px; }
   .header .logo span { color:#8ab4f8; }
   .header h1 { margin:16px 0 6px; color:#fff; font-size:22px; font-weight:600; }
   .header p { margin:0; color:rgba(255,255,255,.8); font-size:14px; }
   .body { padding:36px 40px; }
-  .greeting { font-size:16px; color:#3c4043; font-weight:500; margin-bottom:6px; }
-  .intro { font-size:14px; color:#5f6368; line-height:1.7; margin-bottom:28px; }
-  .section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#80868b; margin:24px 0 10px; }
+  .greeting { font-size:16px; color:#3D3D3D; font-weight:500; margin-bottom:6px; }
+  .intro { font-size:14px; color:#737373; line-height:1.7; margin-bottom:28px; }
+  .section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#737373; margin:24px 0 10px; }
   .card-grid { display:table; width:100%; border-collapse:separate; border-spacing:8px; margin-bottom:4px; }
-  .card { background:#f8f9fa; border-radius:8px; padding:16px; display:table-cell; width:50%; vertical-align:top; }
+  .card { background:#F0F0EE; border-radius:8px; padding:16px; display:table-cell; width:50%; vertical-align:top; }
   .card .icon { font-size:22px; margin-bottom:8px; }
-  .card h4 { margin:0 0 4px; font-size:13px; font-weight:600; color:#202124; }
-  .card p { margin:0; font-size:12px; color:#5f6368; line-height:1.5; }
+  .card h4 { margin:0 0 4px; font-size:13px; font-weight:600; color:#0C0C0C; }
+  .card p { margin:0; font-size:12px; color:#737373; line-height:1.5; }
   .info-table { width:100%; border-collapse:collapse; font-size:13px; margin-bottom:20px; }
-  .info-table td { padding:8px 10px; border:1px solid #e8eaed; color:#3c4043; vertical-align:top; }
-  .info-table td:first-child { background:#f8f9fa; font-weight:600; width:140px; }
+  .info-table td { padding:8px 10px; border:1px solid #E2E2E0; color:#3D3D3D; vertical-align:top; }
+  .info-table td:first-child { background:#F0F0EE; font-weight:600; width:140px; }
   .cta-section { text-align:center; margin:28px 0 0; }
-  .btn-primary { display:inline-block; background:#1A73E8; color:#fff; text-decoration:none; padding:13px 32px; border-radius:8px; font-size:14px; font-weight:600; }
-  .btn-secondary { display:inline-block; background:#fff; color:#1A73E8; text-decoration:none; padding:10px 24px; border-radius:8px; font-size:13px; font-weight:600; border:1.5px solid #1A73E8; margin-top:10px; }
-  .tip-box { background:#e8f0fe; border-left:4px solid #1A73E8; padding:14px 16px; border-radius:0 8px 8px 0; margin:24px 0 0; }
+  .btn-primary { display:inline-block; background:#2D6CDF; color:#fff; text-decoration:none; padding:13px 32px; border-radius:8px; font-size:14px; font-weight:600; }
+  .btn-secondary { display:inline-block; background:#fff; color:#2D6CDF; text-decoration:none; padding:10px 24px; border-radius:8px; font-size:13px; font-weight:600; border:1.5px solid #2D6CDF; margin-top:10px; }
+  .tip-box { background:#EBF2FF; border-left:4px solid #2D6CDF; padding:14px 16px; border-radius:0 8px 8px 0; margin:24px 0 0; }
   .tip-box p { margin:0; font-size:13px; color:#1558d6; line-height:1.6; }
-  .footer { background:#f8f9fa; padding:20px 40px; border-top:1px solid #e8eaed; text-align:center; }
-  .footer p { margin:0; color:#80868b; font-size:11px; line-height:1.8; }
+  .footer { background:#F0F0EE; padding:20px 40px; border-top:1px solid #E2E2E0; text-align:center; }
+  .footer p { margin:0; color:#737373; font-size:11px; line-height:1.8; }
 </style>
 </head>
 <body>
@@ -104,7 +104,7 @@
   <div class="footer">
     <p>You're receiving this because you registered on <strong>StudAI Hire</strong>.</p>
     <p>StudAI Edutech Pvt. Ltd. &bull; AI-Powered Hiring Platform</p>
-    <p style="margin-top:6px;color:#bdc1c6">onestudai@gmail.com</p>
+    <p style="margin-top:6px;color:#A8A8A8">onestudai@gmail.com</p>
   </div>
 
 </div>

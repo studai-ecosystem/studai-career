@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Profile Settings')
 
@@ -6,8 +6,8 @@
 
 @section('content')
 {{-- HERO --}}
-<div class="relative overflow-hidden rounded-2xl p-6 mb-6 text-white" style="background:linear-gradient(135deg,#7c3aed 0%,#9333ea 40%,#a855f7 70%,#c026d3 100%)">
-    <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 80% 50%,rgba(255,255,255,.4) 0%,transparent 60%);"></div>
+<div class="relative overflow-hidden rounded-2xl p-6 mb-6 text-white" style="background:#2D6CDF">
+    <div class="absolute inset-0 opacity-10" style="background-image:rgba(255,255,255,.4);"></div>
     <div class="relative flex items-center gap-4">
         <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-3xl font-bold flex-shrink-0 border-2 border-white/30">
             {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
@@ -18,7 +18,7 @@
             <p class="text-purple-200 text-xs mt-0.5">Member since {{ auth()->user()->created_at?->format('M Y') ?? 'N/A' }}</p>
         </div>
         <a href="{{ route('resume.index') }}" class="flex-shrink-0 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-semibold transition-colors border border-white/20">
-            View Resume →
+            View Resume ?
         </a>
     </div>
 </div>

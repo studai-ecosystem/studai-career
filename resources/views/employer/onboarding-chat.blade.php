@@ -6,12 +6,12 @@
     <title>Company Onboarding — StudAI Hire</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { theme: { extend: { colors: { primary: '#1A73E8', 'primary-dark': '#1557b0' } } } }</script>
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#2D6CDF', 'primary-dark': '#1B57C4' } } } }</script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .chat-bubble-orin { background: #f0f7ff; border: 1px solid #dbeafe; }
-        .chat-bubble-user { background: #1A73E8; color: white; }
+        .chat-bubble-orin { background: #EBF2FF; border: 1px solid #EBF2FF; }
+        .chat-bubble-user { background: #2D6CDF; color: white; }
         #chat-messages { scrollbar-width: thin; }
         .typing-dot { animation: blink 1.4s infinite both; }
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }

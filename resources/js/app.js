@@ -1,9 +1,42 @@
 import './bootstrap';
 
+// ── MERIDIAN THEME — apply persisted theme before paint to avoid flash ──────
+(() => {
+    const stored = localStorage.getItem('meridian-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const dark = stored ? stored === 'dark' : prefersDark;
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+})();
+
 // Livewire 3 bundles and manages Alpine internally.
 // Do NOT import Alpine separately — it causes duplicate instances.
 // Register Alpine components via alpine:init so Livewire's $wire is available.
 document.addEventListener('alpine:init', () => {
+    // ── MERIDIAN THEME STORE ────────────────────────────────────────────────
+    window.Alpine.store('theme', {
+        dark: document.documentElement.getAttribute('data-theme') === 'dark',
+
+        init() {
+            // Honour OS changes only while the user has made no explicit choice.
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                if (!localStorage.getItem('meridian-theme')) {
+                    this.dark = e.matches;
+                    this.apply();
+                }
+            });
+        },
+
+        toggle() {
+            this.dark = !this.dark;
+            localStorage.setItem('meridian-theme', this.dark ? 'dark' : 'light');
+            this.apply();
+        },
+
+        apply() {
+            document.documentElement.setAttribute('data-theme', this.dark ? 'dark' : 'light');
+        },
+    });
+
     window.Alpine.data('coachChat', () => ({
         listening: false,
         noSpeechApi: false,

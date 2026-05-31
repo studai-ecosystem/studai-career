@@ -8,7 +8,7 @@
 <div class="space-y-6">
 
     {{-- Header --}}
-    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 32px rgba(99,102,241,.3)">
+    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:#2D6CDF;box-shadow: none">
         <h1 class="text-2xl font-bold mb-1">Activity History</h1>
         <p class="text-indigo-200 text-sm">All your points, XP and career milestones in one place</p>
     </div>
@@ -23,7 +23,7 @@
             <div class="divide-y divide-gray-100 dark:divide-gray-700">
                 @forelse($activities as $activity)
                 <div class="flex items-start gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
-                    <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe)">
+                    <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style="background:#EBF2FF">
                         <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
@@ -76,7 +76,7 @@
                 @endforelse
             </div>
 
-            <a href="{{ route('gamification.dashboard') }}" class="block w-full text-center px-4 py-2.5 rounded-xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
+            <a href="{{ route('gamification.dashboard') }}" class="block w-full text-center px-4 py-2.5 rounded-xl text-sm font-semibold text-white" style="background:#2D6CDF">
                 Back to Dashboard
             </a>
         </div>

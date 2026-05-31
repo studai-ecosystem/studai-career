@@ -79,7 +79,7 @@
 
                         <form method="POST" action="{{ route('two-factor.recovery-codes.regenerate') }}" class="inline">
                             @csrf
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-[#2f5fb0] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-[#284f95] active:bg-[#21426f] focus:outline-none focus:border-[#21426f] focus:ring ring-[#c3d2ea] disabled:opacity-25 transition ease-in-out duration-150" onclick="return confirm('This will invalidate your old recovery codes. Continue?')">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-[#2D6CDF] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-[#1B57C4] active:bg-[#0C2E72] focus:outline-none focus:border-[#0C2E72] focus:ring ring-[#BFCFEE] disabled:opacity-25 transition ease-in-out duration-150" onclick="return confirm('This will invalidate your old recovery codes. Continue?')">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                 </svg>

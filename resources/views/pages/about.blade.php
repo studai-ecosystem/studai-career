@@ -25,7 +25,7 @@
 					StudAI Hire exists to eliminate friction between job seekers and employers. We combine applied AI, human-centered workflows, and local market intelligence to help millions access meaningful work and empower teams to hire with confidence.
 				</p>
 				<div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-					<a href="{{ route('pricing') }}" class="group inline-flex items-center rounded-xl bg-gradient-to-r from-[#1A73E8] via-blue-500 to-blue-400 px-8 py-3 text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:shadow-blue-500/40">
+					<a href="{{ route('pricing') }}" class="group inline-flex items-center rounded-xl bg-gradient-to-r from-[#2D6CDF] via-blue-500 to-blue-400 px-8 py-3 text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:shadow-blue-500/40">
 						Explore Plans
 						<svg class="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -163,7 +163,7 @@
 			<h2 class="text-3xl font-bold text-white sm:text-4xl">Shape The Future Of Work With Us</h2>
 			<p class="mt-4 text-lg text-slate-300">Collaborate with us as a customer, partner, or team member. Let’s co-create the next chapter of careers.</p>
 			<div class="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
-				<a href="{{ route('register') }}" class="group inline-flex items-center rounded-xl bg-gradient-to-r from-[#1A73E8] via-blue-500 to-blue-400 px-8 py-3 text-lg font-semibold text-white transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/40">
+				<a href="{{ route('register') }}" class="group inline-flex items-center rounded-xl bg-gradient-to-r from-[#2D6CDF] via-blue-500 to-blue-400 px-8 py-3 text-lg font-semibold text-white transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/40">
 					Join The Platform
 					<svg class="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />

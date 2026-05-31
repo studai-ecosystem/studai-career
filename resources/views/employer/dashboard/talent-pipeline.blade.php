@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Talent Pipeline Management')
 
@@ -71,7 +71,7 @@
                         </svg>
                     </div>
                 </div>
-                <p class="mt-3 text-sm text-gray-600">{{ __('Average weighted health score across pipelines (target â‰¥ 70).') }}</p>
+                <p class="mt-3 text-sm text-gray-600">{{ __('Average weighted health score across pipelines (target ≥ 70).') }}</p>
             </div>
             <div class="bg-white rounded-xl shadow-lg p-6 border border-pink-100">
                 <div class="flex items-center justify-between">
@@ -126,19 +126,19 @@
                     <div id="pipelineMeta" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="bg-gradient-to-br from-pink-50 to-purple-50 border border-pink-100 rounded-xl p-4">
                             <p class="text-xs uppercase text-gray-500 tracking-wide">Target Role</p>
-                            <p id="pipelineTargetRole" class="mt-2 text-sm font-semibold text-gray-900">â€”</p>
+                            <p id="pipelineTargetRole" class="mt-2 text-sm font-semibold text-gray-900">—</p>
                         </div>
                         <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-4">
                             <p class="text-xs uppercase text-gray-500 tracking-wide">Target Size</p>
-                            <p id="pipelineTargetSize" class="mt-2 text-sm font-semibold text-gray-900">â€”</p>
+                            <p id="pipelineTargetSize" class="mt-2 text-sm font-semibold text-gray-900">—</p>
                         </div>
                         <div class="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-100 rounded-xl p-4">
                             <p class="text-xs uppercase text-gray-500 tracking-wide">Current Size</p>
-                            <p id="pipelineCurrentSize" class="mt-2 text-sm font-semibold text-gray-900">â€”</p>
+                            <p id="pipelineCurrentSize" class="mt-2 text-sm font-semibold text-gray-900">—</p>
                         </div>
                         <div class="bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-100 rounded-xl p-4">
                             <p class="text-xs uppercase text-gray-500 tracking-wide">Next Hire Window</p>
-                            <p id="pipelineNextHire" class="mt-2 text-sm font-semibold text-gray-900">â€”</p>
+                            <p id="pipelineNextHire" class="mt-2 text-sm font-semibold text-gray-900">—</p>
                         </div>
                     </div>
 
@@ -146,7 +146,7 @@
                         <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-lg font-semibold text-gray-900">Pipeline Health</h3>
-                                <span id="pipelineHealthLabel" class="text-sm font-medium text-gray-600">â€”</span>
+                                <span id="pipelineHealthLabel" class="text-sm font-medium text-gray-600">—</span>
                             </div>
                             <div class="mt-4 flex items-center justify-center">
                                 <canvas id="pipelineHealthGauge" width="320" height="200"></canvas>
@@ -645,8 +645,8 @@
                         datasets: [{
                             data: [value, 100 - value],
                             backgroundColor: [
-                                value >= 80 ? '#34d399' : value >= 60 ? '#60a5fa' : value >= 40 ? '#fbbf24' : '#f87171',
-                                '#e5e7eb'
+                                value >= 80 ? '#1E8E3E' : value >= 60 ? '#2D6CDF' : value >= 40 ? '#E37400' : '#2D6CDF',
+                                '#E2E2E0'
                             ],
                             borderWidth: 0,
                             cutout: '75%',
@@ -681,7 +681,7 @@
                         datasets: [{
                             label: 'Candidates',
                             data: dataset,
-                            backgroundColor: '#f472b6',
+                            backgroundColor: '#2D6CDF',
                             borderRadius: 8
                         }]
                     },
@@ -714,7 +714,7 @@
                         labels: ['Positive', 'Neutral', 'Negative'],
                         datasets: [{
                             data,
-                            backgroundColor: ['#34d399', '#93c5fd', '#f87171'],
+                            backgroundColor: ['#1E8E3E', '#BFCFEE', '#2D6CDF'],
                             borderWidth: 0
                         }]
                     },
@@ -756,8 +756,8 @@
                             label: 'Score',
                             data: values,
                             backgroundColor: 'rgba(52, 211, 153, 0.2)',
-                            borderColor: '#34d399',
-                            pointBackgroundColor: '#10b981'
+                            borderColor: '#1E8E3E',
+                            pointBackgroundColor: '#1E8E3E'
                         }]
                     },
                     options: {
@@ -792,7 +792,7 @@
                         labels: ['Positive', 'Negative', 'Neutral'],
                         datasets: [{
                             data,
-                            backgroundColor: ['#34d399', '#f87171', '#60a5fa'],
+                            backgroundColor: ['#1E8E3E', '#2D6CDF', '#2D6CDF'],
                             borderRadius: 6
                         }]
                     },
@@ -976,10 +976,10 @@
             if (!pipeline) return;
             elements.selectedPipelineTitle.textContent = pipeline.pipeline_name;
             elements.pipelineDescription.textContent = pipeline.role_description || 'No description provided for this pipeline yet.';
-            elements.pipelineTargetRole.textContent = pipeline.target_role || 'â€”';
-            elements.pipelineTargetSize.textContent = pipeline.target_pipeline_size ? `${pipeline.target_pipeline_size} candidates` : 'â€”';
-            elements.pipelineCurrentSize.textContent = pipeline.current_pipeline_size ? `${pipeline.current_pipeline_size} candidates` : 'â€”';
-            elements.pipelineNextHire.textContent = formatDate(pipeline.next_projected_hire_date) || 'â€”';
+            elements.pipelineTargetRole.textContent = pipeline.target_role || '—';
+            elements.pipelineTargetSize.textContent = pipeline.target_pipeline_size ? `${pipeline.target_pipeline_size} candidates` : '—';
+            elements.pipelineCurrentSize.textContent = pipeline.current_pipeline_size ? `${pipeline.current_pipeline_size} candidates` : '—';
+            elements.pipelineNextHire.textContent = formatDate(pipeline.next_projected_hire_date) || '—';
             const status = metrics.health_status || pipeline.health_status || 'fair';
             const statusStyle = statusStyles[status] || statusStyles.fair;
             elements.pipelineStatusBadge.textContent = statusStyle.label;
@@ -1040,8 +1040,8 @@
                             <span class="text-xs text-gray-500">${item.user?.current_title || 'Role unknown'}</span>
                         </div>
                     </td>
-                    <td class="px-4 py-4 text-sm text-gray-600">${item.job?.title || 'â€”'}</td>
-                    <td class="px-4 py-4 text-sm text-gray-600 capitalize">${(item.silver_medal_reason || 'â€”').replace(/_/g, ' ')}</td>
+                    <td class="px-4 py-4 text-sm text-gray-600">${item.job?.title || '—'}</td>
+                    <td class="px-4 py-4 text-sm text-gray-600 capitalize">${(item.silver_medal_reason || '—').replace(/_/g, ' ')}</td>
                     <td class="px-4 py-4">
                         <div class="flex flex-col">
                             <span class="text-sm font-semibold text-gray-900">${Math.round(item.overall_score || 0)}%</span>

@@ -14,12 +14,12 @@
     </div>
 
     @if(session('success'))
-    <div class="mb-4 p-4 rounded-xl text-sm font-medium" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;">
+    <div class="mb-4 p-4 rounded-xl text-sm font-medium" style="background:#EDFAF2;color:#1E8E3E;border:1px solid #A3D9B4;">
         ✓ {{ session('success') }}
     </div>
     @endif
     @if(session('error'))
-    <div class="mb-4 p-4 rounded-xl text-sm font-medium" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;">
+    <div class="mb-4 p-4 rounded-xl text-sm font-medium" style="background:#fef2f2;color:#2D6CDF;border:1px solid #FCA5A5;">
         ⚠ {{ session('error') }}
     </div>
     @endif
@@ -31,7 +31,7 @@
         <p class="text-gray-500 text-sm mb-6">When a company selects your proposal and sends you an offer, it will appear here.</p>
         <a href="{{ route('marketplace.projects') }}"
            class="inline-block px-6 py-3 text-white font-bold rounded-xl hover:opacity-90 transition text-sm"
-           style="background:#1A73E8;">Browse Projects</a>
+           style="background:#2D6CDF;">Browse Projects</a>
     </div>
     @else
 
@@ -46,16 +46,16 @@
             $breakdown = $offer->ai_match_breakdown ?? [];
             $daysAgo  = $offer->offer_sent_at?->diffForHumans() ?? 'recently';
         @endphp
-        <div class="bg-white rounded-2xl border-2 shadow-sm overflow-hidden" style="border-color:#1A73E822;">
+        <div class="bg-white rounded-2xl border-2 shadow-sm overflow-hidden" style="border-color:#2D6CDF22;">
 
             {{-- Offer header --}}
-            <div class="px-5 py-3 flex items-center justify-between" style="background:linear-gradient(135deg,#eff6ff,#f8faff);">
-                <div class="flex items-center gap-2 text-sm font-semibold" style="color:#1A73E8;">
+            <div class="px-5 py-3 flex items-center justify-between" style="background:#EBF2FF;">
+                <div class="flex items-center gap-2 text-sm font-semibold" style="color:#2D6CDF;">
                     📨 Offer received {{ $daysAgo }}
                 </div>
                 @if($score !== null)
                 <div class="flex items-center gap-1.5 text-sm">
-                    <span class="font-bold" style="color:{{ $score >= 80 ? '#16a34a' : ($score >= 60 ? '#d97706' : '#dc2626') }}">{{ $score }}/100</span>
+                    <span class="font-bold" style="color:{{ $score >= 80 ? '#1E8E3E' : ($score >= 60 ? '#E37400' : '#2D6CDF') }}">{{ $score }}/100</span>
                     <span class="text-gray-400 text-xs">AI Match</span>
                 </div>
                 @endif
@@ -64,7 +64,7 @@
             <div class="p-5">
                 <div class="flex items-start gap-4 mb-4">
                     <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0"
-                         style="background:#1A73E8;">{{ $initials }}</div>
+                         style="background:#2D6CDF;">{{ $initials }}</div>
                     <div class="flex-1">
                         <h3 class="font-bold text-gray-900 text-lg">{{ $project?->title ?? 'Project' }}</h3>
                         <p class="text-sm text-gray-500">by <strong>{{ $name }}</strong></p>
@@ -79,16 +79,16 @@
                 @if(!empty($breakdown['matched_skills']) || !empty($breakdown['missing_skills']))
                 <div class="flex flex-wrap gap-1.5 mb-3">
                     @foreach($breakdown['matched_skills'] ?? [] as $skill)
-                    <span class="text-xs px-2 py-0.5 rounded-full" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">✓ {{ $skill }}</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full" style="background:#EDFAF2;color:#1E8E3E;border:1px solid #A3D9B4;">✓ {{ $skill }}</span>
                     @endforeach
                     @foreach($breakdown['missing_skills'] ?? [] as $skill)
-                    <span class="text-xs px-2 py-0.5 rounded-full" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;">✗ {{ $skill }}</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full" style="background:#fef2f2;color:#2D6CDF;border:1px solid #FCA5A5;">✗ {{ $skill }}</span>
                     @endforeach
                 </div>
                 @endif
 
                 {{-- Cover letter --}}
-                <div class="p-3 rounded-xl mb-4" style="background:#f8faff;">
+                <div class="p-3 rounded-xl mb-4" style="background:#EBF2FF;">
                     <p class="text-sm font-semibold text-gray-600 mb-1">Your Proposal</p>
                     <p class="text-sm text-gray-700 line-clamp-3">{{ $offer->cover_letter }}</p>
                 </div>
@@ -99,7 +99,7 @@
                         @csrf
                         <button type="submit"
                                 class="w-full py-3 text-white font-bold rounded-xl hover:opacity-90 transition text-sm"
-                                style="background:#1A73E8;"
+                                style="background:#2D6CDF;"
                                 onclick="return confirm('Accept this offer and create a contract with {{ addslashes($name) }}?')">
                             ✓ Accept Offer & Start Contract
                         </button>

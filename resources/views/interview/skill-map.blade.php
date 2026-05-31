@@ -52,35 +52,35 @@
                     'critical_thinking' => [
                         'label'  => 'Critical Thinking',
                         'icon'   => '&#129504;',
-                        'hex'    => '#4F46E5',
+                        'hex'    => '#1B57C4',
                         'bg'     => 'bg-indigo-50',
                         'badge'  => 'bg-indigo-100 text-indigo-700',
                     ],
                     'collaboration' => [
                         'label'  => 'Collaboration',
                         'icon'   => '&#129309;',
-                        'hex'    => '#0891B2',
+                        'hex'    => '#2D6CDF',
                         'bg'     => 'bg-cyan-50',
                         'badge'  => 'bg-cyan-100 text-cyan-700',
                     ],
                     'communication' => [
                         'label'  => 'Communication',
                         'icon'   => '&#128172;',
-                        'hex'    => '#059669',
+                        'hex'    => '#1E8E3E',
                         'bg'     => 'bg-emerald-50',
                         'badge'  => 'bg-emerald-100 text-emerald-700',
                     ],
                     'creativity' => [
                         'label'  => 'Creativity',
                         'icon'   => '&#128161;',
-                        'hex'    => '#D97706',
+                        'hex'    => '#E37400',
                         'bg'     => 'bg-amber-50',
                         'badge'  => 'bg-amber-100 text-amber-700',
                     ],
                     'adaptability' => [
                         'label'  => 'Adaptability',
                         'icon'   => '&#128260;',
-                        'hex'    => '#7C3AED',
+                        'hex'    => '#2D6CDF',
                         'bg'     => 'bg-purple-50',
                         'badge'  => 'bg-purple-100 text-purple-700',
                     ],
@@ -116,14 +116,14 @@
                     {{-- SVG ring score --}}
                     <div class="flex-shrink-0 flex flex-col items-center gap-1">
                         <svg width="144" height="144" viewBox="0 0 144 144">
-                            <circle cx="72" cy="72" r="54" fill="none" stroke="#e5e7eb" stroke-width="10"/>
-                            <circle cx="72" cy="72" r="54" fill="none" stroke="#4F46E5" stroke-width="10"
+                            <circle cx="72" cy="72" r="54" fill="none" stroke="#E2E2E0" stroke-width="10"/>
+                            <circle cx="72" cy="72" r="54" fill="none" stroke="#1B57C4" stroke-width="10"
                                     stroke-linecap="round"
                                     stroke-dasharray="{{ $circumference }}"
                                     stroke-dashoffset="{{ $dashOffset }}"
                                     transform="rotate(-90 72 72)"/>
-                            <text x="72" y="68" text-anchor="middle" fill="#1e1b4b" font-size="30" font-weight="700" font-family="system-ui, sans-serif">{{ number_format($overall, 1) }}</text>
-                            <text x="72" y="88" text-anchor="middle" fill="#6b7280" font-size="12" font-family="system-ui, sans-serif">out of 5.0</text>
+                            <text x="72" y="68" text-anchor="middle" fill="#0C2E72" font-size="30" font-weight="700" font-family="system-ui, sans-serif">{{ number_format($overall, 1) }}</text>
+                            <text x="72" y="88" text-anchor="middle" fill="#737373" font-size="12" font-family="system-ui, sans-serif">out of 5.0</text>
                         </svg>
                         <span class="text-xs font-bold text-indigo-600 tracking-widest uppercase">Vantage Score</span>
                     </div>
@@ -147,7 +147,7 @@
                             @foreach($skills as $key => $meta)
                                 @php $s = (float)($skillMap[$key]['score'] ?? 0); @endphp
                                 <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                                     style="background:#f8f9ff; border:2px solid {{ $meta['hex'] }}">
+                                     style="background:#EBF2FF; border:2px solid {{ $meta['hex'] }}">
                                     <span class="text-base leading-none">{!! $meta['icon'] !!}</span>
                                     <span class="text-xs font-extrabold" style="color:{{ $meta['hex'] }}">{{ number_format($s, 1) }}</span>
                                 </div>
@@ -231,7 +231,7 @@
                             {{-- Mini ring --}}
                             <div class="flex-shrink-0 hidden sm:flex">
                                 <svg width="56" height="56" viewBox="0 0 56 56">
-                                    <circle cx="28" cy="28" r="22" fill="none" stroke="#e5e7eb" stroke-width="5"/>
+                                    <circle cx="28" cy="28" r="22" fill="none" stroke="#E2E2E0" stroke-width="5"/>
                                     <circle cx="28" cy="28" r="22" fill="none" stroke="{{ $meta['hex'] }}" stroke-width="5"
                                             stroke-linecap="round"
                                             stroke-dasharray="{{ $circ2 }}"
@@ -299,7 +299,7 @@
             </div>
 
             {{-- ── CTA ───────────────────────────────────────────────────── --}}
-            <div class="rounded-2xl overflow-hidden shadow-lg" style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);">
+            <div class="rounded-2xl overflow-hidden shadow-lg" style="background: #1B57C4;">
                 <div class="px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="text-white">
                         <p class="text-lg font-extrabold mb-1">Want to improve your Vantage score?</p>
@@ -334,8 +334,8 @@
                 datasets: [{
                     label: 'Your Score',
                     data: scores,
-                    backgroundColor: 'rgba(79,70,229,0.10)',
-                    borderColor: 'rgba(79,70,229,0.80)',
+                    backgroundColor: 'rgba(15, 55, 153,0.10)',
+                    borderColor: 'rgba(15, 55, 153,0.80)',
                     borderWidth: 2.5,
                     pointBackgroundColor: colors,
                     pointBorderColor: '#fff',
@@ -354,14 +354,14 @@
                         ticks: {
                             stepSize: 1,
                             font: { size: 10 },
-                            color: '#9CA3AF',
+                            color: '#A8A8A8',
                             backdropColor: 'transparent',
                         },
                         grid: { color: 'rgba(0,0,0,0.06)' },
                         angleLines: { color: 'rgba(0,0,0,0.06)' },
                         pointLabels: {
                             font: { size: 12, weight: '600' },
-                            color: '#374151'
+                            color: '#3D3D3D'
                         }
                     }
                 },

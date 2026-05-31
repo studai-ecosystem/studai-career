@@ -1,4 +1,4 @@
-ï»¿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Predictive Performance Analytics - S.C.O.U.T.')
 
@@ -17,13 +17,13 @@
             <div style="display:flex;align-items:center;gap:.875rem;flex-wrap:wrap;flex-shrink:0">
                 <div class="pa-info-box">
                     <div class="pa-info-icon">
-                        <svg style="width:1.1rem;height:1.1rem;color:#6366f1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg style="width:1.1rem;height:1.1rem;color:#2D6CDF" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                     <div>
-                        <p style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#9ca3af;margin:0">Last Refreshed</p>
-                        <p id="last-refreshed" style="font-size:.8rem;font-weight:800;color:#1a1a2e;margin:0">--</p>
+                        <p style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#A8A8A8;margin:0">Last Refreshed</p>
+                        <p id="last-refreshed" style="font-size:.8rem;font-weight:800;color:#0C0C0C;margin:0">--</p>
                     </div>
                 </div>
                 <button id="refresh-dashboard" class="btn-pa-refresh">
@@ -37,14 +37,14 @@
 
         {{-- Application Selector --}}
         <div class="glass-card" style="border-radius:1.125rem;overflow:hidden;margin-bottom:1.25rem">
-            <div style="padding:1.25rem 1.5rem;border-bottom:1.5px solid rgba(139,92,246,.1);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+            <div style="padding:1.25rem 1.5rem;border-bottom:1.5px solid rgba(20, 71, 186,.1);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
                 <div>
-                    <h2 style="font-size:1.05rem;font-weight:800;color:#1a1a2e;margin:0 0 .2rem">Analyze Candidate Application</h2>
-                    <p style="font-size:.82rem;color:#6b7280;margin:0">Select an application from your company to run AI-powered predictive analytics.</p>
+                    <h2 style="font-size:1.05rem;font-weight:800;color:#0C0C0C;margin:0 0 .2rem">Analyze Candidate Application</h2>
+                    <p style="font-size:.82rem;color:#737373;margin:0">Select an application from your company to run AI-powered predictive analytics.</p>
                 </div>
                 <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
                     <select id="application-id-input" class="pa-input" style="min-width:260px;max-width:360px">
-                        <option value="">Loading applicationsâ€¦</option>
+                        <option value="">Loading applications…</option>
                     </select>
                     <button id="load-application" class="btn-pa-load">
                         <svg style="width:1rem;height:1rem" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,10 +54,10 @@
                     </button>
                 </div>
             </div>
-            <div style="padding:1rem 1.5rem 1.25rem;background:linear-gradient(135deg,#fdf4ff,#f5f3ff,#eef2ff)">
+            <div style="padding:1rem 1.5rem 1.25rem;background:#EBF2FF">
                 <div class="metric-grid-4">
                     <div class="metric-card">
-                        <div class="metric-card__icon" style="background:rgba(99,102,241,.12);color:#6366f1">
+                        <div class="metric-card__icon" style="background:rgba(20, 71, 186,.12);color:#2D6CDF">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h4l3 8 4-16 3 8h4" />
                             </svg>
@@ -69,7 +69,7 @@
                         </div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-card__icon" style="background:rgba(168,85,247,.12);color:#a855f7">
+                        <div class="metric-card__icon" style="background:rgba(20, 71, 186,.12);color:#2D6CDF">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-card__icon" style="background:rgba(236,72,153,.12);color:#ec4899">
+                        <div class="metric-card__icon" style="background:rgba(20, 71, 186,.12);color:#2D6CDF">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-card__icon" style="background:rgba(245,158,11,.12);color:#f59e0b">
+                        <div class="metric-card__icon" style="background:rgba(146, 80, 10,.12);color:#E37400">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
                             </svg>
@@ -110,7 +110,7 @@
 
         {{-- Tab Navigation --}}
         <div class="glass-card" style="border-radius:1.125rem;overflow:hidden;margin-bottom:1.5rem">
-            <div style="display:flex;flex-wrap:wrap;border-bottom:1.5px solid rgba(139,92,246,.1)" role="tablist">
+            <div style="display:flex;flex-wrap:wrap;border-bottom:1.5px solid rgba(20, 71, 186,.1)" role="tablist">
                 <button data-tab="overview" class="tab-button active">
                     <span>Overview</span>
                 </button>
@@ -460,11 +460,11 @@
 
 {{-- Loading Overlay --}}
 <div id="predictive-loading" class="hidden fixed inset-0 z-40 flex items-center justify-center">
-    <div style="background:linear-gradient(135deg,#fdfcff,#f5f3ff);border:1.5px solid rgba(139,92,246,.2);border-radius:1.125rem;box-shadow:0 20px 60px rgba(124,58,237,.2);padding:1.75rem 2rem;display:flex;align-items:center;gap:1.25rem">
+    <div style="background:#EBF2FF;border:1.5px solid rgba(20, 71, 186,.2);border-radius:1.125rem;box-shadow: none;padding:1.75rem 2rem;display:flex;align-items:center;gap:1.25rem">
         <div class="pa-spinner"></div>
         <div>
-            <p id="predictive-loading-message" style="font-size:.875rem;font-weight:800;color:#1a1a2e;margin:0 0 .2rem">Processing predictive modelsâ€¦</p>
-            <p style="font-size:.75rem;color:#9ca3af;margin:0">AI models running with caching optimizations.</p>
+            <p id="predictive-loading-message" style="font-size:.875rem;font-weight:800;color:#0C0C0C;margin:0 0 .2rem">Processing predictive models…</p>
+            <p style="font-size:.75rem;color:#A8A8A8;margin:0">AI models running with caching optimizations.</p>
         </div>
     </div>
 </div>
@@ -477,7 +477,7 @@
 @keyframes paSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 
 .pa-page {
-    background:linear-gradient(145deg,#fdf4ff 0%,#f5f3ff 30%,#eef2ff 60%,#eff6ff 100%);
+    background:#EBF2FF;
     margin:-28px -32px -32px;
     padding:1.5rem 2rem 2.5rem;
     min-height:calc(100vh - 64px);
@@ -495,146 +495,146 @@
 /* Hero header */
 .pa-back-btn {
     display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:700;
-    color:#4c1d95;background:linear-gradient(135deg,#fdfcff,#f5f3ff);
-    border:1.5px solid rgba(139,92,246,.2);border-radius:.75rem;padding:.45rem 1rem;
+    color:#0C2E72;background:#EBF2FF;
+    border:1.5px solid rgba(20, 71, 186,.2);border-radius:.75rem;padding:.45rem 1rem;
     text-decoration:none;transition:all .2s;margin-bottom:1.25rem;
 }
-.pa-back-btn:hover { border-color:#7c3aed;transform:translateX(-2px); }
+.pa-back-btn:hover { border-color:#2D6CDF;transform:translateX(-2px); }
 
 .pa-hero { animation:paSlideIn .5s ease both; }
 .pa-title {
     font-size:clamp(1.5rem,4vw,2.25rem);font-weight:900;
-    background:linear-gradient(135deg,#7c3aed,#6366f1,#a855f7,#ec4899);
+    background:#2D6CDF;
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
     margin:0 0 .5rem;
 }
-.pa-subtitle { color:#6b7280;font-size:.95rem;max-width:55ch; }
+.pa-subtitle { color:#737373;font-size:.95rem;max-width:55ch; }
 
 /* Info box + refresh button */
 .pa-info-box {
     display:flex;align-items:center;gap:.875rem;
-    background:linear-gradient(135deg,#fdfcff,#f5f3ff);
-    border:1.5px solid rgba(139,92,246,.15);border-radius:1rem;
-    padding:.875rem 1.25rem;box-shadow:0 2px 12px rgba(99,102,241,.06);
+    background:#EBF2FF;
+    border:1.5px solid rgba(20, 71, 186,.15);border-radius:1rem;
+    padding:.875rem 1.25rem;box-shadow: none;
 }
 .pa-info-icon {
     width:2.5rem;height:2.5rem;border-radius:50%;
-    background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.1));
+    background:rgba(20, 71, 186,.15);
     display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
 .btn-pa-refresh {
     display:inline-flex;align-items:center;gap:.5rem;
     padding:.75rem 1.5rem;border-radius:.875rem;border:none;cursor:pointer;
-    background:linear-gradient(135deg,#7c3aed,#a855f7);
+    background:#2D6CDF;
     color:#fff;font-weight:800;font-size:.875rem;
-    box-shadow:0 4px 16px rgba(124,58,237,.3);transition:all .2s;
+    box-shadow: none;transition:all .2s;
 }
-.btn-pa-refresh:hover { transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.4); }
+.btn-pa-refresh:hover { transform:translateY(-2px);box-shadow: none; }
 
 /* Glass cards */
 .glass-card {
-    background:linear-gradient(135deg,#fdfcff 0%,#f5f3ff 50%,#fdf4ff 100%);
-    border:1.5px solid rgba(139,92,246,.12);border-radius:1.125rem;
-    box-shadow:0 4px 24px rgba(99,102,241,.07);
+    background:#EBF2FF;
+    border:1.5px solid rgba(20, 71, 186,.12);border-radius:1.125rem;
+    box-shadow: none;
 }
 
 /* Metric cards */
 .metric-card {
-    background:#fff;border:1.5px solid rgba(139,92,246,.1);border-radius:1rem;
+    background:#fff;border:1.5px solid rgba(20, 71, 186,.1);border-radius:1rem;
     padding:1rem;display:flex;align-items:center;gap:1rem;
-    box-shadow:0 2px 10px rgba(99,102,241,.05);transition:transform .2s,box-shadow .2s;
+    box-shadow: none;transition:transform .2s,box-shadow .2s;
 }
-.metric-card:hover { transform:translateY(-2px);box-shadow:0 6px 20px rgba(99,102,241,.1); }
+.metric-card:hover { transform:translateY(-2px);box-shadow: none; }
 .metric-card__icon {
     width:3rem;height:3rem;border-radius:.875rem;
     display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
 .metric-card__content { flex:1;min-width:0; }
-.metric-card__label { font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9ca3af;margin:0 0 .2rem; }
-.metric-card__value { font-size:1.5rem;font-weight:900;color:#1a1a2e;line-height:1;margin:0 0 .15rem; }
-.metric-card__trend { font-size:.75rem;font-weight:600;color:#7c3aed; }
+.metric-card__label { font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#A8A8A8;margin:0 0 .2rem; }
+.metric-card__value { font-size:1.5rem;font-weight:900;color:#0C0C0C;line-height:1;margin:0 0 .15rem; }
+.metric-card__trend { font-size:.75rem;font-weight:600;color:#2D6CDF; }
 
 /* App input */
 .pa-input {
-    padding:.65rem 1rem;border:1.5px solid rgba(139,92,246,.2);border-radius:.75rem;
-    font-size:.875rem;color:#1a1a2e;
-    background:linear-gradient(135deg,#fdfcff,#f5f3ff);
+    padding:.65rem 1rem;border:1.5px solid rgba(20, 71, 186,.2);border-radius:.75rem;
+    font-size:.875rem;color:#0C0C0C;
+    background:#EBF2FF;
     transition:border-color .2s,box-shadow .2s;width:100%;
 }
-.pa-input:focus { outline:none;border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.1); }
+.pa-input:focus { outline:none;border-color:#2D6CDF;box-shadow: none; }
 .btn-pa-load {
     display:inline-flex;align-items:center;gap:.5rem;
     padding:.65rem 1.25rem;border-radius:.75rem;
-    border:1.5px solid rgba(139,92,246,.2);cursor:pointer;
-    background:linear-gradient(135deg,#fdfcff,#f5f3ff);
-    color:#7c3aed;font-weight:700;font-size:.875rem;
+    border:1.5px solid rgba(20, 71, 186,.2);cursor:pointer;
+    background:#EBF2FF;
+    color:#2D6CDF;font-weight:700;font-size:.875rem;
     transition:all .2s;white-space:nowrap;
 }
-.btn-pa-load:hover { background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border-color:#7c3aed; }
+.btn-pa-load:hover { background:#2D6CDF;color:#fff;border-color:#2D6CDF; }
 
 /* Tabs */
 .tab-button {
     flex:1;padding:.875rem 1rem;font-size:.8rem;font-weight:700;
-    color:#9ca3af;background:#fff;border:none;cursor:pointer;
+    color:#A8A8A8;background:#fff;border:none;cursor:pointer;
     transition:all .2s;letter-spacing:.03em;text-transform:uppercase;
 }
-.tab-button:hover { color:#7c3aed;background:rgba(139,92,246,.04); }
+.tab-button:hover { color:#2D6CDF;background:rgba(20, 71, 186,.04); }
 .tab-button.active {
-    color:#7c3aed;background:linear-gradient(180deg,rgba(139,92,246,.06),rgba(99,102,241,.04));
-    box-shadow:inset 0 -3px 0 0 #7c3aed;
+    color:#2D6CDF;background:rgba(20, 71, 186,.06);
+    box-shadow: none;
 }
 .tab-panel { background:transparent; }
 
 /* Recommendation & action cards */
 .recommendation-item {
-    padding:.75rem;border-radius:.75rem;font-size:.83rem;color:#374151;
-    background:linear-gradient(135deg,#f5f3ff,#ede9fe);
-    border-left:3px solid #a855f7;
+    padding:.75rem;border-radius:.75rem;font-size:.83rem;color:#3D3D3D;
+    background:#EBF2FF;
+    border-left:3px solid #2D6CDF;
 }
 .action-card {
-    background:linear-gradient(135deg,#fdfcff,#f5f3ff);
-    border:1.5px solid rgba(139,92,246,.12);border-radius:1rem;
-    padding:1.25rem;font-size:.875rem;color:#374151;
+    background:#EBF2FF;
+    border:1.5px solid rgba(20, 71, 186,.12);border-radius:1rem;
+    padding:1.25rem;font-size:.875rem;color:#3D3D3D;
 }
 
 /* Metric tiles */
 .metric-tile {
-    background:linear-gradient(135deg,#fdfcff,#f5f3ff);
-    border:1.5px solid rgba(139,92,246,.1);border-radius:.875rem;
+    background:#EBF2FF;
+    border:1.5px solid rgba(20, 71, 186,.1);border-radius:.875rem;
     padding:.875rem 1rem;
 }
-.metric-tile__label { font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9ca3af;margin:0 0 .25rem; }
-.metric-tile__value { font-size:1.1rem;font-weight:800;color:#1a1a2e; }
+.metric-tile__label { font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#A8A8A8;margin:0 0 .25rem; }
+.metric-tile__value { font-size:1.1rem;font-weight:800;color:#0C0C0C; }
 
 /* Loading overlay */
 #predictive-loading {
     background:rgba(245,243,255,.85);backdrop-filter:blur(8px);
 }
 .pa-spinner {
-    width:3rem;height:3rem;border:3px solid rgba(124,58,237,.15);
-    border-top-color:#7c3aed;border-radius:50%;animation:paSpin .8s linear infinite;
+    width:3rem;height:3rem;border:3px solid rgba(20, 71, 186,.15);
+    border-top-color:#2D6CDF;border-radius:50%;animation:paSpin .8s linear infinite;
 }
 
 /* Confidence badge */
 .conf-badge {
     display:inline-flex;align-items:center;padding:.25rem .875rem;
     border-radius:2rem;font-size:.72rem;font-weight:800;letter-spacing:.04em;
-    background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(139,92,246,.1));
-    border:1px solid rgba(99,102,241,.2);color:#4c1d95;
+    background:rgba(20, 71, 186,.12);
+    border:1px solid rgba(20, 71, 186,.2);color:#0C2E72;
 }
 
 /* Section headers within cards */
-.pa-section-h { font-size:1rem;font-weight:800;color:#1a1a2e;margin:0 0 1rem; }
+.pa-section-h { font-size:1rem;font-weight:800;color:#0C0C0C;margin:0 0 1rem; }
 
 /* Generate report button */
 .btn-pa-report {
     display:inline-flex;align-items:center;gap:.5rem;
     padding:.65rem 1.25rem;border-radius:.875rem;border:none;cursor:pointer;
-    background:linear-gradient(135deg,#10b981,#059669);
+    background:#1E8E3E;
     color:#fff;font-weight:800;font-size:.875rem;
-    box-shadow:0 4px 14px rgba(16,185,129,.25);transition:all .2s;
+    box-shadow: none;transition:all .2s;
 }
-.btn-pa-report:hover { transform:translateY(-2px);box-shadow:0 8px 20px rgba(16,185,129,.35); }
+.btn-pa-report:hover { transform:translateY(-2px);box-shadow: none; }
 </style>
 @endpush
 
@@ -947,7 +947,7 @@
                 labels: [label, 'Remaining'],
                 datasets: [{
                     data: [value, Math.max(0, 100 - value)],
-                    backgroundColor: ['#3b82f6', '#e0e7ff'],
+                    backgroundColor: ['#2D6CDF', '#EBF2FF'],
                     borderWidth: 0
                 }]
             }
@@ -990,8 +990,8 @@
                         y: data.risk_indicators ? data.risk_indicators.length : 0,
                         r: Math.max(10, data.flight_risk_score / 2)
                     }],
-                    backgroundColor: 'rgba(239,68,68,0.2)',
-                    borderColor: 'rgba(239,68,68,0.6)'
+                    backgroundColor: 'rgba(185, 28, 28,0.2)',
+                    borderColor: 'rgba(185, 28, 28,0.6)'
                 }]
             },
             options: {
@@ -1007,7 +1007,7 @@
 
     function renderTenureChart(data) {
         const el = document.getElementById('overview-tenure-chart');
-        if (!el) return; // removed from overview â€” skip
+        if (!el) return; // removed from overview — skip
         const ctx = el.getContext('2d');
         if (predictiveState.charts['overview-tenure-chart']) {
             predictiveState.charts['overview-tenure-chart'].destroy();
@@ -1019,8 +1019,8 @@
                 datasets: [{
                     label: 'Probability Density',
                     data: data.probability_curve || [0, 10, 40, 20, 5],
-                    borderColor: '#8b5cf6',
-                    backgroundColor: 'rgba(139,92,246,0.1)',
+                    borderColor: '#2D6CDF',
+                    backgroundColor: 'rgba(20, 71, 186,0.1)',
                     tension: 0.4,
                     fill: true
                 }]
@@ -1050,8 +1050,8 @@
                 datasets: [{
                     label: 'Expected Productivity %',
                     data: milestones.map(m => m.target || 0),
-                    borderColor: '#ec4899',
-                    backgroundColor: 'rgba(236,72,153,0.1)',
+                    borderColor: '#2D6CDF',
+                    backgroundColor: 'rgba(20, 71, 186,0.1)',
                     tension: 0.4,
                     fill: true
                 }]
@@ -1250,14 +1250,14 @@
         const existing = document.getElementById('pa-toast');
         if (existing) existing.remove();
         const colors = {
-            success: 'linear-gradient(135deg,#10b981,#059669)',
-            error:   'linear-gradient(135deg,#ef4444,#dc2626)',
-            warning: 'linear-gradient(135deg,#f59e0b,#d97706)',
-            info:    'linear-gradient(135deg,#6366f1,#7c3aed)',
+            success: '#1E8E3E',
+            error:   '#2D6CDF',
+            warning: '#E37400',
+            info:    '#2D6CDF',
         };
         const toast = document.createElement('div');
         toast.id = 'pa-toast';
-        toast.style.cssText = `position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;padding:.875rem 1.5rem;border-radius:.875rem;color:#fff;font-size:.875rem;font-weight:700;background:${colors[type]||colors.info};box-shadow:0 8px 24px rgba(0,0,0,.15);max-width:360px;animation:paSlideIn .3s ease both`;
+        toast.style.cssText = `position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;padding:.875rem 1.5rem;border-radius:.875rem;color:#fff;font-size:.875rem;font-weight:700;background:${colors[type]||colors.info};box-shadow: none;max-width:360px;animation:paSlideIn .3s ease both`;
         toast.textContent = message;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 4500);
@@ -1272,7 +1272,7 @@
             });
             const data = await resp.json();
             if (data.success && data.applications && data.applications.length > 0) {
-                select.innerHTML = '<option value="">â€” Select a candidate application â€”</option>';
+                select.innerHTML = '<option value="">— Select a candidate application —</option>';
                 data.applications.forEach(app => {
                     const opt = document.createElement('option');
                     opt.value = app.id;

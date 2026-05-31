@@ -13,23 +13,23 @@ html, body { overflow: hidden !important; height: 100% !important; }
 .chat-md p            { margin: 0.35em 0; line-height: 1.65; }
 .chat-md p:first-child{ margin-top: 0; }
 .chat-md p:last-child { margin-bottom: 0; }
-.chat-md h1,.chat-md h2,.chat-md h3 { font-weight: 700; color: #1e1b4b; margin: 0.6em 0 0.2em; line-height: 1.3; }
+.chat-md h1,.chat-md h2,.chat-md h3 { font-weight: 700; color: #0C2E72; margin: 0.6em 0 0.2em; line-height: 1.3; }
 .chat-md h1 { font-size: 1.1em; } .chat-md h2 { font-size: 1.05em; } .chat-md h3 { font-size: 1em; }
 .chat-md ul,.chat-md ol { padding-left: 1.3em; margin: 0.35em 0; }
 .chat-md li { margin: 0.2em 0; }
-.chat-md strong { font-weight: 700; color: #4c1d95; }
-.chat-md em     { font-style: italic; color: #6d28d9; }
-.chat-md code   { background: #ede9fe; color: #5b21b6; padding: 0.1em 0.35em; border-radius: 5px; font-size: 0.85em; font-family: monospace; }
-.chat-md pre    { background: #1e1b4b; color: #e9d5ff; padding: 0.85em 1em; border-radius: 10px; overflow-x: auto; margin: 0.5em 0; font-size: 0.82em; }
+.chat-md strong { font-weight: 700; color: #0C2E72; }
+.chat-md em     { font-style: italic; color: #1B57C4; }
+.chat-md code   { background: #EBF2FF; color: #0C2E72; padding: 0.1em 0.35em; border-radius: 5px; font-size: 0.85em; font-family: monospace; }
+.chat-md pre    { background: #0C2E72; color: #BFCFEE; padding: 0.85em 1em; border-radius: 10px; overflow-x: auto; margin: 0.5em 0; font-size: 0.82em; }
 .chat-md pre code { background: none; color: inherit; padding: 0; }
-.chat-md blockquote { border-left: 3px solid #7c3aed; padding-left: 0.75em; color: #6b7280; margin: 0.4em 0; font-style: italic; }
-.chat-md a { color: #7c3aed; text-decoration: underline; }
+.chat-md blockquote { border-left: 3px solid #2D6CDF; padding-left: 0.75em; color: #737373; margin: 0.4em 0; font-style: italic; }
+.chat-md a { color: #2D6CDF; text-decoration: underline; }
 .chat-md table { width:100%; border-collapse:collapse; margin:0.5em 0; font-size:0.85em; }
-.chat-md th,.chat-md td { border:1px solid #e9d5ff; padding:0.3em 0.6em; }
-.chat-md th { background:#ede9fe; font-weight:700; color:#4c1d95; }
+.chat-md th,.chat-md td { border:1px solid #BFCFEE; padding:0.3em 0.6em; }
+.chat-md th { background:#EBF2FF; font-weight:700; color:#0C2E72; }
 
 /* Follow-up chips */
-.followup-chip:hover { background: #7c3aed !important; color: #fff !important; border-color: #7c3aed !important; }
+.followup-chip:hover { background: #2D6CDF !important; color: #fff !important; border-color: #2D6CDF !important; }
 
 /* Copy button */
 .copy-btn { opacity:0; transition: opacity 0.2s; }
@@ -52,7 +52,7 @@ html, body { overflow: hidden !important; height: 100% !important; }
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 20px 60px rgba(109,40,217,0.18), 0 4px 20px rgba(0,0,0,0.10);
+    box-shadow: none;
 }
 
 /* Inline end-session panel */
@@ -62,12 +62,12 @@ html, body { overflow: hidden !important; height: 100% !important; }
 @endpush
 
 @section('content')
-<div class="flex items-start justify-center" style="height:calc(100vh - 80px);background:linear-gradient(135deg,#ede9fe 0%,#ddd6fe 50%,#c4b5fd 100%);overflow:hidden;">
+<div class="flex items-start justify-center" style="height:calc(100vh - 80px);background:#EBF2FF;overflow:hidden;">
 
 <div id="chatbot-card">
 
     {{-- ── Card Header (purple gradient) ── --}}
-    <div class="flex-shrink-0 flex items-center gap-3 px-5 py-4" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">
+    <div class="flex-shrink-0 flex items-center gap-3 px-5 py-4" style="background:#2D6CDF;">
         <a href="{{ route('negotiation.dashboard') }}"
             class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full transition-all"
             style="background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.25);"
@@ -83,23 +83,23 @@ html, body { overflow: hidden !important; height: 100% !important; }
             <p class="text-xs" style="color:rgba(255,255,255,0.75);">Powered by StudAI</p>
         </div>
         <span class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full" style="background:rgba(255,255,255,0.18);color:#fff;">
-            <span class="w-2 h-2 rounded-full" style="background:#4ade80;box-shadow:0 0 6px #4ade80;"></span>
+            <span class="w-2 h-2 rounded-full" style="background:#1E8E3E;box-shadow: none;"></span>
             Active
         </span>
     </div>
 
     {{-- ── Messages ── --}}
-    <div id="messages" class="flex-1 overflow-y-auto px-5 py-5" style="background:#faf9ff;display:flex;flex-direction:column;gap:1rem;">
+    <div id="messages" class="flex-1 overflow-y-auto px-5 py-5" style="background:#EBF2FF;display:flex;flex-direction:column;gap:1rem;">
 
         {{-- Welcome message --}}
         <div class="flex gap-3 items-start">
-            <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;">₹</div>
+            <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0" style="background:#2D6CDF;color:#fff;">₹</div>
             <div style="max-width:34rem;">
-                <div class="rounded-2xl rounded-tl-sm px-4 py-3 text-sm shadow-sm" style="background:#fff;color:#1f2937;">
-                    <p class="font-semibold mb-1" style="color:#1e1b4b;">Hi! I'm your AI Salary Negotiation Coach 👋</p>
-                    <p style="color:#4b5563;">I'll help you negotiate a better salary, evaluate offers, and give you exact scripts to use with employers. What would you like to work on?</p>
+                <div class="rounded-2xl rounded-tl-sm px-4 py-3 text-sm shadow-sm" style="background:#fff;color:#0C0C0C;">
+                    <p class="font-semibold mb-1" style="color:#0C2E72;">Hi! I'm your AI Salary Negotiation Coach 👋</p>
+                    <p style="color:#3D3D3D;">I'll help you negotiate a better salary, evaluate offers, and give you exact scripts to use with employers. What would you like to work on?</p>
                 </div>
-                <p class="text-xs mt-1" style="color:#9ca3af;">{{ now()->format('g:i A') }}</p>
+                <p class="text-xs mt-1" style="color:#A8A8A8;">{{ now()->format('g:i A') }}</p>
             </div>
         </div>
 
@@ -114,7 +114,7 @@ html, body { overflow: hidden !important; height: 100% !important; }
                 'How do I counter a lowball offer?'
             ] as $prompt)
             <button class="followup-chip text-xs px-3 py-2 rounded-full border transition-all cursor-pointer"
-                style="background:#faf5ff;border-color:#d8b4fe;color:#7e22ce;"
+                style="background:#EBF2FF;border-color:#BFCFEE;color:#1B57C4;"
                 onclick="sendStarter(this)" data-prompt="{{ $prompt }}">{{ $prompt }}</button>
             @endforeach
         </div>
@@ -122,28 +122,28 @@ html, body { overflow: hidden !important; height: 100% !important; }
     </div>
 
     {{-- ── Input Row ── --}}
-    <div class="flex-shrink-0 px-4 py-3" style="background:#fff;border-top:1px solid #f0edfe;">
+    <div class="flex-shrink-0 px-4 py-3" style="background:#fff;border-top:1px solid #EBF2FF;">
         <div class="flex items-center gap-2">
             {{-- Text input pill --}}
             <div id="input-box" class="flex-1 flex items-center gap-2 px-4 py-2.5 rounded-full transition-all"
-                style="background:#f5f3ff;border:1.5px solid #e9d5ff;"
-                onfocusin="this.style.borderColor='#7c3aed';this.style.boxShadow='0 0 0 3px rgba(124,58,237,0.10)'"
-                onfocusout="this.style.borderColor='#e9d5ff';this.style.boxShadow='none'">
+                style="background:#EBF2FF;border:1.5px solid #BFCFEE;"
+                onfocusin="this.style.borderColor='#2D6CDF';this.style.boxShadow='0 0 0 3px rgba(20, 71, 186,0.10)'"
+                onfocusout="this.style.borderColor='#BFCFEE';this.style.boxShadow='none'">
                 <textarea id="user-input" rows="1"
                     placeholder="Ask anything… markdown supported (*bold*, \`code\`, - lists)"
                     class="flex-1 resize-none bg-transparent text-sm outline-none leading-relaxed"
-                    style="max-height:100px;color:#1f2937;padding:0;border:none;"
+                    style="max-height:100px;color:#0C0C0C;padding:0;border:none;"
                     onkeydown="handleKey(event)"
                     oninput="autoResize(this)"></textarea>
                 {{-- Mic icon (decorative) --}}
-                <svg class="w-4 h-4 flex-shrink-0" style="color:#a78bfa;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 flex-shrink-0" style="color:#2D6CDF;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4M12 3a4 4 0 014 4v4a4 4 0 01-8 0V7a4 4 0 014-4z"/>
                 </svg>
             </div>
             {{-- Send button --}}
             <button id="send-btn" onclick="sendMessage()"
                 class="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:scale-105 flex-shrink-0"
-                style="background:linear-gradient(135deg,#7c3aed,#4f46e5);box-shadow:0 3px 12px rgba(124,58,237,0.35);">
+                style="background:#2D6CDF;box-shadow: none;">
                 Send
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
@@ -153,8 +153,8 @@ html, body { overflow: hidden !important; height: 100% !important; }
 
         {{-- Footer: message count + End Session --}}
         <div class="flex items-center justify-between mt-2 px-1">
-            <p id="msg-count" class="text-xs" style="color:#9ca3af;">0 messages</p>
-            <button onclick="toggleEndPanel()" class="flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full border transition-all" style="border-color:#fca5a5;color:#dc2626;background:#fff5f5;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fff5f5'">
+            <p id="msg-count" class="text-xs" style="color:#A8A8A8;">0 messages</p>
+            <button onclick="toggleEndPanel()" class="flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full border transition-all" style="border-color:#fca5a5;color:#2D6CDF;background:#FEF2F2;" onmouseover="this.style.background='#FEF2F2'" onmouseout="this.style.background='#FEF2F2'">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                 </svg>
@@ -163,17 +163,17 @@ html, body { overflow: hidden !important; height: 100% !important; }
         </div>
 
         {{-- Inline end-session confirmation --}}
-        <div id="end-session-panel" class="mt-2 rounded-2xl border px-4 py-3" style="border-color:#fecaca;background:#fff5f5;">
-            <p class="text-sm font-semibold mb-2" style="color:#dc2626;">End this session?</p>
+        <div id="end-session-panel" class="mt-2 rounded-2xl border px-4 py-3" style="border-color:#FCA5A5;background:#FEF2F2;">
+            <p class="text-sm font-semibold mb-2" style="color:#2D6CDF;">End this session?</p>
             <div class="flex gap-2">
                 <a href="{{ route('negotiation.dashboard') }}"
                     class="flex-1 py-2 rounded-xl text-sm font-semibold text-white text-center transition-all"
-                    style="background:#dc2626;"
-                    onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'"
+                    style="background:#2D6CDF;"
+                    onmouseover="this.style.background='#2D6CDF'" onmouseout="this.style.background='#2D6CDF'"
                     onclick="localStorage.removeItem('studai_negochat_v1')">
                     Yes, end it
                 </a>
-                <button onclick="toggleEndPanel()" class="flex-1 py-2 rounded-xl text-sm font-semibold transition-all" style="background:#f3f4f6;color:#374151;" onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">Cancel</button>
+                <button onclick="toggleEndPanel()" class="flex-1 py-2 rounded-xl text-sm font-semibold transition-all" style="background:#F0F0EE;color:#3D3D3D;" onmouseover="this.style.background='#E2E2E0'" onmouseout="this.style.background='#F0F0EE'">Cancel</button>
             </div>
         </div>
     </div>
@@ -268,7 +268,7 @@ function escapeHtml(t) {
     return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function botAvatar() {
-    return `<div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 text-sm" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">₹</div>`;
+    return `<div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 text-sm" style="background:#2D6CDF;">₹</div>`;
 }
 
 /* ── Starters / Follow-ups ─────────────────────── */
@@ -286,7 +286,7 @@ function showFollowUps(questions) {
     // Header label
     const label = document.createElement('div');
     label.className = 'followup-row text-xs font-semibold';
-    label.style.cssText = 'padding-left:3rem;color:#7c3aed;margin-bottom:4px;';
+    label.style.cssText = 'padding-left:3rem;color:#2D6CDF;margin-bottom:4px;';
     label.textContent = '💡 Suggested follow-ups:';
     msgs.appendChild(label);
 
@@ -296,10 +296,10 @@ function showFollowUps(questions) {
     questions.forEach(q => {
         const btn = document.createElement('button');
         btn.className = 'followup-chip';
-        btn.style.cssText = 'background:#fff;border:1.5px solid #ddd6fe;color:#5b21b6;font-size:0.78rem;padding:0.35rem 0.9rem;border-radius:999px;cursor:pointer;transition:all .18s;font-weight:500;display:inline-flex;align-items:center;gap:0.35rem;box-shadow:0 1px 3px rgba(124,58,237,0.08);';
-        btn.innerHTML = `<span style="font-size:.85rem;color:#a78bfa;line-height:1;">↩</span>${q}`;
-        btn.onmouseover = () => { btn.style.background='#7c3aed'; btn.style.borderColor='#7c3aed'; btn.style.color='#fff'; btn.querySelector('span').style.color='#fff'; };
-        btn.onmouseout  = () => { btn.style.background='#fff'; btn.style.borderColor='#ddd6fe'; btn.style.color='#5b21b6'; btn.querySelector('span').style.color='#a78bfa'; };
+        btn.style.cssText = 'background:#fff;border:1.5px solid #BFCFEE;color:#0C2E72;font-size:0.78rem;padding:0.35rem 0.9rem;border-radius:999px;cursor:pointer;transition:all .18s;font-weight:500;display:inline-flex;align-items:center;gap:0.35rem;box-shadow: none;';
+        btn.innerHTML = `<span style="font-size:.85rem;color:#2D6CDF;line-height:1;">↩</span>${q}`;
+        btn.onmouseover = () => { btn.style.background='#2D6CDF'; btn.style.borderColor='#2D6CDF'; btn.style.color='#fff'; btn.querySelector('span').style.color='#fff'; };
+        btn.onmouseout  = () => { btn.style.background='#fff'; btn.style.borderColor='#BFCFEE'; btn.style.color='#0C2E72'; btn.querySelector('span').style.color='#2D6CDF'; };
         btn.onclick = () => {
             document.querySelectorAll('.followup-row').forEach(r => r.remove());
             document.getElementById('user-input').value = q;
@@ -397,11 +397,11 @@ function _renderUserMessage(text) {
     div.className = 'flex gap-3 items-start justify-end';
     div.innerHTML = `
         <div style="max-width:38rem;">
-            <div class="rounded-2xl rounded-tr-sm px-4 py-3 text-sm text-white shadow-sm" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">
+            <div class="rounded-2xl rounded-tr-sm px-4 py-3 text-sm text-white shadow-sm" style="background:#2D6CDF;">
                 ${escapeHtml(text)}
             </div>
         </div>
-        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 text-xs" style="background:#6b7280;">You</div>`;
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 text-xs" style="background:#737373;">You</div>`;
     msgs.appendChild(div);
     scrollBottom();
 }
@@ -421,8 +421,8 @@ function _renderBotMessage(text, followUps, showCopy) {
     const safeText = text.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     const copyBtnHtml = showCopy ? `
         <button class="copy-btn flex items-center gap-1 text-xs mt-2 transition-colors"
-            style="color:#9ca3af;"
-            onmouseover="this.style.color='#7c3aed'" onmouseout="this.style.color='#9ca3af'"
+            style="color:#A8A8A8;"
+            onmouseover="this.style.color='#2D6CDF'" onmouseout="this.style.color='#A8A8A8'"
             onclick="copyText(this)" data-raw="${safeText}">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -434,7 +434,7 @@ function _renderBotMessage(text, followUps, showCopy) {
     div.innerHTML = `
         ${botAvatar()}
         <div style="max-width:42rem;min-width:0;">
-            <div class="rounded-2xl rounded-tl-sm px-4 py-3 text-sm shadow-sm chat-md" style="background:#fff;color:#1f2937;">
+            <div class="rounded-2xl rounded-tl-sm px-4 py-3 text-sm shadow-sm chat-md" style="background:#fff;color:#0C0C0C;">
                 ${marked.parse(text)}
             </div>
             ${copyBtnHtml}
@@ -452,7 +452,7 @@ function copyText(btn) {
     navigator.clipboard.writeText(raw).then(() => {
         const orig = btn.innerHTML;
         btn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Copied!`;
-        btn.style.color = '#16a34a';
+        btn.style.color = '#1E8E3E';
         setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
     });
 }
@@ -466,9 +466,9 @@ function showTyping() {
     div.innerHTML = `
         ${botAvatar()}
         <div class="rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm flex items-center gap-1.5" style="background:#fff;">
-            <span class="w-2 h-2 rounded-full dot-bounce" style="background:#7c3aed;animation-delay:0ms;"></span>
-            <span class="w-2 h-2 rounded-full dot-bounce" style="background:#7c3aed;animation-delay:150ms;"></span>
-            <span class="w-2 h-2 rounded-full dot-bounce" style="background:#7c3aed;animation-delay:300ms;"></span>
+            <span class="w-2 h-2 rounded-full dot-bounce" style="background:#2D6CDF;animation-delay:0ms;"></span>
+            <span class="w-2 h-2 rounded-full dot-bounce" style="background:#2D6CDF;animation-delay:150ms;"></span>
+            <span class="w-2 h-2 rounded-full dot-bounce" style="background:#2D6CDF;animation-delay:300ms;"></span>
         </div>`;
     msgs.appendChild(div);
     scrollBottom();

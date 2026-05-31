@@ -145,7 +145,7 @@
                     <p class="text-gray-600 mb-4">You can manage your cookie preferences at any time using our consent banner. Click the button below to update your preferences:</p>
                     <button onclick="localStorage.removeItem('cookie_consent'); location.reload();"
                             class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:-translate-y-0.5"
-                            style="background:linear-gradient(135deg,#6366f1,#7c3aed)">
+                            style="background:#2D6CDF">
                         ⚙️ Manage Cookie Preferences
                     </button>
                 </div>

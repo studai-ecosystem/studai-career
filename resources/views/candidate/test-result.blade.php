@@ -19,9 +19,9 @@
                 <div class="flex justify-center mb-8">
                     <div class="relative w-40 h-40">
                         <svg class="w-40 h-40 -rotate-90" viewBox="0 0 120 120">
-                            <circle cx="60" cy="60" r="50" fill="none" stroke="#f3e8ff" stroke-width="12"/>
+                            <circle cx="60" cy="60" r="50" fill="none" stroke="#EBF2FF" stroke-width="12"/>
                             <circle cx="60" cy="60" r="50" fill="none"
-                                stroke="{{ $attempt->score >= 70 ? '#9333ea' : ($attempt->score >= 50 ? '#f59e0b' : '#ef4444') }}"
+                                stroke="{{ $attempt->score >= 70 ? '#1B57C4' : ($attempt->score >= 50 ? '#E37400' : '#2D6CDF') }}"
                                 stroke-width="12"
                                 stroke-dasharray="{{ 2 * M_PI * 50 }}"
                                 stroke-dashoffset="{{ 2 * M_PI * 50 * (1 - $attempt->score / 100) }}"

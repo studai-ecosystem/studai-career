@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Strategy Analyzer - ' . strtoupper($strategy->role))
 
@@ -22,7 +22,7 @@
         'excellent' => 'Above Market', 'good' => 'At Market', 'fair' => 'Fair', default => 'Below Market',
     };
     $strengthColor = match($strength) {
-        'excellent' => '#16a34a', 'good' => '#2563eb', 'fair' => '#d97706', default => '#dc2626',
+        'excellent' => '#1E8E3E', 'good' => '#1B57C4', 'fair' => '#E37400', default => '#2D6CDF',
     };
 
     $gainCons = $offered > 0 ? round((($conservative - $offered) / $offered) * 100, 1) : 0;
@@ -46,19 +46,19 @@
     $nextSteps = [];
     if ($percentile < 50) {
         $nextSteps[] = 'Research ' . $strategy->company_name . ' on Glassdoor/LinkedIn to validate the salary band.';
-        $nextSteps[] = 'Prepare a 2-minute value pitch: 2�3 achievements with numbers (revenue saved, users shipped, etc.).';
-        $nextSteps[] = 'Counter within 24�48 hours � target ?' . number_format($competitive) . ' LPA (competitive ask at 75th percentile).';
+        $nextSteps[] = 'Prepare a 2-minute value pitch: 2?3 achievements with numbers (revenue saved, users shipped, etc.).';
+        $nextSteps[] = 'Counter within 24?48 hours ? target ?' . number_format($competitive) . ' LPA (competitive ask at 75th percentile).';
     } else {
         $nextSteps[] = 'Ask for a written breakdown: base + bonus structure + equity + benefits before countering.';
-        $nextSteps[] = 'Counter at ?' . number_format($competitive) . ' LPA citing market alignment � the data backs you up.';
+        $nextSteps[] = 'Counter at ?' . number_format($competitive) . ' LPA citing market alignment ? the data backs you up.';
         $nextSteps[] = 'If base is capped, negotiate: signing bonus, 6-month review clause, or extra PTO days.';
     }
-    $nextSteps[] = 'Use "View Scripts" for a word-for-word email � never negotiate verbally first if you can avoid it.';
-    $nextSteps[] = 'If rejected: ask "What would it take for this role to reach &#8377;' . number_format($competitive) . ' LPA?" � keep it open.';
+    $nextSteps[] = 'Use "View Scripts" for a word-for-word email ? never negotiate verbally first if you can avoid it.';
+    $nextSteps[] = 'If rejected: ask "What would it take for this role to reach &#8377;' . number_format($competitive) . ' LPA?" ? keep it open.';
 @endphp
 
 @section('content')
-<div class="min-h-screen py-6" style="background:#f8fafc;">
+<div class="min-h-screen py-6" style="background:#F7F7F5;">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
 {{-- Back --}}
@@ -71,7 +71,7 @@
 
 {{-- Header --}}
 <div class="rounded-2xl shadow-lg mb-6 overflow-hidden">
-    <div class="px-8 py-6 text-white" style="background:linear-gradient(135deg,#1e1b4b 0%,#3730a3 55%,#4f46e5 100%);">
+    <div class="px-8 py-6 text-white" style="background:#0C2E72;">
         <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
             <div>
                 <div class="flex items-center gap-3 mb-2">
@@ -79,7 +79,7 @@
                     <span class="px-2.5 py-0.5 rounded-full text-xs font-bold" style="background:rgba(255,255,255,0.15);">{{ $strategy->confidence_score }}% Confidence</span>
                 </div>
                 <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-1">{{ strtoupper($strategy->role) }}</h1>
-                <p class="text-indigo-200 text-base">{{ $strategy->company_name }} &nbsp;�&nbsp; {{ $strategy->location }}</p>
+                <p class="text-indigo-200 text-base">{{ $strategy->company_name }} &nbsp;?&nbsp; {{ $strategy->location }}</p>
             </div>
             <div class="flex flex-wrap items-center gap-6">
                 <div class="text-center">
@@ -102,7 +102,7 @@
         </div>
     </div>
     @if($aiRationale)
-    <div class="px-8 py-3 text-sm text-indigo-900" style="background:#eef2ff;">
+    <div class="px-8 py-3 text-sm text-indigo-900" style="background:#EBF2FF;">
         <span class="font-semibold">?? Market Intel:</span> {{ $aiRationale }}
     </div>
     @endif
@@ -110,7 +110,7 @@
 
 {{-- 3-Tier Strategy Cards --}}
 <div class="mb-6">
-    <h2 class="text-xl font-bold text-gray-900 mb-4">Negotiation Tiers � Choose Your Strategy</h2>
+    <h2 class="text-xl font-bold text-gray-900 mb-4">Negotiation Tiers ? Choose Your Strategy</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         {{-- Conservative --}}
         <div class="bg-white rounded-2xl border-2 border-green-200 shadow-sm p-6">
@@ -124,7 +124,7 @@
             <p class="text-xs text-gray-500 leading-relaxed">Low-risk ask. Use when the company has rigid pay bands or when you prioritize certainty over maximizing gain.</p>
         </div>
         {{-- Competitive --}}
-        <div class="rounded-2xl border-2 border-indigo-400 shadow-xl p-6 relative" style="background:linear-gradient(150deg,#eef2ff 0%,#f0fdf4 100%);">
+        <div class="rounded-2xl border-2 border-indigo-400 shadow-xl p-6 relative" style="background:#EBF2FF;">
             <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap">
                 <span class="px-4 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white shadow-md">? Recommended</span>
             </div>
@@ -163,16 +163,16 @@
             <span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full">Estimated</span>
             @endif
         </div>
-        <p class="text-xs text-gray-400 mb-5">{{ $strategy->role }} � {{ $strategy->location }} � {{ $strategy->years_experience }}yr exp</p>
+        <p class="text-xs text-gray-400 mb-5">{{ $strategy->role }} ? {{ $strategy->location }} ? {{ $strategy->years_experience }}yr exp</p>
         <div style="height:140px;"><canvas id="marketChart"></canvas></div>
         <div class="grid grid-cols-5 gap-1 text-center mt-4">
             @php
             $cols = [
-                ['25th', number_format($strategy->market_percentile_25 ?? 0), '#9ca3af'],
-                ['Median', number_format($strategy->market_median ?? 0), '#374151'],
-                ['75th', number_format($strategy->market_percentile_75 ?? 0), '#10b981'],
-                ['90th', number_format($strategy->market_percentile_90 ?? 0), '#f59e0b'],
-                ['Offer', number_format($offered), '#4f46e5'],
+                ['25th', number_format($strategy->market_percentile_25 ?? 0), '#A8A8A8'],
+                ['Median', number_format($strategy->market_median ?? 0), '#3D3D3D'],
+                ['75th', number_format($strategy->market_percentile_75 ?? 0), '#1E8E3E'],
+                ['90th', number_format($strategy->market_percentile_90 ?? 0), '#E37400'],
+                ['Offer', number_format($offered), '#1B57C4'],
             ];
             @endphp
             @foreach($cols as $col)
@@ -194,12 +194,12 @@
         <p class="text-xs text-gray-400 mb-4">Competitive ask: &#8377;{{ number_format($competitive) }} LPA</p>
         <div class="space-y-0">
             @foreach([
-                ['Base Salary', 'Fixed monthly', '&#8377;' . number_format($competitive) . ' LPA', '#1e1b4b'],
-                ['Annual Bonus', '~' . $bonusPct . '% of base (negotiate up)', '&#8377;' . number_format($baseBonus, 1) . ' LPA', '#16a34a'],
-                ['Equity / RSUs', '4-year vest � push for this', 'Negotiate', '#4f46e5'],
-                ['Signing Bonus', 'One-time � ask if base is capped', 'Negotiate', '#7c3aed'],
-                ['Extra PTO', '+5 days is standard ask', '?0.3�0.5L equiv.', '#d97706'],
-                ['Learning Budget', 'Courses, certs, conferences', '?0.5�1L equiv.', '#0891b2'],
+                ['Base Salary', 'Fixed monthly', '&#8377;' . number_format($competitive) . ' LPA', '#0C2E72'],
+                ['Annual Bonus', '~' . $bonusPct . '% of base (negotiate up)', '&#8377;' . number_format($baseBonus, 1) . ' LPA', '#1E8E3E'],
+                ['Equity / RSUs', '4-year vest ? push for this', 'Negotiate', '#1B57C4'],
+                ['Signing Bonus', 'One-time ? ask if base is capped', 'Negotiate', '#2D6CDF'],
+                ['Extra PTO', '+5 days is standard ask', '?0.3?0.5L equiv.', '#E37400'],
+                ['Learning Budget', 'Courses, certs, conferences', '?0.5?1L equiv.', '#2D6CDF'],
             ] as [$name, $sub, $val, $color])
             <div class="flex justify-between items-center py-3 border-b border-gray-50 last:border-0">
                 <div>
@@ -242,7 +242,7 @@
             @foreach(array_slice($strategy->risk_factors, 0, 2) as $risk)
             <div class="flex items-start gap-2 mb-1.5">
                 <svg class="w-3.5 h-3.5 text-orange-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                <p class="text-xs text-gray-600">{{ is_array($risk) ? (($risk['factor'] ?? '') . (isset($risk['impact']) ? ' � ' . $risk['impact'] : '')) : $risk }}</p>
+                <p class="text-xs text-gray-600">{{ is_array($risk) ? (($risk['factor'] ?? '') . (isset($risk['impact']) ? ' ? ' . $risk['impact'] : '')) : $risk }}</p>
             </div>
             @endforeach
         </div>
@@ -254,9 +254,9 @@
         <h2 class="text-lg font-bold text-gray-900 mb-4">Company Tactics</h2>
         <div class="grid grid-cols-3 gap-3 mb-5">
             @foreach([
-                ['Flexibility', ucfirst($strategy->company_negotiation_flexibility ?? 'medium'), $strategy->company_negotiation_flexibility === 'high' ? '#16a34a' : ($strategy->company_negotiation_flexibility === 'low' ? '#dc2626' : '#d97706')],
-                ['Tone', ucfirst($strategy->recommended_tone ?? 'Confident'), '#4f46e5'],
-                ['Timing', ucwords(str_replace('_',' ',$strategy->recommended_timing ?? '48h')), '#374151'],
+                ['Flexibility', ucfirst($strategy->company_negotiation_flexibility ?? 'medium'), $strategy->company_negotiation_flexibility === 'high' ? '#1E8E3E' : ($strategy->company_negotiation_flexibility === 'low' ? '#2D6CDF' : '#E37400')],
+                ['Tone', ucfirst($strategy->recommended_tone ?? 'Confident'), '#1B57C4'],
+                ['Timing', ucwords(str_replace('_',' ',$strategy->recommended_timing ?? '48h')), '#3D3D3D'],
             ] as [$label, $val, $col])
             <div class="text-center p-3 rounded-xl bg-gray-50">
                 <p class="text-[10px] text-gray-400 mb-1">{{ $label }}</p>
@@ -286,7 +286,7 @@
 {{-- AI Insight --}}
 @if($shortSummary)
 <div class="rounded-2xl shadow-sm mb-6 overflow-hidden">
-    <div class="px-6 py-4 text-white flex items-start gap-3" style="background:linear-gradient(90deg,#4f46e5,#7c3aed);">
+    <div class="px-6 py-4 text-white flex items-start gap-3" style="background:#1B57C4;">
         <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center mt-0.5 text-base">??</div>
         <div>
             <p class="font-bold text-sm mb-0.5">AI Assessment</p>
@@ -296,7 +296,7 @@
     @if(!empty($strategy->ai_warnings))
     <div class="px-6 py-3 bg-amber-50 border-t border-amber-100 flex items-start gap-2">
         <svg class="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-        <p class="text-xs text-amber-700">{{ is_array($strategy->ai_warnings) ? implode(' � ', $strategy->ai_warnings) : $strategy->ai_warnings }}</p>
+        <p class="text-xs text-amber-700">{{ is_array($strategy->ai_warnings) ? implode(' ? ', $strategy->ai_warnings) : $strategy->ai_warnings }}</p>
     </div>
     @endif
 </div>
@@ -322,7 +322,7 @@
         <span class="text-2xl font-extrabold text-indigo-600">{{ $readinessScore }}%</span>
     </div>
     <div class="w-full bg-gray-100 rounded-full h-2 mb-5">
-        <div class="h-2 rounded-full" style="width:{{ $readinessScore }}%;background:linear-gradient(90deg,#4f46e5,#ec4899);"></div>
+        <div class="h-2 rounded-full" style="width:{{ $readinessScore }}%;background:#1B57C4;"></div>
     </div>
     <div class="grid grid-cols-5 gap-2 text-center">
         @foreach($readinessFactors as $f)
@@ -339,13 +339,13 @@
 
 {{-- Action Buttons --}}
 <div class="flex flex-wrap gap-3 justify-center pb-8">
-    <a href="{{ route('negotiation.scenarios', $strategy->id) }}" class="px-7 py-3 rounded-xl font-bold text-sm text-white shadow-lg transition-all hover:scale-105" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">View Scenarios &rarr;</a>
-    <a href="{{ route('negotiation.scripts', $strategy->id) }}" class="px-7 py-3 rounded-xl font-bold text-sm text-white shadow-lg transition-all hover:scale-105" style="background:linear-gradient(135deg,#4f46e5,#1A73E8);">View Scripts &rarr;</a>
-    <a href="{{ route('negotiation.chatbot') }}" class="px-7 py-3 rounded-xl font-bold text-sm text-white shadow-lg transition-all hover:scale-105" style="background:linear-gradient(135deg,#059669,#0d9488);">&#129302; AI Negotiation Agent</a>
+    <a href="{{ route('negotiation.scenarios', $strategy->id) }}" class="px-7 py-3 rounded-xl font-bold text-sm text-white shadow-lg transition-all hover:scale-105" style="background:#2D6CDF;">View Scenarios &rarr;</a>
+    <a href="{{ route('negotiation.scripts', $strategy->id) }}" class="px-7 py-3 rounded-xl font-bold text-sm text-white shadow-lg transition-all hover:scale-105" style="background:#1B57C4;">View Scripts &rarr;</a>
+    <a href="{{ route('negotiation.chatbot') }}" class="px-7 py-3 rounded-xl font-bold text-sm text-white shadow-lg transition-all hover:scale-105" style="background:#1E8E3E;">&#129302; AI Negotiation Agent</a>
     @if($strategy->sessions()->where('outcome', null)->exists())
-    <a href="{{ route('negotiation.coaching', $strategy->sessions()->where('outcome', null)->first()->id) }}" class="px-7 py-3 rounded-xl font-bold text-sm text-white shadow-lg transition-all hover:scale-105" style="background:linear-gradient(135deg,#1A73E8,#0B57D0);">Resume Coaching &rarr;</a>
+    <a href="{{ route('negotiation.coaching', $strategy->sessions()->where('outcome', null)->first()->id) }}" class="px-7 py-3 rounded-xl font-bold text-sm text-white shadow-lg transition-all hover:scale-105" style="background:#2D6CDF;">Resume Coaching &rarr;</a>
     @else
-    <button onclick="startCoachingSession()" class="px-7 py-3 rounded-xl font-bold text-sm text-white shadow-lg transition-all hover:scale-105" style="background:linear-gradient(135deg,#1A73E8,#0B57D0);">Start Live Coaching &rarr;</button>
+    <button onclick="startCoachingSession()" class="px-7 py-3 rounded-xl font-bold text-sm text-white shadow-lg transition-all hover:scale-105" style="background:#2D6CDF;">Start Live Coaching &rarr;</button>
     @endif
 </div>
 
@@ -361,7 +361,7 @@ new Chart(document.getElementById('marketChart').getContext('2d'), {
         labels:['25th','Median','75th','90th','Your Offer'],
         datasets:[{
             data:[{{ $strategy->market_percentile_25??0 }},{{ $strategy->market_median??0 }},{{ $strategy->market_percentile_75??0 }},{{ $strategy->market_percentile_90??0 }},{{ $offered }}],
-            backgroundColor:['#d1d5db','#374151','#10b981','#f59e0b','#4f46e5'],
+            backgroundColor:['#C8C8C5','#3D3D3D','#1E8E3E','#E37400','#1B57C4'],
             borderRadius:6,
         }]
     },
@@ -373,7 +373,7 @@ new Chart(document.getElementById('leverageChart').getContext('2d'), {
     type:'radar',
     data:{
         labels:['Market','Experience','Skills','Alternatives'],
-        datasets:[{data:[{{ $ld['market_position']??50 }},{{ $ld['experience']??50 }},{{ $ld['skills']??50 }},{{ $ld['alternatives']??40 }}],backgroundColor:'rgba(99,102,241,0.15)',borderColor:'#6366f1',borderWidth:2,pointBackgroundColor:'#6366f1',pointRadius:3}]
+        datasets:[{data:[{{ $ld['market_position']??50 }},{{ $ld['experience']??50 }},{{ $ld['skills']??50 }},{{ $ld['alternatives']??40 }}],backgroundColor:'rgba(20, 71, 186,0.15)',borderColor:'#2D6CDF',borderWidth:2,pointBackgroundColor:'#2D6CDF',pointRadius:3}]
     },
     options:{responsive:true,maintainAspectRatio:false,scales:{r:{beginAtZero:true,max:100,ticks:{stepSize:25,font:{size:9}},pointLabels:{font:{size:9}}}},plugins:{legend:{display:false}}}
 });

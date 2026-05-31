@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Job Market Heatmap - Interactive Analytics')
 
@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
 <style>
     #heatmap-container { height: calc(100vh - 200px); min-height: 500px; }
-    .legend { padding: 10px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .legend { padding: 10px; background: white; border-radius: 8px; box-shadow: none; }
     .legend-item { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
     .legend-color { width: 20px; height: 20px; border-radius: 50%; }
 </style>
@@ -19,8 +19,8 @@
         <!-- Header -->
         <div class="flex items-center justify-between mb-6">
             <div>
-                <a href="{{ route('analytics.analytics') }}" class="text-purple-600 hover:text-purple-800 text-sm mb-2 inline-block">← Back to Analytics</a>
-                <h1 class="text-3xl font-bold text-gray-900">?�️ Job Market Heatmap</h1>
+                <a href="{{ route('analytics.analytics') }}" class="text-purple-600 hover:text-purple-800 text-sm mb-2 inline-block">â† Back to Analytics</a>
+                <h1 class="text-3xl font-bold text-gray-900">?ºï¸ Job Market Heatmap</h1>
                 <p class="text-gray-600">Interactive visualization of job opportunities by location</p>
             </div>
         </div>
@@ -98,7 +98,7 @@
 
         <!-- Top Locations Table -->
         <div class="bg-white rounded-xl shadow-lg p-6 mt-6 border border-purple-100">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">?� Top Job Locations</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">? Top Job Locations</h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>

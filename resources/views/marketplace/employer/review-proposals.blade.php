@@ -30,11 +30,11 @@
     {{-- Stats Bar --}}
     <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
         @foreach([
-            ['label'=>'Total',       'val'=>$stats['total'],       'color'=>'#6b7280'],
-            ['label'=>'Pending',     'val'=>$stats['pending'],     'color'=>'#f59e0b'],
-            ['label'=>'Shortlisted', 'val'=>$stats['shortlisted'], 'color'=>'#1A73E8'],
-            ['label'=>'Offered',     'val'=>$stats['offered'],     'color'=>'#8b5cf6'],
-            ['label'=>'Accepted',    'val'=>$stats['accepted'],    'color'=>'#16a34a'],
+            ['label'=>'Total',       'val'=>$stats['total'],       'color'=>'#737373'],
+            ['label'=>'Pending',     'val'=>$stats['pending'],     'color'=>'#E37400'],
+            ['label'=>'Shortlisted', 'val'=>$stats['shortlisted'], 'color'=>'#2D6CDF'],
+            ['label'=>'Offered',     'val'=>$stats['offered'],     'color'=>'#2D6CDF'],
+            ['label'=>'Accepted',    'val'=>$stats['accepted'],    'color'=>'#1E8E3E'],
         ] as $s)
         <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 text-center">
             <div class="text-2xl font-extrabold" style="color:{{ $s['color'] }}">{{ $s['val'] }}</div>
@@ -69,22 +69,22 @@
             $initials  = strtoupper(substr($name, 0, 2));
             $isOffer   = $proposal->isOfferSent();
             $scoreColor = match(true) {
-                $score >= 80 => '#16a34a',
-                $score >= 60 => '#d97706',
-                $score !== null => '#dc2626',
-                default => '#9ca3af',
+                $score >= 80 => '#1E8E3E',
+                $score >= 60 => '#E37400',
+                $score !== null => '#2D6CDF',
+                default => '#A8A8A8',
             };
             $scoreBg = match(true) {
-                $score >= 80 => '#f0fdf4',
-                $score >= 60 => '#fffbeb',
+                $score >= 80 => '#EDFAF2',
+                $score >= 60 => '#FFF8EC',
                 $score !== null => '#fef2f2',
-                default => '#f9fafb',
+                default => '#F7F7F5',
             };
             $statusColor = match($proposal->status) {
-                'shortlisted' => $isOffer ? '#8b5cf6' : '#1A73E8',
-                'accepted'    => '#16a34a',
-                'rejected'    => '#dc2626',
-                default       => '#f59e0b',
+                'shortlisted' => $isOffer ? '#2D6CDF' : '#2D6CDF',
+                'accepted'    => '#1E8E3E',
+                'rejected'    => '#2D6CDF',
+                default       => '#E37400',
             };
             $statusLabel = match(true) {
                 $proposal->status === 'accepted'   => 'Accepted',
@@ -124,7 +124,7 @@
                 <div class="flex items-start gap-4">
                     {{-- Avatar --}}
                     <div class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                         style="background:#1A73E8;">{{ $initials }}</div>
+                         style="background:#2D6CDF;">{{ $initials }}</div>
 
                     {{-- Main content --}}
                     <div class="flex-1 min-w-0">
@@ -143,10 +143,10 @@
                         @if(!empty($breakdown['matched_skills']) || !empty($breakdown['missing_skills']))
                         <div class="flex flex-wrap gap-1.5 mt-2 mb-2">
                             @foreach($breakdown['matched_skills'] ?? [] as $skill)
-                            <span class="text-xs px-2 py-0.5 rounded-full font-medium" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">✓ {{ $skill }}</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full font-medium" style="background:#EDFAF2;color:#1E8E3E;border:1px solid #A3D9B4;">✓ {{ $skill }}</span>
                             @endforeach
                             @foreach($breakdown['missing_skills'] ?? [] as $skill)
-                            <span class="text-xs px-2 py-0.5 rounded-full font-medium" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;">✗ {{ $skill }}</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full font-medium" style="background:#fef2f2;color:#2D6CDF;border:1px solid #FCA5A5;">✗ {{ $skill }}</span>
                             @endforeach
                         </div>
                         @endif
@@ -168,7 +168,7 @@
                         @if($proposal->status === 'accepted')
                         <div class="mt-4 flex gap-2">
                             <a href="{{ route('marketplace.contracts.show', $proposal->contract) }}"
-                               class="px-4 py-2 rounded-xl text-sm font-semibold text-white" style="background:#16a34a;">
+                               class="px-4 py-2 rounded-xl text-sm font-semibold text-white" style="background:#1E8E3E;">
                                 View Contract →
                             </a>
                         </div>
@@ -177,19 +177,19 @@
                             @if(!$isOffer)
                             <button onclick="proposalAction('{{ route('marketplace.employer.send-offer', $proposal) }}', {{ $proposal->id }}, 'offer')"
                                     class="px-4 py-2 rounded-xl text-sm font-semibold text-white transition hover:opacity-90"
-                                    style="background:#1A73E8;">
+                                    style="background:#2D6CDF;">
                                 📨 Send Offer
                             </button>
                             @if($proposal->status === 'pending')
                             <button onclick="proposalAction('{{ route('marketplace.employer.shortlist-proposal', $proposal) }}', {{ $proposal->id }}, 'shortlist')"
                                     class="px-4 py-2 rounded-xl text-sm font-semibold border transition hover:bg-blue-50"
-                                    style="border-color:#1A73E8;color:#1A73E8;">
+                                    style="border-color:#2D6CDF;color:#2D6CDF;">
                                 ★ Shortlist
                             </button>
                             @endif
                             <button onclick="proposalAction('{{ route('marketplace.employer.hire', $proposal) }}', {{ $proposal->id }}, 'hire')"
                                     class="px-4 py-2 rounded-xl text-sm font-semibold text-white transition hover:opacity-90"
-                                    style="background:#16a34a;">
+                                    style="background:#1E8E3E;">
                                 ✓ Hire Now
                             </button>
                             <button onclick="proposalAction('{{ route('marketplace.employer.reject-proposal', $proposal) }}', {{ $proposal->id }}, 'reject')"
@@ -198,12 +198,12 @@
                             </button>
                             @else
                             {{-- Offer sent — waiting --}}
-                            <span class="px-4 py-2 rounded-xl text-sm font-medium" style="background:#f3e8ff;color:#7c3aed;">
+                            <span class="px-4 py-2 rounded-xl text-sm font-medium" style="background:#EBF2FF;color:#2D6CDF;">
                                 ⏳ Awaiting freelancer response
                             </span>
                             <button onclick="proposalAction('{{ route('marketplace.employer.hire', $proposal) }}', {{ $proposal->id }}, 'hire')"
                                     class="px-4 py-2 rounded-xl text-sm font-semibold text-white transition hover:opacity-90"
-                                    style="background:#16a34a;">
+                                    style="background:#1E8E3E;">
                                 ✓ Hire Directly
                             </button>
                             @endif
@@ -240,7 +240,7 @@ async function proposalAction(url, id, type) {
             headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
         });
         const data = await res.json();
-        showToast(data.message || 'Done', data.success ? '#16a34a' : '#dc2626');
+        showToast(data.message || 'Done', data.success ? '#1E8E3E' : '#2D6CDF');
 
         if (data.success) {
             if (type === 'hire' && data.redirect) {
@@ -252,7 +252,7 @@ async function proposalAction(url, id, type) {
             btn.disabled = false;
         }
     } catch (e) {
-        showToast('Network error. Please try again.', '#dc2626');
+        showToast('Network error. Please try again.', '#2D6CDF');
         btn.disabled = false;
     }
 }

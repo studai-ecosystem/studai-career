@@ -22,57 +22,57 @@
 .about-stat-card { transition: transform .3s ease, box-shadow .3s ease; }
 .about-stat-card:hover { transform: translateY(-6px); }
 .principle-card { transition: transform .3s ease, box-shadow .3s ease; }
-.principle-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(99,102,241,.14); }
+.principle-card:hover { transform: translateY(-4px); box-shadow: none; }
 </style>
 @endpush
 
 @section('content')
 {{-- Hero Section --}}
-<section class="relative overflow-hidden" style="background:linear-gradient(135deg,#eef1ff 0%,#f5f0ff 30%,#eefff7 65%,#fff8ee 100%);">
+<section class="relative overflow-hidden" style="background:#EBF2FF;">
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute" style="width:600px;height:600px;top:-150px;right:-100px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.28),transparent 70%);filter:blur(70px);animation:orbA 14s ease-in-out infinite;"></div>
-        <div class="absolute" style="width:480px;height:480px;bottom:-100px;left:-80px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.22),transparent 70%);filter:blur(60px);animation:orbB 12s ease-in-out infinite;"></div>
-        <div class="absolute" style="width:320px;height:320px;top:35%;left:38%;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.18),transparent 70%);filter:blur(50px);animation:orbC 16s ease-in-out infinite;"></div>
-        <div class="absolute" style="width:220px;height:220px;top:8%;left:12%;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.2),transparent 70%);filter:blur(40px);animation:orbD 10s ease-in-out infinite;"></div>
-        <div class="absolute inset-0" style="background-image:radial-gradient(circle,rgba(99,102,241,.14) 1px,transparent 1px);background-size:36px 36px;"></div>
+        <div class="absolute" style="width:600px;height:600px;top:-150px;right:-100px;border-radius:50%;background:rgba(20, 71, 186,.28);filter:blur(70px);animation:orbA 14s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:480px;height:480px;bottom:-100px;left:-80px;border-radius:50%;background:rgba(20, 71, 186,.22);filter:blur(60px);animation:orbB 12s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:320px;height:320px;top:35%;left:38%;border-radius:50%;background:rgba(15, 107, 49,.18);filter:blur(50px);animation:orbC 16s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:220px;height:220px;top:8%;left:12%;border-radius:50%;background:rgba(146, 80, 10,.2);filter:blur(40px);animation:orbD 10s ease-in-out infinite;"></div>
+        <div class="absolute inset-0" style="background-image:rgba(20, 71, 186,.14);background-size:36px 36px;"></div>
     </div>
     <div class="relative mx-auto max-w-6xl px-6 py-24 lg:py-32">
         <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
             <div class="space-y-6">
-                <span class="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-widest" style="background:rgba(99,102,241,.12);color:#6366f1;border:1px solid rgba(99,102,241,.25);backdrop-filter:blur(8px);">
+                <span class="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-widest" style="background:rgba(20, 71, 186,.12);color:#2D6CDF;border:1px solid rgba(20, 71, 186,.25);backdrop-filter:blur(8px);">
                     Our Story
                 </span>
-                <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl" style="color:#1a1a2e;line-height:1.12;">
-                    Building the career operating system for <span style="background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ambitious talent.</span>
+                <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl" style="color:#0C0C0C;line-height:1.12;">
+                    Building the career operating system for <span style="background:#2D6CDF;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ambitious talent.</span>
                 </h1>
-                <p class="text-lg" style="color:#4b5563;">
+                <p class="text-lg" style="color:#3D3D3D;">
                     StudAI Hire exists to eliminate the friction between talent and opportunity. We're combining AI agents, market intelligence, and human-centered design to automate career success for millions.
                 </p>
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-                    <a href="{{ route('register') }}" class="group inline-flex items-center rounded-xl px-8 py-3 text-lg font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#7c3aed);box-shadow:0 4px 18px rgba(99,102,241,.4);">
+                    <a href="{{ route('register') }}" class="group inline-flex items-center rounded-xl px-8 py-3 text-lg font-semibold text-white" style="background:#2D6CDF;box-shadow: none;">
                         Join the Movement
                         <svg class="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
                     </a>
-                    <a href="{{ route('about') }}#careers" class="inline-flex items-center rounded-xl px-8 py-3 text-lg font-semibold" style="background:rgba(255,255,255,.8);color:#6366f1;border:1.5px solid rgba(99,102,241,.25);backdrop-filter:blur(8px);">
+                    <a href="{{ route('about') }}#careers" class="inline-flex items-center rounded-xl px-8 py-3 text-lg font-semibold" style="background:rgba(255,255,255,.8);color:#2D6CDF;border:1.5px solid rgba(20, 71, 186,.25);backdrop-filter:blur(8px);">
                         We're Hiring
                     </a>
                 </div>
             </div>
-            <div class="about-stat-card rounded-3xl p-8" style="background:rgba(255,255,255,.85);backdrop-filter:blur(16px);border:1px solid rgba(99,102,241,.18);box-shadow:0 20px 60px rgba(99,102,241,.2),0 4px 16px rgba(99,102,241,.12);">
-                <h2 class="text-2xl font-semibold mb-1" style="color:#1a1a2e;">Impact So Far</h2>
-                <p class="text-sm mb-6" style="color:#6b7280;">Growing every single day</p>
+            <div class="about-stat-card rounded-3xl p-8" style="background:rgba(255,255,255,.85);backdrop-filter:blur(16px);border:1px solid rgba(20, 71, 186,.18);box-shadow: none;">
+                <h2 class="text-2xl font-semibold mb-1" style="color:#0C0C0C;">Impact So Far</h2>
+                <p class="text-sm mb-6" style="color:#737373;">Growing every single day</p>
                 <dl class="mt-2 grid gap-6 sm:grid-cols-2">
                     @foreach ([
-                        ['label' => 'Careers Launched', 'value' => '50K+', 'color' => '#6366f1'],
-                        ['label' => 'Jobs Indexed', 'value' => '2.5M', 'color' => '#059669'],
-                        ['label' => 'Countries', 'value' => '12', 'color' => '#b45309'],
-                        ['label' => 'Interview Success Rate', 'value' => '94%', 'color' => '#e11d48'],
+                        ['label' => 'Careers Launched', 'value' => '50K+', 'color' => '#2D6CDF'],
+                        ['label' => 'Jobs Indexed', 'value' => '2.5M', 'color' => '#1E8E3E'],
+                        ['label' => 'Countries', 'value' => '12', 'color' => '#E37400'],
+                        ['label' => 'Interview Success Rate', 'value' => '94%', 'color' => '#2D6CDF'],
                     ] as $stat)
-                        <div class="rounded-2xl p-4" style="background:linear-gradient(135deg,rgba(99,102,241,.06),rgba(139,92,246,.04));border:1px solid rgba(99,102,241,.1);">
+                        <div class="rounded-2xl p-4" style="background:rgba(20, 71, 186,.06);border:1px solid rgba(20, 71, 186,.1);">
                             <dd class="text-3xl font-bold" style="color:{{ $stat['color'] }};">{{ $stat['value'] }}</dd>
-                            <dt class="mt-1 text-xs uppercase tracking-widest" style="color:#9ca3af;">{{ $stat['label'] }}</dt>
+                            <dt class="mt-1 text-xs uppercase tracking-widest" style="color:#A8A8A8;">{{ $stat['label'] }}</dt>
                         </div>
                     @endforeach
                 </dl>

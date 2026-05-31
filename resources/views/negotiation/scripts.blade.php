@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Negotiation Scripts - ' . $strategy->role)
 
@@ -7,14 +7,14 @@
     .tab-button {
         transition: all 0.3s ease;
         border-bottom: 2px solid transparent;
-        color: #6b7280;
+        color: #737373;
     }
     .tab-button.active {
-        color: #7c3aed;
-        border-bottom-color: #7c3aed;
+        color: #2D6CDF;
+        border-bottom-color: #2D6CDF;
     }
     .tab-button:hover:not(.active) {
-        color: #4b5563;
+        color: #3D3D3D;
     }
     .script-card {
         transition: all 0.3s ease;
@@ -22,18 +22,18 @@
     }
     .script-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 12px 24px rgba(236, 72, 153, 0.2);
+        box-shadow: none;
     }
     .placeholder {
-        background: linear-gradient(90deg, rgba(236, 72, 153, 0.2) 0%, rgba(236, 72, 153, 0.4) 50%, rgba(236, 72, 153, 0.2) 100%);
-        color: #ec4899;
+        background: rgba(20, 71, 186, 0.2);
+        color: #2D6CDF;
         padding: 0 4px;
         border-radius: 4px;
         font-weight: 600;
     }
     .tactic-highlight {
-        background: rgba(59, 130, 246, 0.15);
-        border-left: 3px solid #3b82f6;
+        background: rgba(20, 71, 186, 0.15);
+        border-left: 3px solid #2D6CDF;
         padding: 8px 12px;
         margin: 12px 0;
         border-radius: 4px;
@@ -45,7 +45,7 @@
         transform: scale(1.05);
     }
     .copy-btn.copied {
-        background: #10b981 !important;
+        background: #1E8E3E !important;
     }
 </style>
 @endpush
@@ -126,7 +126,7 @@
     @foreach($scripts as $script)
     <div id="scriptModal{{ $script->id }}" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50" onclick="if(event.target === this) closeScriptDetail({{ $script->id }})">
         <div class="bg-white rounded-2xl max-w-5xl w-full mx-4 max-h-[90vh] overflow-y-auto border border-gray-200 shadow-2xl">
-                <div class="sticky top-0 p-6 rounded-t-2xl z-10" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">
+                <div class="sticky top-0 p-6 rounded-t-2xl z-10" style="background:#2D6CDF;">
                 <div class="flex items-start justify-between">
                     <div>
                         <h2 class="text-2xl font-bold text-white mb-2">{{ $script->script_name }}</h2>

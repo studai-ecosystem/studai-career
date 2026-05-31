@@ -3,17 +3,17 @@
 
 @push('styles')
 <style>
-.pkg-panel { border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; }
-.pkg-panel.active-tab { border-color: #1A73E8; }
-.form-label { font-size: .875rem; font-weight: 600; color: #374151; margin-bottom: 6px; display:block; }
-.form-input { width:100%; padding: 10px 14px; border:1.5px solid #d1d5db; border-radius:10px; font-size:.875rem; transition:.15s; }
-.form-input:focus { outline:none; border-color:#1A73E8; box-shadow:0 0 0 3px rgba(26,115,232,.1); }
+.pkg-panel { border: 2px solid #E2E2E0; border-radius: 12px; padding: 20px; }
+.pkg-panel.active-tab { border-color: #2D6CDF; }
+.form-label { font-size: .875rem; font-weight: 600; color: #3D3D3D; margin-bottom: 6px; display:block; }
+.form-input { width:100%; padding: 10px 14px; border:1.5px solid #C8C8C5; border-radius:10px; font-size:.875rem; transition:.15s; }
+.form-input:focus { outline:none; border-color:#2D6CDF; box-shadow: none; }
 textarea.form-input { resize:vertical; }
 </style>
 @endpush
 
 @section('content')
-<div class="min-h-screen" style="background:#f9f9f9;">
+<div class="min-h-screen" style="background:#F0F0EE;">
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
     {{-- Header --}}
@@ -30,7 +30,7 @@ textarea.form-input { resize:vertical; }
     </div>
 
     @if($errors->any())
-        <div class="mb-5 px-5 py-4 rounded-xl" style="background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;">
+        <div class="mb-5 px-5 py-4 rounded-xl" style="background:#fef2f2;border:1px solid #FCA5A5;color:#2D6CDF;">
             <p class="font-semibold text-sm mb-1">Please fix the following:</p>
             <ul class="text-sm list-disc list-inside space-y-0.5">
                 @foreach($errors->all() as $error)
@@ -118,7 +118,7 @@ textarea.form-input { resize:vertical; }
                         $defaults = ['basic'=>['price'=>2999,'days'=>3,'rev'=>2],'standard'=>['price'=>7999,'days'=>7,'rev'=>5],'premium'=>['price'=>14999,'days'=>14,'rev'=>99]];
                         $d = $defaults[$type];
                     @endphp
-                    <div class="border-2 rounded-xl p-4" style="border-color:{{ $type==='standard'?'#1A73E8':'#e5e7eb' }};">
+                    <div class="border-2 rounded-xl p-4" style="border-color:{{ $type==='standard'?'#2D6CDF':'#E2E2E0' }};">
                         <h3 class="font-bold text-gray-900 text-sm mb-3">{{ $label }}</h3>
                         <div class="space-y-3">
                             <div>
@@ -166,7 +166,7 @@ textarea.form-input { resize:vertical; }
             </a>
             <button type="submit"
                     class="px-8 py-3 rounded-xl text-white font-bold text-sm hover:opacity-90 transition"
-                    style="background:#1A73E8;">
+                    style="background:#2D6CDF;">
                 {{ $gig ? 'Save Changes' : 'Publish Service' }}
             </button>
         </div>

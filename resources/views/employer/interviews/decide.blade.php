@@ -3,31 +3,31 @@
 
 @push('styles')
 <style>
-.dc-page { padding:1.75rem; background:linear-gradient(135deg,#f0f4ff 0%,#f5f3ff 50%,#fff0fb 100%); min-height:100%; }
-.dc-card { background:#fff; border-radius:1.25rem; border:1px solid rgba(99,102,241,.1); box-shadow:0 2px 16px rgba(99,102,241,.08); overflow:hidden; margin-bottom:1.25rem; padding:1.75rem; }
+.dc-page { padding:1.75rem; background:#EBF2FF; min-height:100%; }
+.dc-card { background:#fff; border-radius:1.25rem; border:1px solid rgba(20, 71, 186,.1); box-shadow: none; overflow:hidden; margin-bottom:1.25rem; padding:1.75rem; }
 .decision-btn { width:100%; padding:1.1rem; border-radius:1rem; border:2px solid transparent; cursor:pointer; text-align:left; transition:all .2s; margin-bottom:.75rem; display:flex; align-items:flex-start; gap:1rem; }
-.decision-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.1); }
-.decision-btn.hire    { background:linear-gradient(135deg,#f0fdf4,#dcfce7); border-color:#86efac; }
-.decision-btn.reject  { background:linear-gradient(135deg,#fff1f2,#ffe4e6); border-color:#fda4af; }
-.decision-btn.next    { background:linear-gradient(135deg,#eff6ff,#dbeafe); border-color:#93c5fd; }
-.decision-btn.hire:hover    { border-color:#22c55e; }
-.decision-btn.reject:hover  { border-color:#f43f5e; }
-.decision-btn.next:hover    { border-color:#3b82f6; }
+.decision-btn:hover { transform:translateY(-2px); box-shadow: none; }
+.decision-btn.hire    { background:#EDFAF2; border-color:#A3D9B4; }
+.decision-btn.reject  { background:#FEF2F2; border-color:#FCA5A5; }
+.decision-btn.next    { background:#EBF2FF; border-color:#BFCFEE; }
+.decision-btn.hire:hover    { border-color:#1E8E3E; }
+.decision-btn.reject:hover  { border-color:#2D6CDF; }
+.decision-btn.next:hover    { border-color:#2D6CDF; }
 .decision-icon { width:2.5rem; height:2.5rem; border-radius:.75rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1.2rem; }
-.hire   .decision-icon { background:#bbf7d0; }
-.reject .decision-icon { background:#fda4af; }
-.next   .decision-icon { background:#bfdbfe; }
-.decision-title { font-size:1rem; font-weight:800; color:#1a1a2e; margin-bottom:.2rem; }
-.decision-sub   { font-size:.8rem; color:#6b7280; }
+.hire   .decision-icon { background:#A3D9B4; }
+.reject .decision-icon { background:#FCA5A5; }
+.next   .decision-icon { background:#BFCFEE; }
+.decision-title { font-size:1rem; font-weight:800; color:#0C0C0C; margin-bottom:.2rem; }
+.decision-sub   { font-size:.8rem; color:#737373; }
 .ai-rec { display:inline-flex; align-items:center; gap:.5rem; padding:.4rem 1.1rem; border-radius:9999px; font-size:.82rem; font-weight:700; margin-bottom:1.25rem; }
-.ai-rec.hire   { background:#f0fdf4; color:#16a34a; border:1.5px solid #bbf7d0; }
-.ai-rec.next   { background:#eff6ff; color:#3b82f6; border:1.5px solid #bfdbfe; }
-.ai-rec.silver { background:#fef9c3; color:#b45309; border:1.5px solid #fde68a; }
-.ai-rec.reject { background:#fff1f2; color:#f43f5e; border:1.5px solid #fda4af; }
-.form-ctrl { width:100%; padding:.6rem .875rem; border:1.5px solid #e5e7eb; border-radius:.75rem; font-size:.85rem; resize:vertical; box-sizing:border-box; }
-.form-ctrl:focus { outline:none; border-color:#6366f1; }
-.extra-fields { display:none; margin-top:1.25rem; padding-top:1.25rem; border-top:1px solid #f0f0f8; }
-.btn-submit { padding:.7rem 2rem; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border:none; border-radius:.875rem; font-size:.9rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(99,102,241,.3); transition:transform .15s; }
+.ai-rec.hire   { background:#EDFAF2; color:#1E8E3E; border:1.5px solid #A3D9B4; }
+.ai-rec.next   { background:#EBF2FF; color:#2D6CDF; border:1.5px solid #BFCFEE; }
+.ai-rec.silver { background:#FFF8EC; color:#E37400; border:1.5px solid #F0C77A; }
+.ai-rec.reject { background:#FEF2F2; color:#2D6CDF; border:1.5px solid #FCA5A5; }
+.form-ctrl { width:100%; padding:.6rem .875rem; border:1.5px solid #E2E2E0; border-radius:.75rem; font-size:.85rem; resize:vertical; box-sizing:border-box; }
+.form-ctrl:focus { outline:none; border-color:#2D6CDF; }
+.extra-fields { display:none; margin-top:1.25rem; padding-top:1.25rem; border-top:1px solid #EBF2FF; }
+.btn-submit { padding:.7rem 2rem; background:#2D6CDF; color:#fff; border:none; border-radius:.875rem; font-size:.9rem; font-weight:700; cursor:pointer; box-shadow: none; transition:transform .15s; }
 .btn-submit:hover { transform:translateY(-1px); }
 </style>
 @endpush
@@ -37,12 +37,12 @@
 <div style="max-width:760px;margin:0 auto;">
 
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
-        <a href="{{ route('employer.interviews.evaluate', $interview->id) }}" style="color:#6b7280;text-decoration:none;font-size:.85rem;">&#8592; Evaluate</a>
-        <h1 style="font-size:1.4rem;font-weight:800;color:#1a1a2e;margin:0;">Phase 5 &mdash; Decision</h1>
+        <a href="{{ route('employer.interviews.evaluate', $interview->id) }}" style="color:#737373;text-decoration:none;font-size:.85rem;">&#8592; Evaluate</a>
+        <h1 style="font-size:1.4rem;font-weight:800;color:#0C0C0C;margin:0;">Phase 5 &mdash; Decision</h1>
     </div>
 
     @if(session('success'))
-    <div style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:.75rem 1.25rem;border-radius:.875rem;margin-bottom:1.25rem;font-size:.85rem;">&#10003; {{ session('success') }}</div>
+    <div style="background:#EDFAF2;border:1px solid #A3D9B4;color:#1E8E3E;padding:.75rem 1.25rem;border-radius:.875rem;margin-bottom:1.25rem;font-size:.85rem;">&#10003; {{ session('success') }}</div>
     @endif
 
     {{-- Candidate summary --}}
@@ -57,27 +57,27 @@
     <div class="dc-card" style="padding:1.25rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
             <div style="display:flex;align-items:center;gap:.875rem;">
-                <div style="width:2.75rem;height:2.75rem;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;">{{ strtoupper(substr($app->user->name ?? '?', 0, 1)) }}</div>
+                <div style="width:2.75rem;height:2.75rem;border-radius:50%;background:#2D6CDF;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;">{{ strtoupper(substr($app->user->name ?? '?', 0, 1)) }}</div>
                 <div>
-                    <div style="font-weight:700;color:#1a1a2e;">{{ $app->user->name ?? 'Guest' }}</div>
-                    <div style="font-size:.78rem;color:#6b7280;">{{ $app->job->title ?? 'N/A' }} &bull; Round {{ $interview->round ?? 1 }}</div>
+                    <div style="font-weight:700;color:#0C0C0C;">{{ $app->user->name ?? 'Guest' }}</div>
+                    <div style="font-size:.78rem;color:#737373;">{{ $app->job->title ?? 'N/A' }} &bull; Round {{ $interview->round ?? 1 }}</div>
                 </div>
             </div>
             <div style="text-align:right;">
                 @if($score)
-                <div style="font-size:1.5rem;font-weight:900;color:#6366f1;">{{ number_format($score, 1) }}<span style="font-size:.9rem;color:#9ca3af;">/5</span></div>
+                <div style="font-size:1.5rem;font-weight:900;color:#2D6CDF;">{{ number_format($score, 1) }}<span style="font-size:.9rem;color:#A8A8A8;">/5</span></div>
                 @endif
                 <span class="ai-rec {{ $recClass }}">&#129302; AI: {{ $recLabel }}</span>
             </div>
         </div>
         @if($interview->interviewer_notes)
-        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid #f0f0f8;font-size:.82rem;color:#374151;white-space:pre-line;">{{ $interview->interviewer_notes }}</div>
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid #EBF2FF;font-size:.82rem;color:#3D3D3D;white-space:pre-line;">{{ $interview->interviewer_notes }}</div>
         @endif
     </div>
 
     {{-- Decision form --}}
     <div class="dc-card">
-        <div style="font-size:.9rem;font-weight:700;color:#1a1a2e;margin-bottom:1.25rem;">Select Decision</div>
+        <div style="font-size:.9rem;font-weight:700;color:#0C0C0C;margin-bottom:1.25rem;">Select Decision</div>
 
         <form method="POST" action="{{ route('employer.interviews.decide.submit', $interview->id) }}" id="decisionForm">
             @csrf
@@ -109,7 +109,7 @@
 
             {{-- Hire extras --}}
             <div id="extras-hire" class="extra-fields">
-                <div style="font-size:.82rem;font-weight:600;color:#374151;margin-bottom:.5rem;">Rejection reason (sent to candidate)</div>
+                <div style="font-size:.82rem;font-weight:600;color:#3D3D3D;margin-bottom:.5rem;">Rejection reason (sent to candidate)</div>
                 <textarea name="reason" class="form-ctrl" rows="3" placeholder="We've decided to proceed with another candidate because..."></textarea>
             </div>
 
@@ -117,7 +117,7 @@
             <div id="extras-next_round" class="extra-fields">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
                     <div>
-                        <label style="font-size:.78rem;font-weight:600;color:#374151;display:block;margin-bottom:.3rem;">Next Interview Type</label>
+                        <label style="font-size:.78rem;font-weight:600;color:#3D3D3D;display:block;margin-bottom:.3rem;">Next Interview Type</label>
                         <select name="interview_type" class="form-ctrl">
                             <option value="video">Video</option>
                             <option value="technical">Technical</option>
@@ -127,12 +127,12 @@
                         </select>
                     </div>
                     <div>
-                        <label style="font-size:.78rem;font-weight:600;color:#374151;display:block;margin-bottom:.3rem;">Schedule Date &amp; Time</label>
+                        <label style="font-size:.78rem;font-weight:600;color:#3D3D3D;display:block;margin-bottom:.3rem;">Schedule Date &amp; Time</label>
                         <input type="datetime-local" name="scheduled_at" class="form-ctrl" min="{{ now()->addHour()->format('Y-m-d\TH:i') }}">
                     </div>
                 </div>
                 <div style="margin-top:.875rem;">
-                    <label style="font-size:.78rem;font-weight:600;color:#374151;display:block;margin-bottom:.3rem;">Meeting Link</label>
+                    <label style="font-size:.78rem;font-weight:600;color:#3D3D3D;display:block;margin-bottom:.3rem;">Meeting Link</label>
                     <input type="url" name="meeting_link" class="form-ctrl" placeholder="https://meet.google.com/...">
                 </div>
             </div>

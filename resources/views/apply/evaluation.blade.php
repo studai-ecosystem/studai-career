@@ -8,14 +8,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            theme: { extend: { colors: { primary: '#1A73E8', 'primary-dark': '#1557b0' } } }
+            theme: { extend: { colors: { primary: '#2D6CDF', 'primary-dark': '#1B57C4' } } }
         }
     </script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .option-btn:hover { transform: translateY(-1px); }
-        .option-btn.selected { background: #EBF3FD; border-color: #1A73E8; color: #1A73E8; }
+        .option-btn.selected { background: #EBF2FF; border-color: #2D6CDF; color: #2D6CDF; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">

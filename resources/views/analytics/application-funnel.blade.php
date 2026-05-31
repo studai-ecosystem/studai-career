@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const maxCount = Math.max(...stages.map(s => s.count)) || 1;
-        const colors = ['#f97316', '#fb923c', '#fdba74', '#fed7aa', '#ffedd5', '#fff7ed'];
+        const colors = ['#E37400', '#E37400', '#E37400', '#F0C77A', '#FFF8EC', '#FFF8EC'];
 
         container.innerHTML = stages.map((stage, i) => {
             const width = 95 - (i * 10);

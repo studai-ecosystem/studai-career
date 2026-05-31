@@ -17,20 +17,20 @@
             text-align: center;
             margin-bottom: 30px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #ec4899;
+            border-bottom: 2px solid #2D6CDF;
         }
         .name {
             font-size: 24pt;
             font-weight: bold;
-            color: #1f2937;
+            color: #0C0C0C;
             margin-bottom: 5px;
         }
         .contact {
             font-size: 10pt;
-            color: #6b7280;
+            color: #737373;
         }
         .contact a {
-            color: #ec4899;
+            color: #2D6CDF;
             text-decoration: none;
         }
         .section {
@@ -39,31 +39,31 @@
         .section-title {
             font-size: 14pt;
             font-weight: bold;
-            color: #1f2937;
-            border-bottom: 1px solid #e5e7eb;
+            color: #0C0C0C;
+            border-bottom: 1px solid #E2E2E0;
             padding-bottom: 5px;
             margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         .highlight {
-            background-color: #fef3c7;
+            background-color: #FFF8EC;
             padding: 2px 4px;
             border-radius: 2px;
         }
         .job-title {
             font-size: 12pt;
             font-weight: bold;
-            color: #1f2937;
+            color: #0C0C0C;
         }
         .company {
             font-size: 11pt;
-            color: #4b5563;
+            color: #3D3D3D;
             font-weight: 600;
         }
         .duration {
             font-size: 10pt;
-            color: #6b7280;
+            color: #737373;
             font-style: italic;
         }
         .job-details {
@@ -85,17 +85,17 @@
         }
         .skill-tag {
             display: inline-block;
-            background-color: #dbeafe;
-            color: #1e40af;
+            background-color: #EBF2FF;
+            color: #1B57C4;
             padding: 4px 10px;
             border-radius: 4px;
             font-size: 9pt;
             font-weight: 600;
         }
         .skill-tag.highlight {
-            background-color: #fef3c7;
-            color: #92400e;
-            border: 1px solid #f59e0b;
+            background-color: #FFF8EC;
+            color: #E37400;
+            border: 1px solid #E37400;
         }
         .education-item {
             margin-bottom: 15px;
@@ -103,11 +103,11 @@
         .degree {
             font-size: 11pt;
             font-weight: bold;
-            color: #1f2937;
+            color: #0C0C0C;
         }
         .institution {
             font-size: 10pt;
-            color: #4b5563;
+            color: #3D3D3D;
         }
         .summary {
             text-align: justify;
@@ -116,11 +116,11 @@
         }
         .ai-notice {
             font-size: 8pt;
-            color: #9ca3af;
+            color: #A8A8A8;
             text-align: center;
             margin-top: 30px;
             padding-top: 10px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid #E2E2E0;
         }
     </style>
 </head>
@@ -209,7 +209,7 @@
                         <div class="duration">Graduated {{ $edu['graduation_year'] }}</div>
                     @endif
                     @if(isset($edu['gpa']))
-                        <div style="font-size: 10pt; color: #6b7280;">GPA: {{ $edu['gpa'] }}</div>
+                        <div style="font-size: 10pt; color: #737373;">GPA: {{ $edu['gpa'] }}</div>
                     @endif
                 </div>
             @endforeach
@@ -242,14 +242,14 @@
             <div class="section-title">Key Projects</div>
             @foreach(array_slice($profile->projects, 0, 3) as $project)
                 <div style="margin-bottom: 15px;">
-                    <div style="font-weight: bold; color: #1f2937;">{{ $project['name'] ?? '' }}</div>
+                    <div style="font-weight: bold; color: #0C0C0C;">{{ $project['name'] ?? '' }}</div>
                     @if(isset($project['description']))
-                        <div style="font-size: 10pt; color: #4b5563; margin-top: 3px;">
+                        <div style="font-size: 10pt; color: #3D3D3D; margin-top: 3px;">
                             {{ $project['description'] }}
                         </div>
                     @endif
                     @if(isset($project['technologies']))
-                        <div style="font-size: 9pt; color: #6b7280; margin-top: 3px;">
+                        <div style="font-size: 9pt; color: #737373; margin-top: 3px;">
                             <em>Technologies:</em> {{ implode(', ', $project['technologies']) }}
                         </div>
                     @endif

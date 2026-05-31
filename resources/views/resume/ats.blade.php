@@ -7,7 +7,7 @@
     $cats      = $analysis['categories'] ?? [];
     $score     = (int)($analysis['score'] ?? 0);
     $label     = $analysis['label'] ?? 'Fair';
-    $color     = $score >= 80 ? '#34a853' : ($score >= 60 ? '#fbbc04' : '#ea4335');
+    $color     = $score >= 80 ? '#1E8E3E' : ($score >= 60 ? '#fbbc04' : '#2D6CDF');
     $ringDash  = round($score * 2.83);
 
     $cat_content  = $cats['content']  ?? [];
@@ -36,23 +36,23 @@
     $totalSuggestions = array_sum($sugg);
 
     function atsColor(string $lbl): string {
-        return match($lbl) { 'Excellent', 'Pass' => '#34a853', 'Good' => '#fbbc04', default => '#ea4335' };
+        return match($lbl) { 'Excellent', 'Pass' => '#1E8E3E', 'Good' => '#fbbc04', default => '#2D6CDF' };
     }
 @endphp
 
 <style>
-.ats-wrap{display:flex;gap:0;min-height:100vh;background:#f0f4f8;}
-.ats-sidebar{width:300px;min-width:280px;background:#fff;border-right:1px solid #e8eaed;padding:24px 20px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;flex-shrink:0;}
+.ats-wrap{display:flex;gap:0;min-height:100vh;background:#EBF2FF;}
+.ats-sidebar{width:300px;min-width:280px;background:#fff;border-right:1px solid #E2E2E0;padding:24px 20px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;flex-shrink:0;}
 .ats-main{flex:1;padding:28px 32px;overflow-y:auto;}
-.ats-card{background:#fff;border-radius:14px;box-shadow:0 1px 8px rgba(0,0,0,.07);overflow:hidden;margin-bottom:20px;}
-.ats-card-header{padding:16px 22px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;}
-.ats-card-header h3{margin:0;font-size:15px;font-weight:700;color:#1a1a2e;display:flex;align-items:center;gap:10px;}
+.ats-card{background:#fff;border-radius:14px;box-shadow: none;overflow:hidden;margin-bottom:20px;}
+.ats-card-header{padding:16px 22px;border-bottom:1px solid #F0F0EE;display:flex;align-items:center;justify-content:space-between;}
+.ats-card-header h3{margin:0;font-size:15px;font-weight:700;color:#0C0C0C;display:flex;align-items:center;gap:10px;}
 .ats-card-body{padding:20px 22px;}
 .ats-chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:2px;white-space:nowrap;}
-.chip-green{background:#e6f4ea;color:#137333;}
-.chip-red{background:#fce8e6;color:#c5221f;}
-.chip-blue{background:#e8f0fe;color:#1557b0;}
-.ats-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f5f5f5;}
+.chip-green{background:#EDFAF2;color:#1E8E3E;}
+.chip-red{background:#FEF2F2;color:#2D6CDF;}
+.chip-blue{background:#EBF2FF;color:#1B57C4;}
+.ats-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #F0F0EE;}
 .ats-row:last-child{border-bottom:none;}
 .cat-bar-wrap{display:flex;align-items:center;gap:8px;min-width:80px;}
 .cat-bar-bg{flex:1;height:5px;background:#eee;border-radius:3px;overflow:hidden;}
@@ -60,7 +60,7 @@
 </style>
 
 {{-- Top bar --}}
-<div style="background:#1A73E8;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.15);">
+<div style="background:#2D6CDF;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:50;box-shadow: none;">
     <div style="display:flex;align-items:center;gap:0;">
         <a href="{{ route('resume.edit', $resume) }}" style="color:rgba(255,255,255,.8);text-decoration:none;font-size:13px;padding:18px 16px 18px 0;display:flex;align-items:center;gap:6px;white-space:nowrap;">
             ← Back
@@ -90,13 +90,13 @@
                     stroke-dasharray="{{ $ringDash }} 314"
                     stroke-linecap="round"
                     transform="rotate(-90 60 60)"/>
-                <text x="60" y="55" text-anchor="middle" font-size="28" font-weight="800" fill="#1a1a2e">{{ $score }}</text>
+                <text x="60" y="55" text-anchor="middle" font-size="28" font-weight="800" fill="#0C0C0C">{{ $score }}</text>
                 <text x="60" y="70" text-anchor="middle" font-size="12" fill="#888">/100</text>
             </svg>
             <div style="font-size:20px;font-weight:800;color:{{ $color }};margin-top:4px;">{{ $label }}</div>
             <div style="font-size:12px;color:#888;margin-top:2px;">{{ $totalSuggestions }} suggestion{{ $totalSuggestions !== 1 ? 's' : '' }}</div>
             @if($score >= 75)
-                <div style="font-size:11px;color:#34a853;margin-top:8px;background:#e6f4ea;border-radius:8px;padding:8px 10px;line-height:1.5;">
+                <div style="font-size:11px;color:#1E8E3E;margin-top:8px;background:#EDFAF2;border-radius:8px;padding:8px 10px;line-height:1.5;">
                     Resumes with 75+ score get 3× more interviews
                 </div>
             @else
@@ -104,7 +104,7 @@
             @endif
         </div>
 
-        <hr style="border:none;border-top:1px solid #f0f0f0;margin:12px 0;">
+        <hr style="border:none;border-top:1px solid #F0F0EE;margin:12px 0;">
 
         @php
             $catAnchors = ['Content'=>'content','Skills'=>'skills','Format'=>'format','Sections'=>'sections','Style'=>'style'];
@@ -119,11 +119,11 @@
             @php $cPct = $cMax > 0 ? round($cScore / $cMax * 100) : 0; $cColor = atsColor($cLabel); @endphp
             <div class="ats-row" onclick="document.getElementById('ats-card-{{ strtolower($cName) }}')?.scrollIntoView({behavior:'smooth',block:'start'})" style="cursor:pointer;" title="View {{ $cName }} details">
                 <div>
-                    <div style="font-size:13px;font-weight:600;color:#1a1a2e;">{{ $cName }}</div>
+                    <div style="font-size:13px;font-weight:600;color:#0C0C0C;">{{ $cName }}</div>
                     @if($cSugg > 0)
-                        <a href="{{ route('resume.ats.editor', $resume) }}" style="font-size:11px;color:#ea4335;text-decoration:none;font-weight:600;">{{ $cSugg }} suggestion{{ $cSugg !== 1 ? 's' : '' }} →</a>
+                        <a href="{{ route('resume.ats.editor', $resume) }}" style="font-size:11px;color:#2D6CDF;text-decoration:none;font-weight:600;">{{ $cSugg }} suggestion{{ $cSugg !== 1 ? 's' : '' }} →</a>
                     @else
-                        <div style="font-size:11px;color:#34a853;">Complete ✔</div>
+                        <div style="font-size:11px;color:#1E8E3E;">Complete ✔</div>
                     @endif
                 </div>
                 <div class="cat-bar-wrap">
@@ -135,7 +135,7 @@
             </div>
         @endforeach
 
-        <hr style="border:none;border-top:1px solid #f0f0f0;margin:12px 0;">
+        <hr style="border:none;border-top:1px solid #F0F0EE;margin:12px 0;">
 
         @if(!empty($analysis['summary']))
             <div style="margin-bottom:12px;">
@@ -148,7 +148,7 @@
             <div style="margin-bottom:12px;">
                 <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#aaa;margin-bottom:6px;">Highlights</div>
                 @foreach($analysis['highlights'] as $h)
-                    <div style="font-size:12px;color:#137333;display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;"><span>✔</span><span>{{ $h }}</span></div>
+                    <div style="font-size:12px;color:#1E8E3E;display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;"><span>✔</span><span>{{ $h }}</span></div>
                 @endforeach
             </div>
         @endif
@@ -157,13 +157,13 @@
             <div style="margin-bottom:16px;">
                 <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#aaa;margin-bottom:6px;">Quick Wins</div>
                 @foreach(array_slice($analysis['recommendations'], 0, 3) as $r)
-                    <div style="font-size:12px;color:#c5221f;display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;"><span>→</span><span>{{ $r }}</span></div>
+                    <div style="font-size:12px;color:#2D6CDF;display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;"><span>→</span><span>{{ $r }}</span></div>
                 @endforeach
             </div>
         @endif
 
-        <a href="{{ route('resume.edit', $resume) }}" style="display:block;background:#1A73E8;color:#fff;text-align:center;padding:11px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;margin-bottom:8px;">✏️ Edit Resume</a>
-        <a href="{{ route('resume.preview', $resume) }}" target="_blank" style="display:block;background:#f0f4f8;color:#1A73E8;text-align:center;padding:11px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;border:1px solid #d0e0ff;">👁 Preview</a>
+        <a href="{{ route('resume.edit', $resume) }}" style="display:block;background:#2D6CDF;color:#fff;text-align:center;padding:11px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;margin-bottom:8px;">✏️ Edit Resume</a>
+        <a href="{{ route('resume.preview', $resume) }}" target="_blank" style="display:block;background:#EBF2FF;color:#2D6CDF;text-align:center;padding:11px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;border:1px solid #EBF2FF;">👁 Preview</a>
     </div>
 
     {{-- MAIN PANEL --}}
@@ -174,53 +174,53 @@
             <div class="ats-card-header">
                 <h3>📄 Content
                     @if($sugg['content'] > 0)
-                        <span style="background:#fce8e6;color:#c5221f;border-radius:20px;font-size:11px;padding:2px 10px;">{{ $sugg['content'] }} suggestion{{ $sugg['content'] !== 1 ? 's' : '' }}</span>
+                        <span style="background:#FEF2F2;color:#2D6CDF;border-radius:20px;font-size:11px;padding:2px 10px;">{{ $sugg['content'] }} suggestion{{ $sugg['content'] !== 1 ? 's' : '' }}</span>
                     @else
-                        <span style="background:#e6f4ea;color:#137333;border-radius:20px;font-size:11px;padding:2px 10px;">PASS</span>
+                        <span style="background:#EDFAF2;color:#1E8E3E;border-radius:20px;font-size:11px;padding:2px 10px;">PASS</span>
                     @endif
                 </h3>
                 <span style="font-size:12px;color:#999;">Impact & phrasing</span>
             </div>
             <div class="ats-card-body">
                 {{-- Measurable Results --}}
-                <div style="padding:12px 0;border-bottom:1px solid #f5f5f5;">
+                <div style="padding:12px 0;border-bottom:1px solid #F0F0EE;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                         <div style="font-size:14px;font-weight:700;">Measurable Results</div>
                         @if($mr['pass'] ?? true)
-                            <span style="color:#34a853;font-size:13px;font-weight:600;">✔ Pass</span>
+                            <span style="color:#1E8E3E;font-size:13px;font-weight:600;">✔ Pass</span>
                         @else
-                            <span style="color:#ea4335;font-size:13px;font-weight:600;">✖ Improve</span>
+                            <span style="color:#2D6CDF;font-size:13px;font-weight:600;">✖ Improve</span>
                         @endif
                     </div>
                     <div style="font-size:12px;color:#666;margin-bottom:8px;">{{ $mr['count'] ?? 0 }} quantified bullet{{ ($mr['count'] ?? 0) !== 1 ? 's' : '' }} found. Add numbers (%, $, ×) to show impact.</div>
                     @foreach(array_slice($mr['suggestions'] ?? [], 0, 3) as $s)
-                        <div style="background:#fff8f0;border-left:3px solid #fbbc04;padding:7px 12px;border-radius:0 6px 6px 0;margin-bottom:5px;font-size:12px;color:#555;font-style:italic;">"{{ $s }}"</div>
+                        <div style="background:#FFF8EC;border-left:3px solid #fbbc04;padding:7px 12px;border-radius:0 6px 6px 0;margin-bottom:5px;font-size:12px;color:#555;font-style:italic;">"{{ $s }}"</div>
                     @endforeach
                     @if(!($mr['pass'] ?? true))
                         <div style="margin-top:8px;">
-                            <a href="{{ route('resume.ats.editor', $resume) }}#section-experience" style="display:inline-flex;align-items:center;gap:5px;background:#1A73E8;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;text-decoration:none;">✏️ Fix in Editor →</a>
+                            <a href="{{ route('resume.ats.editor', $resume) }}#section-experience" style="display:inline-flex;align-items:center;gap:5px;background:#2D6CDF;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;text-decoration:none;">✏️ Fix in Editor →</a>
                         </div>
                     @endif
                 </div>
 
                 {{-- Spelling & Grammar --}}
-                <div style="padding:12px 0;border-bottom:1px solid #f5f5f5;">
+                <div style="padding:12px 0;border-bottom:1px solid #F0F0EE;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                         <div style="font-size:14px;font-weight:700;">Spelling & Grammar</div>
                         @if($sg['pass'] ?? true)
-                            <span style="color:#34a853;font-size:13px;font-weight:600;">✔ Pass</span>
+                            <span style="color:#1E8E3E;font-size:13px;font-weight:600;">✔ Pass</span>
                         @else
-                            <span style="color:#ea4335;font-size:13px;font-weight:600;">✖ Improve</span>
+                            <span style="color:#2D6CDF;font-size:13px;font-weight:600;">✖ Improve</span>
                         @endif
                     </div>
                     @forelse($sg['issues'] ?? [] as $issue)
-                        <div style="background:#fce8e6;border-left:3px solid #ea4335;padding:6px 12px;border-radius:0 6px 6px 0;font-size:12px;color:#c5221f;margin-bottom:4px;">{{ $issue }}</div>
+                        <div style="background:#FEF2F2;border-left:3px solid #2D6CDF;padding:6px 12px;border-radius:0 6px 6px 0;font-size:12px;color:#2D6CDF;margin-bottom:4px;">{{ $issue }}</div>
                     @empty
-                        <div style="font-size:12px;color:#137333;">No obvious issues detected.</div>
+                        <div style="font-size:12px;color:#1E8E3E;">No obvious issues detected.</div>
                     @endforelse
                     @if(!($sg['pass'] ?? true))
                         <div style="margin-top:8px;">
-                            <a href="{{ route('resume.ats.editor', $resume) }}#section-summary" style="display:inline-flex;align-items:center;gap:5px;background:#1A73E8;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;text-decoration:none;">✏️ Fix in Editor →</a>
+                            <a href="{{ route('resume.ats.editor', $resume) }}#section-summary" style="display:inline-flex;align-items:center;gap:5px;background:#2D6CDF;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;text-decoration:none;">✏️ Fix in Editor →</a>
                         </div>
                     @endif
                 </div>
@@ -230,9 +230,9 @@
                 @if($sumText)
                     <div style="padding:12px 0;">
                         <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Professional Summary</div>
-                        <div style="font-size:12px;color:#555;font-style:italic;border-left:3px solid #1A73E8;padding:8px 12px;background:#f0f4ff;border-radius:0 6px 6px 0;">"{{ Str::limit($sumText, 220) }}"</div>
+                        <div style="font-size:12px;color:#555;font-style:italic;border-left:3px solid #2D6CDF;padding:8px 12px;background:#EBF2FF;border-radius:0 6px 6px 0;">"{{ Str::limit($sumText, 220) }}"</div>
                         <div style="margin-top:8px;">
-                            <a href="{{ route('resume.ats.editor', $resume) }}#section-summary" style="display:inline-flex;align-items:center;gap:5px;background:#f0f4ff;color:#1A73E8;border:1px solid #1A73E8;font-size:12px;font-weight:700;padding:5px 12px;border-radius:6px;text-decoration:none;">✏️ Edit Summary →</a>
+                            <a href="{{ route('resume.ats.editor', $resume) }}#section-summary" style="display:inline-flex;align-items:center;gap:5px;background:#EBF2FF;color:#2D6CDF;border:1px solid #2D6CDF;font-size:12px;font-weight:700;padding:5px 12px;border-radius:6px;text-decoration:none;">✏️ Edit Summary →</a>
                         </div>
                     </div>
                 @endif
@@ -244,22 +244,22 @@
             <div class="ats-card-header">
                 <h3>🛠 Skills
                     @if($sugg['skills'] > 0)
-                        <span style="background:#fce8e6;color:#c5221f;border-radius:20px;font-size:11px;padding:2px 10px;">{{ $sugg['skills'] }} suggestion{{ $sugg['skills'] !== 1 ? 's' : '' }}</span>
+                        <span style="background:#FEF2F2;color:#2D6CDF;border-radius:20px;font-size:11px;padding:2px 10px;">{{ $sugg['skills'] }} suggestion{{ $sugg['skills'] !== 1 ? 's' : '' }}</span>
                     @else
-                        <span style="background:#e6f4ea;color:#137333;border-radius:20px;font-size:11px;padding:2px 10px;">PASS</span>
+                        <span style="background:#EDFAF2;color:#1E8E3E;border-radius:20px;font-size:11px;padding:2px 10px;">PASS</span>
                     @endif
                 </h3>
                 <span style="font-size:12px;color:#999;">Hard & soft skills</span>
             </div>
             <div class="ats-card-body">
                 {{-- Hard Skills --}}
-                <div style="padding:12px 0;border-bottom:1px solid #f5f5f5;">
+                <div style="padding:12px 0;border-bottom:1px solid #F0F0EE;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
                         <div style="font-size:14px;font-weight:700;">Hard Skills</div>
                         @if($hs['pass'] ?? true)
-                            <span style="color:#34a853;font-size:13px;font-weight:600;">✔ {{ $hs['count'] ?? 0 }} found</span>
+                            <span style="color:#1E8E3E;font-size:13px;font-weight:600;">✔ {{ $hs['count'] ?? 0 }} found</span>
                         @else
-                            <span style="color:#ea4335;font-size:13px;font-weight:600;">✖ Only {{ $hs['count'] ?? 0 }} found</span>
+                            <span style="color:#2D6CDF;font-size:13px;font-weight:600;">✖ Only {{ $hs['count'] ?? 0 }} found</span>
                         @endif
                     </div>
                     @if(!empty($hs['found']))
@@ -275,19 +275,19 @@
                     @endif
                     @if(!($hs['pass'] ?? true))
                         <div style="margin-top:8px;">
-                            <a href="{{ route('resume.ats.editor', $resume) }}#section-skills" style="display:inline-flex;align-items:center;gap:5px;background:#1A73E8;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;text-decoration:none;">✏️ Add Skills →</a>
+                            <a href="{{ route('resume.ats.editor', $resume) }}#section-skills" style="display:inline-flex;align-items:center;gap:5px;background:#2D6CDF;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;text-decoration:none;">✏️ Add Skills →</a>
                         </div>
                     @endif
                 </div>
 
                 {{-- Soft Skills --}}
-                <div style="padding:12px 0;border-bottom:1px solid #f5f5f5;">
+                <div style="padding:12px 0;border-bottom:1px solid #F0F0EE;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
                         <div style="font-size:14px;font-weight:700;">Soft Skills</div>
                         @if($ss['pass'] ?? true)
-                            <span style="color:#34a853;font-size:13px;font-weight:600;">✔ {{ $ss['count'] ?? 0 }} found</span>
+                            <span style="color:#1E8E3E;font-size:13px;font-weight:600;">✔ {{ $ss['count'] ?? 0 }} found</span>
                         @else
-                            <span style="color:#ea4335;font-size:13px;font-weight:600;">✖ {{ $ss['count'] ?? 0 }} found</span>
+                            <span style="color:#2D6CDF;font-size:13px;font-weight:600;">✖ {{ $ss['count'] ?? 0 }} found</span>
                         @endif
                     </div>
                     @if(!empty($ss['found']))
@@ -300,7 +300,7 @@
                 @if(!empty($listedSkills))
                     <div style="padding:12px 0;">
                         <div style="font-size:14px;font-weight:700;margin-bottom:8px;">Your Listed Skills</div>
-                        @foreach($listedSkills as $sk)<span class="ats-chip" style="background:#f0f4f8;color:#555;">{{ $sk }}</span>@endforeach
+                        @foreach($listedSkills as $sk)<span class="ats-chip" style="background:#EBF2FF;color:#555;">{{ $sk }}</span>@endforeach
                     </div>
                 @endif
             </div>
@@ -311,43 +311,43 @@
             <div class="ats-card-header">
                 <h3>📐 Format
                     @if($sugg['format'] > 0)
-                        <span style="background:#fce8e6;color:#c5221f;border-radius:20px;font-size:11px;padding:2px 10px;">{{ $sugg['format'] }} suggestion{{ $sugg['format'] !== 1 ? 's' : '' }}</span>
+                        <span style="background:#FEF2F2;color:#2D6CDF;border-radius:20px;font-size:11px;padding:2px 10px;">{{ $sugg['format'] }} suggestion{{ $sugg['format'] !== 1 ? 's' : '' }}</span>
                     @else
-                        <span style="background:#e6f4ea;color:#137333;border-radius:20px;font-size:11px;padding:2px 10px;">PASS</span>
+                        <span style="background:#EDFAF2;color:#1E8E3E;border-radius:20px;font-size:11px;padding:2px 10px;">PASS</span>
                     @endif
                 </h3>
                 <span style="font-size:12px;color:#999;">Dates, length & bullets</span>
             </div>
             <div class="ats-card-body">
                 {{-- Date Formatting --}}
-                <div style="padding:12px 0;border-bottom:1px solid #f5f5f5;">
+                <div style="padding:12px 0;border-bottom:1px solid #F0F0EE;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                         <div style="font-size:14px;font-weight:700;">Date Formatting</div>
                         @if($df['pass'] ?? true)
-                            <span style="color:#34a853;font-size:13px;font-weight:600;">✔ Consistent</span>
+                            <span style="color:#1E8E3E;font-size:13px;font-weight:600;">✔ Consistent</span>
                         @else
-                            <span style="color:#ea4335;font-size:13px;font-weight:600;">✖ Inconsistent</span>
+                            <span style="color:#2D6CDF;font-size:13px;font-weight:600;">✖ Inconsistent</span>
                         @endif
                     </div>
                     @if(!empty($df['issue']))
-                        <div style="font-size:12px;color:#c5221f;">{{ $df['issue'] }}</div>
+                        <div style="font-size:12px;color:#2D6CDF;">{{ $df['issue'] }}</div>
                     @else
-                        <div style="font-size:12px;color:#137333;">Dates are consistently formatted.</div>
+                        <div style="font-size:12px;color:#1E8E3E;">Dates are consistently formatted.</div>
                     @endif
                 </div>
 
                 {{-- Resume Length --}}
                 @php $wc = (int)($rl['word_count'] ?? $resume->getWordCount() ?? 0); $wcPct = min(100, round($wc / 900 * 100)); $wcOk = $wc >= 200 && $wc <= 900; @endphp
-                <div style="padding:12px 0;border-bottom:1px solid #f5f5f5;">
+                <div style="padding:12px 0;border-bottom:1px solid #F0F0EE;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
                         <div style="font-size:14px;font-weight:700;">Resume Length</div>
-                        <span style="color:{{ $wcOk ? '#34a853' : '#ea4335' }};font-size:13px;font-weight:600;">{{ $wcOk ? '✔' : '✖' }} {{ $wc }} words</span>
+                        <span style="color:{{ $wcOk ? '#1E8E3E' : '#2D6CDF' }};font-size:13px;font-weight:600;">{{ $wcOk ? '✔' : '✖' }} {{ $wc }} words</span>
                     </div>
                     <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-bottom:4px;"><span>0</span><span>200 min</span><span>900 max</span></div>
                     <div style="height:8px;background:#eee;border-radius:4px;overflow:hidden;margin-bottom:6px;">
-                        <div style="width:{{ $wcPct }}%;height:100%;background:{{ $wcOk ? '#34a853' : '#ea4335' }};border-radius:4px;"></div>
+                        <div style="width:{{ $wcPct }}%;height:100%;background:{{ $wcOk ? '#1E8E3E' : '#2D6CDF' }};border-radius:4px;"></div>
                     </div>
-                    @if(!empty($rl['issue']))<div style="font-size:12px;color:#c5221f;">{{ $rl['issue'] }}</div>@endif
+                    @if(!empty($rl['issue']))<div style="font-size:12px;color:#2D6CDF;">{{ $rl['issue'] }}</div>@endif
                 </div>
 
                 {{-- Bullet Points --}}
@@ -355,13 +355,13 @@
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                         <div style="font-size:14px;font-weight:700;">Bullet Points</div>
                         @if($bp['pass'] ?? true)
-                            <span style="color:#34a853;font-size:13px;font-weight:600;">✔ Good</span>
+                            <span style="color:#1E8E3E;font-size:13px;font-weight:600;">✔ Good</span>
                         @else
-                            <span style="color:#ea4335;font-size:13px;font-weight:600;">✖ Add bullets</span>
+                            <span style="color:#2D6CDF;font-size:13px;font-weight:600;">✖ Add bullets</span>
                         @endif
                     </div>
                     @foreach(array_slice($bp['suggestions'] ?? [], 0, 2) as $s)
-                        <div style="font-size:12px;color:#555;background:#f8f8f8;padding:6px 10px;border-radius:6px;margin-bottom:4px;">{{ $s }}</div>
+                        <div style="font-size:12px;color:#555;background:#F0F0EE;padding:6px 10px;border-radius:6px;margin-bottom:4px;">{{ $s }}</div>
                     @endforeach
                 </div>
             </div>
@@ -372,9 +372,9 @@
             <div class="ats-card-header">
                 <h3>📋 Sections
                     @if($sugg['sections'] > 0)
-                        <span style="background:#fce8e6;color:#c5221f;border-radius:20px;font-size:11px;padding:2px 10px;">{{ $sugg['sections'] }} missing</span>
+                        <span style="background:#FEF2F2;color:#2D6CDF;border-radius:20px;font-size:11px;padding:2px 10px;">{{ $sugg['sections'] }} missing</span>
                     @else
-                        <span style="background:#e6f4ea;color:#137333;border-radius:20px;font-size:11px;padding:2px 10px;">PASS</span>
+                        <span style="background:#EDFAF2;color:#1E8E3E;border-radius:20px;font-size:11px;padding:2px 10px;">PASS</span>
                     @endif
                 </h3>
                 <span style="font-size:12px;color:#999;">Required resume sections</span>
@@ -395,20 +395,20 @@
                 @endphp
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:16px;">
                     @foreach($sectionChecks as [$secName, $secPass])
-                        <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;background:{{ $secPass ? '#f0faf5' : '#fff5f5' }};border:1px solid {{ $secPass ? '#c3e6cb' : '#f5c6cb' }};">
+                        <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;background:{{ $secPass ? '#EDFAF2' : '#FEF2F2' }};border:1px solid {{ $secPass ? '#A3D9B4' : '#FCA5A5' }};">
                             <span style="font-size:16px;line-height:1;">{{ $secPass ? '✔' : '✖' }}</span>
-                            <span style="font-size:13px;font-weight:600;color:{{ $secPass ? '#137333' : '#c5221f' }};">{{ $secName }}</span>
+                            <span style="font-size:13px;font-weight:600;color:{{ $secPass ? '#1E8E3E' : '#2D6CDF' }};">{{ $secName }}</span>
                         </div>
                     @endforeach
                 </div>
                 @if(!empty($cat_sections['missing']))
-                    <div style="padding:12px 16px;background:#fff8f0;border-radius:8px;border-left:3px solid #fbbc04;margin-bottom:12px;">
-                        <div style="font-size:12px;font-weight:700;color:#b06000;margin-bottom:6px;">Add these missing sections:</div>
+                    <div style="padding:12px 16px;background:#FFF8EC;border-radius:8px;border-left:3px solid #fbbc04;margin-bottom:12px;">
+                        <div style="font-size:12px;font-weight:700;color:#E37400;margin-bottom:6px;">Add these missing sections:</div>
                         @foreach($cat_sections['missing'] as $m)
                             <div style="font-size:12px;color:#555;padding:2px 0;">→ {{ $m }}</div>
                         @endforeach
                     </div>
-                    <a href="{{ route('resume.ats.editor', $resume) }}#section-header" style="display:inline-flex;align-items:center;gap:5px;background:#1A73E8;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;text-decoration:none;">✏️ Fix Missing Sections →</a>
+                    <a href="{{ route('resume.ats.editor', $resume) }}#section-header" style="display:inline-flex;align-items:center;gap:5px;background:#2D6CDF;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;text-decoration:none;">✏️ Fix Missing Sections →</a>
                 @endif
             </div>
         </div>
@@ -418,31 +418,31 @@
             <div class="ats-card-header">
                 <h3>✍️ Style
                     @if($sugg['style'] > 0)
-                        <span style="background:#fce8e6;color:#c5221f;border-radius:20px;font-size:11px;padding:2px 10px;">{{ $sugg['style'] }} suggestion{{ $sugg['style'] !== 1 ? 's' : '' }}</span>
+                        <span style="background:#FEF2F2;color:#2D6CDF;border-radius:20px;font-size:11px;padding:2px 10px;">{{ $sugg['style'] }} suggestion{{ $sugg['style'] !== 1 ? 's' : '' }}</span>
                     @else
-                        <span style="background:#e6f4ea;color:#137333;border-radius:20px;font-size:11px;padding:2px 10px;">PASS</span>
+                        <span style="background:#EDFAF2;color:#1E8E3E;border-radius:20px;font-size:11px;padding:2px 10px;">PASS</span>
                     @endif
                 </h3>
                 <span style="font-size:12px;color:#999;">Voice & word choice</span>
             </div>
             <div class="ats-card-body">
                 {{-- Voice --}}
-                <div style="padding:12px 0;border-bottom:1px solid #f5f5f5;">
+                <div style="padding:12px 0;border-bottom:1px solid #F0F0EE;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                         <div style="font-size:14px;font-weight:700;">Active Voice</div>
                         @if($vo['pass'] ?? true)
-                            <span style="color:#34a853;font-size:13px;font-weight:600;">✔ Pass</span>
+                            <span style="color:#1E8E3E;font-size:13px;font-weight:600;">✔ Pass</span>
                         @else
-                            <span style="color:#ea4335;font-size:13px;font-weight:600;">✖ Use action verbs</span>
+                            <span style="color:#2D6CDF;font-size:13px;font-weight:600;">✖ Use action verbs</span>
                         @endif
                     </div>
                     @if(!empty($vo['note']))<div style="font-size:12px;color:#666;margin-bottom:8px;">{{ $vo['note'] }}</div>@endif
                     @foreach(array_slice($vo['found'] ?? [], 0, 3) as $phrase)
-                        <div style="background:#fce8e6;border-left:3px solid #ea4335;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;color:#c5221f;margin-bottom:4px;font-style:italic;">"{{ $phrase }}"</div>
+                        <div style="background:#FEF2F2;border-left:3px solid #2D6CDF;padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;color:#2D6CDF;margin-bottom:4px;font-style:italic;">"{{ $phrase }}"</div>
                     @endforeach
                     @if(!($vo['pass'] ?? true))
                         <div style="margin-top:8px;">
-                            <a href="{{ route('resume.ats.editor', $resume) }}#section-experience" style="display:inline-flex;align-items:center;gap:5px;background:#1A73E8;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;text-decoration:none;">✏️ Fix in Editor →</a>
+                            <a href="{{ route('resume.ats.editor', $resume) }}#section-experience" style="display:inline-flex;align-items:center;gap:5px;background:#2D6CDF;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;text-decoration:none;">✏️ Fix in Editor →</a>
                         </div>
                     @endif
                 </div>
@@ -452,9 +452,9 @@
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                         <div style="font-size:14px;font-weight:700;">Buzzwords</div>
                         @if($bz['pass'] ?? true)
-                            <span style="color:#34a853;font-size:13px;font-weight:600;">✔ Pass</span>
+                            <span style="color:#1E8E3E;font-size:13px;font-weight:600;">✔ Pass</span>
                         @else
-                            <span style="color:#ea4335;font-size:13px;font-weight:600;">✖ Replace vague words</span>
+                            <span style="color:#2D6CDF;font-size:13px;font-weight:600;">✖ Replace vague words</span>
                         @endif
                     </div>
                     @if(!empty($bz['found']))
@@ -463,7 +463,7 @@
                             @foreach($bz['found'] as $w)<span class="ats-chip chip-red">{{ $w }}</span>@endforeach
                         </div>
                         <div style="margin-top:8px;">
-                            <a href="{{ route('resume.ats.editor', $resume) }}#section-summary" style="display:inline-flex;align-items:center;gap:5px;background:#1A73E8;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;text-decoration:none;">✏️ Fix in Editor →</a>
+                            <a href="{{ route('resume.ats.editor', $resume) }}#section-summary" style="display:inline-flex;align-items:center;gap:5px;background:#2D6CDF;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;text-decoration:none;">✏️ Fix in Editor →</a>
                         </div>
                     @endif
                 </div>
@@ -476,8 +476,8 @@
                 <div class="ats-card-header"><h3>💡 All Recommendations</h3></div>
                 <div class="ats-card-body">
                     @foreach($analysis['recommendations'] as $i => $rec)
-                        <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #f5f5f5;">
-                            <span style="color:#1A73E8;font-weight:700;">{{ $i + 1 }}.</span>
+                        <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #F0F0EE;">
+                            <span style="color:#2D6CDF;font-weight:700;">{{ $i + 1 }}.</span>
                             <span style="font-size:13px;color:#444;">{{ $rec }}</span>
                         </div>
                     @endforeach

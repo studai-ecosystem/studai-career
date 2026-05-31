@@ -6,8 +6,8 @@
 @php
     use Illuminate\Support\Str;
     $tpl      = $template ?? $resume->template;
-    $colors   = $tpl->color_scheme ?? ['primary'=>'#1a202c'];
-    $primary  = $colors['primary'] ?? '#1a202c';
+    $colors   = $tpl->color_scheme ?? ['primary'=>'#0C0C0C'];
+    $primary  = $colors['primary'] ?? '#0C0C0C';
     $slug     = $tpl->slug ?? 'professional-classic';
     $isTwoCol = in_array($slug, ['modern-tech','creative-portfolio','healthcare-professional']);
     $isMinimal = $slug === 'minimalist';
@@ -30,7 +30,7 @@
 @endphp
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: DejaVu Sans, Arial, sans-serif; font-size:9.5pt; color:#1a1a1a; line-height:1.45; background:#fff; }
+body { font-family: DejaVu Sans, Arial, sans-serif; font-size:9.5pt; color:#0C0C0C; line-height:1.45; background:#fff; }
 .st { color:{{ $primary }}; border-bottom:1.5pt solid {{ $primary }}; padding-bottom:2pt; margin-bottom:7pt; font-size:9pt; font-weight:bold; letter-spacing:1pt; text-transform:uppercase; }
 .badge { display:inline-block; padding:1.5pt 6pt; border-radius:10pt; font-size:7.5pt; background:{{ $badgeBg }}; color:{{ $primary }}; border:0.5pt solid {{ $borderLight }}; margin:1.5pt 2pt 1.5pt 0; }
 table { border-collapse:collapse; }
@@ -248,7 +248,7 @@ table { border-collapse:collapse; }
 {{-- SINGLE-COLUMN LAYOUT --}}
 <div>
 @if($isMinimal)
-<div style="padding:20pt 22pt 14pt;border-bottom:1pt solid #e0e0e0;">
+<div style="padding:20pt 22pt 14pt;border-bottom:1pt solid #E2E2E0;">
 <p style="font-size:22pt;font-weight:300;letter-spacing:3pt;text-transform:uppercase;color:#111;margin-bottom:4pt;">{{ $resume->full_name }}</p>
 <p style="font-size:8.5pt;color:#666;">
 @if($resume->email){{ $resume->email }}@endif

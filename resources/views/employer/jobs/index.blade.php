@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Job Postings')
 @section('page-title', 'Job Postings')
@@ -7,17 +7,17 @@
 @push('styles')
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════
-   JOB POSTINGS — LIGHT GRADIENT REDESIGN
-═══════════════════════════════════════ */
+/* ---------------------------------------
+   JOB POSTINGS � LIGHT GRADIENT REDESIGN
+--------------------------------------- */
 .jobs-page {
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
     padding: 1.75rem;
-    background: linear-gradient(160deg, #eef2ff 0%, #f5f3ff 30%, #fdf4ff 60%, #f0fdf4 100%);
+    background: #EBF2FF;
     min-height: 100%;
 }
 
-/* ─ Animations ─ */
+/* - Animations - */
 @keyframes fadeSlideUp {
     from { opacity:0; transform:translateY(20px); }
     to   { opacity:1; transform:translateY(0); }
@@ -56,24 +56,24 @@
 .j-a2 { animation:fadeSlideUp .4s ease both .12s; }
 .j-a3 { animation:fadeSlideUp .4s ease both .2s; }
 
-/* ─ HERO ─ */
+/* - HERO - */
 .jobs-hero {
     border-radius: 1.75rem;
     padding: 2.25rem 2rem;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 35%, #a855f7 60%, #ec4899 100%);
+    background: #2D6CDF;
     background-size: 250% 250%;
     animation: gradientShift 8s ease infinite;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 12px 50px rgba(99,102,241,.3), 0 2px 12px rgba(0,0,0,.08);
+    box-shadow: none;
     color: #fff;
 }
 .jobs-hero::before {
     content:'';
     position:absolute; inset:0;
     background:
-        radial-gradient(ellipse at 15% 50%, rgba(255,255,255,.15) 0%, transparent 50%),
-        radial-gradient(ellipse at 85% 20%, rgba(255,255,255,.1) 0%, transparent 40%);
+        rgba(255,255,255,.15),
+        rgba(255,255,255,.1);
     pointer-events:none;
 }
 .hero-orb1 {
@@ -104,22 +104,22 @@
     width:3.5rem; height:3.5rem; border-radius:1.1rem; flex-shrink:0;
     background:rgba(255,255,255,.2); backdrop-filter:blur(8px);
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 4px 16px rgba(0,0,0,.12);
+    box-shadow: none;
     border:1.5px solid rgba(255,255,255,.3);
 }
 .hero-btn-primary {
     display:inline-flex; align-items:center; gap:.5rem;
     padding:.75rem 1.5rem;
-    background:#fff; color:#6366f1;
+    background:#fff; color:#2D6CDF;
     font-size:.9rem; font-weight:800;
     border-radius:1rem; text-decoration:none;
-    box-shadow:0 4px 16px rgba(0,0,0,.15);
+    box-shadow: none;
     transition:transform .2s, box-shadow .2s;
     border:none;
 }
-.hero-btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,0,0,.2); }
+.hero-btn-primary:hover { transform:translateY(-2px); box-shadow: none; }
 
-/* ─ STAT CHIPS in hero ─ */
+/* - STAT CHIPS in hero - */
 .hero-chips { display:flex; gap:.75rem; flex-wrap:wrap; margin-top:1.25rem; }
 .hero-chip {
     padding:.35rem 1rem; border-radius:9999px;
@@ -130,86 +130,86 @@
 }
 .hero-chip-dot { width:.45rem; height:.45rem; border-radius:50%; animation:pulseDot 2s ease-in-out infinite; }
 
-/* ─ FILTER CARD ─ */
+/* - FILTER CARD - */
 .jobs-filter {
     background:#fff;
     border-radius:1.25rem;
-    border:1px solid rgba(99,102,241,.1);
-    box-shadow:0 2px 16px rgba(99,102,241,.07);
+    border:1px solid rgba(20, 71, 186,.1);
+    box-shadow: none;
     padding:1.25rem 1.5rem;
 }
 .jobs-filter input, .jobs-filter select {
     width:100%; padding:.625rem 1rem;
-    border:1.5px solid #e5e7eb; border-radius:.875rem;
-    font-size:.875rem; color:#1a1a2e; background:#fff;
+    border:1.5px solid #E2E2E0; border-radius:.875rem;
+    font-size:.875rem; color:#0C0C0C; background:#fff;
     font-family:inherit; transition:border .15s, box-shadow .15s;
 }
 .jobs-filter input:focus, .jobs-filter select:focus {
-    outline:none; border-color:#8b5cf6;
-    box-shadow:0 0 0 4px rgba(139,92,246,.1);
+    outline:none; border-color:#2D6CDF;
+    box-shadow: none;
 }
-.jobs-filter input::placeholder { color:#9ca3af; }
+.jobs-filter input::placeholder { color:#A8A8A8; }
 .filter-btn {
     padding:.625rem 1.5rem;
-    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+    background:#2D6CDF;
     color:#fff; border:none; border-radius:.875rem;
     font-size:.875rem; font-weight:700; font-family:inherit;
     cursor:pointer; transition:transform .15s, box-shadow .15s;
-    box-shadow:0 2px 10px rgba(99,102,241,.3);
+    box-shadow: none;
 }
-.filter-btn:hover { transform:translateY(-1px); box-shadow:0 4px 18px rgba(99,102,241,.4); }
+.filter-btn:hover { transform:translateY(-1px); box-shadow: none; }
 .filter-clear {
     padding:.625rem 1.25rem;
-    background:#f9fafb; color:#6b7280;
-    border:1.5px solid #e5e7eb; border-radius:.875rem;
+    background:#F7F7F5; color:#737373;
+    border:1.5px solid #E2E2E0; border-radius:.875rem;
     font-size:.875rem; font-weight:600; font-family:inherit;
     cursor:pointer; text-decoration:none; display:inline-flex;
     transition:background .15s;
 }
-.filter-clear:hover { background:#f0f0ff; border-color:#a5b4fc; color:#6366f1; }
+.filter-clear:hover { background:#EBF2FF; border-color:#BFCFEE; color:#2D6CDF; }
 
-/* ─ TABS ─ */
+/* - TABS - */
 .jobs-card {
     background:#fff;
     border-radius:1.25rem;
-    border:1px solid rgba(99,102,241,.08);
-    box-shadow:0 2px 16px rgba(99,102,241,.07);
+    border:1px solid rgba(20, 71, 186,.08);
+    box-shadow: none;
     overflow:hidden;
 }
 .tabs-bar {
-    display:flex; border-bottom:1px solid rgba(99,102,241,.08);
-    background:linear-gradient(to bottom, #fafafe, #fff);
+    display:flex; border-bottom:1px solid rgba(20, 71, 186,.08);
+    background:#EBF2FF;
     padding:0 .5rem;
     gap:.25rem;
 }
 .tab-link {
     padding:.875rem 1.1rem;
     font-size:.82rem; font-weight:600;
-    color:#6b7280; text-decoration:none;
+    color:#737373; text-decoration:none;
     border-bottom:2.5px solid transparent;
     transition:color .15s, border-color .15s;
     display:flex; align-items:center; gap:.5rem;
     white-space:nowrap;
 }
-.tab-link:hover { color:#6366f1; }
-.tab-link.active { color:#6366f1; border-bottom-color:#6366f1; }
+.tab-link:hover { color:#2D6CDF; }
+.tab-link.active { color:#2D6CDF; border-bottom-color:#2D6CDF; }
 .tab-count {
     padding:.15rem .5rem; border-radius:9999px;
     font-size:.68rem; font-weight:800;
 }
-.tab-link.active .tab-count { background:#eef2ff; color:#6366f1; }
-.tab-link:not(.active) .tab-count { background:#f3f4f6; color:#9ca3af; }
+.tab-link.active .tab-count { background:#EBF2FF; color:#2D6CDF; }
+.tab-link:not(.active) .tab-count { background:#F0F0EE; color:#A8A8A8; }
 
-/* ─ JOB CARDS ─ */
+/* - JOB CARDS - */
 .job-item {
     padding:1.5rem;
-    border-bottom:1px solid rgba(99,102,241,.06);
+    border-bottom:1px solid rgba(20, 71, 186,.06);
     transition:background .2s;
     animation:cardIn .4s ease both;
     position:relative;
 }
 .job-item:last-child { border-bottom:none; }
-.job-item:hover { background:linear-gradient(135deg, rgba(99,102,241,.03) 0%, rgba(168,85,247,.02) 100%); }
+.job-item:hover { background:rgba(20, 71, 186,.03); }
 
 /* Left accent strip */
 .job-item::before {
@@ -218,15 +218,15 @@
     width:3px; border-radius:9999px;
     opacity:0; transition:opacity .2s;
 }
-.job-item:hover::before { opacity:1; background:linear-gradient(to bottom,#6366f1,#ec4899); }
+.job-item:hover::before { opacity:1; background:#2D6CDF; }
 
 /* Job header */
 .job-title-text {
     font-size:1.05rem; font-weight:800;
-    color:#1a1a2e; letter-spacing:-.02em;
+    color:#0C0C0C; letter-spacing:-.02em;
     text-decoration:none; transition:color .15s;
 }
-.job-title-text:hover { color:#6366f1; }
+.job-title-text:hover { color:#2D6CDF; }
 
 /* Status badges */
 .badge {
@@ -234,10 +234,10 @@
     padding:.25rem .75rem; border-radius:9999px;
     font-size:.7rem; font-weight:800; letter-spacing:.03em; text-transform:uppercase;
 }
-.badge-published { background:linear-gradient(135deg,#dcfce7,#bbf7d0); color:#15803d; border:1px solid rgba(21,128,61,.15); }
-.badge-draft     { background:#f3f4f6; color:#6b7280; border:1px solid #e5e7eb; }
-.badge-closed    { background:#fff1f2; color:#be185d; border:1px solid rgba(190,24,93,.15); }
-.badge-expired   { background:#fff7ed; color:#c2410c; border:1px solid rgba(194,65,12,.15); }
+.badge-published { background:#EDFAF2; color:#1E8E3E; border:1px solid rgba(21,128,61,.15); }
+.badge-draft     { background:#F0F0EE; color:#737373; border:1px solid #E2E2E0; }
+.badge-closed    { background:#FEF2F2; color:#2D6CDF; border:1px solid rgba(190,24,93,.15); }
+.badge-expired   { background:#FFF8EC; color:#E37400; border:1px solid rgba(194,65,12,.15); }
 
 /* Meta row */
 .job-meta-row {
@@ -245,20 +245,20 @@
     align-items:center; margin-top:.625rem;
 }
 .job-meta-item {
-    font-size:.75rem; font-weight:500; color:#6b7280;
+    font-size:.75rem; font-weight:500; color:#737373;
     display:flex; align-items:center; gap:.3rem;
 }
-.job-meta-sep { color:#d1d5db; }
+.job-meta-sep { color:#C8C8C5; }
 
 /* Stats row */
 .job-stats-row {
     display:flex; align-items:center; justify-content:space-between;
     margin-top:1.25rem; padding-top:1.1rem;
-    border-top:1px dashed rgba(99,102,241,.12);
+    border-top:1px dashed rgba(20, 71, 186,.12);
     flex-wrap:wrap; gap:.75rem;
 }
-.job-app-count { font-size:2rem; font-weight:900; color:#1a1a2e; line-height:1; }
-.job-app-label { font-size:.7rem; color:#9ca3af; font-weight:500; margin-top:.1rem; }
+.job-app-count { font-size:2rem; font-weight:900; color:#0C0C0C; line-height:1; }
+.job-app-label { font-size:.7rem; color:#A8A8A8; font-weight:500; margin-top:.1rem; }
 
 /* Action buttons */
 .btn-sm {
@@ -269,31 +269,31 @@
     transition:transform .15s, box-shadow .15s;
 }
 .btn-sm:hover { transform:translateY(-1px); }
-.btn-close-job  { background:#fff0f3; color:#e11d48; border:1.5px solid rgba(225,29,72,.15); }
-.btn-close-job:hover { background:#ffe4e6; box-shadow:0 2px 8px rgba(225,29,72,.15); }
-.btn-reopen     { background:#f0fdf4; color:#16a34a; border:1.5px solid rgba(22,163,74,.15); }
-.btn-reopen:hover { background:#dcfce7; box-shadow:0 2px 8px rgba(22,163,74,.15); }
-.btn-duplicate  { background:#f9fafb; color:#6b7280; border:1.5px solid #e5e7eb; }
-.btn-duplicate:hover { background:#f0f0ff; border-color:#a5b4fc; color:#6366f1; }
+.btn-close-job  { background:#FEF2F2; color:#2D6CDF; border:1.5px solid rgba(225,29,72,.15); }
+.btn-close-job:hover { background:#FEF2F2; box-shadow: none; }
+.btn-reopen     { background:#EDFAF2; color:#1E8E3E; border:1.5px solid rgba(15, 107, 49,.15); }
+.btn-reopen:hover { background:#EDFAF2; box-shadow: none; }
+.btn-duplicate  { background:#F7F7F5; color:#737373; border:1.5px solid #E2E2E0; }
+.btn-duplicate:hover { background:#EBF2FF; border-color:#BFCFEE; color:#2D6CDF; }
 .btn-view-apps {
     padding:.55rem 1.25rem;
-    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+    background:#2D6CDF;
     color:#fff; font-weight:700; font-size:.825rem;
     border-radius:.875rem; text-decoration:none;
-    box-shadow:0 2px 12px rgba(99,102,241,.3);
+    box-shadow: none;
     display:inline-flex; align-items:center; gap:.4rem;
     transition:transform .15s, box-shadow .15s;
 }
-.btn-view-apps:hover { transform:translateY(-2px); box-shadow:0 6px 22px rgba(99,102,241,.4); }
+.btn-view-apps:hover { transform:translateY(-2px); box-shadow: none; }
 
 /* Icon buttons */
 .icon-btn {
     width:2.25rem; height:2.25rem; border-radius:.625rem;
     display:flex; align-items:center; justify-content:center;
-    transition:background .15s, color .15s; color:#9ca3af;
+    transition:background .15s, color .15s; color:#A8A8A8;
     text-decoration:none;
 }
-.icon-btn:hover { background:#eef2ff; color:#6366f1; }
+.icon-btn:hover { background:#EBF2FF; color:#2D6CDF; }
 
 /* Empty state */
 .jobs-empty {
@@ -301,10 +301,10 @@
 }
 .jobs-empty-icon {
     width:5rem; height:5rem; border-radius:1.5rem;
-    background:linear-gradient(135deg,#eef2ff,#f5f3ff);
+    background:#EBF2FF;
     display:flex; align-items:center; justify-content:center;
     margin:0 auto 1.25rem;
-    box-shadow:0 4px 20px rgba(99,102,241,.15);
+    box-shadow: none;
     animation:floatY 4s ease-in-out infinite;
 }
 </style>
@@ -333,15 +333,15 @@
                 </div>
                 <div class="hero-chips">
                     <div class="hero-chip">
-                        <span class="hero-chip-dot" style="background:#4ade80;"></span>
+                        <span class="hero-chip-dot" style="background:#1E8E3E;"></span>
                         {{ $statusCounts['published'] ?? 0 }} Published
                     </div>
                     <div class="hero-chip">
-                        <span class="hero-chip-dot" style="background:#facc15;animation-delay:.3s"></span>
+                        <span class="hero-chip-dot" style="background:#E37400;animation-delay:.3s"></span>
                         {{ $statusCounts['draft'] ?? 0 }} Drafts
                     </div>
                     <div class="hero-chip">
-                        <span class="hero-chip-dot" style="background:#f9a8d4;animation-delay:.6s"></span>
+                        <span class="hero-chip-dot" style="background:#FCA5A5;animation-delay:.6s"></span>
                         {{ $statusCounts['all'] ?? 0 }} Total
                     </div>
                 </div>
@@ -407,12 +407,12 @@
         @if($jobs->isEmpty())
         <div class="jobs-empty">
             <div class="jobs-empty-icon">
-                <svg style="width:2.5rem;height:2.5rem;color:#8b5cf6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <svg style="width:2.5rem;height:2.5rem;color:#2D6CDF" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
             </div>
-            <h2 style="font-size:1.125rem;font-weight:800;color:#1a1a2e;margin:0 0 .5rem;">No Jobs Found</h2>
-            <p style="font-size:.875rem;color:#9ca3af;max-width:26rem;margin:0 auto 1.5rem;">
+            <h2 style="font-size:1.125rem;font-weight:800;color:#0C0C0C;margin:0 0 .5rem;">No Jobs Found</h2>
+            <p style="font-size:.875rem;color:#A8A8A8;max-width:26rem;margin:0 auto 1.5rem;">
                 {{ request()->hasAny(['search','status','expiry']) ? 'Try adjusting your filters to find matching jobs.' : 'Start posting jobs to attract top talent.' }}
             </p>
             <a href="{{ route('employer.jobs.create') }}" class="btn-view-apps">Post Your First Job</a>
@@ -429,7 +429,7 @@
                         <a href="{{ route('employer.jobs.show', $job->id) }}" class="job-title-text">{{ $job->title }}</a>
                         @if($job->status === 'published')
                         <span class="badge badge-published">
-                            <span style="width:.4rem;height:.4rem;border-radius:50%;background:#16a34a;display:inline-block;animation:pulseDot 2s ease-in-out infinite;"></span>
+                            <span style="width:.4rem;height:.4rem;border-radius:50%;background:#1E8E3E;display:inline-block;animation:pulseDot 2s ease-in-out infinite;"></span>
                             Published
                         </span>
                         @elseif($job->status === 'draft')
@@ -445,7 +445,7 @@
                     {{-- Meta --}}
                     <div class="job-meta-row">
                         <span class="job-meta-item">
-                            <svg style="width:.875rem;height:.875rem;color:#a855f7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg style="width:.875rem;height:.875rem;color:#2D6CDF" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
@@ -453,27 +453,27 @@
                         </span>
                         <span class="job-meta-sep">&bull;</span>
                         <span class="job-meta-item">
-                            <svg style="width:.875rem;height:.875rem;color:#6366f1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg style="width:.875rem;height:.875rem;color:#2D6CDF" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
                             {{ ucwords(str_replace('-',' ',$job->employment_type)) }}
                         </span>
                         <span class="job-meta-sep">&bull;</span>
                         <span class="job-meta-item">
-                            <svg style="width:.875rem;height:.875rem;color:#f97316" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg style="width:.875rem;height:.875rem;color:#E37400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                             </svg>
                             {{ ucfirst($job->experience_level) }}
                         </span>
                         <span class="job-meta-sep">&bull;</span>
                         <span class="job-meta-item">
-                            <svg style="width:.875rem;height:.875rem;color:#22c55e" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg style="width:.875rem;height:.875rem;color:#1E8E3E" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                             Posted {{ $job->created_at?->diffForHumans() ?? 'recently' }}
                         </span>
                         <span class="job-meta-sep">&bull;</span>
-                        <span class="job-meta-item" style="color:{{ $job->expires_at && $job->expires_at < now() ? '#ef4444' : '#9ca3af' }}">
+                        <span class="job-meta-item" style="color:{{ $job->expires_at && $job->expires_at < now() ? '#2D6CDF' : '#A8A8A8' }}">
                             <svg style="width:.875rem;height:.875rem" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
@@ -502,11 +502,11 @@
             <div class="job-stats-row">
                 <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
                     <div>
-                        <div style="font-size:.65rem;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Applications</div>
+                        <div style="font-size:.65rem;color:#A8A8A8;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Applications</div>
                         <div style="display:flex;align-items:baseline;gap:.35rem;margin-top:.15rem;">
-                            <span style="font-size:2rem;font-weight:900;color:#1a1a2e;line-height:1;letter-spacing:-.04em;">{{ $job->applications_count }}</span>
+                            <span style="font-size:2rem;font-weight:900;color:#0C0C0C;line-height:1;letter-spacing:-.04em;">{{ $job->applications_count }}</span>
                             @if($job->applications_count > 0)
-                            <span style="font-size:.7rem;color:#22c55e;font-weight:700;padding:.1rem .4rem;background:#f0fdf4;border-radius:9999px;">&#x25b2; Active</span>
+                            <span style="font-size:.7rem;color:#1E8E3E;font-weight:700;padding:.1rem .4rem;background:#EDFAF2;border-radius:9999px;">&#x25b2; Active</span>
                             @endif
                         </div>
                     </div>
@@ -548,7 +548,7 @@
         @endforeach
 
         @if($jobs->hasPages())
-        <div style="padding:1.25rem 1.5rem;border-top:1px solid rgba(99,102,241,.08);">
+        <div style="padding:1.25rem 1.5rem;border-top:1px solid rgba(20, 71, 186,.08);">
             {{ $jobs->appends(request()->query())->links() }}
         </div>
         @endif

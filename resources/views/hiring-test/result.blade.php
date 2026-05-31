@@ -4,21 +4,21 @@
 <meta charset="UTF-8">
 <title>Test Result — StudAI Hire</title>
 <style>
-  body{background:#f4f6fb;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;}
-  .card{background:#fff;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,.1);padding:48px 40px;max-width:520px;width:100%;text-align:center;}
+  body{background:#EBF2FF;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+  .card{background:#fff;border-radius:20px;box-shadow: none;padding:48px 40px;max-width:520px;width:100%;text-align:center;}
   .icon{font-size:64px;margin-bottom:16px;}
   .result-title{font-size:28px;font-weight:800;margin-bottom:8px;}
-  .result-title.pass{color:#059669;}
-  .result-title.fail{color:#dc2626;}
+  .result-title.pass{color:#1E8E3E;}
+  .result-title.fail{color:#2D6CDF;}
   .score-ring{width:120px;height:120px;border-radius:50%;margin:24px auto;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;}
-  .score-ring.pass{background:#dcfce7;color:#059669;border:4px solid #6ee7b7;}
-  .score-ring.fail{background:#fee2e2;color:#dc2626;border:4px solid #fca5a5;}
-  .info{font-size:14px;color:#6b7280;margin-bottom:6px;}
-  .stage-badge{display:inline-block;padding:6px 16px;border-radius:50px;font-size:13px;font-weight:600;background:#ede9fe;color:#6d28d9;margin:16px 0;}
-  .message{font-size:15px;color:#374151;line-height:1.6;margin:20px 0;}
-  .message.pass{background:#f0fdf4;border-radius:12px;padding:16px;border:1px solid #bbf7d0;}
-  .message.fail{background:#fff1f2;border-radius:12px;padding:16px;border:1px solid #fecdd3;}
-  .back-btn{display:inline-block;margin-top:24px;padding:12px 28px;background:linear-gradient(135deg,#1A73E8,#6366f1);color:#fff;border-radius:12px;text-decoration:none;font-weight:700;font-size:14px;}
+  .score-ring.pass{background:#EDFAF2;color:#1E8E3E;border:4px solid #A3D9B4;}
+  .score-ring.fail{background:#FEF2F2;color:#2D6CDF;border:4px solid #fca5a5;}
+  .info{font-size:14px;color:#737373;margin-bottom:6px;}
+  .stage-badge{display:inline-block;padding:6px 16px;border-radius:50px;font-size:13px;font-weight:600;background:#EBF2FF;color:#1B57C4;margin:16px 0;}
+  .message{font-size:15px;color:#3D3D3D;line-height:1.6;margin:20px 0;}
+  .message.pass{background:#EDFAF2;border-radius:12px;padding:16px;border:1px solid #A3D9B4;}
+  .message.fail{background:#FEF2F2;border-radius:12px;padding:16px;border:1px solid #FCA5A5;}
+  .back-btn{display:inline-block;margin-top:24px;padding:12px 28px;background:#2D6CDF;color:#fff;border-radius:12px;text-decoration:none;font-weight:700;font-size:14px;}
 </style>
 </head>
 <body>

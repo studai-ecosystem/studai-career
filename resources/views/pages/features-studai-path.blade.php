@@ -24,30 +24,30 @@
 
 @section('content')
 {{-- Hero Section --}}
-<section class="relative overflow-hidden" style="background:linear-gradient(135deg,#eef1ff 0%,#f5f0ff 30%,#eefff7 65%,#fff8ee 100%);">
+<section class="relative overflow-hidden" style="background:#EBF2FF;">
     {{-- Animated background orbs --}}
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute" style="width:600px;height:600px;top:-150px;right:-100px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.25),transparent 70%);filter:blur(70px);animation:orb2 12s ease-in-out infinite;"></div>
-        <div class="absolute" style="width:500px;height:500px;bottom:-100px;left:-80px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.2),transparent 70%);filter:blur(60px);animation:orb1 14s ease-in-out infinite;"></div>
-        <div class="absolute" style="width:350px;height:350px;top:30%;left:40%;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.15),transparent 70%);filter:blur(50px);animation:orb3 16s ease-in-out infinite;"></div>
-        <div class="absolute" style="width:250px;height:250px;top:10%;left:20%;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.18),transparent 70%);filter:blur(45px);animation:orb4 11s ease-in-out infinite;"></div>
-        <div class="absolute inset-0" style="background-image:radial-gradient(circle,rgba(99,102,241,.15) 1px,transparent 1px);background-size:36px 36px;"></div>
+        <div class="absolute" style="width:600px;height:600px;top:-150px;right:-100px;border-radius:50%;background:rgba(20, 71, 186,.25);filter:blur(70px);animation:orb2 12s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:500px;height:500px;bottom:-100px;left:-80px;border-radius:50%;background:rgba(20, 71, 186,.2);filter:blur(60px);animation:orb1 14s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:350px;height:350px;top:30%;left:40%;border-radius:50%;background:rgba(15, 107, 49,.15);filter:blur(50px);animation:orb3 16s ease-in-out infinite;"></div>
+        <div class="absolute" style="width:250px;height:250px;top:10%;left:20%;border-radius:50%;background:rgba(146, 80, 10,.18);filter:blur(45px);animation:orb4 11s ease-in-out infinite;"></div>
+        <div class="absolute inset-0" style="background-image:rgba(20, 71, 186,.15);background-size:36px 36px;"></div>
     </div>
     <div class="relative mx-auto max-w-7xl px-6 py-24 lg:py-32 text-center">
-        <span class="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-widest mb-6" style="background:rgba(99,102,241,.12);color:#6366f1;border:1px solid rgba(99,102,241,.25);backdrop-filter:blur(8px);">
+        <span class="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold uppercase tracking-widest mb-6" style="background:rgba(20, 71, 186,.12);color:#2D6CDF;border:1px solid rgba(20, 71, 186,.25);backdrop-filter:blur(8px);">
             The Full Stack
         </span>
-        <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl max-w-4xl mx-auto" style="color:#1a1a2e;line-height:1.15;">
-            6 AI Modules. One Career OS. <span style="background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Zero Manual Work.</span>
+        <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl max-w-4xl mx-auto" style="color:#0C0C0C;line-height:1.15;">
+            6 AI Modules. One Career OS. <span style="background:#2D6CDF;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Zero Manual Work.</span>
         </h1>
-        <p class="mt-6 text-lg max-w-2xl mx-auto" style="color:#4b5563;">
+        <p class="mt-6 text-lg max-w-2xl mx-auto" style="color:#3D3D3D;">
             Every tool you need to find, apply, prepare, negotiate, and land your dream job — all running on autopilot.
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
-            <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#7c3aed);box-shadow:0 4px 18px rgba(99,102,241,.4);">
+            <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold text-white" style="background:#2D6CDF;box-shadow: none;">
                 Start Free Today
             </a>
-            <a href="#modules" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,.8);color:#6366f1;border:1.5px solid rgba(99,102,241,.25);backdrop-filter:blur(8px);">
+            <a href="#modules" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,.8);color:#2D6CDF;border:1.5px solid rgba(20, 71, 186,.25);backdrop-filter:blur(8px);">
                 Explore Modules
             </a>
         </div>
@@ -479,25 +479,25 @@
 </section>
 
 {{-- CTA Section --}}
-<section class="py-24 relative overflow-hidden" style="background:linear-gradient(135deg,#eef1ff 0%,#fdf4ff 40%,#eefff7 100%);">
+<section class="py-24 relative overflow-hidden" style="background:#EBF2FF;">
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute" style="width:500px;height:500px;top:-80px;right:-60px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.2),transparent 70%);filter:blur(60px);"></div>
-        <div class="absolute" style="width:400px;height:400px;bottom:-60px;left:-50px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.18),transparent 70%);filter:blur(55px);"></div>
-        <div class="absolute inset-0" style="background-image:radial-gradient(circle,rgba(99,102,241,.12) 1px,transparent 1px);background-size:40px 40px;"></div>
+        <div class="absolute" style="width:500px;height:500px;top:-80px;right:-60px;border-radius:50%;background:rgba(20, 71, 186,.2);filter:blur(60px);"></div>
+        <div class="absolute" style="width:400px;height:400px;bottom:-60px;left:-50px;border-radius:50%;background:rgba(20, 71, 186,.18);filter:blur(55px);"></div>
+        <div class="absolute inset-0" style="background-image:rgba(20, 71, 186,.12);background-size:40px 40px;"></div>
     </div>
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-        <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold mb-6" style="background:rgba(99,102,241,.1);color:#6366f1;border:1px solid rgba(99,102,241,.2);">Join 50,000+ professionals</div>
-        <h2 class="text-3xl sm:text-4xl font-bold mb-6" style="color:#1a1a2e;">
-            Ready to put your career on <span style="background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">autopilot?</span>
+        <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold mb-6" style="background:rgba(20, 71, 186,.1);color:#2D6CDF;border:1px solid rgba(20, 71, 186,.2);">Join 50,000+ professionals</div>
+        <h2 class="text-3xl sm:text-4xl font-bold mb-6" style="color:#0C0C0C;">
+            Ready to put your career on <span style="background:#2D6CDF;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">autopilot?</span>
         </h2>
-        <p class="text-lg mb-8" style="color:#4b5563;">
+        <p class="text-lg mb-8" style="color:#3D3D3D;">
             Join 50,000+ professionals who let AI manage their job search.
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#6366f1,#7c3aed);box-shadow:0 4px 18px rgba(99,102,241,.4);">
+            <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold text-white" style="background:#2D6CDF;box-shadow: none;">
                 Start Free Today
             </a>
-            <a href="{{ route('contact') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,.85);color:#6366f1;border:1.5px solid rgba(99,102,241,.25);">
+            <a href="{{ route('contact') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl text-sm font-semibold" style="background:rgba(255,255,255,.85);color:#2D6CDF;border:1.5px solid rgba(20, 71, 186,.25);">
                 Talk to Sales
             </a>
         </div>

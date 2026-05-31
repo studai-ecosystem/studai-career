@@ -174,8 +174,8 @@
                         {{-- Match score ring --}}
                         <div class="relative flex-shrink-0 w-12 h-12">
                             <svg class="w-12 h-12" style="transform:rotate(-90deg)" viewBox="0 0 48 48">
-                                <circle cx="24" cy="24" r="20" fill="none" stroke="#e2e8f0" stroke-width="4"/>
-                                <circle cx="24" cy="24" r="20" fill="none" stroke="{{ $j['score']>=90 ? '#16a34a' : ($j['score']>=80 ? '#2563eb' : '#d97706') }}" stroke-width="4"
+                                <circle cx="24" cy="24" r="20" fill="none" stroke="#E2E2E0" stroke-width="4"/>
+                                <circle cx="24" cy="24" r="20" fill="none" stroke="{{ $j['score']>=90 ? '#1E8E3E' : ($j['score']>=80 ? '#1B57C4' : '#E37400') }}" stroke-width="4"
                                     stroke-dasharray="125.66"
                                     stroke-dashoffset="{{ round(125.66 - (125.66 * $j['score'] / 100)) }}"
                                     stroke-linecap="round"/>

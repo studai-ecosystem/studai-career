@@ -8,7 +8,7 @@
 <div class="space-y-6">
 
     {{-- Header --}}
-    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 8px 32px rgba(16,185,129,.3)">
+    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:#1E8E3E;box-shadow: none">
         <h1 class="text-2xl font-bold mb-1">Seasonal Events</h1>
         <p class="text-green-100 text-sm">Participate in limited-time challenges for exclusive rewards</p>
     </div>
@@ -16,7 +16,7 @@
     {{-- Current Event --}}
     @if($currentEvent)
     <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-green-300 dark:border-green-700 shadow-md overflow-hidden">
-        <div class="p-5 border-b border-green-100 dark:border-green-800 flex items-center gap-3" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0)">
+        <div class="p-5 border-b border-green-100 dark:border-green-800 flex items-center gap-3" style="background:#EDFAF2">
             <span class="text-2xl">🎯</span>
             <div>
                 <span class="text-xs font-bold text-green-700 uppercase tracking-wide">Live Now</span>
@@ -40,7 +40,7 @@
                     You're participating!
                 </div>
             @else
-                <button onclick="joinEvent({{ $currentEvent->id }})" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white" style="background:linear-gradient(135deg,#10b981,#059669)">
+                <button onclick="joinEvent({{ $currentEvent->id }})" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white" style="background:#1E8E3E">
                     Join Event
                 </button>
             @endif
@@ -63,7 +63,7 @@
         <div class="divide-y divide-gray-100 dark:divide-gray-700">
             @foreach($upcomingEvents as $event)
             <div class="flex items-center gap-4 p-4">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0)">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#EDFAF2">
                     <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>

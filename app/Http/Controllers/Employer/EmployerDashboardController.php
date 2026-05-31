@@ -35,11 +35,12 @@ class EmployerDashboardController extends Controller
         // All base counts in a single batch â€” no N+1
         // ------------------------------------------------------------------
         $jobCounts = Cache::remember("employer_job_counts_{$cid}", 300, function () use ($cid) {
+            $nowTs = now()->toDateTimeString();
             return Job::where('company_id', $cid)
                 ->selectRaw("
                     COUNT(*) as total,
-                    SUM(CASE WHEN status = 'published' AND (expires_at IS NULL OR expires_at > NOW()) THEN 1 ELSE 0 END) as active
-                ")
+                    SUM(CASE WHEN status = 'published' AND (expires_at IS NULL OR expires_at > ?) THEN 1 ELSE 0 END) as active
+                ", [$nowTs])
                 ->first();
         });
 
@@ -48,9 +49,10 @@ class EmployerDashboardController extends Controller
 
         // Application counts â€” one query with GROUP BY status
         $appCounts = Cache::remember("employer_app_counts_{$cid}", 120, function () use ($cid) {
+            $weekAgo = now()->subDays(7)->toDateTimeString();
             return Application::join('job_listings', 'applications.job_id', '=', 'job_listings.id')
                 ->where('job_listings.company_id', $cid)
-                ->selectRaw("COUNT(*) as total, SUM(CASE WHEN applications.status = 'pending' AND applications.created_at >= NOW() - INTERVAL 7 DAY THEN 1 ELSE 0 END) as new_pending")
+                ->selectRaw("COUNT(*) as total, SUM(CASE WHEN applications.status = 'pending' AND applications.created_at >= ? THEN 1 ELSE 0 END) as new_pending", [$weekAgo])
                 ->first();
         });
 
@@ -88,11 +90,14 @@ class EmployerDashboardController extends Controller
 
         // Weekly trend â€” ONE batch query instead of 4 separate queries
         $weeklyTrend = Cache::remember("employer_weekly_trend_{$cid}", 300, function () use ($cid) {
+            $weekExpr = DB::connection()->getDriverName() === 'sqlite'
+                ? "strftime('%Y-%W', applications.created_at)"
+                : "DATE_FORMAT(applications.created_at, '%Y-%u')";
             $rows = Application::join('job_listings', 'applications.job_id', '=', 'job_listings.id')
                 ->where('job_listings.company_id', $cid)
                 ->where('applications.created_at', '>=', now()->subWeeks(4)->startOfWeek())
-                ->selectRaw("DATE_FORMAT(applications.created_at, '%Y-%u') as week_key, COUNT(*) as count")
-                ->groupByRaw("DATE_FORMAT(applications.created_at, '%Y-%u')")
+                ->selectRaw("{$weekExpr} as week_key, COUNT(*) as count")
+                ->groupByRaw($weekExpr)
                 ->orderBy('week_key')
                 ->pluck('count', 'week_key');
 
@@ -148,11 +153,14 @@ class EmployerDashboardController extends Controller
 
         // Monthly trend â€” ONE batch query instead of 12 separate queries
         $monthlyRaw = Cache::remember("employer_monthly_trend_{$cid}", 600, function () use ($cid) {
+            $monthExpr = DB::connection()->getDriverName() === 'sqlite'
+                ? "strftime('%Y-%m', applications.created_at)"
+                : "DATE_FORMAT(applications.created_at, '%Y-%m')";
             return Application::join('job_listings', 'applications.job_id', '=', 'job_listings.id')
                 ->where('job_listings.company_id', $cid)
                 ->where('applications.created_at', '>=', now()->subMonths(12)->startOfMonth())
-                ->selectRaw("DATE_FORMAT(applications.created_at, '%Y-%m') as month_key, COUNT(*) as count")
-                ->groupByRaw("DATE_FORMAT(applications.created_at, '%Y-%m')")
+                ->selectRaw("{$monthExpr} as month_key, COUNT(*) as count")
+                ->groupByRaw($monthExpr)
                 ->pluck('count', 'month_key');
         });
 
@@ -175,11 +183,14 @@ class EmployerDashboardController extends Controller
             ->toArray();
 
         // Average time to hire â€” DB aggregation, no PHP avg()
+        $diffExpr = DB::connection()->getDriverName() === 'sqlite'
+            ? "AVG(julianday(applications.updated_at) - julianday(applications.created_at))"
+            : "AVG(DATEDIFF(applications.updated_at, applications.created_at))";
         $averageTimeToHire = Application::join('job_listings', 'applications.job_id', '=', 'job_listings.id')
             ->where('job_listings.company_id', $cid)
             ->where('applications.status', 'hired')
             ->whereNotNull('applications.updated_at')
-            ->selectRaw("AVG(DATEDIFF(applications.updated_at, applications.created_at)) as avg_days")
+            ->selectRaw("{$diffExpr} as avg_days")
             ->value('avg_days');
 
         // Conversion rates â€” single query with conditional counts

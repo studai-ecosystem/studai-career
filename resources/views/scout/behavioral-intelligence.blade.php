@@ -13,16 +13,16 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: none;
         }
         
         .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: #2D6CDF;
         }
         
         .score-bar {
             transition: width 0.8s ease-out;
-            background: linear-gradient(90deg, #10b981 0%, #3b82f6 50%, #ec4899 100%);
+            background: #1E8E3E;
         }
         
         .ei-indicator {
@@ -31,7 +31,7 @@
         
         .ei-indicator.active {
             transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            box-shadow: none;
         }
         
         .approach-card {
@@ -41,18 +41,18 @@
         
         .approach-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            box-shadow: none;
         }
         
         .approach-card.selected {
-            border: 2px solid #3b82f6;
-            background: rgba(59, 130, 246, 0.05);
+            border: 2px solid #2D6CDF;
+            background: rgba(20, 71, 186, 0.05);
         }
         
         .thriving-meter {
             position: relative;
             height: 20px;
-            background: linear-gradient(90deg, #ef4444 0%, #f59e0b 25%, #eab308 50%, #84cc16 75%, #10b981 100%);
+            background: #2D6CDF;
             border-radius: 10px;
         }
         
@@ -61,19 +61,19 @@
             top: -8px;
             width: 4px;
             height: 36px;
-            background: #1f2937;
+            background: #0C0C0C;
             border-radius: 2px;
             transition: left 0.8s ease-out;
         }
         
-        .category-excellent { color: #10b981; }
-        .category-good { color: #3b82f6; }
-        .category-moderate { color: #f59e0b; }
-        .category-poor { color: #ef4444; }
+        .category-excellent { color: #1E8E3E; }
+        .category-good { color: #2D6CDF; }
+        .category-moderate { color: #E37400; }
+        .category-poor { color: #2D6CDF; }
         
         @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
-            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
+            0%, 100% { box-shadow: none; }
+            50% { box-shadow: none; }
         }
         
         .active-scenario {
@@ -82,16 +82,16 @@
         
         .reasoning-counter {
             font-size: 0.875rem;
-            color: #6b7280;
+            color: #737373;
         }
         
         .reasoning-counter.min-warning {
-            color: #f59e0b;
+            color: #E37400;
             font-weight: 600;
         }
         
         .reasoning-counter.good {
-            color: #10b981;
+            color: #1E8E3E;
         }
         
         .hidden { display: none; }
@@ -1108,16 +1108,16 @@
                             results.communication_score
                         ],
                         backgroundColor: [
-                            'rgba(16, 185, 129, 0.7)',
-                            'rgba(59, 130, 246, 0.7)',
-                            'rgba(139, 92, 246, 0.7)',
-                            'rgba(236, 72, 153, 0.7)'
+                            'rgba(15, 107, 49, 0.7)',
+                            'rgba(20, 71, 186, 0.7)',
+                            'rgba(20, 71, 186, 0.7)',
+                            'rgba(20, 71, 186, 0.7)'
                         ],
                         borderColor: [
-                            'rgb(16, 185, 129)',
-                            'rgb(59, 130, 246)',
-                            'rgb(139, 92, 246)',
-                            'rgb(236, 72, 153)'
+                            'rgb(15, 107, 49)',
+                            'rgb(20, 71, 186)',
+                            'rgb(20, 71, 186)',
+                            'rgb(20, 71, 186)'
                         ],
                         borderWidth: 2
                     }]
@@ -1152,10 +1152,10 @@
                     datasets: [{
                         label: 'Demonstrated',
                         data: Object.values(eiData),
-                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(20, 71, 186, 0.2)',
+                        borderColor: 'rgb(20, 71, 186)',
                         borderWidth: 2,
-                        pointBackgroundColor: 'rgb(59, 130, 246)'
+                        pointBackgroundColor: 'rgb(20, 71, 186)'
                     }]
                 },
                 options: {

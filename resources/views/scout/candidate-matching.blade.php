@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Candidate Matching - S.C.O.U.T.')
 
@@ -40,13 +40,13 @@
                 <p class="text-sm text-gray-600 mb-2">Overall Success Score</p>
                 <div class="relative inline-block">
                     <svg class="w-48 h-48">
-                        <circle cx="96" cy="96" r="88" stroke="#e5e7eb" stroke-width="8" fill="none"></circle>
+                        <circle cx="96" cy="96" r="88" stroke="#E2E2E0" stroke-width="8" fill="none"></circle>
                         <circle id="score-circle" cx="96" cy="96" r="88" stroke="url(#gradient)" stroke-width="8" fill="none" 
                             stroke-dasharray="553" stroke-dashoffset="553" transform="rotate(-90 96 96)" class="transition-all duration-1000"></circle>
                         <defs>
                             <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                                <stop offset="0%" style="stop-color:#2D6CDF;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#2D6CDF;stop-opacity:1" />
                             </linearGradient>
                         </defs>
                     </svg>
@@ -244,7 +244,7 @@ function renderMatchResults(data) {
     if (prediction.low_confidence) {
         const banner = document.createElement('div');
         banner.id = 'low-confidence-banner';
-        banner.style.cssText = 'background:#fffbeb;border:1px solid #f59e0b;border-radius:.75rem;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:.84rem;color:#92400e;display:flex;align-items:center;gap:.5rem';
+        banner.style.cssText = 'background:#FFF8EC;border:1px solid #E37400;border-radius:.75rem;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:.84rem;color:#E37400;display:flex;align-items:center;gap:.5rem';
         banner.innerHTML = '<svg style="width:16px;height:16px;flex-shrink:0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg><span><strong>Low confidence:</strong> Your DNA profile completeness is below 60%. Run DNA Analysis to improve accuracy of these predictions.</span>';
         document.getElementById('match-results').prepend(banner);
     }

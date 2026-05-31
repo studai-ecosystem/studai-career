@@ -117,8 +117,8 @@ function renderSourceChart(sources) {
             datasets: [{
                 label: 'Effectiveness Score',
                 data: scores,
-                backgroundColor: 'rgba(34, 197, 94, 0.8)',
-                borderColor: 'rgba(34, 197, 94, 1)',
+                backgroundColor: 'rgba(15, 107, 49, 0.8)',
+                borderColor: 'rgba(15, 107, 49, 1)',
                 borderWidth: 1
             }]
         },

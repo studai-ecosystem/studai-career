@@ -3,13 +3,13 @@
     *, *::before, *::after { cursor: none !important; }
     #cursor-dot {
         width: 10px; height: 10px;
-        background: #818cf8;
+        background: #2D6CDF;
         border-radius: 50%;
         position: fixed; top: 0; left: 0;
         pointer-events: none; z-index: 99999;
         transform: translate(-50%, -50%);
         transition: background .2s ease, transform .1s ease, box-shadow .2s ease;
-        box-shadow: 0 0 12px 3px rgba(129,140,248,.9), 0 0 30px 8px rgba(129,140,248,.4);
+        box-shadow: none;
     }
     #cursor-ring {
         width: 38px; height: 38px;
@@ -23,12 +23,12 @@
     }
     #cursor-trail {
         width: 6px; height: 6px;
-        background: rgba(236,72,153,.7);
+        background: rgba(20, 71, 186,.7);
         border-radius: 50%;
         position: fixed; top: 0; left: 0;
         pointer-events: none; z-index: 99997;
         transform: translate(-50%, -50%);
-        box-shadow: 0 0 8px 2px rgba(236,72,153,.5);
+        box-shadow: none;
     }
 </style>
 
@@ -64,7 +64,7 @@
 
     function onEnter() {
         dot.style.transform  = 'translate(-50%,-50%) scale(2.2)';
-        dot.style.background = '#e879f9';
+        dot.style.background = '#2D6CDF';
         dot.style.boxShadow  = '0 0 16px 5px rgba(232,121,249,.9), 0 0 40px 12px rgba(232,121,249,.4)';
         ring.style.width     = '55px';
         ring.style.height    = '55px';
@@ -72,7 +72,7 @@
     }
     function onLeave() {
         dot.style.transform  = 'translate(-50%,-50%) scale(1)';
-        dot.style.background = '#818cf8';
+        dot.style.background = '#2D6CDF';
         dot.style.boxShadow  = '0 0 12px 3px rgba(129,140,248,.9), 0 0 30px 8px rgba(129,140,248,.4)';
         ring.style.width     = '38px';
         ring.style.height    = '38px';

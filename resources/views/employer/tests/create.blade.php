@@ -58,7 +58,7 @@
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
       <div class="flex items-center justify-between mb-5">
         <h2 class="text-base font-semibold text-gray-900">Questions <span id="q-count" class="text-gray-400 font-normal text-sm"></span></h2>
-        <button type="button" onclick="addQuestion()" class="px-4 py-2 text-sm font-semibold text-white rounded-xl" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">+ Add Question</button>
+        <button type="button" onclick="addQuestion()" class="px-4 py-2 text-sm font-semibold text-white rounded-xl" style="background:#2D6CDF;">+ Add Question</button>
       </div>
       <div id="questions-container" class="space-y-5">
         {{-- Pre-fill existing questions --}}
@@ -97,7 +97,7 @@
 
     <div class="flex gap-3">
       <a href="{{ route('employer.jobs.show', $job->id) }}" class="flex-1 py-3 border border-gray-200 text-gray-600 text-sm font-semibold rounded-xl text-center hover:bg-gray-50 transition-colors">Cancel</a>
-      <button type="submit" class="flex-1 py-3 text-white text-sm font-semibold rounded-xl" style="background:linear-gradient(135deg,#1A73E8,#6366f1);">Save Test Questions</button>
+      <button type="submit" class="flex-1 py-3 text-white text-sm font-semibold rounded-xl" style="background:#2D6CDF;">Save Test Questions</button>
     </div>
   </form>
 </div>

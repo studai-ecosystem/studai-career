@@ -8,8 +8,8 @@
 <div class="space-y-6 animate-fade-in">
 
     {{-- HERO --}}
-    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:linear-gradient(135deg,#ec4899 0%,#db2777 35%,#6366f1 70%,#8b5cf6 100%);box-shadow:0 8px 32px rgba(236,72,153,.3)">
-        <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 80% 50%,rgba(255,255,255,.4) 0%,transparent 60%);"></div>
+    <div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:#2D6CDF;box-shadow: none">
+        <div class="absolute inset-0 opacity-10" style="background-image:rgba(255,255,255,.4);"></div>
         <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
             <div class="flex items-center gap-5">
                 <div class="relative flex-shrink-0">

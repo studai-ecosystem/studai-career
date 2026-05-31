@@ -40,7 +40,7 @@
                                     <p class="text-sm text-gray-600 mb-4">
                                         Store these codes in a safe place. They can be used to access your account if you lose your authenticator device.
                                     </p>
-                                    <a href="{{ route('two-factor.custom-recovery-codes') }}" class="text-sm font-medium text-[#2f5fb0] hover:text-[#284f95]">
+                                    <a href="{{ route('two-factor.custom-recovery-codes') }}" class="text-sm font-medium text-[#2D6CDF] hover:text-[#1B57C4]">
                                         View Recovery Codes →
                                     </a>
                                 </div>
@@ -64,8 +64,8 @@
                     @else
                         <!-- 2FA is disabled -->
                         <div class="text-center py-8">
-                            <div class="mx-auto w-16 h-16 bg-[#eaf0fa] rounded-full flex items-center justify-center mb-4">
-                                <svg class="w-8 h-8 text-[#2f5fb0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="mx-auto w-16 h-16 bg-[#EBF2FF] rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-8 h-8 text-[#2D6CDF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                                 </svg>
                             </div>
@@ -78,7 +78,7 @@
                             
                             <form method="POST" action="{{ route('two-factor.custom-enable') }}">
                                 @csrf
-                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-[#2f5fb0] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-[#284f95] active:bg-[#21426f] focus:outline-none focus:border-[#21426f] focus:ring ring-[#c3d2ea] disabled:opacity-25 transition ease-in-out duration-150">
+                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-[#2D6CDF] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-[#1B57C4] active:bg-[#0C2E72] focus:outline-none focus:border-[#0C2E72] focus:ring ring-[#BFCFEE] disabled:opacity-25 transition ease-in-out duration-150">
                                     Enable Two-Factor Authentication
                                 </button>
                             </form>
@@ -87,19 +87,19 @@
                                 <h4 class="text-sm font-medium text-gray-900 mb-3">How it works:</h4>
                                 <ol class="space-y-3">
                                     <li class="flex">
-                                        <span class="flex-shrink-0 w-6 h-6 bg-[#eaf0fa] text-[#2f5fb0] rounded-full flex items-center justify-center text-xs font-medium mr-3">1</span>
+                                        <span class="flex-shrink-0 w-6 h-6 bg-[#EBF2FF] text-[#2D6CDF] rounded-full flex items-center justify-center text-xs font-medium mr-3">1</span>
                                         <span class="text-sm text-gray-600">Download an authenticator app (Google Authenticator, Authy, 1Password, etc.)</span>
                                     </li>
                                     <li class="flex">
-                                        <span class="flex-shrink-0 w-6 h-6 bg-[#eaf0fa] text-[#2f5fb0] rounded-full flex items-center justify-center text-xs font-medium mr-3">2</span>
+                                        <span class="flex-shrink-0 w-6 h-6 bg-[#EBF2FF] text-[#2D6CDF] rounded-full flex items-center justify-center text-xs font-medium mr-3">2</span>
                                         <span class="text-sm text-gray-600">Scan the QR code we provide with your authenticator app</span>
                                     </li>
                                     <li class="flex">
-                                        <span class="flex-shrink-0 w-6 h-6 bg-[#eaf0fa] text-[#2f5fb0] rounded-full flex items-center justify-center text-xs font-medium mr-3">3</span>
+                                        <span class="flex-shrink-0 w-6 h-6 bg-[#EBF2FF] text-[#2D6CDF] rounded-full flex items-center justify-center text-xs font-medium mr-3">3</span>
                                         <span class="text-sm text-gray-600">Enter the verification code to confirm setup</span>
                                     </li>
                                     <li class="flex">
-                                        <span class="flex-shrink-0 w-6 h-6 bg-[#eaf0fa] text-[#2f5fb0] rounded-full flex items-center justify-center text-xs font-medium mr-3">4</span>
+                                        <span class="flex-shrink-0 w-6 h-6 bg-[#EBF2FF] text-[#2D6CDF] rounded-full flex items-center justify-center text-xs font-medium mr-3">4</span>
                                         <span class="text-sm text-gray-600">Use the code from your app each time you log in</span>
                                     </li>
                                 </ol>

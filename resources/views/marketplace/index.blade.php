@@ -4,18 +4,18 @@
 
 @push('styles')
 <style>
-    .fiverr-hero { background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 60%, #e8f5e9 100%); }
+    .fiverr-hero { background: #EBF2FF; }
     .category-pill { transition: all .2s; }
-    .category-pill:hover { background: #1A73E8; color: #fff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,115,232,.25); }
+    .category-pill:hover { background: #2D6CDF; color: #fff; transform: translateY(-1px); box-shadow: none; }
     .gig-card { transition: box-shadow .2s, transform .2s; }
-    .gig-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.12); transform: translateY(-3px); }
-    .freelancer-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.1); }
-    .star-filled { color: #f9b208; }
-    .badge-pro { background: #404145; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
-    .badge-level { background: #1dbf73; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
+    .gig-card:hover { box-shadow: none; transform: translateY(-3px); }
+    .freelancer-card:hover { box-shadow: none; }
+    .star-filled { color: #E37400; }
+    .badge-pro { background: #3D3D3D; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
+    .badge-level { background: #1E8E3E; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
     .search-bar input:focus { outline: none; }
-    .tag-pill { border: 1px solid #dadef2; color: #62626a; font-size: 13px; border-radius: 20px; padding: 5px 14px; transition: all .15s; cursor: pointer; }
-    .tag-pill:hover { border-color: #1A73E8; color: #1A73E8; }
+    .tag-pill { border: 1px solid #EBF2FF; color: #737373; font-size: 13px; border-radius: 20px; padding: 5px 14px; transition: all .15s; cursor: pointer; }
+    .tag-pill:hover { border-color: #2D6CDF; color: #2D6CDF; }
 </style>
 @endpush
 
@@ -61,7 +61,7 @@
                     @endif
                 @else
                     <a href="{{ route('login') }}"
-                       class="shrink-0 ml-auto px-4 py-2 my-2 rounded-xl text-sm font-bold text-white whitespace-nowrap" style="background:#1A73E8;">
+                       class="shrink-0 ml-auto px-4 py-2 my-2 rounded-xl text-sm font-bold text-white whitespace-nowrap" style="background:#2D6CDF;">
                         Sign In to Post / Sell
                     </a>
                 @endauth
@@ -184,24 +184,24 @@
 
         @php
         $catStyles = [
-            'web_development'    => ['bg' => 'linear-gradient(135deg,#3b82f6,#4f46e5)', 'icon' => '💻'],
-            'mobile_development' => ['bg' => 'linear-gradient(135deg,#a855f7,#ec4899)', 'icon' => '📱'],
-            'design'             => ['bg' => 'linear-gradient(135deg,#ec4899,#f43f5e)', 'icon' => '🎨'],
-            'writing'            => ['bg' => 'linear-gradient(135deg,#f59e0b,#f97316)', 'icon' => '✍️'],
-            'marketing'          => ['bg' => 'linear-gradient(135deg,#22c55e,#14b8a6)', 'icon' => '📣'],
-            'data_science'       => ['bg' => 'linear-gradient(135deg,#06b6d4,#3b82f6)', 'icon' => '📊'],
-            'ai_ml'              => ['bg' => 'linear-gradient(135deg,#7c3aed,#9333ea)', 'icon' => '🤖'],
-            'devops'             => ['bg' => 'linear-gradient(135deg,#64748b,#374151)', 'icon' => '⚙️'],
-            'video_production'   => ['bg' => 'linear-gradient(135deg,#ef4444,#ec4899)', 'icon' => '🎬'],
-            'consulting'         => ['bg' => 'linear-gradient(135deg,#14b8a6,#06b6d4)', 'icon' => '💼'],
-            'finance'            => ['bg' => 'linear-gradient(135deg,#10b981,#059669)', 'icon' => '💰'],
+            'web_development'    => ['bg' => '#2D6CDF', 'icon' => '💻'],
+            'mobile_development' => ['bg' => '#2D6CDF', 'icon' => '📱'],
+            'design'             => ['bg' => '#2D6CDF', 'icon' => '🎨'],
+            'writing'            => ['bg' => '#E37400', 'icon' => '✍️'],
+            'marketing'          => ['bg' => '#1E8E3E', 'icon' => '📣'],
+            'data_science'       => ['bg' => '#2D6CDF', 'icon' => '📊'],
+            'ai_ml'              => ['bg' => '#2D6CDF', 'icon' => '🤖'],
+            'devops'             => ['bg' => '#737373', 'icon' => '⚙️'],
+            'video_production'   => ['bg' => '#2D6CDF', 'icon' => '🎬'],
+            'consulting'         => ['bg' => '#2D6CDF', 'icon' => '💼'],
+            'finance'            => ['bg' => '#1E8E3E', 'icon' => '💰'],
         ];
         @endphp
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             @forelse($featuredProjects ?? [] as $project)
                 @php
-                    $style = $catStyles[$project->category] ?? ['bg' => 'linear-gradient(135deg,#3b82f6,#4f46e5)', 'icon' => '💼'];
+                    $style = $catStyles[$project->category] ?? ['bg' => '#2D6CDF', 'icon' => '💼'];
                 @endphp
                 <a href="{{ route('marketplace.project.show', $project) }}"
                    class="gig-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group">
@@ -213,7 +213,7 @@
                             <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">🔥 URGENT</span>
                         @endif
                         @if($project->is_featured)
-                            <span class="absolute top-2 right-2 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded-full">⭐ TOP</span>
+                            <span class="absolute top-2 right-2 text-xs font-bold px-2 py-0.5 rounded-full" style="background:#FFF8EC;color:#E37400;">⭐ TOP</span>
                         @endif
                     </div>
 
@@ -223,7 +223,7 @@
                             <img src="https://ui-avatars.com/api/?name={{ urlencode($project->employer?->name ?? 'Client') }}&size=28&background=1A73E8&color=fff&rounded=true"
                                  class="w-7 h-7 rounded-full shrink-0" alt="">
                             <span class="text-xs text-gray-600 truncate font-medium">{{ $project->employer?->name ?? 'Client' }}</span>
-                            <span class="ml-auto text-xs font-bold px-1.5 py-0.5 rounded" style="background:#1dbf73;color:#fff;">PRO</span>
+                            <span class="ml-auto text-xs font-bold px-1.5 py-0.5 rounded" style="background:#1E8E3E;color:#fff;">PRO</span>
                         </div>
 
                         <h3 class="text-sm font-semibold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition mb-2 flex-1 leading-snug">
@@ -232,12 +232,12 @@
 
                         <div class="flex flex-wrap gap-1 mb-2">
                             @foreach(array_slice($project->skills_required, 0, 2) as $skill)
-                                <span class="px-2 py-0.5 text-xs rounded-full" style="background:#eff6ff;color:#1d4ed8;">{{ $skill }}</span>
+                                <span class="px-2 py-0.5 text-xs rounded-full" style="background:#EBF2FF;color:#1B57C4;">{{ $skill }}</span>
                             @endforeach
                         </div>
 
                         <div class="flex items-center gap-1 mb-3">
-                            <span style="color:#f9b208;" class="text-sm">★★★★★</span>
+                            <span style="color:#E37400;" class="text-sm">★★★★★</span>
                             <span class="text-xs font-bold text-gray-800">5.0</span>
                             <span class="text-xs text-gray-400">({{ $project->proposals_count ?? 0 }})</span>
                         </div>
@@ -256,13 +256,13 @@
                     @auth
                         <a href="{{ route('marketplace.employer.create-project') }}"
                            class="inline-flex items-center gap-2 px-6 py-3 text-white font-bold rounded-xl transition"
-                           style="background:#1A73E8;">
+                           style="background:#2D6CDF;">
                             + Post a Project
                         </a>
                     @else
                         <a href="{{ route('login') }}"
                            class="inline-flex items-center gap-2 px-6 py-3 text-white font-bold rounded-xl transition"
-                           style="background:#1A73E8;">
+                           style="background:#2D6CDF;">
                             Get Started Free
                         </a>
                     @endauth
@@ -278,7 +278,7 @@
         @auth
         @if(auth()->user()->isEmployer())
         {{-- Employer sees only Company card, full-width --}}
-        <div class="rounded-2xl p-8 flex flex-col md:flex-row md:items-center gap-6" style="background:linear-gradient(135deg,#1A73E8,#0d47a1);color:#fff;">
+        <div class="rounded-2xl p-8 flex flex-col md:flex-row md:items-center gap-6" style="background:#2D6CDF;color:#fff;">
             <div class="text-5xl">🏢</div>
             <div class="flex-1">
                 <h3 class="text-2xl font-bold mb-1">Hire Top Student Talent</h3>
@@ -286,7 +286,7 @@
             </div>
             <div class="flex gap-3 flex-wrap flex-shrink-0">
                 <a href="{{ route('marketplace.employer.create-project') }}"
-                   class="px-6 py-3 rounded-xl font-bold text-sm bg-white hover:bg-blue-50 transition" style="color:#1A73E8;">
+                   class="px-6 py-3 rounded-xl font-bold text-sm bg-white hover:bg-blue-50 transition" style="color:#2D6CDF;">
                     + Post a Project
                 </a>
                 <a href="{{ route('marketplace.gigs') }}"
@@ -301,7 +301,7 @@
         </div>
         @else
         {{-- Job seeker / student sees only their card, full-width --}}
-        <div class="rounded-2xl p-8 flex flex-col md:flex-row md:items-center gap-6" style="background:linear-gradient(135deg,#1dbf73,#0a9e5c);color:#fff;">
+        <div class="rounded-2xl p-8 flex flex-col md:flex-row md:items-center gap-6" style="background:#1E8E3E;color:#fff;">
             <div class="text-5xl">🎓</div>
             <div class="flex-1">
                 <h3 class="text-2xl font-bold mb-1">Your Student Marketplace</h3>
@@ -309,7 +309,7 @@
             </div>
             <div class="flex gap-3 flex-wrap flex-shrink-0">
                 <a href="{{ route('marketplace.freelancer.create-gig') }}"
-                   class="px-6 py-3 rounded-xl font-bold text-sm bg-white hover:bg-green-50 transition" style="color:#0a9e5c;">
+                   class="px-6 py-3 rounded-xl font-bold text-sm bg-white hover:bg-green-50 transition" style="color:#1E8E3E;">
                     + Create a Service
                 </a>
                 <a href="{{ route('marketplace.projects') }}"
@@ -326,20 +326,20 @@
         @else
         {{-- Guests see both cards --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div class="rounded-2xl p-7 flex flex-col" style="background:linear-gradient(135deg,#1A73E8,#0d47a1);color:#fff;">
+            <div class="rounded-2xl p-7 flex flex-col" style="background:#2D6CDF;color:#fff;">
                 <div class="text-3xl mb-3">🏢</div>
                 <h3 class="text-xl font-bold mb-1">For Companies</h3>
                 <p class="text-blue-100 text-sm mb-4 flex-1">Post a project with your requirements and get proposals from verified student developers, designers, and data scientists.</p>
                 <div class="flex gap-2 flex-wrap">
-                    <a href="{{ route('login') }}" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-white hover:bg-blue-50 transition" style="color:#1A73E8;">Post a Project</a>
+                    <a href="{{ route('login') }}" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-white hover:bg-blue-50 transition" style="color:#2D6CDF;">Post a Project</a>
                 </div>
             </div>
-            <div class="rounded-2xl p-7 flex flex-col" style="background:linear-gradient(135deg,#1dbf73,#0a9e5c);color:#fff;">
+            <div class="rounded-2xl p-7 flex flex-col" style="background:#1E8E3E;color:#fff;">
                 <div class="text-3xl mb-3">🎓</div>
                 <h3 class="text-xl font-bold mb-1">For Students</h3>
                 <p class="text-green-100 text-sm mb-4 flex-1">Offer your skills as a service — companies browse your gig listing and order directly. No bidding, no waiting.</p>
                 <div class="flex gap-2 flex-wrap">
-                    <a href="{{ route('register') }}" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-white hover:bg-green-50 transition" style="color:#0a9e5c;">Get Started Free</a>
+                    <a href="{{ route('register') }}" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-white hover:bg-green-50 transition" style="color:#1E8E3E;">Get Started Free</a>
                 </div>
             </div>
         </div>
@@ -366,14 +366,14 @@
             ->get();
     }
     $gigCatStyles = [
-        'web_development'    => ['bg'=>'linear-gradient(135deg,#3b82f6,#4f46e5)','icon'=>'💻'],
-        'mobile_development' => ['bg'=>'linear-gradient(135deg,#a855f7,#ec4899)','icon'=>'📱'],
-        'design'             => ['bg'=>'linear-gradient(135deg,#ec4899,#f43f5e)','icon'=>'🎨'],
-        'writing'            => ['bg'=>'linear-gradient(135deg,#f59e0b,#f97316)','icon'=>'✍️'],
-        'marketing'          => ['bg'=>'linear-gradient(135deg,#22c55e,#14b8a6)','icon'=>'📣'],
-        'data_science'       => ['bg'=>'linear-gradient(135deg,#06b6d4,#3b82f6)','icon'=>'📊'],
-        'ai_ml'              => ['bg'=>'linear-gradient(135deg,#7c3aed,#9333ea)','icon'=>'🤖'],
-        'devops'             => ['bg'=>'linear-gradient(135deg,#64748b,#374151)','icon'=>'⚙️'],
+        'web_development'    => ['bg'=>'#2D6CDF','icon'=>'💻'],
+        'mobile_development' => ['bg'=>'#2D6CDF','icon'=>'📱'],
+        'design'             => ['bg'=>'#2D6CDF','icon'=>'🎨'],
+        'writing'            => ['bg'=>'#E37400','icon'=>'✍️'],
+        'marketing'          => ['bg'=>'#1E8E3E','icon'=>'📣'],
+        'data_science'       => ['bg'=>'#2D6CDF','icon'=>'📊'],
+        'ai_ml'              => ['bg'=>'#2D6CDF','icon'=>'🤖'],
+        'devops'             => ['bg'=>'#737373','icon'=>'⚙️'],
     ];
     @endphp
 
@@ -392,13 +392,13 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             @forelse($featuredGigs as $gig)
-                @php $gcs = $gigCatStyles[$gig->category] ?? ['bg'=>'linear-gradient(135deg,#3b82f6,#4f46e5)','icon'=>'💼']; @endphp
+                @php $gcs = $gigCatStyles[$gig->category] ?? ['bg'=>'#2D6CDF','icon'=>'💼']; @endphp
                 <a href="{{ route('marketplace.gig.show', $gig) }}"
                    class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col group" style="transition:all .2s;">
                     <div class="h-36 flex items-center justify-center relative" style="background:{{ $gcs['bg'] }};">
                         <span class="text-5xl drop-shadow-md">{{ $gcs['icon'] }}</span>
                         @if($gig->is_featured)
-                            <span class="absolute top-2 right-2 text-xs font-bold px-2 py-0.5 rounded-full" style="background:#fbbf24;color:#78350f;">⭐ TOP</span>
+                            <span class="absolute top-2 right-2 text-xs font-bold px-2 py-0.5 rounded-full" style="background:#FFF8EC;color:#E37400;">⭐ TOP</span>
                         @endif
                     </div>
                     <div class="p-4 flex flex-col flex-1">
@@ -406,13 +406,13 @@
                             <img src="https://ui-avatars.com/api/?name={{ urlencode($gig->freelancerProfile?->user?->name ?? 'S') }}&size=26&background=1dbf73&color=fff&rounded=true"
                                  class="rounded-full shrink-0" style="width:26px;height:26px;" alt="">
                             <span class="text-xs text-gray-600 truncate font-medium">{{ $gig->freelancerProfile?->user?->name }}</span>
-                            <span class="ml-auto text-xs font-bold px-1.5 py-0.5 rounded" style="background:#1dbf73;color:#fff;">PRO</span>
+                            <span class="ml-auto text-xs font-bold px-1.5 py-0.5 rounded" style="background:#1E8E3E;color:#fff;">PRO</span>
                         </div>
                         <h3 class="text-sm font-semibold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition flex-1 leading-snug mb-2">
                             {{ $gig->title }}
                         </h3>
                         <div class="flex items-center gap-1 mb-3">
-                            <span style="color:#ffb33e;">★</span>
+                            <span style="color:#E37400;">★</span>
                             <span class="text-xs font-bold text-gray-800">{{ number_format($gig->average_rating,1) }}</span>
                             <span class="text-xs text-gray-400">({{ $gig->total_reviews }})</span>
                             <span class="text-xs text-gray-400 ml-auto">{{ $gig->orders_count }} sold</span>
@@ -436,7 +436,7 @@
          TOP FREELANCERS — only shown to employers & guests
     ═══════════════════════════════════════════════════════ --}}
     @if(!auth()->check() || auth()->user()->isEmployer())
-    <div class="py-12" style="background:#f7f7f7;">
+    <div class="py-12" style="background:#F0F0EE;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between mb-6">
                 <div>
@@ -460,7 +460,7 @@
                                  class="rounded-full border-4 border-white shadow-md object-cover" style="width:72px;height:72px;"
                                  alt="{{ $profile->user?->name }}">
                             @if($profile->is_verified)
-                                <div class="absolute -bottom-1 -right-1 rounded-full p-1 border-2 border-white" style="background:#1A73E8;">
+                                <div class="absolute -bottom-1 -right-1 rounded-full p-1 border-2 border-white" style="background:#2D6CDF;">
                                     <svg class="w-3 h-3" fill="white" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                     </svg>
@@ -469,17 +469,17 @@
                         </div>
 
                         <p class="font-semibold text-gray-900 group-hover:text-blue-600 transition text-sm">{{ $profile->user?->name }}</p>
-                        <p class="text-xs mb-2" style="color:#1A73E8;">{{ Str::limit($profile->professional_title, 35) }}</p>
+                        <p class="text-xs mb-2" style="color:#2D6CDF;">{{ Str::limit($profile->professional_title, 35) }}</p>
 
                         <div class="flex items-center justify-center gap-1 mb-2">
-                            <span style="color:#f9b208;">★</span>
+                            <span style="color:#E37400;">★</span>
                             <span class="text-xs font-bold text-gray-800">{{ number_format($profile->average_rating ?? 4.9, 1) }}</span>
                             <span class="text-xs text-gray-400">({{ $profile->total_reviews ?? 0 }})</span>
                         </div>
 
                         <div class="flex flex-wrap justify-center gap-1 mb-3">
                             @foreach(array_slice($profile->skills, 0, 2) as $skill)
-                                <span class="px-2 py-0.5 text-xs rounded-full" style="background:#eff6ff;color:#1d4ed8;">{{ $skill }}</span>
+                                <span class="px-2 py-0.5 text-xs rounded-full" style="background:#EBF2FF;color:#1B57C4;">{{ $skill }}</span>
                             @endforeach
                         </div>
 
@@ -494,7 +494,7 @@
                         @auth
                             <a href="{{ route('marketplace.freelancer.profile') }}"
                                class="inline-flex items-center gap-2 px-5 py-2.5 text-white font-semibold rounded-xl transition text-sm"
-                               style="background:#1A73E8;">
+                               style="background:#2D6CDF;">
                                 Create Your Profile
                             </a>
                         @endauth

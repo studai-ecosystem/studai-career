@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Freelancer Dashboard - Talent Marketplace')
 
@@ -96,7 +96,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-lg font-semibold text-gray-900">Active Contracts</h2>
                         <a href="{{ route('marketplace.freelancer.contracts') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
-                            View All â†’
+                            View All →
                         </a>
                     </div>
 
@@ -143,10 +143,10 @@
                             </div>
                         @empty
                             <div class="text-center py-8">
-                                <div class="text-gray-400 text-4xl mb-2">�‹</div>
+                                <div class="text-gray-400 text-4xl mb-2">?�</div>
                                 <p class="text-gray-500 mb-4">No active contracts</p>
                                 <a href="{{ route('marketplace.projects') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">
-                                    Browse Projects â†’
+                                    Browse Projects →
                                 </a>
                             </div>
                         @endforelse
@@ -158,7 +158,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-lg font-semibold text-gray-900">Recent Proposals</h2>
                         <a href="{{ route('marketplace.freelancer.proposals') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
-                            View All â†’
+                            View All →
                         </a>
                     </div>
 
@@ -196,10 +196,10 @@
                             </div>
                         @empty
                             <div class="text-center py-8">
-                                <div class="text-gray-400 text-4xl mb-2">�</div>
+                                <div class="text-gray-400 text-4xl mb-2">?�</div>
                                 <p class="text-gray-500 mb-4">No proposals yet</p>
                                 <a href="{{ route('marketplace.projects') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">
-                                    Browse Projects â†’
+                                    Browse Projects →
                                 </a>
                             </div>
                         @endforelse
@@ -211,7 +211,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-lg font-semibold text-gray-900">Recommended for You</h2>
                         <a href="{{ route('marketplace.projects') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
-                            View All â†’
+                            View All →
                         </a>
                     </div>
 
@@ -241,7 +241,7 @@
                             </div>
                         @empty
                             <div class="text-center py-8">
-                                <div class="text-gray-400 text-4xl mb-2">¯</div>
+                                <div class="text-gray-400 text-4xl mb-2">�</div>
                                 <p class="text-gray-500">Update your profile to get personalized recommendations</p>
                             </div>
                         @endforelse
@@ -328,7 +328,7 @@
                     <div class="space-y-3">
                         @forelse($badges ?? [] as $userBadge)
                             <div class="flex items-center p-2 bg-gray-50 rounded-lg">
-                                <span class="text-2xl mr-3">{{ $userBadge->badge->icon ?? '†' }}</span>
+                                <span class="text-2xl mr-3">{{ $userBadge->badge->icon ?? '�' }}</span>
                                 <div>
                                     <p class="font-medium text-gray-900">{{ $userBadge->badge->name }}</p>
                                     <p class="text-gray-500 text-xs">{{ $userBadge->badge->category }}</p>
@@ -364,11 +364,11 @@
                             <span class="text-gray-700">My Proposals</span>
                         </a>
                         <a href="{{ route('marketplace.freelancer.offers') }}" 
-                           class="flex items-center p-3 rounded-lg hover:bg-blue-50 transition" style="background:#eff6ff;">
-                            <svg class="w-5 h-5 mr-3" style="color:#1A73E8;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="flex items-center p-3 rounded-lg hover:bg-blue-50 transition" style="background:#EBF2FF;">
+                            <svg class="w-5 h-5 mr-3" style="color:#2D6CDF;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
-                            <span class="font-semibold" style="color:#1A73E8;">🎁 My Offers</span>
+                            <span class="font-semibold" style="color:#2D6CDF;">?? My Offers</span>
                         </a>
                         <a href="{{ route('marketplace.freelancer.earnings') }}" 
                            class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">

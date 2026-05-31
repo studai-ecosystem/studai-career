@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Job Search')
 @section('page-title', 'Find Jobs')
@@ -6,17 +6,17 @@
 
 @push('styles')
 <style>
-/* Force all text in job search to be visible */
-#job-search-page { color: #1a1a2e; }
+/* Theme-aware text colours (auto-flip via MERIDIAN tokens in dark) */
+#job-search-page { color: var(--color-ink-1); }
 #job-search-page p, #job-search-page span, #job-search-page label,
 #job-search-page h1, #job-search-page h2, #job-search-page h3,
 #job-search-page h4, #job-search-page h5, #job-search-page h6,
 #job-search-page a:not(.btn-apply), #job-search-page li,
-#job-search-page select option { color: #1a1a2e; }
+#job-search-page select option { color: var(--color-ink-1); }
 #job-search-page .text-muted, #job-search-page .text-gray-400,
-#job-search-page .text-gray-500, #job-search-page .text-gray-600 { color: #6b7280 !important; }
+#job-search-page .text-gray-500, #job-search-page .text-gray-600 { color: var(--color-ink-2) !important; }
 #job-search-page .text-gray-700, #job-search-page .text-gray-800,
-#job-search-page .text-gray-900 { color: #1a1a2e !important; }
+#job-search-page .text-gray-900 { color: var(--color-ink-1) !important; }
 
 /* Hide scrollbars on sticky panels */
 #job-search-page aside::-webkit-scrollbar { display: none; }
@@ -57,29 +57,29 @@
     50%      { opacity:1; transform:scale(1) rotate(180deg); }
 }
 @keyframes searchPulse {
-    0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
-    50%      { box-shadow: 0 0 0 6px rgba(255,255,255,0); }
+    0%,100% { box-shadow: none; }
+    50%      { box-shadow: none; }
 }
-.hero-search-btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 8px 24px rgba(0,0,0,.25) !important; }
+.hero-search-btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: none; }
 .hero-search-btn { transition: transform .2s ease, box-shadow .2s ease; }
-.hero-input:focus { box-shadow: 0 0 0 3px rgba(167,139,250,0.6), 0 2px 8px rgba(0,0,0,.1) !important; outline: none !important; }
+.hero-input:focus { box-shadow: none; outline: none !important; }
 </style>
 
-<div class="relative overflow-hidden rounded-2xl p-6 mb-6" style="background:linear-gradient(-45deg,#e8005a,#7c3aed,#6d28d9,#b845eb,#e8005a,#7c3aed); background-size:400% 400%; animation:heroGradientShift 8s ease infinite; z-index:0; isolation:isolate;">
+<div class="relative overflow-hidden rounded-2xl p-6 mb-6" style="background:#2D6CDF; z-index:0; isolation:isolate;">
 
     {{-- Floating orbs --}}
-    <div class="absolute" style="top:-30px;left:-30px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(255,182,255,0.55),transparent 70%);animation:floatOrb1 7s ease-in-out infinite;pointer-events:none;"></div>
-    <div class="absolute" style="bottom:-40px;right:5%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,80,120,0.45),transparent 70%);animation:floatOrb2 9s ease-in-out infinite;pointer-events:none;"></div>
-    <div class="absolute" style="top:10px;right:25%;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(200,170,255,0.5),transparent 70%);animation:floatOrb3 6s ease-in-out infinite;pointer-events:none;"></div>
+    <div class="absolute" style="top:-30px;left:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.16);animation:floatOrb1 7s ease-in-out infinite;pointer-events:none;"></div>
+    <div class="absolute" style="bottom:-40px;right:5%;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.12);animation:floatOrb2 9s ease-in-out infinite;pointer-events:none;"></div>
+    <div class="absolute" style="top:10px;right:25%;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.14);animation:floatOrb3 6s ease-in-out infinite;pointer-events:none;"></div>
 
     {{-- Sparkle dots --}}
     <div class="absolute" style="top:18px;right:18%;width:6px;height:6px;background:white;border-radius:50%;animation:sparkle 2.5s ease-in-out infinite;pointer-events:none;"></div>
-    <div class="absolute" style="top:38px;right:35%;width:4px;height:4px;background:rgba(255,200,255,1);border-radius:50%;animation:sparkle 3.2s ease-in-out infinite .8s;pointer-events:none;"></div>
-    <div class="absolute" style="bottom:22px;left:30%;width:5px;height:5px;background:rgba(255,255,200,1);border-radius:50%;animation:sparkle 2.8s ease-in-out infinite 1.4s;pointer-events:none;"></div>
+    <div class="absolute" style="top:38px;right:35%;width:4px;height:4px;background:rgba(255,255,255,0.95);border-radius:50%;animation:sparkle 3.2s ease-in-out infinite .8s;pointer-events:none;"></div>
+    <div class="absolute" style="bottom:22px;left:30%;width:5px;height:5px;background:rgba(255,255,255,0.85);border-radius:50%;animation:sparkle 2.8s ease-in-out infinite 1.4s;pointer-events:none;"></div>
     <div class="absolute" style="top:50%;right:12%;width:4px;height:4px;background:white;border-radius:50%;animation:sparkle 3.5s ease-in-out infinite .4s;pointer-events:none;"></div>
 
     {{-- Noise texture overlay --}}
-    <div class="absolute inset-0 rounded-2xl" style="background-image:radial-gradient(circle at 80% 20%,rgba(255,255,255,.18) 0%,transparent 55%),radial-gradient(circle at 10% 80%,rgba(255,100,200,.15) 0%,transparent 45%); pointer-events:none;"></div>
+    <div class="absolute inset-0 rounded-2xl" style="background-image:rgba(255,255,255,.18),rgba(255,100,200,.15); pointer-events:none;"></div>
 
     <div class="relative">
         <div class="flex items-center gap-3 mb-4">
@@ -96,15 +96,15 @@
         <form method="GET" action="{{ route('jobs.search') }}" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
             <input type="text" name="keyword" value="{{ request('keyword') }}" placeholder="Job title, skills, or keywords..."
                    class="hero-input"
-                   style="flex:1;min-width:200px;background:rgba(255,255,255,0.95);color:#1a1a2e;border:none;border-radius:12px;padding:12px 16px;font-size:14px;box-shadow:0 2px 12px rgba(0,0,0,.15);transition:box-shadow .2s;">
+                   style="flex:1;min-width:200px;background:rgba(255,255,255,0.95);color:#0C0C0C;border:none;border-radius:12px;padding:12px 16px;font-size:14px;box-shadow: none;transition:box-shadow .2s;">
             <select name="location"
-                    style="width:160px;background:rgba(255,255,255,0.95);color:#1a1a2e;border:none;border-radius:12px;padding:12px 16px;font-size:14px;outline:none;box-shadow:0 2px 12px rgba(0,0,0,.15);cursor:pointer;">
+                    style="width:160px;background:rgba(255,255,255,0.95);color:#0C0C0C;border:none;border-radius:12px;padding:12px 16px;font-size:14px;outline:none;box-shadow: none;cursor:pointer;">
                 <option value="">All Locations</option>
                 @foreach($locations as $loc)
                     <option value="{{ $loc }}" {{ request('location') == $loc ? 'selected' : '' }}>{{ $loc }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="hero-search-btn" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:white;color:#7c3aed;font-weight:700;font-size:14px;border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.18);white-space:nowrap;">
+            <button type="submit" class="hero-search-btn" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:white;color:#2D6CDF;font-weight:700;font-size:14px;border:none;border-radius:12px;cursor:pointer;box-shadow: none;white-space:nowrap;">
                 <svg style="width:16px;height:16px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -141,7 +141,7 @@
         return '\u20B9' + fmt(min) + ' - \u20B9' + fmt(max);
     }
 }">
-    {{-- Search Bar (hidden â€” using hero above) --}}
+    {{-- Search Bar (hidden — using hero above) --}}
     <form method="GET" action="{{ route('jobs.search') }}" class="hidden">
         <div class="flex flex-col lg:flex-row gap-4">
             {{-- Main Search --}}
@@ -181,7 +181,7 @@
         </div>
     </form>
 
-    {{-- 3-Column Layout (sticky sidebar â€” page scrolls naturally) --}}
+    {{-- 3-Column Layout (sticky sidebar — page scrolls naturally) --}}
     <div class="flex gap-5 items-start">
         {{-- Left: Filters Panel --}}
         <aside class="hidden lg:block flex-shrink-0" style="width:232px; position:sticky; top:80px; max-height:calc(100vh - 96px); overflow-y:auto; overflow-x:hidden; align-self:flex-start; scrollbar-width:none;">
@@ -330,11 +330,11 @@
                                 'has_applied'      => in_array((int) $job->id, $appliedJobIds ?? [], true),
                             ];
                             $palette = [
-                                ['accent'=>'#6366f1','light'=>'rgba(99,102,241,.065)','avatar'=>'135deg,#818cf8,#6366f1'],
-                                ['accent'=>'#0ea5e9','light'=>'rgba(14,165,233,.065)','avatar'=>'135deg,#38bdf8,#0ea5e9'],
-                                ['accent'=>'#10b981','light'=>'rgba(16,185,129,.065)','avatar'=>'135deg,#34d399,#10b981'],
-                                ['accent'=>'#f59e0b','light'=>'rgba(245,158,11,.065)','avatar'=>'135deg,#fbbf24,#f59e0b'],
-                                ['accent'=>'#ec4899','light'=>'rgba(236,72,153,.065)','avatar'=>'135deg,#f472b6,#ec4899'],
+                                ['accent'=>'#2D6CDF','light'=>'rgba(20, 71, 186,.065)','avatar'=>'135deg,#2D6CDF,#2D6CDF'],
+                                ['accent'=>'#2D6CDF','light'=>'rgba(14,165,233,.065)','avatar'=>'135deg,#2D6CDF,#2D6CDF'],
+                                ['accent'=>'#1E8E3E','light'=>'rgba(15, 107, 49,.065)','avatar'=>'135deg,#1E8E3E,#1E8E3E'],
+                                ['accent'=>'#E37400','light'=>'rgba(146, 80, 10,.065)','avatar'=>'135deg,#E37400,#E37400'],
+                                ['accent'=>'#2D6CDF','light'=>'rgba(20, 71, 186,.065)','avatar'=>'135deg,#2D6CDF,#2D6CDF'],
                             ];
                             $c = $palette[$loop->index % 5];
                         @endphp
@@ -343,7 +343,7 @@
                              data-job-id="{{ $job->id }}"
                              :class="{ 'ring-2 border-violet-400': selectedJob === {{ $job->id }} }"
                              class="group cursor-pointer rounded-2xl border border-gray-100 p-5 transition-all duration-200 relative overflow-hidden"
-                             style="background:white;box-shadow:0 1px 3px rgba(0,0,0,.04);"
+                             style="background:white;box-shadow: none;"
                              onmouseenter="this.style.background='{{ $c['light'] }}';this.style.boxShadow='0 6px 20px rgba(0,0,0,.09)';this.style.transform='translateY(-1px)'"
                              onmouseleave="this.style.background='white';this.style.boxShadow='0 1px 3px rgba(0,0,0,.04)';this.style.transform=''">
                             {{-- Left accent bar --}}
@@ -351,7 +351,7 @@
                             <div class="flex items-start gap-4 pl-3">
                                 {{-- Company Logo --}}
                                 <div class="flex-shrink-0 rounded-xl flex items-center justify-center font-bold text-white"
-                                     style="width:44px;height:44px;font-size:18px;background:linear-gradient({{ $c['avatar'] }});box-shadow:0 3px 10px rgba(0,0,0,.18);flex-shrink:0;">
+                                     style="width:44px;height:44px;font-size:18px;background:var(--color-surface-raised);box-shadow: none;flex-shrink:0;">
                                     {{ strtoupper(substr($job->company_name ?? 'J', 0, 1)) }}
                                 </div>
                                 
@@ -382,7 +382,7 @@
                                         @if($job->salary_min && $job->salary_max)
                                             <span class="text-gray-300 dark:text-gray-600">&middot;</span>
                                             <span class="text-xs font-semibold" style="color:{{ $c['accent'] }}">
-                                                ₹{{ number_format($job->salary_min / 100000, 1) }}L – ₹{{ number_format($job->salary_max / 100000, 1) }}L
+                                                ?{{ number_format($job->salary_min / 100000, 1) }}L � ?{{ number_format($job->salary_max / 100000, 1) }}L
                                             </span>
                                         @endif
                                     </div>
@@ -441,20 +441,20 @@
             </div>
 
             <template x-if="selectedJob && selectedJobData">
-                <div style="display:flex; flex-direction:column; background:white; border:1px solid #ebebf5; border-radius:16px; box-shadow:0 4px 24px rgba(99,102,241,.10), 0 1px 4px rgba(0,0,0,.05);">
+                <div style="display:flex; flex-direction:column; background:white; border:1px solid #EBF2FF; border-radius:16px; box-shadow: none;">
 
-                    {{-- â”€â”€ FIXED TOP: header + apply button â”€â”€ --}}
-                    <div class="flex-shrink-0 p-5 border-b" style="border-color:#ebebf5">
+                    {{-- ── FIXED TOP: header + apply button ── --}}
+                    <div class="flex-shrink-0 p-5 border-b" style="border-color:#EBF2FF">
                         {{-- Header --}}
                         <div class="flex items-start gap-3 mb-4">
                             <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
-                                 style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"
+                                 style="background:#2D6CDF"
                                  x-text="selectedJobData.company_name.charAt(0).toUpperCase()">
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h2 class="font-bold line-clamp-2" style="font-size:15px; color:#1a1a2e" x-text="selectedJobData.title"></h2>
-                                <p class="text-sm mt-0.5" style="color:#6b7280" x-text="selectedJobData.company_name"></p>
-                                <p class="text-xs mt-1" style="color:#9ca3af" x-text="'Posted ' + selectedJobData.posted_at"></p>
+                                <h2 class="font-bold line-clamp-2" style="font-size:15px; color:#0C0C0C" x-text="selectedJobData.title"></h2>
+                                <p class="text-sm mt-0.5" style="color:#737373" x-text="selectedJobData.company_name"></p>
+                                <p class="text-xs mt-1" style="color:#A8A8A8" x-text="'Posted ' + selectedJobData.posted_at"></p>
                             </div>
                         </div>
 
@@ -465,13 +465,13 @@
                             <template x-if="selectedJobData.has_applied">
                                 <div class="flex-1 flex gap-2">
                                     <span class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm"
-                                          style="background:#e8f5e9; color:#15803d; border:1.5px solid #bbf7d0">
+                                          style="background:#EDFAF2; color:#1E8E3E; border:1.5px solid #A3D9B4">
                                         <i class="fas fa-check-circle" style="font-size:13px"></i>
                                         Applied Already
                                     </span>
                                     <a :href="selectedJobData.show_url"
                                        class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all hover:-translate-y-0.5"
-                                       style="border:1.5px solid #8b5cf6; color:#7c3aed">
+                                       style="border:1.5px solid #2D6CDF; color:#2D6CDF">
                                         <i class="fas fa-file-alt" style="font-size:13px"></i>
                                         View Job Description
                                     </a>
@@ -481,7 +481,7 @@
                             <template x-if="!selectedJobData.has_applied">
                                 <a :href="selectedJobData.show_url + '#apply'"
                                    class="btn-apply flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm text-white transition-all hover:-translate-y-0.5"
-                                   style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); box-shadow:0 4px 14px rgba(139,92,246,.3)">
+                                   style="background:#2D6CDF; box-shadow: none">
                                     <i class="fas fa-paper-plane" style="font-size:13px"></i>
                                     Apply Now
                                 </a>
@@ -489,7 +489,7 @@
                             <button @click.stop="toggleSaveJob(selectedJobData.id)"
                                     :id="'save-panel-btn-' + selectedJobData.id"
                                     class="p-2.5 rounded-xl transition-colors"
-                                    style="border:1.5px solid #ebebf5; color:#6b7280">
+                                    style="border:1.5px solid #EBF2FF; color:#737373">
                                 <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
                                 </svg>
@@ -497,30 +497,30 @@
                             @else
                             <a href="{{ route('login') }}"
                                class="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl font-semibold text-sm text-white"
-                               style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">
+                               style="background:#2D6CDF">
                                 Login to Apply
                             </a>
                             @endauth
                         </div>
                     </div>
 
-                    {{-- â”€â”€ BODY â”€â”€ --}}
+                    {{-- ── BODY ── --}}
                     <div class="flex-1 p-5 space-y-5">
 
                         @auth
                         {{-- AI Match --}}
-                        <div class="p-3 rounded-xl" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe)"
+                        <div class="p-3 rounded-xl" style="background:#EBF2FF"
                              x-show="selectedJobData && selectedJobData.match_score != null && selectedJobData.match_score > 0">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-sm font-semibold" style="color:#1a1a2e">AI Match Score</p>
-                                    <p class="text-xs mt-0.5" style="color:#6b7280">Based on your profile &amp; skills</p>
+                                    <p class="text-sm font-semibold" style="color:#0C0C0C">AI Match Score</p>
+                                    <p class="text-xs mt-0.5" style="color:#737373">Based on your profile &amp; skills</p>
                                 </div>
                                 {{-- Inline Alpine-driven ring (replaces Blade component) --}}
                                 <div class="relative flex-shrink-0" style="width:72px;height:72px">
                                     <svg style="width:100%;height:100%;transform:rotate(-90deg)" viewBox="0 0 72 72">
-                                        <circle stroke="#e5e7eb" stroke-width="4" fill="transparent" r="34" cx="36" cy="36"/>
-                                        <circle :stroke="(selectedJobData.match_score||0)>=85?'#10b981':(selectedJobData.match_score||0)>=70?'#1A73E8':(selectedJobData.match_score||0)>=50?'#f59e0b':'#ef4444'"
+                                        <circle stroke="#E2E2E0" stroke-width="4" fill="transparent" r="34" cx="36" cy="36"/>
+                                        <circle :stroke="(selectedJobData.match_score||0)>=85?'#1E8E3E':(selectedJobData.match_score||0)>=70?'#2D6CDF':(selectedJobData.match_score||0)>=50?'#E37400':'#2D6CDF'"
                                                 stroke-width="4" stroke-linecap="round" fill="transparent" r="34" cx="36" cy="36"
                                                 :stroke-dasharray="213.6"
                                                 :stroke-dashoffset="213.6*(1-(selectedJobData.match_score||0)/100)"
@@ -529,7 +529,7 @@
                                     <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
                                         <span class="font-bold"
                                               style="font-size:15px"
-                                              :style="'color:'+((selectedJobData.match_score||0)>=85?'#10b981':(selectedJobData.match_score||0)>=70?'#1A73E8':(selectedJobData.match_score||0)>=50?'#f59e0b':'#ef4444')"
+                                              :style="'color:'+((selectedJobData.match_score||0)>=85?'#1E8E3E':(selectedJobData.match_score||0)>=70?'#2D6CDF':(selectedJobData.match_score||0)>=50?'#E37400':'#2D6CDF')"
                                               x-text="(selectedJobData.match_score||0)+'%'"></span>
                                     </div>
                                 </div>
@@ -539,33 +539,33 @@
 
                         {{-- Quick Info --}}
                         <div class="grid grid-cols-2 gap-2">
-                            <div class="p-3 rounded-xl" style="background:#f9f9ff; border:1px solid #ebebf5">
-                                <p class="text-xs" style="color:#9ca3af">Salary</p>
-                                <p class="text-sm font-semibold mt-0.5" style="color:#1a1a2e"
+                            <div class="p-3 rounded-xl" style="background:#EBF2FF; border:1px solid #EBF2FF">
+                                <p class="text-xs" style="color:#A8A8A8">Salary</p>
+                                <p class="text-sm font-semibold mt-0.5" style="color:#0C0C0C"
                                    x-text="formatSalary(selectedJobData.salary_min, selectedJobData.salary_max) || 'Not specified'"></p>
                             </div>
-                            <div class="p-3 rounded-xl" style="background:#f9f9ff; border:1px solid #ebebf5">
-                                <p class="text-xs" style="color:#9ca3af">Location</p>
-                                <p class="text-sm font-semibold mt-0.5 line-clamp-1" style="color:#1a1a2e" x-text="selectedJobData.location || 'Not specified'"></p>
+                            <div class="p-3 rounded-xl" style="background:#EBF2FF; border:1px solid #EBF2FF">
+                                <p class="text-xs" style="color:#A8A8A8">Location</p>
+                                <p class="text-sm font-semibold mt-0.5 line-clamp-1" style="color:#0C0C0C" x-text="selectedJobData.location || 'Not specified'"></p>
                             </div>
-                            <div class="p-3 rounded-xl" style="background:#f9f9ff; border:1px solid #ebebf5">
-                                <p class="text-xs" style="color:#9ca3af">Experience</p>
-                                <p class="text-sm font-semibold mt-0.5 capitalize" style="color:#1a1a2e" x-text="selectedJobData.experience_level || 'Not specified'"></p>
+                            <div class="p-3 rounded-xl" style="background:#EBF2FF; border:1px solid #EBF2FF">
+                                <p class="text-xs" style="color:#A8A8A8">Experience</p>
+                                <p class="text-sm font-semibold mt-0.5 capitalize" style="color:#0C0C0C" x-text="selectedJobData.experience_level || 'Not specified'"></p>
                             </div>
-                            <div class="p-3 rounded-xl" style="background:#f9f9ff; border:1px solid #ebebf5">
-                                <p class="text-xs" style="color:#9ca3af">Type</p>
-                                <p class="text-sm font-semibold mt-0.5 capitalize" style="color:#1a1a2e" x-text="(selectedJobData.job_type || 'N/A').replace(/-/g, ' ')"></p>
+                            <div class="p-3 rounded-xl" style="background:#EBF2FF; border:1px solid #EBF2FF">
+                                <p class="text-xs" style="color:#A8A8A8">Type</p>
+                                <p class="text-sm font-semibold mt-0.5 capitalize" style="color:#0C0C0C" x-text="(selectedJobData.job_type || 'N/A').replace(/-/g, ' ')"></p>
                             </div>
                         </div>
 
                         {{-- Skills --}}
                         <template x-if="selectedJobData.skills && selectedJobData.skills.length > 0">
                             <div>
-                                <h4 class="text-xs font-bold uppercase tracking-wider mb-2" style="color:#9ca3af">Required Skills</h4>
+                                <h4 class="text-xs font-bold uppercase tracking-wider mb-2" style="color:#A8A8A8">Required Skills</h4>
                                 <div class="flex flex-wrap gap-1.5">
                                     <template x-for="skill in selectedJobData.skills.slice(0, 8)" :key="skill">
                                         <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
-                                              style="background:#f5f3ff; color:#7c3aed; border:1px solid #ddd6fe"
+                                              style="background:#EBF2FF; color:#2D6CDF; border:1px solid #BFCFEE"
                                               x-text="skill"></span>
                                     </template>
                                 </div>
@@ -575,8 +575,8 @@
                         {{-- Full details link --}}
                         <a :href="selectedJobData.show_url"
                            class="block text-center text-sm font-semibold transition-colors"
-                           style="color:#8b5cf6">
-                            View Full Job Description â†’
+                           style="color:#2D6CDF">
+                            View Full Job Description →
                         </a>
                     </div>
                 </div>
@@ -593,10 +593,10 @@ function showSaveToast(message, saved) {
     if (!toast) {
         toast = document.createElement('div');
         toast.id = 'save-toast';
-        toast.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;color:white;box-shadow:0 4px 20px rgba(0,0,0,.18);transition:opacity .3s;display:flex;align-items:center;gap:8px;';
+        toast.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;color:white;box-shadow: none;transition:opacity .3s;display:flex;align-items:center;gap:8px;';
         document.body.appendChild(toast);
     }
-    toast.style.background = saved ? '#8b5cf6' : '#6b7280';
+    toast.style.background = saved ? '#2D6CDF' : '#737373';
     toast.innerHTML = saved
         ? '<svg style="width:16px;height:16px" fill="currentColor" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg> Job saved!'
         : '<svg style="width:16px;height:16px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg> Job removed';
@@ -609,12 +609,12 @@ function applySaveStyle(btn, saved) {
     if (!btn) return;
     const svg = btn.querySelector('svg');
     if (saved) {
-        btn.style.color = '#8b5cf6';
-        btn.style.background = '#f5f3ff';
-        btn.style.borderColor = '#ddd6fe';
-        if (svg) { svg.setAttribute('fill', 'currentColor'); svg.style.color = '#8b5cf6'; }
+        btn.style.color = '#2D6CDF';
+        btn.style.background = '#EBF2FF';
+        btn.style.borderColor = '#BFCFEE';
+        if (svg) { svg.setAttribute('fill', 'currentColor'); svg.style.color = '#2D6CDF'; }
     } else {
-        btn.style.color = '#9ca3af';
+        btn.style.color = '#A8A8A8';
         btn.style.background = '';
         btn.style.borderColor = '';
         if (svg) { svg.setAttribute('fill', 'none'); svg.style.color = ''; }
@@ -661,14 +661,14 @@ function toggleSaveJob(jobId) {
     background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #d1d5db;
+    background: #C8C8C5;
     border-radius: 3px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #9ca3af;
+    background: #A8A8A8;
 }
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #4b5563;
+    background: #3D3D3D;
 }
 </style>
 </div>{{-- end #job-search-page --}}

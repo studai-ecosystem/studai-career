@@ -9,7 +9,7 @@
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold" style="color:#1a1a2e">Talent Pool</h1>
+            <h1 class="text-2xl font-bold" style="color:#0C0C0C">Talent Pool</h1>
             <p class="text-sm text-gray-500 mt-1">Manage your saved candidates and build your hiring pipeline</p>
         </div>
     </div>
@@ -18,11 +18,11 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
             <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Total Candidates</p>
-            <p class="text-3xl font-bold mt-1" style="color:#1A73E8">{{ $stats['total_candidates'] }}</p>
+            <p class="text-3xl font-bold mt-1" style="color:#2D6CDF">{{ $stats['total_candidates'] }}</p>
         </div>
         <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
             <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Contacted This Month</p>
-            <p class="text-3xl font-bold mt-1" style="color:#34a853">{{ $stats['contacted_this_month'] }}</p>
+            <p class="text-3xl font-bold mt-1" style="color:#1E8E3E">{{ $stats['contacted_this_month'] }}</p>
         </div>
         <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
             <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Avg Rating</p>
@@ -30,7 +30,7 @@
         </div>
         <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
             <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Sources</p>
-            <p class="text-3xl font-bold mt-1" style="color:#ea4335">{{ count($stats['by_source']) }}</p>
+            <p class="text-3xl font-bold mt-1" style="color:#2D6CDF">{{ count($stats['by_source']) }}</p>
         </div>
     </div>
 
@@ -51,7 +51,7 @@
                 @endfor
             </select>
         </div>
-        <button type="submit" class="px-4 py-2 text-white text-sm font-medium rounded-lg" style="background:#1A73E8">Filter</button>
+        <button type="submit" class="px-4 py-2 text-white text-sm font-medium rounded-lg" style="background:#2D6CDF">Filter</button>
         @if($search || $rating || $source)
             <a href="{{ route('employer.talent-pool.index') }}" class="px-4 py-2 border border-gray-200 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50">Clear</a>
         @endif
@@ -65,7 +65,7 @@
                 <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                             style="background:linear-gradient(135deg,#1A73E8,#6366f1)">
+                             style="background:#2D6CDF">
                             {{ strtoupper(substr($candidate->name ?? '?', 0, 1)) }}
                         </div>
                         <div class="flex-1 min-w-0">
@@ -79,7 +79,7 @@
                     @if($entry->tags && count($entry->tags))
                         <div class="flex flex-wrap gap-1 mb-3">
                             @foreach(array_slice($entry->tags, 0, 3) as $tag)
-                                <span class="inline-block px-2 py-0.5 text-xs rounded-full" style="background:#e8f0fe;color:#1A73E8">{{ $tag }}</span>
+                                <span class="inline-block px-2 py-0.5 text-xs rounded-full" style="background:#EBF2FF;color:#2D6CDF">{{ $tag }}</span>
                             @endforeach
                         </div>
                     @endif
@@ -100,7 +100,7 @@
             </svg>
             <h3 class="text-lg font-semibold text-gray-700 mb-2">No Candidates Yet</h3>
             <p class="text-gray-400 text-sm">Save promising candidates from applications to build your talent pool.</p>
-            <a href="{{ route('employer.applicants.index') }}" class="mt-4 inline-block px-5 py-2 text-white text-sm font-medium rounded-lg" style="background:#1A73E8">Browse Applicants</a>
+            <a href="{{ route('employer.applicants.index') }}" class="mt-4 inline-block px-5 py-2 text-white text-sm font-medium rounded-lg" style="background:#2D6CDF">Browse Applicants</a>
         </div>
     @endif
 </div>

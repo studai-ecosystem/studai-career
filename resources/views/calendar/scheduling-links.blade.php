@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Scheduling Links')
 
@@ -50,7 +50,7 @@
                 @foreach($links as $link)
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                         <!-- Color Header -->
-                        <div class="h-2" style="background-color: {{ $link->color ?? '#3B82F6' }};"></div>
+                        <div class="h-2" style="background-color: {{ $link->color ?? '#2D6CDF' }};"></div>
                         
                         <div class="p-6">
                             <div class="flex items-start justify-between">
@@ -131,7 +131,7 @@
                             <!-- Actions -->
                             <div class="mt-4 flex items-center justify-between">
                                 <a href="{{ route('schedule.show', $link->slug) }}" target="_blank" class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
-                                    Preview â†’
+                                    Preview →
                                 </a>
                                 <div class="flex items-center space-x-2">
                                     <button onclick="editLink({{ $link->id }})" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition" title="Edit">
@@ -274,7 +274,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Color</label>
                         <div class="flex items-center space-x-3">
-                            @foreach(['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#6366F1', '#14B8A6'] as $color)
+                            @foreach(['#2D6CDF', '#1E8E3E', '#E37400', '#2D6CDF', '#2D6CDF', '#2D6CDF', '#2D6CDF', '#2D6CDF'] as $color)
                                 <label class="cursor-pointer">
                                     <input type="radio" name="color" value="{{ $color }}" class="sr-only peer" {{ $loop->first ? 'checked' : '' }}>
                                     <span class="block w-8 h-8 rounded-full ring-2 ring-transparent peer-checked:ring-offset-2 peer-checked:ring-gray-900 dark:peer-checked:ring-white transition" style="background-color: {{ $color }};"></span>

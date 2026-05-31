@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', $job->title . ' - ' . $job->company_name)
 
@@ -75,15 +75,15 @@
                                     @foreach($job->hiringRounds as $index => $round)
                                     @php
                                         $typeLabels = [
-                                            'info_test'      => ['label' => 'Company Info Test',  'icon' => '🏢', 'color' => 'blue'],
-                                            'aptitude'       => ['label' => 'Aptitude Test',       'icon' => '🧠', 'color' => 'indigo'],
-                                            'technical'      => ['label' => 'Technical Test',      'icon' => '💻', 'color' => 'violet'],
-                                            'practical'      => ['label' => 'Practical Round',     'icon' => '📋', 'color' => 'purple'],
-                                            'hr_interview'   => ['label' => 'HR Interview',        'icon' => '🤝', 'color' => 'fuchsia'],
-                                            'culture_fit'    => ['label' => 'Culture Fit',         'icon' => '🌟', 'color' => 'pink'],
-                                            'portfolio_review'=> ['label' => 'Portfolio Review',  'icon' => '🎨', 'color' => 'rose'],
+                                            'info_test'      => ['label' => 'Company Info Test',  'icon' => '??', 'color' => 'blue'],
+                                            'aptitude'       => ['label' => 'Aptitude Test',       'icon' => '??', 'color' => 'indigo'],
+                                            'technical'      => ['label' => 'Technical Test',      'icon' => '??', 'color' => 'violet'],
+                                            'practical'      => ['label' => 'Practical Round',     'icon' => '??', 'color' => 'purple'],
+                                            'hr_interview'   => ['label' => 'HR Interview',        'icon' => '??', 'color' => 'fuchsia'],
+                                            'culture_fit'    => ['label' => 'Culture Fit',         'icon' => '??', 'color' => 'pink'],
+                                            'portfolio_review'=> ['label' => 'Portfolio Review',  'icon' => '??', 'color' => 'rose'],
                                         ];
-                                        $meta  = $typeLabels[$round->type] ?? ['label' => $round->name, 'icon' => '📝', 'color' => 'gray'];
+                                        $meta  = $typeLabels[$round->type] ?? ['label' => $round->name, 'icon' => '??', 'color' => 'gray'];
                                         $c     = $meta['color'];
                                         $isLast = $loop->last;
                                     @endphp
@@ -159,15 +159,15 @@
                                                 @if($attempt && in_array($attempt->status, ['submitted','evaluated']))
                                                     <a href="{{ route('candidate.test.result', [$job->id, $round->id]) }}"
                                                         class="flex-shrink-0 inline-flex items-center gap-2 px-3 py-1.5 bg-green-100 text-green-700 font-bold text-xs rounded-lg hover:bg-green-200 transition-all">
-                                                        ✅ View Result
+                                                        ? View Result
                                                         @if($attempt->score !== null)
-                                                        <span style="background:#166534;color:#fff;font-size:12px;font-weight:800;padding:2px 7px;border-radius:6px;letter-spacing:.3px;">{{ $attempt->score }}%</span>
+                                                        <span style="background:#1E8E3E;color:#fff;font-size:12px;font-weight:800;padding:2px 7px;border-radius:6px;letter-spacing:.3px;">{{ $attempt->score }}%</span>
                                                         @endif
                                                     </a>
                                                 @elseif($attempt && $attempt->status === 'in_progress')
                                                     <a href="{{ route('candidate.test.show', [$job->id, $round->id]) }}"
                                                         class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-white font-bold text-xs rounded-lg hover:bg-amber-600 transition-all">
-                                                        ▶ Resume Test
+                                                        ? Resume Test
                                                     </a>
                                                 @else
                                                     <a href="{{ route('candidate.test.show', [$job->id, $round->id]) }}"
@@ -723,7 +723,7 @@ function submitApplication() {
         return;
     }
 
-    // Collect resume â€” file upload takes priority, then saved resume ID
+    // Collect resume — file upload takes priority, then saved resume ID
     const fileInput      = document.getElementById('job-resume-file-input');
     const savedResumeId  = document.querySelector('[name="saved_resume_id"]')?.value || '';
     const hasFile        = fileInput && fileInput.files && fileInput.files.length > 0;

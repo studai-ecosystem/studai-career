@@ -1,6 +1,6 @@
 {{--
     StudAI Hire - Dashboard Layout
-    Premium light SaaS design: Plus Jakarta Sans, #f7f8fa bg, #2f5fb0 royal-blue brand
+    Premium light SaaS design: Plus Jakarta Sans, #F7F7F5 bg, #2D6CDF royal-blue brand
 --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -9,12 +9,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    {{-- Apply saved theme before paint to avoid flash of incorrect theme --}}
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('meridian-theme');
+                var dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+            } catch (e) {
+                document.documentElement.dataset.theme = 'light';
+            }
+        })();
+    </script>
+
     <title>@yield('title', isset($title) ? $title : 'Dashboard') - {{ config('app.name', 'StudAI Hire') }}</title>
 
-    <!-- Fonts: Plus Jakarta Sans + JetBrains Mono -->
+    <!-- Fonts: MERIDIAN — DM Sans + DM Mono + Instrument Serif -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
@@ -27,105 +40,106 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icons/icon-192x192.svg">
-    <meta name="theme-color" content="#0c1c2c">
+    <meta name="theme-color" content="#0C2E72">
     @yield('head')
     @stack('styles')
 
     <style>
         /* -- DESIGN TOKENS -- */
+        /* MERIDIAN: legacy token names mapped to MERIDIAN design tokens */
         :root {
-            --brand:        #2f5fb0;
-            --brand-hover:  #284f95;
-            --brand-light:  #eaf0fa;
-            --bg:           #f7f8fa; /* fallback */
-            --surface:      #ffffff;
-            --border:       #e0e3ea;
-            --text:         #15233a;
-            --text-2:       #38465e;
-            --text-muted:   #5c6a82;
-            --sidebar-w:    252px;
-            --topbar-h:     64px;
+            --brand:        var(--color-accent, #2D6CDF);
+            --brand-hover:  var(--color-accent-hover, #1B57C4);
+            --brand-light:  var(--color-accent-subtle, #EBF2FF);
+            --bg:           var(--color-canvas, #F7F7F5);
+            --surface:      var(--color-surface, #FFFFFF);
+            --border:       var(--color-border, #E2E2E0);
+            --text:         var(--color-ink-1,#2D6CDF);
+            --text-2:       var(--color-ink-2, #3D3D3D);
+            --text-muted:   var(--color-ink-3, #737373);
+            --sidebar-w:    256px;
+            --topbar-h:     56px;
             --ease:         cubic-bezier(0.2, 0, 0, 1);
-            --dur:          220ms;
-            /* module accents (unified navy/blue/gold) */
-            --accent-coach:       #2f5fb0;
-            --accent-interview:   #c9941a;
-            --accent-jobs:        #1f8a5b;
-            --accent-market:      #2f5fb0;
-            --accent-negotiation: #c9941a;
-            --accent-scout:       #2f5fb0;
-            --accent-vantage:     #1c344d;
-            --accent-resume:      #2f5fb0;
+            --dur:          180ms;
+            /* module accents flattened to MERIDIAN accent / ink */
+            --accent-coach:       var(--color-accent, #2D6CDF);
+            --accent-interview:   var(--color-accent, #2D6CDF);
+            --accent-jobs:        var(--color-accent, #2D6CDF);
+            --accent-market:      var(--color-accent, #2D6CDF);
+            --accent-negotiation: var(--color-accent, #2D6CDF);
+            --accent-scout:       var(--color-accent, #2D6CDF);
+            --accent-vantage:     var(--color-ink-1,#2D6CDF);
+            --accent-resume:      var(--color-accent, #2D6CDF);
             /* stat card accents */
-            --stat-applications:  #2f5fb0;
-            --stat-interviews:    #c9941a;
-            --stat-views:         #1c344d;
-            --stat-match:         #1f8a5b;
+            --stat-applications:  var(--color-accent, #2D6CDF);
+            --stat-interviews:    var(--color-ink-2, #3D3D3D);
+            --stat-views:         var(--color-ink-1,#2D6CDF);
+            --stat-match:         var(--color-success, #1F7A4D);
         }
 
-        /* -- BASE -- */
-        body { font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; line-height:1.6; background:#f7f8fa; color:var(--text); -webkit-font-smoothing:antialiased; }
-        .main-bg { background:#f7f8fa; min-height:100vh; padding-top:80px; }
-        h1,h2,h3,h4,h5,h6 { font-weight:700; letter-spacing:-0.02em; }
-        .font-mono { font-family:'JetBrains Mono',monospace; }
+        /* -- BASE (MERIDIAN) -- */
+        body { font-family:'Inter',system-ui,sans-serif; font-size:14px; line-height:1.55; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+        .main-bg { background:var(--bg); min-height:100vh; padding-top:80px; }
+        h1,h2,h3,h4,h5,h6 { font-weight:600; letter-spacing:-0.01em; color:var(--text); }
+        .font-mono { font-family:'Roboto Mono',ui-monospace,monospace; }
 
-        /* -- SIDEBAR / TOPBAR -- */
-        aside  { background:#ffffff; border-right:1px solid var(--border); }
-        header { background:rgba(255,255,255,.85); backdrop-filter:saturate(180%) blur(10px); -webkit-backdrop-filter:saturate(180%) blur(10px); border-bottom:1px solid #eaecf1; height:var(--topbar-h); }
+        /* -- SIDEBAR / TOPBAR (MERIDIAN: flat, no blur, no shadow) -- */
+        aside  { background:var(--surface); border-right:1px solid var(--border); }
+        header { background:var(--surface); border-bottom:1px solid var(--border); height:var(--topbar-h); }
 
-        /* -- NAV ITEMS -- */
-        .nav-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:11px; font-size:13.5px; font-weight:600; color:#38465e; transition:all var(--dur) var(--ease); cursor:pointer; text-decoration:none; }
-        .nav-item:hover { background:#f1f3f6; color:#15233a; }
+        /* -- NAV ITEMS (MERIDIAN) -- */
+        .nav-item { display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px; font-size:13.5px; font-weight:500; color:var(--text-2); transition:all var(--dur) var(--ease); cursor:pointer; text-decoration:none; }
+        .nav-item:hover { background:var(--color-surface-raised, #F0F0EE); color:var(--text); }
         .nav-item svg { width:18px !important; height:18px !important; flex-shrink:0; }
         .nav-sub { padding-left:10px; font-size:12.5px; padding-top:6px; padding-bottom:6px; opacity:.9; }
-        .nav-item.active { background:var(--brand-light); color:#21426f; font-weight:700; position:relative; }
+        .nav-item.active { background:var(--brand-light); color:var(--color-accent-text, #0C2E72); font-weight:600; position:relative; }
         .nav-item.active::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:65%; background:var(--brand); border-radius:0 3px 3px 0; }
         .nav-active { position:relative; }
         .nav-active::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:65%; border-radius:0 3px 3px 0; background:var(--brand); }
-        .nav-section-label { font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#7e879a; padding:0 12px; margin-bottom:4px; margin-top:20px; display:block; }
+        .nav-section-label { font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--color-ink-4, #A8A8A8); padding:0 12px; margin-bottom:4px; margin-top:20px; display:block; }
 
-        /* -- CARDS -- */
-        .card { background:#ffffff; border:1px solid var(--border); border-radius:14px; box-shadow:0 1px 3px rgba(21,35,58,.06); transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease); }
-        .card:hover { box-shadow:0 12px 28px rgba(21,35,58,.13); transform:translateY(-3px); }
-        .card-static { background:#ffffff; border:1px solid var(--border); border-radius:14px; box-shadow:0 1px 3px rgba(21,35,58,.06); }
-        .card-lift { transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease); }
-        .card-lift:hover { transform:translateY(-3px); box-shadow:0 12px 28px rgba(21,35,58,.13); }
-        .shadow-card { box-shadow:0 1px 3px rgba(21,35,58,.06); }
+        /* -- CARDS (MERIDIAN: flat, 1px border, 12px radius, no shadow) -- */
+        .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:none; transition:border-color var(--dur) var(--ease); }
+        .card:hover { box-shadow:none; transform:none; border-color:var(--color-border-strong, #C8C8C5); }
+        .card-static { background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:none; }
+        .card-lift { transition:border-color var(--dur) var(--ease); }
+        .card-lift:hover { transform:none; box-shadow:none; border-color:var(--color-border-strong, #C8C8C5); }
+        .shadow-card { box-shadow:none; }
 
-        /* -- BUTTONS -- */
-        .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 18px; border-radius:9999px; font-size:13.5px; font-weight:700; cursor:pointer; border:none; transition:all var(--dur) var(--ease); text-decoration:none; }
-        .btn:hover { transform:translateY(-1px); }
-        .btn:active { transform:translateY(0) scale(.98); }
+        /* -- BUTTONS (MERIDIAN: 8px radius, no shadow, no lift) -- */
+        .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; font-size:13.5px; font-weight:500; cursor:pointer; border:1px solid transparent; transition:all var(--dur) var(--ease); text-decoration:none; }
+        .btn:hover { transform:none; }
+        .btn:active { transform:none; }
 
         /* Primary */
-        .btn-primary { background:var(--brand); color:#fff; box-shadow:0 6px 18px rgba(47,95,176,.30); }
-        .btn-primary:hover { background:var(--brand-hover); box-shadow:0 8px 22px rgba(47,95,176,.38); }
+        .btn-primary { background:var(--brand); color:#fff; box-shadow:none; }
+        .btn-primary:hover { background:var(--brand-hover); box-shadow:none; }
 
         /* Secondary */
-        .btn-secondary { background:#ffffff; color:#38465e; border:1px solid var(--border); box-shadow:0 1px 2px rgba(21,35,58,.04); }
-        .btn-secondary:hover { border-color:var(--brand); color:var(--brand); }
+        .btn-secondary { background:var(--surface); color:var(--text-2); border:1px solid var(--border); box-shadow:none; }
+        .btn-secondary:hover { border-color:var(--color-border-strong, #C8C8C5); color:var(--text); background:var(--color-surface-raised, #F0F0EE); }
 
         /* Success */
-        .btn-success { background:#e6f4ec; color:#166442; border:1px solid #9fd6ba; }
-        .btn-success:hover { background:#cdeadb; }
+        .btn-success { background:var(--color-success-subtle, #E6F4EC); color:var(--color-success, #1F7A4D); border:1px solid var(--color-success-border, #9FD6BA); }
+        .btn-success:hover { background:var(--color-success-subtle, #CDEADB); }
 
         /* Danger */
-        .btn-danger { background:#fbe9e9; color:#9e2727; border:1px solid #f3c2c2; }
-        .btn-danger:hover { background:#f7d6d6; }
+        .btn-danger { background:var(--color-error-subtle, #FBE9E9); color:var(--color-error, #B42318); border:1px solid var(--color-error-border, #F3C2C2); }
+        .btn-danger:hover { background:var(--color-error-subtle, #F7D6D6); }
 
         /* Ghost */
-        .btn-ghost { background:transparent; color:#5c6a82; border:1px solid transparent; }
-        .btn-ghost:hover { background:#f1f3f6; color:var(--text); }
+        .btn-ghost { background:transparent; color:var(--text-muted); border:1px solid transparent; }
+        .btn-ghost:hover { background:var(--color-surface-raised, #F0F0EE); color:var(--text); }
 
         /* -- STAT CARD ACCENTS -- */
-        .stat-applications .stat-icon { background:rgba(47,95,176,.10); color:#2f5fb0; }
-        .stat-applications .stat-value { color:#2f5fb0; }
-        .stat-interviews   .stat-icon { background:rgba(201,148,26,.12); color:#c9941a; }
-        .stat-interviews   .stat-value { color:#c9941a; }
-        .stat-views        .stat-icon { background:rgba(28,52,77,.10);  color:#1c344d; }
-        .stat-views        .stat-value { color:#1c344d; }
-        .stat-match        .stat-icon { background:rgba(31,138,91,.10);   color:#1f8a5b; }
-        .stat-match        .stat-value { color:#1f8a5b; }
+        .stat-applications .stat-icon { background:rgba(47,95,176,.10); color:#2D6CDF; }
+        .stat-applications .stat-value { color:#2D6CDF; }
+        .stat-interviews   .stat-icon { background:rgba(201,148,26,.12); color:#2D6CDF; }
+        .stat-interviews   .stat-value { color:#2D6CDF; }
+        .stat-views        .stat-icon { background:rgba(28,52,77,.10);  color:#0C0C0C; }
+        .stat-views        .stat-value { color:#0C0C0C; }
+        .stat-match        .stat-icon { background:rgba(31,138,91,.10);   color:#1F7A4D; }
+        .stat-match        .stat-value { color:#1F7A4D; }
 
         /* -- MAIN CONTENT LAYOUT -- */
         .main-content { max-width:1320px; margin:0 auto; padding:28px 32px 32px; }
@@ -152,46 +166,45 @@
         .animate-pulse-soft { animation:pulseSoft 2s ease-in-out infinite; }
         .animate-bounce-soft{ animation:bounceSoft 1.2s ease-in-out infinite; }
         .animate-spin-slow  { animation:spinSlow 3s linear infinite; }
-        .animate-shimmer    { animation:shimmer 1.5s linear infinite; background:linear-gradient(90deg,#f0f0f8 25%,#e8e8f4 50%,#f0f0f8 75%); background-size:200%; }
-        .skeleton           { background:linear-gradient(90deg,#f0f0f8 25%,#e8e8f4 50%,#f0f0f8 75%); background-size:200%; animation:shimmer 1.5s linear infinite; border-radius:8px; }
+        .animate-shimmer    { animation:meridian-shimmer 1.5s linear infinite; background:var(--color-surface-raised, #F0F0EE); background-size:200%; }
+        .skeleton           { background:var(--color-surface-raised, #F0F0EE); background-size:200%; animation:meridian-shimmer 1.5s linear infinite; border-radius:8px; }
         .skill-bar-fill     { width:0; transition:width 1s cubic-bezier(.4,0,.2,1); }
-        .xp-bar             { background:#2f5fb0; }
+        .xp-bar             { background:var(--brand); }
         #cmd-palette        { backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
         .ai-fab-pulse       { animation:aiFabPulse 2.5s ease-in-out infinite; }
         .alert-pulse        { animation:alertPulse 1.5s ease-in-out infinite; }
         .completeness-ring  { transform:rotate(-90deg); }
         .completeness-ring circle { transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1); }
-        .dark { --bg:#0f172a; --surface:#1e293b; --border:#334155; --text:#f1f5f9; --text-muted:#94a3b8; }
+        .dark { --bg:var(--color-canvas); --surface:var(--color-surface); --border:var(--color-border); --text:var(--color-ink-1); --text-muted:var(--color-ink-3); }
         /* Hide Alpine-controlled overlays/dropdowns until Alpine initializes.
            Without this, x-show elements (esp. the full-screen command palette)
            render visible before/if-without Alpine and block all clicks. */
         [x-cloak] { display: none !important; }
-        /* Input styles that work in both light and dark mode */
-        .input-google { display:block; width:100%; border-radius:12px; border:1px solid #e0e3ea; background-color:#ffffff; padding:10px 14px; font-size:14px; color:#15233a; transition:all .15s ease; }
-        .input-google:focus { outline:none; border-color:#2f5fb0; box-shadow:0 0 0 3px rgba(47,95,176,.15); }
-        .input-google::placeholder { color:#9ca3af; }
-        .dark .input-google { background-color:#1e293b; border-color:#334155; color:#f1f5f9; }
-        .dark .input-google::placeholder { color:#64748b; }
-        .dark body  { background:#0f172a; color:#f1f5f9; }
-        .dark aside { background:#1e293b; border-color:#334155; }
-        .dark header{ background:rgba(15,23,42,.92); border-color:#334155; }
+        /* Input styles that work in both light and dark mode (MERIDIAN) */
+        .input-google { display:block; width:100%; border-radius:8px; border:1px solid var(--border); background-color:var(--surface); padding:9px 14px; font-size:14px; color:var(--text); transition:all .15s ease; }
+        .input-google:focus { outline:none; border-color:var(--brand); box-shadow:0 0 0 4px var(--color-accent-subtle, rgba(20,71,186,.12)); }
+        .input-google::placeholder { color:var(--color-ink-4, #A8A8A8); }
+        .dark .input-google { background-color:var(--color-surface); border-color:var(--color-border); color:var(--color-ink-1); }
+        .dark .input-google::placeholder { color:var(--color-ink-4); }
+        .dark body  { background:var(--color-canvas); color:var(--color-ink-1); }
+        .dark aside { background:var(--color-surface); border-color:var(--color-border); }
+        .dark header{ background:var(--color-surface); border-color:var(--color-border); }
         .scrollbar-thin::-webkit-scrollbar { width:4px; }
         .scrollbar-thin::-webkit-scrollbar-track { background:transparent; }
-        .scrollbar-thin::-webkit-scrollbar-thumb { background:#e5e7eb; border-radius:999px; }
-        .glow-coach{box-shadow:0 6px 18px rgba(47,95,176,.22)} .glow-interview{box-shadow:0 6px 18px rgba(201,148,26,.22)}
-        .glow-jobs {box-shadow:0 6px 18px rgba(31,138,91,.20)}  .glow-market{box-shadow:0 6px 18px rgba(47,95,176,.22)}
-        .glow-negotiation{box-shadow:0 6px 18px rgba(201,148,26,.22)} .glow-scout{box-shadow:0 6px 18px rgba(47,95,176,.22)}
-        .glow-vantage{box-shadow:0 6px 18px rgba(28,52,77,.20)}
+        .scrollbar-thin::-webkit-scrollbar-thumb { background:#E2E2E0; border-radius:999px; }
+        .glow-coach{box-shadow:none} .glow-interview{box-shadow:none}
+        .glow-jobs {box-shadow:none}  .glow-market{box-shadow:none}
+        .glow-negotiation{box-shadow:none} .glow-scout{box-shadow:none}
+        .glow-vantage{box-shadow:none}
         .count-up { font-variant-numeric:tabular-nums; }
     </style>
 </head>
 <body class="antialiased" x-data="{
     sidebarOpen: true,
     sidebarMobileOpen: false,
-    darkMode: false,
     cmdOpen: false,
     negotiationOpen: true
-}" x-init="localStorage.removeItem('darkMode')" :class="{ 'dark': darkMode }"
+}"
 @keydown.ctrl.k.window.prevent="cmdOpen = !cmdOpen"
 @keydown.meta.k.window.prevent="cmdOpen = !cmdOpen"
 @keydown.escape.window="cmdOpen = false">
@@ -457,7 +470,7 @@
                              style="background:linear-gradient(to bottom,rgba(47,95,176,.4),rgba(47,95,176,.06))"></div>
                         <a href="{{ route('negotiation.chatbot') }}"
                            class="nav-item nav-sub {{ request()->routeIs('negotiation.chatbot') ? 'active' : '' }}">
-                            <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ml-3" style="background:#2f5fb0"></span>
+                            <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ml-3" style="background:#2D6CDF"></span>
                             <span>AI Negotiation Agent</span>
                         </a>
                     </div>
@@ -530,12 +543,12 @@
                     $userInitial = strtoupper(substr($userName, 0, 1));
                 @endphp
                 <div class="flex items-center gap-3 px-1 mb-2" :class="!sidebarOpen && 'justify-center'">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-white" style="background:linear-gradient(135deg,#2f5fb0,#1c344d)">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-white" style="background:linear-gradient(135deg,#2D6CDF,#2D6CDF)">
                         {{ $userInitial }}
                     </div>
                     <div x-show="sidebarOpen" x-transition class="flex-1 min-w-0">
-                        <div class="text-sm font-semibold truncate" style="color:#15233a">{{ $userName }}</div>
-                        <div class="text-xs truncate" style="color:#6b7280">{{ $userEmail }}</div>
+                        <div class="text-sm font-semibold truncate" style="color:#0C0C0C">{{ $userName }}</div>
+                        <div class="text-xs truncate" style="color:#737373">{{ $userEmail }}</div>
                     </div>
                 </div>
                 <button
@@ -590,7 +603,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                         Search
-                        <kbd class="px-1 py-0.5 text-[10px] rounded" style="background:#e5e7eb">Ctrl K</kbd>
+                        <kbd class="px-1 py-0.5 text-[10px] rounded" style="background:#E2E2E0">Ctrl K</kbd>
                     </button>
 
                     {{-- AI Active pill --}}
@@ -599,7 +612,22 @@
                         AI Active
                     </div>
 
-                    {{-- Dark mode toggle removed: dark theme was only partially styled and made content unreadable/unclickable. Forcing light mode. --}}
+                    {{-- Theme toggle: flips the entire dashboard between light and dark --}}
+                    <button @click="$store.theme.toggle()" type="button"
+                        class="flex items-center justify-center w-9 h-9 rounded-lg transition-all hover:opacity-80"
+                        style="background:var(--bg); border:1px solid var(--border); color:var(--text-muted)"
+                        :aria-label="$store.theme.dark ? 'Switch to light mode' : 'Switch to dark mode'"
+                        :title="$store.theme.dark ? 'Switch to light mode' : 'Switch to dark mode'">
+                        {{-- Moon (shown in light mode) --}}
+                        <svg x-show="!$store.theme.dark" class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                        </svg>
+                        {{-- Sun (shown in dark mode) --}}
+                        <svg x-show="$store.theme.dark" x-cloak class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="4" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41" />
+                        </svg>
+                    </button>
 
                     {{-- Notifications --}}
                     @php
@@ -608,16 +636,16 @@
 
                         // Icon/color map by notification type
                         $notifStyles = [
-                            'application'  => ['bg'=>'#eaf0fa','color'=>'#2f5fb0','dot'=>'#2f5fb0'],
-                            'interview'    => ['bg'=>'#fbf2d6','color'=>'#c9941a','dot'=>'#c9941a'],
-                            'pipeline'     => ['bg'=>'#fbf2d6','color'=>'#c9941a','dot'=>'#c9941a'],
-                            'test'         => ['bg'=>'#eaf0fa','color'=>'#2f5fb0','dot'=>'#2f5fb0'],
-                            'scout'        => ['bg'=>'#eaf0fa','color'=>'#2f5fb0','dot'=>'#2f5fb0'],
-                            'shortlisted'  => ['bg'=>'#e6f4ec','color'=>'#1f8a5b','dot'=>'#1f8a5b'],
+                            'application'  => ['bg'=>'#EBF2FF','color'=>'#2D6CDF','dot'=>'#2D6CDF'],
+                            'interview'    => ['bg'=>'#FFF8EC','color'=>'#2D6CDF','dot'=>'#2D6CDF'],
+                            'pipeline'     => ['bg'=>'#FFF8EC','color'=>'#2D6CDF','dot'=>'#2D6CDF'],
+                            'test'         => ['bg'=>'#EBF2FF','color'=>'#2D6CDF','dot'=>'#2D6CDF'],
+                            'scout'        => ['bg'=>'#EBF2FF','color'=>'#2D6CDF','dot'=>'#2D6CDF'],
+                            'shortlisted'  => ['bg'=>'#e6f4ec','color'=>'#1F7A4D','dot'=>'#1F7A4D'],
                             'hired'        => ['bg'=>'#e6f4ec','color'=>'#166442','dot'=>'#166442'],
                             'rejected'     => ['bg'=>'#fbe9e9','color'=>'#cf3a3a','dot'=>'#cf3a3a'],
-                            'job'          => ['bg'=>'#eaf0fa','color'=>'#2f5fb0','dot'=>'#2f5fb0'],
-                            'default'      => ['bg'=>'#f7f8fa','color'=>'#5c6a82','dot'=>'#5c6a82'],
+                            'job'          => ['bg'=>'#EBF2FF','color'=>'#2D6CDF','dot'=>'#2D6CDF'],
+                            'default'      => ['bg'=>'#F7F7F5','color'=>'#737373','dot'=>'#737373'],
                         ];
 
                         if (!function_exists('notifTypeKey')) {
@@ -634,17 +662,17 @@
                         {{-- Bell Button --}}
                         <button @click="open = !open"
                             class="relative flex items-center justify-center rounded-xl transition-all"
-                            style="width:38px;height:38px;background:var(--bg);border:1.5px solid var(--border);color:#2f5fb0;box-shadow:0 1px 3px rgba(0,0,0,.06);"
-                            :style="open ? 'background:#eaf0fa;border-color:#2f5fb0' : ''">
+                            style="width:38px;height:38px;background:var(--bg);border:1.5px solid var(--border);color:#2D6CDF;box-shadow:0 1px 3px rgba(0,0,0,.06);"
+                            :style="open ? 'background:#EBF2FF;border-color:#2D6CDF' : ''">
                             <svg style="width:19px;height:19px;flex-shrink:0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                             </svg>
                             @if($unreadCount > 0)
-                            <span style="position:absolute;top:4px;right:4px;min-width:16px;height:16px;padding:0 3px;border-radius:99px;background:#ef4444;border:1.5px solid white;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;line-height:1;">
+                            <span style="position:absolute;top:4px;right:4px;min-width:16px;height:16px;padding:0 3px;border-radius:99px;background:#2D6CDF;border:1.5px solid white;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;line-height:1;">
                                 {{ $unreadCount > 9 ? '9+' : $unreadCount }}
                             </span>
                             @else
-                            <span style="position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:#d1d5db;border:1.5px solid white;display:block;"></span>
+                            <span style="position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:#C8C8C5;border:1.5px solid white;display:block;"></span>
                             @endif
                         </button>
 
@@ -657,24 +685,24 @@
                             x-transition:leave="transition ease-in duration-100"
                             x-transition:leave-start="opacity-100 translate-y-0"
                             x-transition:leave-end="opacity-0 translate-y-1"
-                            style="position:absolute;top:calc(100% + 10px);right:0;width:340px;background:white;border:1px solid #e0e3ea;border-radius:18px;box-shadow:0 8px 40px rgba(21,35,58,.14),0 2px 12px rgba(0,0,0,.08);overflow:hidden;z-index:9999;">
+                            style="position:absolute;top:calc(100% + 10px);right:0;width:340px;background:white;border:1px solid #E2E2E0;border-radius:18px;box-shadow:0 8px 40px rgba(21,35,58,.14),0 2px 12px rgba(0,0,0,.08);overflow:hidden;z-index:9999;">
 
                             {{-- Header --}}
-                            <div style="padding:14px 18px 11px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;justify-content:space-between;">
+                            <div style="padding:14px 18px 11px;border-bottom:1px solid #F0F0EE;display:flex;align-items:center;justify-content:space-between;">
                                 <div style="display:flex;align-items:center;gap:8px;">
-                                    <span style="font-size:15px;font-weight:700;color:#1a1a2e">Notifications</span>
+                                    <span style="font-size:15px;font-weight:700;color:#0C0C0C">Notifications</span>
                                     @if($unreadCount > 0)
-                                    <span style="padding:2px 9px;font-size:11px;font-weight:700;border-radius:99px;background:#eaf0fa;color:#2f5fb0;border:1px solid #cfddf3;">{{ $unreadCount }} new</span>
+                                    <span style="padding:2px 9px;font-size:11px;font-weight:700;border-radius:99px;background:#EBF2FF;color:#2D6CDF;border:1px solid #cfddf3;">{{ $unreadCount }} new</span>
                                     @endif
                                 </div>
                                 <div style="display:flex;align-items:center;gap:8px;">
                                     @if($unreadCount > 0)
                                     <form method="POST" action="{{ route('notifications.mark-all-read') }}" style="margin:0;">
                                         @csrf
-                                        <button type="submit" style="font-size:11px;font-weight:600;color:#2f5fb0;background:none;border:none;cursor:pointer;padding:0;">Mark all read</button>
+                                        <button type="submit" style="font-size:11px;font-weight:600;color:#2D6CDF;background:none;border:none;cursor:pointer;padding:0;">Mark all read</button>
                                     </form>
                                     @endif
-                                    <button @click="open = false" style="color:#9ca3af;background:none;border:none;cursor:pointer;padding:2px;">
+                                    <button @click="open = false" style="color:#A8A8A8;background:none;border:none;cursor:pointer;padding:2px;">
                                         <svg style="width:15px;height:15px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                                         </svg>
@@ -708,7 +736,7 @@
                                     $timeAgo = $notif->created_at->diffForHumans();
                                 @endphp
                                 <a href="{{ $url }}" style="display:flex;align-items:flex-start;gap:12px;padding:11px 18px;cursor:pointer;transition:background .15s;position:relative;text-decoration:none;"
-                                   onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background=''">
+                                   onmouseover="this.style.background='#F0F0EE'" onmouseout="this.style.background=''">
                                     @if($isUnread)
                                     <span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:{{ $style['dot'] }};flex-shrink:0;"></span>
                                     @endif
@@ -740,26 +768,26 @@
                                         @endif
                                     </div>
                                     <div style="flex:1;min-width:0;">
-                                        <div style="font-size:13px;font-weight:{{ $isUnread ? '600' : '500' }};color:{{ $isUnread ? '#1a1a2e' : '#4b5563' }};line-height:1.4;">
+                                        <div style="font-size:13px;font-weight:{{ $isUnread ? '600' : '500' }};color:{{ $isUnread ? '#0C0C0C' : '#3D3D3D' }};line-height:1.4;">
                                             {{ Str::limit($message, 70) }}
                                         </div>
-                                        <div style="font-size:11px;color:#9ca3af;margin-top:3px;">{{ $timeAgo }}</div>
+                                        <div style="font-size:11px;color:#A8A8A8;margin-top:3px;">{{ $timeAgo }}</div>
                                     </div>
                                 </a>
                                 @empty
                                 <div style="padding:2rem 1rem;text-align:center;">
-                                    <svg style="width:2.5rem;height:2.5rem;color:#d1d5db;margin:0 auto .75rem" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <svg style="width:2.5rem;height:2.5rem;color:#C8C8C5;margin:0 auto .75rem" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                                     </svg>
-                                    <p style="font-size:13px;font-weight:600;color:#374151;">No notifications</p>
-                                    <p style="font-size:12px;color:#9ca3af;margin-top:4px;">You're all caught up!</p>
+                                    <p style="font-size:13px;font-weight:600;color:#3D3D3D;">No notifications</p>
+                                    <p style="font-size:12px;color:#A8A8A8;margin-top:4px;">You're all caught up!</p>
                                 </div>
                                 @endforelse
                             </div>
 
                             {{-- Footer --}}
-                            <div style="padding:10px 18px 13px;border-top:1px solid #f3f4f6;display:flex;justify-content:center;">
-                                <a href="{{ route('notifications.all') }}" style="font-size:13px;font-weight:600;color:#2f5fb0;text-decoration:none;">View all notifications &#8594;</a>
+                            <div style="padding:10px 18px 13px;border-top:1px solid #F0F0EE;display:flex;justify-content:center;">
+                                <a href="{{ route('notifications.all') }}" style="font-size:13px;font-weight:600;color:#2D6CDF;text-decoration:none;">View all notifications &#8594;</a>
                             </div>
                         </div>
                     </div>
@@ -767,7 +795,7 @@
                     {{-- Profile Dropdown --}}
                     <div x-data="{ open: false }" class="relative">
                         <button @click="open = !open" class="flex items-center gap-2 p-1.5 rounded-xl transition-colors hover:bg-gray-100">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#2f5fb0,#1c344d)">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#2D6CDF,#2D6CDF)">
                                 @php echo strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)); @endphp
                             </div>
                             <svg class="w-3.5 h-3.5" style="color:var(--text-muted)" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -862,7 +890,7 @@
     }
     .cmd-panel {
         animation: cmdSlideIn .22s cubic-bezier(.22,.68,0,1.2) both;
-        background: linear-gradient(145deg,#ffffff 0%,#f7f8fa 55%,#eaf0fa 100%);
+        background: linear-gradient(145deg,#ffffff 0%,#F7F7F5 55%,#EBF2FF 100%);
         border: 1.5px solid rgba(47,95,176,.18);
         border-radius: 1.5rem;
         box-shadow: 0 24px 80px rgba(21,35,58,.22), 0 4px 20px rgba(47,95,176,.12), 0 0 0 1px rgba(255,255,255,.6) inset;
@@ -877,21 +905,21 @@
     }
     .cmd-search-icon {
         width:2rem; height:2rem; border-radius:.625rem; flex-shrink:0;
-        background: linear-gradient(135deg,#2f5fb0,#1c344d);
+        background: linear-gradient(135deg,#2D6CDF,#2D6CDF);
         display:flex; align-items:center; justify-content:center;
         box-shadow: 0 3px 10px rgba(47,95,176,.35);
     }
     .cmd-input {
         flex:1; background:transparent; outline:none; border:none;
         font-size:.9375rem; font-weight:500; letter-spacing:-.01em;
-        color:#15233a;
+        color:#0C0C0C;
         font-family:'Plus Jakarta Sans',sans-serif;
     }
     .cmd-input::placeholder { color:#9aa6bd; font-weight:400; }
     .cmd-esc-badge {
         padding:.25rem .6rem; border-radius:.5rem; font-size:.7rem; font-weight:700;
-        background: #eaf0fa;
-        color:#2f5fb0; border:1px solid rgba(47,95,176,.2);
+        background: #EBF2FF;
+        color:#2D6CDF; border:1px solid rgba(47,95,176,.2);
         font-family:'JetBrains Mono',monospace;
     }
     .cmd-section-label {
@@ -925,7 +953,7 @@
     }
     .cmd-item:hover .cmd-icon-badge { transform:scale(1.1) rotate(-5deg); box-shadow:0 4px 14px rgba(0,0,0,.14); }
     .cmd-label {
-        font-size:.875rem; font-weight:600; color:#15233a;
+        font-size:.875rem; font-weight:600; color:#0C0C0C;
         letter-spacing:-.01em; font-family:'Plus Jakarta Sans',sans-serif;
         flex:1;
     }
@@ -943,13 +971,13 @@
     }
     .cmd-kbd {
         display:inline-flex; align-items:center; gap:.35rem;
-        font-size:.7rem; color:#5c6a82; font-weight:600;
+        font-size:.7rem; color:#737373; font-weight:600;
     }
     .cmd-kbd kbd {
         padding:.2rem .5rem; border-radius:.375rem;
-        background:#eaf0fa;
+        background:#EBF2FF;
         border:1px solid rgba(47,95,176,.2);
-        color:#2f5fb0; font-size:.65rem; font-weight:700;
+        color:#2D6CDF; font-size:.65rem; font-weight:700;
         font-family:'JetBrains Mono',monospace;
         box-shadow:0 1px 3px rgba(47,95,176,.15);
     }
@@ -987,15 +1015,15 @@
             <div class="py-1 max-h-80 overflow-y-auto" style="scrollbar-width:thin;scrollbar-color:rgba(47,95,176,.2) transparent">
                 @php
                     $cmdItems = [
-                        ['href'=>route('dashboard'),            'label'=>'Dashboard',            'icon'=>'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',       'grad'=>'linear-gradient(135deg,#2f5fb0,#3a6bc0)', 'shadow'=>'rgba(47,95,176,.35)'],
-                        ['href'=>route('resume.index'),         'label'=>'Resume Builder',        'icon'=>'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',                               'grad'=>'linear-gradient(135deg,#2f5fb0,#1c344d)', 'shadow'=>'rgba(47,95,176,.35)'],
-                        ['href'=>route('interview.index'),      'label'=>'Interview Lab',         'icon'=>'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',               'grad'=>'linear-gradient(135deg,#e3b62f,#c9941a)', 'shadow'=>'rgba(201,148,26,.35)'],
-                        ['href'=>route('jobs.search'),          'label'=>'Job Search',            'icon'=>'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',                                                                                                       'grad'=>'linear-gradient(135deg,#1f8a5b,#26a86c)', 'shadow'=>'rgba(31,138,91,.35)'],
-                        ['href'=>route('career-coach.index'),   'label'=>'Career Coach',          'icon'=>'M13 10V3L4 14h7v7l9-11h-7z',                                                                                                                        'grad'=>'linear-gradient(135deg,#2f5fb0,#3a6bc0)', 'shadow'=>'rgba(47,95,176,.35)'],
-                        ['href'=>route('negotiation.dashboard'),'label'=>'Negotiation Strategist','icon'=>'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'grad'=>'linear-gradient(135deg,#e3b62f,#c9941a)', 'shadow'=>'rgba(201,148,26,.35)'],
-                        ['href'=>route('agent.dashboard'),      'label'=>'AI Agent',              'icon'=>'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',                                       'grad'=>'linear-gradient(135deg,#1c344d,#0c1c2c)', 'shadow'=>'rgba(28,52,77,.35)'],
-                        ['href'=>route('profile.edit'),         'label'=>'Profile Settings',      'icon'=>'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',                                                                              'grad'=>'linear-gradient(135deg,#64748b,#94a3b8)', 'shadow'=>'rgba(100,116,139,.35)'],
-                        ['href'=>route('subscriptions.pricing'),'label'=>'Upgrade Plan',          'icon'=>'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',                                        'grad'=>'linear-gradient(135deg,#e3b62f,#c9941a)', 'shadow'=>'rgba(201,148,26,.35)'],
+                        ['href'=>route('dashboard'),            'label'=>'Dashboard',            'icon'=>'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',       'grad'=>'linear-gradient(135deg,#2D6CDF,#1B57C4)', 'shadow'=>'rgba(47,95,176,.35)'],
+                        ['href'=>route('resume.index'),         'label'=>'Resume Builder',        'icon'=>'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',                               'grad'=>'linear-gradient(135deg,#2D6CDF,#2D6CDF)', 'shadow'=>'rgba(47,95,176,.35)'],
+                        ['href'=>route('interview.index'),      'label'=>'Interview Lab',         'icon'=>'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',               'grad'=>'linear-gradient(135deg,#E37400,#2D6CDF)', 'shadow'=>'rgba(201,148,26,.35)'],
+                        ['href'=>route('jobs.search'),          'label'=>'Job Search',            'icon'=>'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',                                                                                                       'grad'=>'linear-gradient(135deg,#1F7A4D,#26a86c)', 'shadow'=>'rgba(31,138,91,.35)'],
+                        ['href'=>route('career-coach.index'),   'label'=>'Career Coach',          'icon'=>'M13 10V3L4 14h7v7l9-11h-7z',                                                                                                                        'grad'=>'linear-gradient(135deg,#2D6CDF,#1B57C4)', 'shadow'=>'rgba(47,95,176,.35)'],
+                        ['href'=>route('negotiation.dashboard'),'label'=>'Negotiation Strategist','icon'=>'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'grad'=>'linear-gradient(135deg,#E37400,#2D6CDF)', 'shadow'=>'rgba(201,148,26,.35)'],
+                        ['href'=>route('agent.dashboard'),      'label'=>'AI Agent',              'icon'=>'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',                                       'grad'=>'linear-gradient(135deg,#0C0C0C,#0C2E72)', 'shadow'=>'rgba(28,52,77,.35)'],
+                        ['href'=>route('profile.edit'),         'label'=>'Profile Settings',      'icon'=>'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',                                                                              'grad'=>'linear-gradient(135deg,#737373,#A8A8A8)', 'shadow'=>'rgba(100,116,139,.35)'],
+                        ['href'=>route('subscriptions.pricing'),'label'=>'Upgrade Plan',          'icon'=>'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',                                        'grad'=>'linear-gradient(135deg,#E37400,#2D6CDF)', 'shadow'=>'rgba(201,148,26,.35)'],
                     ];
                 @endphp
 
@@ -1021,14 +1049,14 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="{{ $cmd['icon'] }}" />
                         </svg>
                     </div>
-                    <span class="cmd-label" x-html="q !== '' ? '{{ $cmd['label'] }}'.replace(new RegExp(q, 'gi'), m => '<mark style=\'background:#eaf0fa;color:#2f5fb0;border-radius:.25rem;padding:0 .2rem;font-weight:700\'>'+m+'</mark>') : '{{ $cmd['label'] }}'"></span>
+                    <span class="cmd-label" x-html="q !== '' ? '{{ $cmd['label'] }}'.replace(new RegExp(q, 'gi'), m => '<mark style=\'background:#EBF2FF;color:#2D6CDF;border-radius:.25rem;padding:0 .2rem;font-weight:700\'>'+m+'</mark>') : '{{ $cmd['label'] }}'"></span>
                     <span class="cmd-arrow">&#8594;</span>
                 </a>
                 @endforeach
 
                 <p x-show="q !== '' && !{{ json_encode(array_map(fn($c) => strtolower($c['label']), $cmdItems)) }}.some(l => l.includes(q.toLowerCase()))"
                    style="padding:1.5rem 1.25rem;text-align:center;font-size:.84rem;color:#9aa6bd;font-weight:500;font-family:'Plus Jakarta Sans',sans-serif;">
-                    No results for "<span x-text="q" style="color:#2f5fb0;font-weight:700"></span>"
+                    No results for "<span x-text="q" style="color:#2D6CDF;font-weight:700"></span>"
                 </p>
             </div>
 
@@ -1037,7 +1065,7 @@
                 <span class="cmd-kbd"><kbd>??</kbd> navigate</span>
                 <span class="cmd-kbd"><kbd>?</kbd> open</span>
                 <span class="cmd-kbd"><kbd>Esc</kbd> close</span>
-                <span style="margin-left:auto;font-size:.68rem;font-weight:700;background:linear-gradient(135deg,#2f5fb0,#1c344d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.02em">StudAI CMD</span>
+                <span style="margin-left:auto;font-size:.68rem;font-weight:700;background:linear-gradient(135deg,#2D6CDF,#2D6CDF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.02em">StudAI CMD</span>
             </div>
         </div>
     </div>
@@ -1046,7 +1074,7 @@
     @if(auth()->user()?->account_type !== 'employer')
     <a href="{{ route('agent.dashboard') }}"
         class="ai-fab-pulse fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full text-white flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95"
-        style="background:linear-gradient(135deg,#2f5fb0,#1c344d)"
+        style="background:linear-gradient(135deg,#2D6CDF,#2D6CDF)"
         title="Open AI Agent">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

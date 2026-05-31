@@ -12,11 +12,11 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: none;
         }
         
         .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: #2D6CDF;
         }
         
         .metric-card {
@@ -25,25 +25,25 @@
         
         .metric-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: none;
         }
         
         .trend-up {
-            color: #10b981;
+            color: #1E8E3E;
         }
         
         .trend-down {
-            color: #ef4444;
+            color: #2D6CDF;
         }
         
         .trend-neutral {
-            color: #6b7280;
+            color: #737373;
         }
         
-        .performance-excellent { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-        .performance-good { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
-        .performance-average { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-        .performance-poor { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .performance-excellent { background: #1E8E3E; }
+        .performance-good { background: #2D6CDF; }
+        .performance-average { background: #E37400; }
+        .performance-poor { background: #2D6CDF; }
         
         .prediction-badge {
             display: inline-block;
@@ -53,9 +53,9 @@
             font-weight: 600;
         }
         
-        .prediction-high { background: #dcfce7; color: #166534; }
-        .prediction-medium { background: #fef3c7; color: #92400e; }
-        .prediction-low { background: #fee2e2; color: #991b1b; }
+        .prediction-high { background: #EDFAF2; color: #1E8E3E; }
+        .prediction-medium { background: #FFF8EC; color: #E37400; }
+        .prediction-low { background: #FEF2F2; color: #2D6CDF; }
         
         .learning-animation {
             animation: pulse-learning 3s ease-in-out infinite;
@@ -68,7 +68,7 @@
         
         .refinement-progress {
             height: 8px;
-            background: linear-gradient(90deg, #8b5cf6 0%, #ec4899 50%, #f59e0b 100%);
+            background: #2D6CDF;
             border-radius: 4px;
             transition: width 0.5s ease-out;
         }
@@ -80,19 +80,19 @@
         
         .insight-card:hover {
             transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: none;
         }
         
         .hidden { display: none; }
         
         .tab-active {
-            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            background: #2D6CDF;
             color: white;
         }
         
         .tab-inactive {
-            background: #f3f4f6;
-            color: #6b7280;
+            background: #F0F0EE;
+            color: #737373;
         }
     </style>
 </head>
@@ -558,8 +558,8 @@
                     datasets: [{
                         label: 'Prediction Accuracy',
                         data: trendData?.values || [78, 82, 85, 83, 86, 87],
-                        borderColor: '#8b5cf6',
-                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        borderColor: '#2D6CDF',
+                        backgroundColor: 'rgba(20, 71, 186, 0.1)',
                         tension: 0.4,
                         fill: true
                     }]
@@ -594,10 +594,10 @@
                     datasets: [{
                         data: distData?.values || [42, 58, 28, 12],
                         backgroundColor: [
-                            '#10b981',
-                            '#3b82f6',
-                            '#f59e0b',
-                            '#ef4444'
+                            '#1E8E3E',
+                            '#2D6CDF',
+                            '#E37400',
+                            '#2D6CDF'
                         ]
                     }]
                 },
@@ -806,7 +806,7 @@
             (data.top_predictive_factors || []).forEach((factor, index) => {
                 const div = document.createElement('div');
                 div.className = 'insight-card p-4 bg-purple-50 rounded-lg';
-                div.style.borderLeftColor = '#8b5cf6';
+                div.style.borderLeftColor = '#2D6CDF';
                 div.innerHTML = `
                     <div class="flex items-center justify-between mb-1">
                         <span class="font-semibold text-gray-900">${index + 1}. ${factor.name}</span>
@@ -823,7 +823,7 @@
             (data.emerging_patterns || []).forEach(pattern => {
                 const div = document.createElement('div');
                 div.className = 'insight-card p-4 bg-green-50 rounded-lg';
-                div.style.borderLeftColor = '#10b981';
+                div.style.borderLeftColor = '#1E8E3E';
                 div.innerHTML = `
                     <div class="font-semibold text-gray-900 mb-1">${pattern.pattern_name}</div>
                     <div class="text-sm text-gray-600 mb-2">${pattern.description}</div>
@@ -960,8 +960,8 @@
                     datasets: [{
                         label: 'Demand Trend',
                         data: skillsData?.values || [85, 92, 78, 88, 81],
-                        backgroundColor: 'rgba(139, 92, 246, 0.7)',
-                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(20, 71, 186, 0.7)',
+                        borderColor: '#2D6CDF',
                         borderWidth: 2
                     }]
                 },
@@ -989,8 +989,8 @@
                     datasets: [{
                         label: 'Hiring Velocity',
                         data: growthData?.values || [12, 18, 22, 28, 35, 42],
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderColor: '#1E8E3E',
+                        backgroundColor: 'rgba(15, 107, 49, 0.1)',
                         tension: 0.4,
                         fill: true
                     }]

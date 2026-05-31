@@ -1,4 +1,4 @@
-Ôªø<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <div>
@@ -49,7 +49,7 @@
                             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Resume Title <span class="text-red-500">*</span></label>
-                                    <input type="text" name="title" value="{{ old("title", $resume->title) }}" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required placeholder="e.g., Software Engineer Resume ‚Äî Google 2026">
+                                    <input type="text" name="title" value="{{ old("title", $resume->title) }}" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required placeholder="e.g., Software Engineer Resume ó Google 2026">
                                 </div>
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
@@ -58,7 +58,7 @@
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Professional Headline</label>
                                     <input type="text" name="headline" value="{{ old("headline", $resume->headline ?? "") }}" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., Full-Stack Developer | 5+ years | Laravel & React">
-                                    <p class="text-xs text-gray-500 mt-1">Short tagline below your name ‚Äî highly visible to recruiters</p>
+                                    <p class="text-xs text-gray-500 mt-1">Short tagline below your name ó highly visible to recruiters</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
@@ -91,7 +91,7 @@
                             <div class="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4 flex justify-between items-center">
                                 <div>
                                     <h3 class="text-white font-semibold text-lg flex items-center gap-2"><i class="fas fa-align-left"></i> Professional Summary</h3>
-                                    <p class="text-purple-100 text-sm mt-0.5">3-5 sentences ‚Äî your elevator pitch for the recruiter</p>
+                                    <p class="text-purple-100 text-sm mt-0.5">3-5 sentences ó your elevator pitch for the recruiter</p>
                                 </div>
                                 <button type="button" onclick="generateSummary(this)" class="flex-shrink-0 px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white text-sm rounded-lg border border-white/30 transition">
                                     <i class="fas fa-magic mr-1"></i> AI Generate
@@ -131,7 +131,7 @@
                                             <div><label class="block text-xs font-medium text-gray-600 mb-1">Start Date</label><input type="text" name="experience[{{ $index }}][start_date]" value="{{ $exp["start_date"] ?? "" }}" class="w-full rounded-md border-gray-300 text-sm" placeholder="Jan 2022"></div>
                                             <div><label class="block text-xs font-medium text-gray-600 mb-1">End Date</label><div class="space-y-1"><input type="text" name="experience[{{ $index }}][end_date]" value="{{ $exp["end_date"] ?? "" }}" class="w-full rounded-md border-gray-300 text-sm end-date-input" placeholder="Dec 2024 or Present"><label class="flex items-center gap-1.5 text-xs text-gray-600"><input type="checkbox" onchange="setCurrentJob(this)" {{ ($exp["end_date"] ?? "") == "Present" ? "checked" : "" }} class="rounded"> I currently work here</label></div></div>
                                             <div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Job Description & Responsibilities</label><textarea name="experience[{{ $index }}][description]" rows="3" class="w-full rounded-md border-gray-300 text-sm" placeholder="Describe key responsibilities...">{{ $exp["description"] ?? "" }}</textarea></div>
-                                            <div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Key Achievements <span class="text-gray-400 font-normal">(one per line ‚Äî quantify results)</span></label><textarea name="experience[{{ $index }}][achievements]" rows="4" class="w-full rounded-md border-gray-300 text-sm font-mono" placeholder="Reduced API response time by 45% via Redis caching&#10;Led a team of 5 engineers to deliver project ahead of schedule&#10;Increased revenue by Rs.12L through new feature rollout">{{ is_array($exp["achievements"] ?? null) ? implode("\n", $exp["achievements"]) : ($exp["achievements"] ?? "") }}</textarea><p class="text-xs text-gray-400 mt-1"><i class="fas fa-lightbulb text-yellow-500 mr-1"></i> Quantify results (%, Rs., time saved, team size)</p></div>
+                                            <div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Key Achievements <span class="text-gray-400 font-normal">(one per line ó quantify results)</span></label><textarea name="experience[{{ $index }}][achievements]" rows="4" class="w-full rounded-md border-gray-300 text-sm font-mono" placeholder="Reduced API response time by 45% via Redis caching&#10;Led a team of 5 engineers to deliver project ahead of schedule&#10;Increased revenue by Rs.12L through new feature rollout">{{ is_array($exp["achievements"] ?? null) ? implode("\n", $exp["achievements"]) : ($exp["achievements"] ?? "") }}</textarea><p class="text-xs text-gray-400 mt-1"><i class="fas fa-lightbulb text-yellow-500 mr-1"></i> Quantify results (%, Rs., time saved, team size)</p></div>
                                             <div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Technologies / Skills Used</label><input type="text" name="experience[{{ $index }}][technologies]" value="{{ $exp["technologies"] ?? "" }}" class="w-full rounded-md border-gray-300 text-sm" placeholder="PHP, Laravel, MySQL, Redis, Docker, AWS"></div>
                                         </div>
                                     </div>
@@ -156,7 +156,7 @@
                                     @forelse($eduData as $index => $edu)
                                     <div class="education-item border border-gray-200 rounded-lg overflow-hidden">
                                         <div class="bg-gray-50 px-4 py-3 flex justify-between items-center">
-                                            <span class="font-medium text-gray-700 text-sm"><i class="fas fa-university mr-2 text-gray-400"></i>{{ $edu["degree"] ?? "Degree" }} ‚Äî {{ $edu["institution"] ?? "Institution" }}</span>
+                                            <span class="font-medium text-gray-700 text-sm"><i class="fas fa-university mr-2 text-gray-400"></i>{{ $edu["degree"] ?? "Degree" }} ó {{ $edu["institution"] ?? "Institution" }}</span>
                                             <button type="button" onclick="removeItem(this,'.education-item')" class="text-red-500 hover:text-red-700 text-sm"><i class="fas fa-trash"></i></button>
                                         </div>
                                         <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -183,13 +183,13 @@
                             <div class="bg-gradient-to-r from-cyan-600 to-blue-600 px-6 py-4 flex justify-between items-center">
                                 <div>
                                     <h3 class="text-white font-semibold text-lg flex items-center gap-2"><i class="fas fa-tools"></i> Skills</h3>
-                                    <p class="text-cyan-100 text-sm mt-0.5">Most impactful ATS section ‚Äî list every relevant skill</p>
+                                    <p class="text-cyan-100 text-sm mt-0.5">Most impactful ATS section ó list every relevant skill</p>
                                 </div>
                                 <button type="button" onclick="extractSkillsAI(this)" class="flex-shrink-0 px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white text-sm rounded-lg border border-white/30 transition"><i class="fas fa-magic mr-1"></i> AI Extract</button>
                                 <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-skill-picker'))" class="flex-shrink-0 px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white text-sm rounded-lg border border-white/30 transition"><i class="fas fa-th-list mr-1"></i> Select Skills</button>
                             </div>
                             <div class="p-6 space-y-4">
-                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800"><i class="fas fa-info-circle mr-1"></i><strong>ATS Tip:</strong> Enter comma-separated skills. Use exact keywords from job descriptions. Avoid rating bars ‚Äî ATS cannot read them.</div>
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800"><i class="fas fa-info-circle mr-1"></i><strong>ATS Tip:</strong> Enter comma-separated skills. Use exact keywords from job descriptions. Avoid rating bars ó ATS cannot read them.</div>
                                 @php
                                     // Use the model accessor which safely flattens any mixed skills format
                                     $flatSkillsList = $resume->flat_skills; // always a plain string[]
@@ -239,7 +239,7 @@
                                                     <button type="button" @click.stop="rem(i)" class="text-blue-400 hover:text-blue-700 leading-none text-base">&times;</button>
                                                 </span>
                                             </template>
-                                            <input x-ref="ti" type="text" x-model="inp" @keydown="key" @blur="inp.trim()&&add()" class="flex-1 min-w-[140px] border-none outline-none text-sm bg-transparent" placeholder="Type skill, press comma or Enter‚Ä¶">
+                                            <input x-ref="ti" type="text" x-model="inp" @keydown="key" @blur="inp.trim()&&add()" class="flex-1 min-w-[140px] border-none outline-none text-sm bg-transparent" placeholder="Type skill, press comma or EnterÖ">
                                         </div>
                                     </div>
 
@@ -260,7 +260,7 @@
                                                     <button type="button" @click.stop="rem(i)" class="text-green-400 hover:text-green-700 leading-none text-base">&times;</button>
                                                 </span>
                                             </template>
-                                            <input x-ref="tt" type="text" x-model="inp" @keydown="key" @blur="inp.trim()&&add()" class="flex-1 min-w-[140px] border-none outline-none text-sm bg-transparent" placeholder="Git, Docker, AWS‚Ä¶">
+                                            <input x-ref="tt" type="text" x-model="inp" @keydown="key" @blur="inp.trim()&&add()" class="flex-1 min-w-[140px] border-none outline-none text-sm bg-transparent" placeholder="Git, Docker, AWSÖ">
                                         </div>
                                     </div>
 
@@ -281,7 +281,7 @@
                                                     <button type="button" @click.stop="rem(i)" class="text-purple-400 hover:text-purple-700 leading-none text-base">&times;</button>
                                                 </span>
                                             </template>
-                                            <input x-ref="ts" type="text" x-model="inp" @keydown="key" @blur="inp.trim()&&add()" class="flex-1 min-w-[140px] border-none outline-none text-sm bg-transparent" placeholder="Leadership, Communication‚Ä¶">
+                                            <input x-ref="ts" type="text" x-model="inp" @keydown="key" @blur="inp.trim()&&add()" class="flex-1 min-w-[140px] border-none outline-none text-sm bg-transparent" placeholder="Leadership, CommunicationÖ">
                                         </div>
                                     </div>
 
@@ -302,7 +302,7 @@
                                                     <button type="button" @click.stop="rem(i)" class="text-orange-400 hover:text-orange-700 leading-none text-base">&times;</button>
                                                 </span>
                                             </template>
-                                            <input x-ref="td" type="text" x-model="inp" @keydown="key" @blur="inp.trim()&&add()" class="flex-1 min-w-[140px] border-none outline-none text-sm bg-transparent" placeholder="FinTech, Microservices‚Ä¶">
+                                            <input x-ref="td" type="text" x-model="inp" @keydown="key" @blur="inp.trim()&&add()" class="flex-1 min-w-[140px] border-none outline-none text-sm bg-transparent" placeholder="FinTech, MicroservicesÖ">
                                         </div>
                                     </div>
 
@@ -447,7 +447,7 @@
                             <div class="bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-4 flex justify-between items-center">
                                 <div>
                                     <h3 class="text-white font-semibold text-lg flex items-center gap-2"><i class="fas fa-code"></i> Projects</h3>
-                                    <p class="text-indigo-100 text-sm mt-0.5">Showcase practical experience ‚Äî critical for freshers & developers</p>
+                                    <p class="text-indigo-100 text-sm mt-0.5">Showcase practical experience ó critical for freshers & developers</p>
                                 </div>
                                 <button type="button" onclick="addProject()" class="flex-shrink-0 px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white text-sm rounded-lg border border-white/30 transition"><i class="fas fa-plus mr-1"></i> Add Project</button>
                             </div>
@@ -489,7 +489,7 @@
                                     <div class="achievement-item border border-gray-200 rounded-lg p-4">
                                         <div class="flex justify-between items-center mb-3"><span class="font-medium text-gray-700 text-sm flex items-center gap-2"><i class="fas fa-medal text-amber-400"></i>{{ $ach["title"] ?? "Achievement" }}</span><button type="button" onclick="removeItem(this,'.achievement-item')" class="text-red-500 hover:text-red-700 text-sm"><i class="fas fa-trash"></i></button></div>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                            <div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Award / Achievement Title <span class="text-red-500">*</span></label><input type="text" name="achievements[{{ $index }}][title]" value="{{ $ach["title"] ?? "" }}" class="w-full rounded-md border-gray-300 text-sm" placeholder="Winner ‚Äî Smart India Hackathon 2023"></div>
+                                            <div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Award / Achievement Title <span class="text-red-500">*</span></label><input type="text" name="achievements[{{ $index }}][title]" value="{{ $ach["title"] ?? "" }}" class="w-full rounded-md border-gray-300 text-sm" placeholder="Winner ó Smart India Hackathon 2023"></div>
                                             <div><label class="block text-xs font-medium text-gray-600 mb-1">Issuer / Organization</label><input type="text" name="achievements[{{ $index }}][issuer]" value="{{ $ach["issuer"] ?? "" }}" class="w-full rounded-md border-gray-300 text-sm" placeholder="Ministry of Education, India"></div>
                                             <div><label class="block text-xs font-medium text-gray-600 mb-1">Date</label><input type="text" name="achievements[{{ $index }}][date]" value="{{ $ach["date"] ?? "" }}" class="w-full rounded-md border-gray-300 text-sm" placeholder="December 2023"></div>
                                             <div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Description</label><textarea name="achievements[{{ $index }}][description]" rows="2" class="w-full rounded-md border-gray-300 text-sm" placeholder="Developed an AI-powered solution; won Rs.1L prize among 10,000 teams nationally.">{{ $ach["description"] ?? "" }}</textarea></div>
@@ -568,36 +568,36 @@
                             <div class="p-6" x-data="{ open: false, tpl: null }" @keydown.escape.window="open=false">
                                 {{-- Full Resume Preview Modal --}}
                                 <div x-show="open" x-transition.opacity style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:24px;" @click.self="open=false">
-                                    <div style="background:#fff;border-radius:16px;width:100%;max-width:780px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.35);">
-                                        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid #e5e7eb;flex-shrink:0;">
+                                    <div style="background:#fff;border-radius:16px;width:100%;max-width:780px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow: none;">
+                                        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid #E2E2E0;flex-shrink:0;">
                                             <div>
-                                                <h3 x-text="tpl?.name" style="font-size:18px;font-weight:700;color:#111827;margin:0;"></h3>
-                                                <p style="font-size:12px;color:#6b7280;margin:3px 0 0;">Sample resume preview ‚Äî your real data fills in when saved</p>
+                                                <h3 x-text="tpl?.name" style="font-size:18px;font-weight:700;color:#0C0C0C;margin:0;"></h3>
+                                                <p style="font-size:12px;color:#737373;margin:3px 0 0;">Sample resume preview ó your real data fills in when saved</p>
                                             </div>
                                             <div style="display:flex;gap:10px;align-items:center;">
                                                 <button type="button"
                                                         @click="open=false; document.getElementById('radio-'+tpl.id)?.click(); onTemplateChange(document.getElementById('radio-'+tpl.id), tpl.id)"
-                                                        style="padding:9px 20px;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-size:13px;font-weight:700;border-radius:9px;border:none;cursor:pointer;">
-                                                    ‚úì Use This Template
+                                                        style="padding:9px 20px;background:#2D6CDF;color:#fff;font-size:13px;font-weight:700;border-radius:9px;border:none;cursor:pointer;">
+                                                    ? Use This Template
                                                 </button>
-                                                <button type="button" @click="open=false" style="background:#f3f4f6;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:18px;color:#6b7280;line-height:1;">‚úï</button>
+                                                <button type="button" @click="open=false" style="background:#F0F0EE;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:18px;color:#737373;line-height:1;">?</button>
                                             </div>
                                         </div>
-                                        <div style="overflow-y:auto;padding:24px;background:#f8fafc;">
+                                        <div style="overflow-y:auto;padding:24px;background:#F7F7F5;">
                                             <template x-if="tpl">
-                                                <div style="background:#fff;border-radius:8px;box-shadow:0 2px 16px rgba(0,0,0,.08);overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;">
+                                                <div style="background:#fff;border-radius:8px;box-shadow: none;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;">
                                                     <div :style="'background:'+tpl.primary+';padding:28px 32px;'">
                                                         <div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-.3px;">{{ auth()->user()->name }}</div>
-                                                        <div :style="'font-size:13px;color:rgba(255,255,255,.8);margin-top:4px;'" x-text="tpl.name+' ¬∑ Resume Preview'"></div>
+                                                        <div :style="'font-size:13px;color:rgba(255,255,255,.8);margin-top:4px;'" x-text="tpl.name+' ∑ Resume Preview'"></div>
                                                         <div style="display:flex;gap:18px;margin-top:12px;flex-wrap:wrap;">
-                                                            <span style="font-size:11px;color:rgba(255,255,255,.75);">üìß {{ auth()->user()->email }}</span>
-                                                            <span style="font-size:11px;color:rgba(255,255,255,.75);">üìç Chennai, India</span>
-                                                            <span style="font-size:11px;color:rgba(255,255,255,.75);">üîó linkedin.com/in/profile</span>
+                                                            <span style="font-size:11px;color:rgba(255,255,255,.75);">?? {{ auth()->user()->email }}</span>
+                                                            <span style="font-size:11px;color:rgba(255,255,255,.75);">?? Chennai, India</span>
+                                                            <span style="font-size:11px;color:rgba(255,255,255,.75);">?? linkedin.com/in/profile</span>
                                                         </div>
                                                     </div>
                                                     <div :style="tpl.cols==2?'display:flex;':''">
                                                         <template x-if="tpl.cols==2">
-                                                            <div :style="'width:210px;flex-shrink:0;padding:18px 16px;background:'+tpl.secondary+'12;border-right:1px solid #e5e7eb;'">
+                                                            <div :style="'width:210px;flex-shrink:0;padding:18px 16px;background:'+tpl.secondary+'12;border-right:1px solid #E2E2E0;'">
                                                                 <div :style="'font-size:10px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:7px;'">Skills</div>
                                                                 <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px;">
                                                                     <template x-for="s in ['Laravel','React','PHP','MySQL','Docker','AWS','Git','REST API']">
@@ -605,25 +605,25 @@
                                                                     </template>
                                                                 </div>
                                                                 <div :style="'font-size:10px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:7px;'">Education</div>
-                                                                <div style="font-size:11px;font-weight:700;color:#1f2937;">B.Tech Computer Science</div>
-                                                                <div style="font-size:11px;color:#6b7280;">IIT Bombay ¬∑ 2019‚Äì2023</div>
-                                                                <div style="font-size:11px;color:#6b7280;margin-bottom:14px;">CGPA: 8.7/10</div>
+                                                                <div style="font-size:11px;font-weight:700;color:#0C0C0C;">B.Tech Computer Science</div>
+                                                                <div style="font-size:11px;color:#737373;">IIT Bombay ∑ 2019ñ2023</div>
+                                                                <div style="font-size:11px;color:#737373;margin-bottom:14px;">CGPA: 8.7/10</div>
                                                                 <div :style="'font-size:10px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:7px;'">Languages</div>
-                                                                <div style="font-size:11px;color:#374151;">English ¬∑ Native</div>
-                                                                <div style="font-size:11px;color:#374151;">Hindi ¬∑ Fluent</div>
+                                                                <div style="font-size:11px;color:#3D3D3D;">English ∑ Native</div>
+                                                                <div style="font-size:11px;color:#3D3D3D;">Hindi ∑ Fluent</div>
                                                             </div>
                                                         </template>
                                                         <div style="flex:1;padding:20px 24px;">
                                                             <div :style="'font-size:10px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:5px;'">Professional Summary</div>
-                                                            <p style="font-size:12px;color:#374151;line-height:1.65;margin-bottom:16px;">Full-stack software engineer with 4+ years building scalable SaaS products. Expert in Laravel, React, and cloud infrastructure. Led cross-functional teams delivering ‚Çπ2Cr+ revenue impact. Passionate about clean code and developer experience.</p>
+                                                            <p style="font-size:12px;color:#3D3D3D;line-height:1.65;margin-bottom:16px;">Full-stack software engineer with 4+ years building scalable SaaS products. Expert in Laravel, React, and cloud infrastructure. Led cross-functional teams delivering ?2Cr+ revenue impact. Passionate about clean code and developer experience.</p>
                                                             <div :style="'font-size:10px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:9px;'">Work Experience</div>
                                                             <div style="margin-bottom:14px;">
                                                                 <div style="display:flex;justify-content:space-between;align-items:baseline;">
-                                                                    <div style="font-size:13px;font-weight:700;color:#111827;">Senior Software Engineer</div>
-                                                                    <div style="font-size:11px;color:#6b7280;">Jan 2023 ‚Äì Present</div>
+                                                                    <div style="font-size:13px;font-weight:700;color:#0C0C0C;">Senior Software Engineer</div>
+                                                                    <div style="font-size:11px;color:#737373;">Jan 2023 ñ Present</div>
                                                                 </div>
-                                                                <div style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;">Infosys ¬∑ Bengaluru, India</div>
-                                                                <ul style="font-size:11px;color:#374151;padding-left:16px;line-height:1.7;margin:0;">
+                                                                <div style="font-size:11px;font-weight:600;color:#737373;margin-bottom:4px;">Infosys ∑ Bengaluru, India</div>
+                                                                <ul style="font-size:11px;color:#3D3D3D;padding-left:16px;line-height:1.7;margin:0;">
                                                                     <li>Reduced API response time by 45% via Redis caching, improving UX for 50K+ users</li>
                                                                     <li>Led migration to microservices, cutting deployment from 2h to 12min</li>
                                                                     <li>Mentored 5 junior engineers; reduced bugs by 30%</li>
@@ -631,12 +631,12 @@
                                                             </div>
                                                             <div style="margin-bottom:14px;">
                                                                 <div style="display:flex;justify-content:space-between;align-items:baseline;">
-                                                                    <div style="font-size:13px;font-weight:700;color:#111827;">Software Engineer</div>
-                                                                    <div style="font-size:11px;color:#6b7280;">Jun 2020 ‚Äì Dec 2022</div>
+                                                                    <div style="font-size:13px;font-weight:700;color:#0C0C0C;">Software Engineer</div>
+                                                                    <div style="font-size:11px;color:#737373;">Jun 2020 ñ Dec 2022</div>
                                                                 </div>
-                                                                <div style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;">Razorpay ¬∑ Bengaluru, India</div>
-                                                                <ul style="font-size:11px;color:#374151;padding-left:16px;line-height:1.7;margin:0;">
-                                                                    <li>Built payment reconciliation engine processing ‚Çπ500Cr/month</li>
+                                                                <div style="font-size:11px;font-weight:600;color:#737373;margin-bottom:4px;">Razorpay ∑ Bengaluru, India</div>
+                                                                <ul style="font-size:11px;color:#3D3D3D;padding-left:16px;line-height:1.7;margin:0;">
+                                                                    <li>Built payment reconciliation engine processing ?500Cr/month</li>
                                                                     <li>Integrated 12 banking partners via REST APIs; cut integration time by 60%</li>
                                                                 </ul>
                                                             </div>
@@ -649,7 +649,7 @@
                                                                         </template>
                                                                     </div>
                                                                     <div :style="'font-size:10px;font-weight:800;letter-spacing:.08em;color:'+tpl.accent+';text-transform:uppercase;margin-bottom:7px;'">Education</div>
-                                                                    <div style="font-size:12px;font-weight:700;color:#111827;">B.Tech Computer Science ¬∑ IIT Bombay ¬∑ 2019‚Äì2023 ¬∑ CGPA 8.7/10</div>
+                                                                    <div style="font-size:12px;font-weight:700;color:#0C0C0C;">B.Tech Computer Science ∑ IIT Bombay ∑ 2019ñ2023 ∑ CGPA 8.7/10</div>
                                                                 </div>
                                                             </template>
                                                         </div>
@@ -666,9 +666,9 @@
                                     @foreach($templates as $template)
                                     @php
                                         $tc = is_array($template->color_scheme) ? $template->color_scheme : (json_decode($template->color_scheme, true) ?? []);
-                                        $tp  = $tc['primary']   ?? '#1a202c';
-                                        $ts  = $tc['secondary'] ?? '#2d3748';
-                                        $ta  = $tc['accent']    ?? '#4a5568';
+                                        $tp  = $tc['primary']   ?? '#0C0C0C';
+                                        $ts  = $tc['secondary'] ?? '#3D3D3D';
+                                        $ta  = $tc['accent']    ?? '#3D3D3D';
                                         $tl  = is_array($template->layout_config) ? $template->layout_config : (json_decode($template->layout_config, true) ?? []);
                                         $tcols = $tl['columns'] ?? 1;
                                         $tplData = json_encode(['id'=>$template->id,'name'=>$template->name,'primary'=>$tp,'secondary'=>$ts,'accent'=>$ta,'cols'=>$tcols]);
@@ -681,7 +681,7 @@
                                                    onchange="onTemplateChange(this, {{ $template->id }})">
                                             <div class="template-card border-2 rounded-lg overflow-hidden transition-all duration-200 {{ $resume->template_id == $template->id ? 'border-indigo-600 ring-2 ring-indigo-200' : 'border-gray-200 hover:border-gray-400' }}" id="tcard-{{ $template->id }}">
                                                 {{-- Mini resume thumbnail --}}
-                                                <div style="position:relative;padding-bottom:129%;overflow:hidden;background:#f8fafc;">
+                                                <div style="position:relative;padding-bottom:129%;overflow:hidden;background:#F7F7F5;">
                                                     @if($template->preview_image)
                                                         <img src="{{ asset('storage/'.$template->preview_image) }}" alt="{{ $template->name }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
                                                     @else
@@ -697,16 +697,16 @@
                                                             </div>
                                                             @if($tcols == 2)
                                                             <div style="display:flex;flex:1;overflow:hidden;">
-                                                                <div style="width:37%;padding:5px 4px;flex-shrink:0;background:{{ $ts }}18;border-right:1px solid #e5e7eb;">
+                                                                <div style="width:37%;padding:5px 4px;flex-shrink:0;background:{{ $ts }}18;border-right:1px solid #E2E2E0;">
                                                                     <div style="width:100%;height:2.5px;background:{{ $ta }};border-radius:1px;margin-bottom:2px;"></div>
-                                                                    @for($i=0;$i<4;$i++)<div style="width:{{ 65+$i*7 }}%;height:2px;background:#d1d5db;border-radius:1px;margin-bottom:2px;"></div>@endfor
+                                                                    @for($i=0;$i<4;$i++)<div style="width:{{ 65+$i*7 }}%;height:2px;background:#C8C8C5;border-radius:1px;margin-bottom:2px;"></div>@endfor
                                                                     <div style="width:100%;height:2.5px;background:{{ $ta }};border-radius:1px;margin:4px 0 2px;"></div>
-                                                                    @for($i=0;$i<3;$i++)<div style="width:{{ 70+$i*6 }}%;height:2px;background:#d1d5db;border-radius:1px;margin-bottom:2px;"></div>@endfor
+                                                                    @for($i=0;$i<3;$i++)<div style="width:{{ 70+$i*6 }}%;height:2px;background:#C8C8C5;border-radius:1px;margin-bottom:2px;"></div>@endfor
                                                                 </div>
                                                                 <div style="flex:1;padding:5px 5px;">
                                                                     @for($s=0;$s<3;$s++)
                                                                     <div style="width:54%;height:2.5px;background:{{ $tp }};border-radius:1px;margin-bottom:2px;"></div>
-                                                                    @for($i=0;$i<3;$i++)<div style="width:{{ 80+$i*6 }}%;height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px;"></div>@endfor
+                                                                    @for($i=0;$i<3;$i++)<div style="width:{{ 80+$i*6 }}%;height:2px;background:#E2E2E0;border-radius:1px;margin-bottom:2px;"></div>@endfor
                                                                     <div style="margin-bottom:4px;"></div>
                                                                     @endfor
                                                                 </div>
@@ -715,7 +715,7 @@
                                                             <div style="flex:1;padding:6px 6px;">
                                                                 @for($s=0;$s<4;$s++)
                                                                 <div style="width:40%;height:2.5px;background:{{ $tp }};border-radius:1px;margin-bottom:2px;"></div>
-                                                                @for($i=0;$i<3;$i++)<div style="width:{{ 72+$i*10 }}%;height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:2px;"></div>@endfor
+                                                                @for($i=0;$i<3;$i++)<div style="width:{{ 72+$i*10 }}%;height:2px;background:#E2E2E0;border-radius:1px;margin-bottom:2px;"></div>@endfor
                                                                 <div style="margin-bottom:5px;"></div>
                                                                 @endfor
                                                             </div>
@@ -725,21 +725,21 @@
                                                     @endif
                                                     {{-- Active badge --}}
                                                     <div style="position:absolute;top:4px;right:4px;{{ $resume->template_id == $template->id ? '' : 'display:none;' }}" id="check-{{ $template->id }}">
-                                                        <span style="background:#4f46e5;color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;font-weight:700;">‚úì Active</span>
+                                                        <span style="background:#1B57C4;color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;font-weight:700;">? Active</span>
                                                     </div>
                                                     {{-- Hover preview overlay --}}
                                                     <div class="opacity-0 group-hover:opacity-100 transition-opacity" style="position:absolute;inset:0;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;">
                                                         <button type="button" @click.prevent="tpl={{ $tplData }};open=true"
-                                                                style="background:#fff;color:#4f46e5;font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;border:2px solid #4f46e5;cursor:pointer;white-space:nowrap;">
-                                                            üëÅ Full Preview
+                                                                style="background:#fff;color:#1B57C4;font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;border:2px solid #1B57C4;cursor:pointer;white-space:nowrap;">
+                                                            ?? Full Preview
                                                         </button>
                                                     </div>
                                                 </div>
                                                 <div style="padding:6px 8px 8px;">
-                                                    <p style="font-size:11px;font-weight:700;text-align:center;color:#1f2937;margin:0 0 3px;">{{ $template->name }}</p>
+                                                    <p style="font-size:11px;font-weight:700;text-align:center;color:#0C0C0C;margin:0 0 3px;">{{ $template->name }}</p>
                                                     <div style="display:flex;justify-content:center;align-items:center;gap:4px;">
                                                         @if($template->is_ats_friendly ?? false)
-                                                        <span style="font-size:9px;color:#16a34a;font-weight:700;"><i class="fas fa-check-circle"></i> ATS</span>
+                                                        <span style="font-size:9px;color:#1E8E3E;font-weight:700;"><i class="fas fa-check-circle"></i> ATS</span>
                                                         @endif
                                                         <span style="width:10px;height:10px;border-radius:50%;background:{{ $tp }};display:inline-block;border:1px solid rgba(0,0,0,.15);"></span>
                                                     </div>
@@ -749,7 +749,7 @@
                                     </div>
                                     @endforeach
                                 </div>
-                                <p style="font-size:11px;color:#9ca3af;margin-top:10px;text-align:center;"><i class="fas fa-info-circle" style="margin-right:3px;"></i>Hover any card to see full preview ¬∑ Select then <strong>Save All Changes</strong></p>
+                                <p style="font-size:11px;color:#A8A8A8;margin-top:10px;text-align:center;"><i class="fas fa-info-circle" style="margin-right:3px;"></i>Hover any card to see full preview ∑ Select then <strong>Save All Changes</strong></p>
                             </div>
                         </div>
                         <!-- SUBMIT -->
@@ -768,7 +768,7 @@
                         @if($score)
                         <div class="flex justify-between text-xs text-gray-600 mb-1"><span>Score</span><span class="font-bold text-lg {{ $score >= 80 ? 'text-green-600' : ($score >= 60 ? 'text-yellow-600' : 'text-red-600') }}">{{ $score }}/100</span></div>
                         <div class="w-full bg-gray-200 rounded-full h-3"><div class="h-3 rounded-full {{ $score >= 80 ? 'bg-green-500' : ($score >= 60 ? 'bg-yellow-500' : 'bg-red-500') }}" style="width:{{ $score }}%"></div></div>
-                        <p class="text-xs mt-2 {{ $score >= 80 ? 'text-green-700' : ($score >= 60 ? 'text-yellow-700' : 'text-red-700') }}">{{ $score >= 80 ? 'Excellent ‚Äî ready to apply' : ($score >= 60 ? 'Good ‚Äî a few improvements needed' : 'Needs improvement ‚Äî use AI Analyze below') }}</p>
+                        <p class="text-xs mt-2 {{ $score >= 80 ? 'text-green-700' : ($score >= 60 ? 'text-yellow-700' : 'text-red-700') }}">{{ $score >= 80 ? 'Excellent ó ready to apply' : ($score >= 60 ? 'Good ó a few improvements needed' : 'Needs improvement ó use AI Analyze below') }}</p>
                         @else
                         <div class="flex justify-between text-xs text-gray-500 mb-1"><span>Score</span><span class="font-semibold">Not analyzed</span></div>
                         <div class="w-full bg-gray-200 rounded-full h-3"><div class="h-3 rounded-full bg-gray-300" style="width:0%"></div></div>
@@ -815,7 +815,7 @@
                         <p class="text-xs text-gray-500 mb-3">AI-generated, multiple tones, PDF + Word download</p>
                         <a href="{{ route('resume.cover-letter.show', $resume) }}"
                            class="block w-full py-2.5 px-4 text-center rounded-lg font-semibold text-sm text-white transition"
-                           style="background:linear-gradient(135deg,#6366f1,#a855f7);">
+                           style="background:#2D6CDF;">
                             <i class="fas fa-magic mr-1"></i> Generate Cover Letter
                         </a>
                     </div>
@@ -828,28 +828,28 @@
                         </div>
                     </div>
                     <!-- ATS Score Widget -->
-                    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);">
+                    <div style="background:#fff;border:1px solid #E2E2E0;border-radius:12px;overflow:hidden;box-shadow: none;">
                         @php
                             $atsScore = $resume->numeric_ats_score;
-                            $atsColor = $atsScore ? ($atsScore >= 80 ? '#34a853' : ($atsScore >= 60 ? '#fbbc04' : '#ea4335')) : '#9ca3af';
+                            $atsColor = $atsScore ? ($atsScore >= 80 ? '#1E8E3E' : ($atsScore >= 60 ? '#fbbc04' : '#2D6CDF')) : '#A8A8A8';
                             $atsLabel = $atsScore ? ($atsScore >= 80 ? 'Excellent' : ($atsScore >= 60 ? 'Good' : 'Needs Work')) : 'Not Checked';
                             $atsCats  = $resume->ats_analysis['categories'] ?? [];
                             $atsDash  = $atsScore ? round($atsScore * 2.76) : 0;
                         @endphp
-                        <div style="background:linear-gradient(135deg,#1e1b4b,#4c1d95);padding:14px 16px;">
+                        <div style="background:#0C2E72;padding:14px 16px;">
                             <h3 style="color:#fff;font-size:13px;font-weight:700;margin:0;display:flex;align-items:center;gap:6px;">
-                                <i class="fas fa-chart-line" style="color:#a78bfa;"></i> ATS Score
+                                <i class="fas fa-chart-line" style="color:#2D6CDF;"></i> ATS Score
                             </h3>
                             <p style="color:rgba(255,255,255,.6);font-size:11px;margin:2px 0 0;">Resume compatibility analysis</p>
                         </div>
                         <div style="padding:18px;text-align:center;">
                             <div style="width:100px;height:100px;margin:0 auto 12px;">
                                 <svg width="100" height="100" viewBox="0 0 100 100">
-                                    <circle cx="50" cy="50" r="44" fill="none" stroke="#f0f0f0" stroke-width="10"/>
+                                    <circle cx="50" cy="50" r="44" fill="none" stroke="#F0F0EE" stroke-width="10"/>
                                     <circle cx="50" cy="50" r="44" fill="none" stroke="{{ $atsColor }}" stroke-width="10"
                                         stroke-dasharray="{{ $atsDash }} 276" stroke-dashoffset="69"
                                         stroke-linecap="round" transform="rotate(-90 50 50)"/>
-                                    <text x="50" y="47" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a2e">{{ $atsScore ?? '‚Äî' }}</text>
+                                    <text x="50" y="47" text-anchor="middle" font-size="22" font-weight="800" fill="#0C0C0C">{{ $atsScore ?? 'ó' }}</text>
                                     <text x="50" y="62" text-anchor="middle" font-size="10" fill="#888">{{ $atsScore ? '/100' : '' }}</text>
                                 </svg>
                             </div>
@@ -858,7 +858,7 @@
                             <div style="margin-top:12px;display:flex;flex-direction:column;gap:5px;text-align:left;">
                                 @foreach([['Content',$atsCats['content']??[],25],['Skills',$atsCats['skills']??[],20],['Format',$atsCats['format']??[],20],['Sections',$atsCats['sections']??[],20],['Style',$atsCats['style']??[],15]] as [$cn,$cc,$cm])
                                 @if(!empty($cc))
-                                @php $cs=(int)($cc['score']??0);$cl=$cc['label']??'Needs Work';$cColor=$cl==='Excellent'?'#34a853':($cl==='Good'?'#fbbc04':'#ea4335'); @endphp
+                                @php $cs=(int)($cc['score']??0);$cl=$cc['label']??'Needs Work';$cColor=$cl==='Excellent'?'#1E8E3E':($cl==='Good'?'#fbbc04':'#2D6CDF'); @endphp
                                 <div style="display:flex;align-items:center;justify-content:space-between;">
                                     <span style="font-size:11px;color:#555;">{{ $cn }}</span>
                                     <div style="display:flex;align-items:center;gap:5px;">
@@ -872,8 +872,8 @@
                             @else
                             <p style="font-size:12px;color:#888;margin:8px 0 0;line-height:1.5;">Get a detailed breakdown of how well your resume passes ATS filters.</p>
                             @endif
-                            <a href="{{ route('resume.ats.show', $resume) }}" style="display:block;margin-top:14px;padding:11px;background:linear-gradient(135deg,#1A73E8,#0d47a1);color:#fff;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">
-                                {{ $atsScore ? 'üìä Full ATS Report ‚Üí' : 'üîç Check ATS Score' }}
+                            <a href="{{ route('resume.ats.show', $resume) }}" style="display:block;margin-top:14px;padding:11px;background:#2D6CDF;color:#fff;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">
+                                {{ $atsScore ? '?? Full ATS Report ?' : '?? Check ATS Score' }}
                             </a>
                         </div>
 
@@ -907,11 +907,11 @@
     function removeItem(btn,sel){btn.closest(sel).remove();}
     function setCurrentJob(cb){const inp=cb.closest(".experience-item")?.querySelector(".end-date-input");if(inp)inp.value=cb.checked?"Present":"";}
     function showToast(msg,type="info"){const c={success:"bg-green-600",error:"bg-red-600",info:"bg-blue-600"};const t=document.createElement("div");t.className=`fixed bottom-6 right-6 z-50 px-5 py-3 rounded-lg text-white text-sm font-medium shadow-lg ${c[type]}`;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),4000);}
-    function addExperience(){const n=expCount++;const h=`<div class="experience-item border border-gray-200 rounded-lg overflow-hidden"><div class="bg-gray-50 px-4 py-3 flex justify-between items-center"><span class="font-medium text-gray-700 text-sm"><i class="fas fa-building mr-2 text-gray-400"></i>New Job</span><button type="button" onclick="removeItem(this,'.experience-item')" class="text-red-500 text-sm"><i class="fas fa-trash"></i></button></div><div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-xs font-medium text-gray-600 mb-1">Job Title <span class="text-red-500">*</span></label><input type="text" name="experience[${n}][position]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Software Engineer"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Company <span class="text-red-500">*</span></label><input type="text" name="experience[${n}][company]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Acme Corp"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Location</label><input type="text" name="experience[${n}][location]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Bangalore / Remote"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Type</label><select name="experience[${n}][employment_type]" class="w-full rounded-md border-gray-300 text-sm"><option>Full-time</option><option>Part-time</option><option>Contract</option><option>Internship</option><option>Freelance</option></select></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Start Date</label><input type="text" name="experience[${n}][start_date]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Jan 2022"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">End Date</label><div class="space-y-1"><input type="text" name="experience[${n}][end_date]" class="w-full rounded-md border-gray-300 text-sm end-date-input" placeholder="Dec 2024 or Present"><label class="flex items-center gap-1.5 text-xs text-gray-600"><input type="checkbox" onchange="setCurrentJob(this)" class="rounded"> Currently here</label></div></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Description & Responsibilities</label><textarea name="experience[${n}][description]" rows="3" class="w-full rounded-md border-gray-300 text-sm" placeholder="Key responsibilities..."></textarea></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Key Achievements (one per line)</label><textarea name="experience[${n}][achievements]" rows="4" class="w-full rounded-md border-gray-300 text-sm font-mono" placeholder="Reduced API response time by 45% via Redis&#10;Led team of 5 engineers&#10;Increased revenue by Rs.12L"></textarea><p class="text-xs text-gray-400 mt-1">Quantify results ‚Äî %, Rs., time saved, team size</p></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Technologies Used</label><input type="text" name="experience[${n}][technologies]" class="w-full rounded-md border-gray-300 text-sm" placeholder="PHP, Laravel, MySQL, Redis, Docker, AWS"></div></div></div>`;document.getElementById("exp-empty-state")?.remove();document.getElementById("experience-list").insertAdjacentHTML("beforeend",h);}
+    function addExperience(){const n=expCount++;const h=`<div class="experience-item border border-gray-200 rounded-lg overflow-hidden"><div class="bg-gray-50 px-4 py-3 flex justify-between items-center"><span class="font-medium text-gray-700 text-sm"><i class="fas fa-building mr-2 text-gray-400"></i>New Job</span><button type="button" onclick="removeItem(this,'.experience-item')" class="text-red-500 text-sm"><i class="fas fa-trash"></i></button></div><div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-xs font-medium text-gray-600 mb-1">Job Title <span class="text-red-500">*</span></label><input type="text" name="experience[${n}][position]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Software Engineer"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Company <span class="text-red-500">*</span></label><input type="text" name="experience[${n}][company]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Acme Corp"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Location</label><input type="text" name="experience[${n}][location]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Bangalore / Remote"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Type</label><select name="experience[${n}][employment_type]" class="w-full rounded-md border-gray-300 text-sm"><option>Full-time</option><option>Part-time</option><option>Contract</option><option>Internship</option><option>Freelance</option></select></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Start Date</label><input type="text" name="experience[${n}][start_date]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Jan 2022"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">End Date</label><div class="space-y-1"><input type="text" name="experience[${n}][end_date]" class="w-full rounded-md border-gray-300 text-sm end-date-input" placeholder="Dec 2024 or Present"><label class="flex items-center gap-1.5 text-xs text-gray-600"><input type="checkbox" onchange="setCurrentJob(this)" class="rounded"> Currently here</label></div></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Description & Responsibilities</label><textarea name="experience[${n}][description]" rows="3" class="w-full rounded-md border-gray-300 text-sm" placeholder="Key responsibilities..."></textarea></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Key Achievements (one per line)</label><textarea name="experience[${n}][achievements]" rows="4" class="w-full rounded-md border-gray-300 text-sm font-mono" placeholder="Reduced API response time by 45% via Redis&#10;Led team of 5 engineers&#10;Increased revenue by Rs.12L"></textarea><p class="text-xs text-gray-400 mt-1">Quantify results ó %, Rs., time saved, team size</p></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Technologies Used</label><input type="text" name="experience[${n}][technologies]" class="w-full rounded-md border-gray-300 text-sm" placeholder="PHP, Laravel, MySQL, Redis, Docker, AWS"></div></div></div>`;document.getElementById("exp-empty-state")?.remove();document.getElementById("experience-list").insertAdjacentHTML("beforeend",h);}
     function addEducation(){const n=eduCount++;const h=`<div class="education-item border border-gray-200 rounded-lg overflow-hidden"><div class="bg-gray-50 px-4 py-3 flex justify-between items-center"><span class="font-medium text-gray-700 text-sm"><i class="fas fa-university mr-2 text-gray-400"></i>New Education</span><button type="button" onclick="removeItem(this,'.education-item')" class="text-red-500 text-sm"><i class="fas fa-trash"></i></button></div><div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-xs font-medium text-gray-600 mb-1">Institution <span class="text-red-500">*</span></label><input type="text" name="education[${n}][institution]" class="w-full rounded-md border-gray-300 text-sm" placeholder="IIT Bombay"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Degree <span class="text-red-500">*</span></label><input type="text" name="education[${n}][degree]" class="w-full rounded-md border-gray-300 text-sm" placeholder="B.Tech / M.Tech / MBA"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Field of Study</label><input type="text" name="education[${n}][field]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Computer Science"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Location</label><input type="text" name="education[${n}][location]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Mumbai, India"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Start Year</label><input type="text" name="education[${n}][start_year]" class="w-full rounded-md border-gray-300 text-sm" placeholder="2019"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">End Year</label><input type="text" name="education[${n}][end_year]" class="w-full rounded-md border-gray-300 text-sm" placeholder="2023 or Ongoing"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">CGPA / %</label><input type="text" name="education[${n}][gpa]" class="w-full rounded-md border-gray-300 text-sm" placeholder="8.5/10 or 85%"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Honors</label><input type="text" name="education[${n}][honors]" class="w-full rounded-md border-gray-300 text-sm" placeholder="First Class with Distinction"></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Relevant Coursework</label><input type="text" name="education[${n}][coursework]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Data Structures, DBMS, Machine Learning"></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Activities & Achievements</label><textarea name="education[${n}][activities]" rows="2" class="w-full rounded-md border-gray-300 text-sm" placeholder="President Coding Club, Hackathon winner"></textarea></div></div></div>`;document.getElementById("edu-empty-state")?.remove();document.getElementById("education-list").insertAdjacentHTML("beforeend",h);}
     function addCertification(){const n=certCount++;const h=`<div class="certification-item border border-gray-200 rounded-lg p-4"><div class="flex justify-between items-center mb-3"><span class="font-medium text-gray-700 text-sm"><i class="fas fa-award text-rose-400 mr-2"></i>New Certification</span><button type="button" onclick="removeItem(this,'.certification-item')" class="text-red-500 text-sm"><i class="fas fa-trash"></i></button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><div><label class="block text-xs font-medium text-gray-600 mb-1">Certification Name <span class="text-red-500">*</span></label><input type="text" name="certifications[${n}][name]" class="w-full rounded-md border-gray-300 text-sm" placeholder="AWS Certified Solutions Architect"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Issuing Organization <span class="text-red-500">*</span></label><input type="text" name="certifications[${n}][issuer]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Amazon Web Services"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Issue Date</label><input type="text" name="certifications[${n}][issue_date]" class="w-full rounded-md border-gray-300 text-sm" placeholder="March 2024"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Expiry Date</label><input type="text" name="certifications[${n}][expiry_date]" class="w-full rounded-md border-gray-300 text-sm" placeholder="March 2027 or No Expiry"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Credential ID</label><input type="text" name="certifications[${n}][credential_id]" class="w-full rounded-md border-gray-300 text-sm" placeholder="ABC-123456"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Credential URL</label><input type="url" name="certifications[${n}][url]" class="w-full rounded-md border-gray-300 text-sm" placeholder="https://credly.com/badges/..."></div></div></div>`;document.getElementById("cert-empty-state")?.remove();document.getElementById("certifications-list").insertAdjacentHTML("beforeend",h);}
     function addProject(){const n=projCount++;const h=`<div class="project-item border border-gray-200 rounded-lg overflow-hidden"><div class="bg-gray-50 px-4 py-3 flex justify-between items-center"><span class="font-medium text-gray-700 text-sm"><i class="fas fa-project-diagram mr-2 text-indigo-400"></i>New Project</span><button type="button" onclick="removeItem(this,'.project-item')" class="text-red-500 text-sm"><i class="fas fa-trash"></i></button></div><div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-3"><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Project Name <span class="text-red-500">*</span></label><input type="text" name="projects[${n}][name]" class="w-full rounded-md border-gray-300 text-sm" placeholder="E-commerce Platform"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Start Date</label><input type="text" name="projects[${n}][start_date]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Jan 2024"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">End Date</label><input type="text" name="projects[${n}][end_date]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Mar 2024 or Ongoing"></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Description & Impact</label><textarea name="projects[${n}][description]" rows="3" class="w-full rounded-md border-gray-300 text-sm" placeholder="Built a multi-tenant SaaS serving 500+ daily users. Reduced checkout time by 30%."></textarea></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Technologies Used</label><input type="text" name="projects[${n}][technologies]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Laravel, React, MySQL, Redis, Tailwind CSS"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Live URL</label><input type="url" name="projects[${n}][url]" class="w-full rounded-md border-gray-300 text-sm" placeholder="https://myproject.com"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">GitHub / Source</label><input type="url" name="projects[${n}][github_url]" class="w-full rounded-md border-gray-300 text-sm" placeholder="https://github.com/user/repo"></div></div></div>`;document.getElementById("proj-empty-state")?.remove();document.getElementById("projects-list").insertAdjacentHTML("beforeend",h);}
-    function addAchievement(){const n=achCount++;const h=`<div class="achievement-item border border-gray-200 rounded-lg p-4"><div class="flex justify-between items-center mb-3"><span class="font-medium text-gray-700 text-sm"><i class="fas fa-medal mr-2 text-amber-400"></i>New Achievement</span><button type="button" onclick="removeItem(this,'.achievement-item')" class="text-red-500 text-sm"><i class="fas fa-trash"></i></button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Achievement Title <span class="text-red-500">*</span></label><input type="text" name="achievements[${n}][title]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Winner ‚Äî Smart India Hackathon 2023"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Issuer / Organization</label><input type="text" name="achievements[${n}][issuer]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Ministry of Education, India"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Date</label><input type="text" name="achievements[${n}][date]" class="w-full rounded-md border-gray-300 text-sm" placeholder="December 2023"></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Description</label><textarea name="achievements[${n}][description]" rows="2" class="w-full rounded-md border-gray-300 text-sm" placeholder="Developed an AI-powered solution; won Rs.1L prize among 10,000 teams nationally."></textarea></div></div></div>`;document.getElementById("ach-empty-state")?.remove();document.getElementById("achievements-list").insertAdjacentHTML("beforeend",h);}
+    function addAchievement(){const n=achCount++;const h=`<div class="achievement-item border border-gray-200 rounded-lg p-4"><div class="flex justify-between items-center mb-3"><span class="font-medium text-gray-700 text-sm"><i class="fas fa-medal mr-2 text-amber-400"></i>New Achievement</span><button type="button" onclick="removeItem(this,'.achievement-item')" class="text-red-500 text-sm"><i class="fas fa-trash"></i></button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Achievement Title <span class="text-red-500">*</span></label><input type="text" name="achievements[${n}][title]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Winner ó Smart India Hackathon 2023"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Issuer / Organization</label><input type="text" name="achievements[${n}][issuer]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Ministry of Education, India"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Date</label><input type="text" name="achievements[${n}][date]" class="w-full rounded-md border-gray-300 text-sm" placeholder="December 2023"></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Description</label><textarea name="achievements[${n}][description]" rows="2" class="w-full rounded-md border-gray-300 text-sm" placeholder="Developed an AI-powered solution; won Rs.1L prize among 10,000 teams nationally."></textarea></div></div></div>`;document.getElementById("ach-empty-state")?.remove();document.getElementById("achievements-list").insertAdjacentHTML("beforeend",h);}
     function addLanguage(){const n=langCount++;const h=`<div class="language-item flex items-center gap-4 p-3 border border-gray-200 rounded-lg"><div class="flex-1"><input type="text" name="languages[${n}][name]" class="w-full rounded-md border-gray-300 text-sm" placeholder="e.g., Hindi"></div><div class="w-48"><select name="languages[${n}][proficiency]" class="w-full rounded-md border-gray-300 text-sm"><option>Native</option><option>Fluent</option><option>Advanced</option><option>Intermediate</option><option>Basic</option></select></div><button type="button" onclick="removeItem(this,'.language-item')" class="text-red-500 hover:text-red-700"><i class="fas fa-trash text-sm"></i></button></div>`;document.getElementById("lang-empty-state")?.remove();document.getElementById("languages-list").insertAdjacentHTML("beforeend",h);}
     function addVolunteer(){const n=volCount++;const h=`<div class="volunteer-item border border-gray-200 rounded-lg p-4"><div class="flex justify-between items-center mb-3"><span class="font-medium text-gray-700 text-sm">New Volunteer / Activity</span><button type="button" onclick="removeItem(this,'.volunteer-item')" class="text-red-500 text-sm"><i class="fas fa-trash"></i></button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><div><label class="block text-xs font-medium text-gray-600 mb-1">Role</label><input type="text" name="volunteer_work[${n}][role]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Mentor / Volunteer Developer"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Organization</label><input type="text" name="volunteer_work[${n}][organization]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Code for India / NSS"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">Start Date</label><input type="text" name="volunteer_work[${n}][start_date]" class="w-full rounded-md border-gray-300 text-sm" placeholder="June 2022"></div><div><label class="block text-xs font-medium text-gray-600 mb-1">End Date</label><input type="text" name="volunteer_work[${n}][end_date]" class="w-full rounded-md border-gray-300 text-sm" placeholder="Ongoing"></div><div class="md:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Description</label><textarea name="volunteer_work[${n}][description]" rows="2" class="w-full rounded-md border-gray-300 text-sm" placeholder="Mentored 30+ students in web development basics."></textarea></div></div></div>`;document.getElementById("vol-empty-state")?.remove();document.getElementById("volunteer-list").insertAdjacentHTML("beforeend",h);}
     async function generateSummary(btn){const orig=btn?.innerHTML;if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin mr-1"></i> Generating...';}try{const r=await fetch('{{ route("resume.ai.generate-summary",$resume) }}',{method:"POST",headers:{"Content-Type":"application/json","X-CSRF-TOKEN":"{{ csrf_token() }}","Accept":"application/json"}});const d=await r.json();if(d.success&&d.summary){document.getElementById("summaryInput").value=d.summary;updateSC();showToast("AI summary generated!","success");}else{showToast("AI generation failed. Please try again.","error");}}catch(e){showToast("Could not reach AI service.","error");}finally{if(btn){btn.disabled=false;btn.innerHTML=orig;}}}

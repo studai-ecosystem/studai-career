@@ -81,7 +81,7 @@
                     @endif
 
                     <div x-data="{ fileName: '' }" class="border-2 border-dashed rounded-lg p-12 text-center transition-colors"
-                         :style="fileName ? 'border-color:#22c55e;background:#f0fdf4;' : 'border-color:#d1d5db;background:#fff;'">
+                         :style="fileName ? 'border-color:#1E8E3E;background:#EDFAF2;' : 'border-color:#C8C8C5;background:#fff;'">
 
                         {{-- Icon: changes to checkmark when file picked --}}
                         <template x-if="!fileName">
@@ -92,11 +92,11 @@
                         </template>
                         <template x-if="fileName">
                             <div style="margin-bottom:16px;">
-                                <svg style="width:56px;height:56px;margin:0 auto 8px;color:#16a34a;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <svg style="width:56px;height:56px;margin:0 auto 8px;color:#1E8E3E;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                <p style="font-size:15px;font-weight:700;color:#15803d;margin:0 0 4px 0;" x-text="fileName"></p>
-                                <p style="font-size:12px;color:#4ade80;">Ready to analyse ✓</p>
+                                <p style="font-size:15px;font-weight:700;color:#1E8E3E;margin:0 0 4px 0;" x-text="fileName"></p>
+                                <p style="font-size:12px;color:#1E8E3E;">Ready to analyse ✓</p>
                             </div>
                         </template>
 
@@ -105,9 +105,9 @@
                                    class="hidden" id="resumeUpload"
                                    @change="fileName = $event.target.files[0] ? $event.target.files[0].name : ''">
                             <label for="resumeUpload" class="cursor-pointer">
-                                <span x-show="!fileName" style="color:#6366f1;font-weight:600;">Click to upload</span>
-                                <span x-show="!fileName" style="color:#6b7280;"> or drag and drop</span>
-                                <span x-show="fileName" style="color:#15803d;font-weight:600;">Change file</span>
+                                <span x-show="!fileName" style="color:#2D6CDF;font-weight:600;">Click to upload</span>
+                                <span x-show="!fileName" style="color:#737373;"> or drag and drop</span>
+                                <span x-show="fileName" style="color:#1E8E3E;font-weight:600;">Change file</span>
                             </label>
                             <p x-show="!fileName" class="text-sm text-gray-500 mt-2">PDF, DOC, DOCX, or TXT (Max 5MB)</p>
                         </div>
@@ -128,7 +128,7 @@
                     @if ($resumeFile && !$analyzing && !$analysisComplete)
                         <div class="mt-6 flex justify-center">
                             <button wire:click="uploadResume" wire:loading.attr="disabled"
-                                    style="display:inline-flex;align-items:center;gap:8px;padding:12px 32px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:700;font-size:15px;border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 20px rgba(99,102,241,.35);transition:all .2s;">
+                                    style="display:inline-flex;align-items:center;gap:8px;padding:12px 32px;background:#2D6CDF;color:white;font-weight:700;font-size:15px;border:none;border-radius:12px;cursor:pointer;box-shadow: none;transition:all .2s;">
                                 <span wire:loading.remove wire:target="uploadResume">✨ Analyse Resume with AI</span>
                                 <span wire:loading wire:target="uploadResume">Analyzing...</span>
                             </button>
@@ -156,7 +156,7 @@
 
                     <div class="mt-4 text-center">
                         <button wire:click="skipResume" 
-                                style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:#ffffff;color:#374151;font-weight:600;font-size:14px;border:1.5px solid #ddddf0;border-radius:12px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:all .2s;">
+                                style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:#ffffff;color:#3D3D3D;font-weight:600;font-size:14px;border:1.5px solid #EBF2FF;border-radius:12px;cursor:pointer;box-shadow: none;transition:all .2s;">
                             <svg style="width:16px;height:16px;flex-shrink:0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
@@ -189,7 +189,7 @@
                                 <button type="button"
                                         wire:click="generateHeadline"
                                         wire:loading.attr="disabled"
-                                        style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:linear-gradient(135deg,#6366f1,#a855f7);color:white;font-size:12px;font-weight:600;border:none;border-radius:8px;cursor:pointer;box-shadow:0 2px 8px rgba(99,102,241,.3);transition:all .2s;">
+                                        style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:#2D6CDF;color:white;font-size:12px;font-weight:600;border:none;border-radius:8px;cursor:pointer;box-shadow: none;transition:all .2s;">
                                     <svg style="width:13px;height:13px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                     </svg>
@@ -203,19 +203,19 @@
                                 rows="2"
                                 maxlength="255"
                                 placeholder="e.g., Senior Software Engineer with 8+ years in cloud architecture"
-                                style="width:100%;padding:12px 14px;border:1.5px solid #d1d5db;border-radius:10px;font-size:14px;color:#1a1a2e;resize:vertical;outline:none;transition:border-color .2s;font-family:inherit;line-height:1.5;"
-                                onfocus="this.style.borderColor='#6366f1'"
-                                onblur="this.style.borderColor='#d1d5db'"
+                                style="width:100%;padding:12px 14px;border:1.5px solid #C8C8C5;border-radius:10px;font-size:14px;color:#0C0C0C;resize:vertical;outline:none;transition:border-color .2s;font-family:inherit;line-height:1.5;"
+                                onfocus="this.style.borderColor='#2D6CDF'"
+                                onblur="this.style.borderColor='#C8C8C5'"
                             ></textarea>
-                            <div style="text-align:right;font-size:11px;color:#9ca3af;margin-top:3px;">
+                            <div style="text-align:right;font-size:11px;color:#A8A8A8;margin-top:3px;">
                                 <span x-data x-text="($wire.headline || '').length"></span>/255
                             </div>
                             @error('headline') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
 
                             {{-- AI Suggestions Panel --}}
                             <template x-if="suggestions && suggestions.length > 0">
-                                <div style="margin-top:14px;padding:16px;background:linear-gradient(135deg,#f5f3ff,#faf5ff);border:1.5px solid #d8b4fe;border-radius:12px;">
-                                    <p style="font-size:11px;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:.07em;margin:0 0 10px 0;">
+                                <div style="margin-top:14px;padding:16px;background:#EBF2FF;border:1.5px solid #BFCFEE;border-radius:12px;">
+                                    <p style="font-size:11px;font-weight:700;color:#2D6CDF;text-transform:uppercase;letter-spacing:.07em;margin:0 0 10px 0;">
                                         ✨ Click a suggestion to use it — then edit freely
                                     </p>
                                     <div style="display:flex;flex-direction:column;gap:8px;">
@@ -223,13 +223,13 @@
                                             <button type="button"
                                                     @click="pick(i)"
                                                     :style="selected === i
-                                                        ? 'background:linear-gradient(135deg,#6366f1,#a855f7);color:#ffffff;border:2px solid #6366f1;font-weight:600;box-shadow:0 2px 10px rgba(99,102,241,.35);text-align:left;padding:11px 14px;border-radius:9px;font-size:13px;line-height:1.45;cursor:pointer;width:100%;'
-                                                        : 'background:#ffffff;color:#1a1a2e;border:1.5px solid #e9d5ff;font-weight:400;text-align:left;padding:11px 14px;border-radius:9px;font-size:13px;line-height:1.45;cursor:pointer;width:100%;'">
+                                                        ? 'background:#2D6CDF;color:#ffffff;border:2px solid #2D6CDF;font-weight:600;box-shadow: none;text-align:left;padding:11px 14px;border-radius:9px;font-size:13px;line-height:1.45;cursor:pointer;width:100%;'
+                                                        : 'background:#ffffff;color:#0C0C0C;border:1.5px solid #BFCFEE;font-weight:400;text-align:left;padding:11px 14px;border-radius:9px;font-size:13px;line-height:1.45;cursor:pointer;width:100%;'">
                                                 <span style="opacity:.5;font-size:11px;font-weight:700;margin-right:6px;" x-text="(i+1)+'.'"></span><span x-text="s"></span>
                                             </button>
                                         </template>
                                     </div>
-                                    <p style="font-size:11px;color:#9ca3af;margin:10px 0 0 0;">After selecting, you can edit the text in the field above.</p>
+                                    <p style="font-size:11px;color:#A8A8A8;margin:10px 0 0 0;">After selecting, you can edit the text in the field above.</p>
                                 </div>
                             </template>
                         </div>
@@ -297,15 +297,15 @@
                                     @keydown="onKeydown"
                                     @focus="open = suggestions.length > 0"
                                     placeholder="Type your city, e.g. Mumbai, Bengaluru..."
-                                    style="width:100%;padding:10px 14px;border:1.5px solid #d1d5db;border-radius:9px;font-size:14px;color:#1a1a2e;outline:none;transition:border-color .2s;"
+                                    style="width:100%;padding:10px 14px;border:1.5px solid #C8C8C5;border-radius:9px;font-size:14px;color:#0C0C0C;outline:none;transition:border-color .2s;"
                                     autocomplete="off"
                                 />
                                 <div x-show="open && suggestions.length > 0"
                                      x-transition
-                                     style="position:absolute;z-index:999;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1.5px solid #e9d5ff;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);overflow:hidden;">
+                                     style="position:absolute;z-index:999;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1.5px solid #BFCFEE;border-radius:10px;box-shadow: none;overflow:hidden;">
                                     <template x-for="(s, i) in suggestions" :key="s">
                                         <div @click="select(s)"
-                                             :style="i === highlighted ? 'background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;' : 'background:#fff;color:#1a1a2e;'"
+                                             :style="i === highlighted ? 'background:#2D6CDF;color:#fff;' : 'background:#fff;color:#0C0C0C;'"
                                              style="padding:10px 16px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;">
                                             <svg style="width:13px;height:13px;opacity:.6;flex-shrink:0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -377,7 +377,7 @@
                     },
                     removeSkill(i) { this.skills.splice(i, 1); },
                     profColor(p) {
-                        return {beginner:'#9ca3af',intermediate:'#3b82f6',advanced:'#22c55e',expert:'#a855f7'}[p]||'#3b82f6';
+                        return {beginner:'#A8A8A8',intermediate:'#2D6CDF',advanced:'#1E8E3E',expert:'#2D6CDF'}[p]||'#2D6CDF';
                     },
                     async suggestAI() {
                         this.aiLoading = true; this.aiError = '';
@@ -402,52 +402,52 @@
                     <div style="display:flex;gap:8px;margin-bottom:12px;position:relative;">
                         <div style="flex:1;position:relative;">
                             <input type="text" x-model="search" placeholder="Search or type a skill..."
-                                   style="width:100%;padding:10px 14px;border:1.5px solid #d1d5db;border-radius:9px;font-size:14px;outline:none;"
-                                   onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#d1d5db'"
+                                   style="width:100%;padding:10px 14px;border:1.5px solid #C8C8C5;border-radius:9px;font-size:14px;outline:none;"
+                                   onfocus="this.style.borderColor='#2D6CDF'" onblur="this.style.borderColor='#C8C8C5'"
                                    @keydown.enter.prevent="search.trim() && addSkill(search.trim())">
                             {{-- Dropdown suggestions --}}
-                            <div x-show="filtered.length > 0" style="position:absolute;z-index:50;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1.5px solid #e9d5ff;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.1);overflow:hidden;">
+                            <div x-show="filtered.length > 0" style="position:absolute;z-index:50;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1.5px solid #BFCFEE;border-radius:10px;box-shadow: none;overflow:hidden;">
                                 <template x-for="s in filtered" :key="s">
-                                    <div @click="addSkill(s)" style="padding:9px 14px;cursor:pointer;font-size:13px;color:#1a1a2e;" onmouseover="this.style.background='#f5f3ff'" onmouseout="this.style.background='#fff'" x-text="s"></div>
+                                    <div @click="addSkill(s)" style="padding:9px 14px;cursor:pointer;font-size:13px;color:#0C0C0C;" onmouseover="this.style.background='#EBF2FF'" onmouseout="this.style.background='#fff'" x-text="s"></div>
                                 </template>
                             </div>
                         </div>
                         <button type="button" @click="search.trim() && addSkill(search.trim())"
-                                style="padding:10px 20px;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-weight:600;font-size:13px;border:none;border-radius:9px;cursor:pointer;white-space:nowrap;">
+                                style="padding:10px 20px;background:#2D6CDF;color:#fff;font-weight:600;font-size:13px;border:none;border-radius:9px;cursor:pointer;white-space:nowrap;">
                             + Add
                         </button>
                         <button type="button" @click="suggestAI" :disabled="aiLoading"
-                                style="padding:10px 16px;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff;font-weight:600;font-size:13px;border:none;border-radius:9px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;">
+                                style="padding:10px 16px;background:#2D6CDF;color:#fff;font-weight:600;font-size:13px;border:none;border-radius:9px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;">
                             <svg style="width:13px;height:13px" x-show="!aiLoading" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                             <svg style="width:13px;height:13px" x-show="aiLoading" class="animate-spin" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" opacity=".25"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" opacity=".75"/></svg>
                             <span x-text="aiLoading ? 'Suggesting...' : '✨ AI Suggest'"></span>
                         </button>
                     </div>
 
-                    <p x-show="aiError" x-text="aiError" style="color:#dc2626;font-size:12px;margin-bottom:8px;"></p>
+                    <p x-show="aiError" x-text="aiError" style="color:#2D6CDF;font-size:12px;margin-bottom:8px;"></p>
 
                     {{-- Skills list --}}
-                    <div x-show="skills.length === 0" style="padding:32px;text-align:center;color:#9ca3af;font-size:14px;border:1.5px dashed #e5e7eb;border-radius:12px;">
+                    <div x-show="skills.length === 0" style="padding:32px;text-align:center;color:#A8A8A8;font-size:14px;border:1.5px dashed #E2E2E0;border-radius:12px;">
                         No skills added yet. Search above or click ✨ AI Suggest.
                     </div>
 
                     <div style="display:flex;flex-wrap:wrap;gap:10px;">
                         <template x-for="(skill, i) in skills" :key="i">
-                            <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 12px;background:#fff;border:1.5px solid #e9d5ff;border-radius:999px;font-size:13px;color:#1a1a2e;">
+                            <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 12px;background:#fff;border:1.5px solid #BFCFEE;border-radius:999px;font-size:13px;color:#0C0C0C;">
                                 <span style="width:8px;height:8px;border-radius:50%;flex-shrink:0;" :style="'background:'+profColor(skill.proficiency)"></span>
                                 <span x-text="skill.name"></span>
-                                <select x-model="skill.proficiency" style="font-size:11px;border:none;outline:none;background:transparent;color:#6b7280;cursor:pointer;padding:0;">
+                                <select x-model="skill.proficiency" style="font-size:11px;border:none;outline:none;background:transparent;color:#737373;cursor:pointer;padding:0;">
                                     <option value="beginner">Beginner</option>
                                     <option value="intermediate">Intermediate</option>
                                     <option value="advanced">Advanced</option>
                                     <option value="expert">Expert</option>
                                 </select>
-                                <button type="button" @click="removeSkill(i)" style="color:#9ca3af;background:none;border:none;cursor:pointer;padding:0;line-height:1;font-size:16px;">&times;</button>
+                                <button type="button" @click="removeSkill(i)" style="color:#A8A8A8;background:none;border:none;cursor:pointer;padding:0;line-height:1;font-size:16px;">&times;</button>
                             </div>
                         </template>
                     </div>
 
-                    <p style="font-size:12px;color:#9ca3af;margin-top:12px;" x-text="skills.length + ' / 20 skills added'"></p>
+                    <p style="font-size:12px;color:#A8A8A8;margin-top:12px;" x-text="skills.length + ' / 20 skills added'"></p>
                 </div>
             @endif
 
@@ -488,27 +488,27 @@
                             <h3 class="text-lg font-semibold mb-4">💰 Salary Expectations</h3>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                                 <div>
-                                    <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;">Minimum (₹ / year)</label>
+                                    <label style="display:block;font-size:13px;font-weight:600;color:#3D3D3D;margin-bottom:6px;">Minimum (₹ / year)</label>
                                     <input type="number"
                                            wire:model="expected_salary_min"
                                            min="0" step="10000"
                                            placeholder="e.g. 500000"
-                                           style="width:100%;padding:11px 14px;border:1.5px solid #d1d5db;border-radius:9px;font-size:14px;color:#1a1a2e;outline:none;transition:border-color .2s;"
-                                           onfocus="this.style.borderColor='#6366f1'"
-                                           onblur="this.style.borderColor='#d1d5db'">
+                                           style="width:100%;padding:11px 14px;border:1.5px solid #C8C8C5;border-radius:9px;font-size:14px;color:#0C0C0C;outline:none;transition:border-color .2s;"
+                                           onfocus="this.style.borderColor='#2D6CDF'"
+                                           onblur="this.style.borderColor='#C8C8C5'">
                                 </div>
                                 <div>
-                                    <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;">Maximum (₹ / year)</label>
+                                    <label style="display:block;font-size:13px;font-weight:600;color:#3D3D3D;margin-bottom:6px;">Maximum (₹ / year)</label>
                                     <input type="number"
                                            wire:model="expected_salary_max"
                                            min="0" step="10000"
                                            placeholder="e.g. 1200000"
-                                           style="width:100%;padding:11px 14px;border:1.5px solid #d1d5db;border-radius:9px;font-size:14px;color:#1a1a2e;outline:none;transition:border-color .2s;"
-                                           onfocus="this.style.borderColor='#6366f1'"
-                                           onblur="this.style.borderColor='#d1d5db'">
+                                           style="width:100%;padding:11px 14px;border:1.5px solid #C8C8C5;border-radius:9px;font-size:14px;color:#0C0C0C;outline:none;transition:border-color .2s;"
+                                           onfocus="this.style.borderColor='#2D6CDF'"
+                                           onblur="this.style.borderColor='#C8C8C5'">
                                 </div>
                             </div>
-                            <p style="font-size:12px;color:#9ca3af;margin-top:8px;">Enter your expected annual salary range. You can type or use the up/down arrows.</p>
+                            <p style="font-size:12px;color:#A8A8A8;margin-top:8px;">Enter your expected annual salary range. You can type or use the up/down arrows.</p>
                         </div>
                         
                         {{-- Career Goals --}}
@@ -553,12 +553,12 @@
 
                 @if ($currentStep < $totalSteps)
                     <button wire:click="nextStep"
-                            style="display:inline-flex;align-items:center;gap:6px;padding:12px 28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:600;font-size:14px;border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 16px rgba(99,102,241,.35);transition:all .2s;">
+                            style="display:inline-flex;align-items:center;gap:6px;padding:12px 28px;background:#2D6CDF;color:white;font-weight:600;font-size:14px;border:none;border-radius:12px;cursor:pointer;box-shadow: none;transition:all .2s;">
                         Next Step →
                     </button>
                 @else
                     <button wire:click="saveProfile"
-                            style="display:inline-flex;align-items:center;gap:6px;padding:12px 32px;background:linear-gradient(135deg,#22c55e,#16a34a);color:white;font-weight:700;font-size:15px;border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 16px rgba(34,197,94,.35);transition:all .2s;">
+                            style="display:inline-flex;align-items:center;gap:6px;padding:12px 32px;background:#1E8E3E;color:white;font-weight:700;font-size:15px;border:none;border-radius:12px;cursor:pointer;box-shadow: none;transition:all .2s;">
                         ✓ Complete Profile
                     </button>
                 @endif

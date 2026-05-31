@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Georgia', serif; font-size: 12pt; line-height: 1.75; color: #1a1a1a; padding: 50px 60px; }
-    .header { border-bottom: 3px solid #1A73E8; padding-bottom: 16px; margin-bottom: 32px; }
-    .name { font-size: 20pt; font-weight: bold; color: #1A73E8; }
-    .contact { font-size: 9pt; color: #6b7280; margin-top: 4px; }
+    body { font-family: 'Georgia', serif; font-size: 12pt; line-height: 1.75; color: #0C0C0C; padding: 50px 60px; }
+    .header { border-bottom: 3px solid #2D6CDF; padding-bottom: 16px; margin-bottom: 32px; }
+    .name { font-size: 20pt; font-weight: bold; color: #2D6CDF; }
+    .contact { font-size: 9pt; color: #737373; margin-top: 4px; }
     .body p { margin-bottom: 16px; text-align: justify; }
-    .footer { margin-top: 40px; font-size: 9pt; color: #9ca3af; border-top: 1px solid #e5e7eb; padding-top: 12px; }
+    .footer { margin-top: 40px; font-size: 9pt; color: #A8A8A8; border-top: 1px solid #E2E2E0; padding-top: 12px; }
 </style>
 </head>
 <body>

@@ -3,10 +3,10 @@
 
 @push('styles')
 <style>
-.gig-card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,.1); }
+.gig-card:hover { transform: translateY(-2px); box-shadow: none; }
 .gig-card { transition: all .2s; }
-.cat-pill.active { background:#1A73E8; color:#fff; }
-.cat-pill { background:#f1f3f4; color:#444; cursor:pointer; transition:all .15s; }
+.cat-pill.active { background:#2D6CDF; color:#fff; }
+.cat-pill { background:#F0F0EE; color:#444; cursor:pointer; transition:all .15s; }
 </style>
 @endpush
 
@@ -34,24 +34,24 @@
 </div>
 @php
 $catStyles = [
-    'web_development'    => ['label'=>'Web Development',   'icon'=>'💻','bg'=>'linear-gradient(135deg,#3b82f6,#4f46e5)'],
-    'mobile_development' => ['label'=>'Mobile Apps',       'icon'=>'📱','bg'=>'linear-gradient(135deg,#a855f7,#ec4899)'],
-    'design'             => ['label'=>'Design & Creative', 'icon'=>'🎨','bg'=>'linear-gradient(135deg,#ec4899,#f43f5e)'],
-    'writing'            => ['label'=>'Writing & Content', 'icon'=>'✍️','bg'=>'linear-gradient(135deg,#f59e0b,#f97316)'],
-    'marketing'          => ['label'=>'Digital Marketing', 'icon'=>'📣','bg'=>'linear-gradient(135deg,#22c55e,#14b8a6)'],
-    'data_science'       => ['label'=>'Data & Analytics',  'icon'=>'📊','bg'=>'linear-gradient(135deg,#06b6d4,#3b82f6)'],
-    'ai_ml'              => ['label'=>'AI & ML',           'icon'=>'🤖','bg'=>'linear-gradient(135deg,#7c3aed,#9333ea)'],
-    'devops'             => ['label'=>'DevOps & Cloud',    'icon'=>'⚙️','bg'=>'linear-gradient(135deg,#64748b,#374151)'],
-    'video_production'   => ['label'=>'Video & Animation', 'icon'=>'🎬','bg'=>'linear-gradient(135deg,#ef4444,#ec4899)'],
-    'consulting'         => ['label'=>'Consulting',        'icon'=>'💼','bg'=>'linear-gradient(135deg,#14b8a6,#06b6d4)'],
+    'web_development'    => ['label'=>'Web Development',   'icon'=>'💻','bg'=>'#2D6CDF'],
+    'mobile_development' => ['label'=>'Mobile Apps',       'icon'=>'📱','bg'=>'#2D6CDF'],
+    'design'             => ['label'=>'Design & Creative', 'icon'=>'🎨','bg'=>'#2D6CDF'],
+    'writing'            => ['label'=>'Writing & Content', 'icon'=>'✍️','bg'=>'#E37400'],
+    'marketing'          => ['label'=>'Digital Marketing', 'icon'=>'📣','bg'=>'#1E8E3E'],
+    'data_science'       => ['label'=>'Data & Analytics',  'icon'=>'📊','bg'=>'#2D6CDF'],
+    'ai_ml'              => ['label'=>'AI & ML',           'icon'=>'🤖','bg'=>'#2D6CDF'],
+    'devops'             => ['label'=>'DevOps & Cloud',    'icon'=>'⚙️','bg'=>'#737373'],
+    'video_production'   => ['label'=>'Video & Animation', 'icon'=>'🎬','bg'=>'#2D6CDF'],
+    'consulting'         => ['label'=>'Consulting',        'icon'=>'💼','bg'=>'#2D6CDF'],
 ];
 $activeCategory = request('category','');
 @endphp
 
-<div class="min-h-screen" style="background:#f9f9f9;">
+<div class="min-h-screen" style="background:#F0F0EE;">
 
     {{-- Hero banner --}}
-    <div class="text-white py-12 px-4" style="background:linear-gradient(135deg,#1A73E8,#0d47a1);">
+    <div class="text-white py-12 px-4" style="background:#2D6CDF;">
         <div class="max-w-7xl mx-auto text-center">
             <h1 class="text-3xl md:text-4xl font-extrabold mb-3">Browse Student Services</h1>
             <p class="text-blue-100 text-lg mb-6">Hire verified student talent — expert skills, startup-friendly pricing.</p>
@@ -62,7 +62,7 @@ $activeCategory = request('category','');
                 @if($activeCategory)
                     <input type="hidden" name="category" value="{{ $activeCategory }}">
                 @endif
-                <button type="submit" class="px-6 py-3 rounded-xl font-bold text-sm" style="background:#1dbf73;color:#fff;">
+                <button type="submit" class="px-6 py-3 rounded-xl font-bold text-sm" style="background:#1E8E3E;color:#fff;">
                     Search
                 </button>
             </form>
@@ -79,13 +79,13 @@ $activeCategory = request('category','');
                     <div class="flex flex-col gap-1.5">
                         <a href="{{ route('marketplace.gigs') }}"
                            class="px-3 py-2 rounded-lg text-sm font-medium {{ !$activeCategory ? 'text-white' : 'text-gray-700 hover:bg-gray-50' }} transition"
-                           style="{{ !$activeCategory ? 'background:#1A73E8;' : '' }}">
+                           style="{{ !$activeCategory ? 'background:#2D6CDF;' : '' }}">
                             All Services
                         </a>
                         @foreach($categories as $key => $cat)
                             <a href="{{ route('marketplace.gigs', ['category'=>$key] + request()->except('category','page')) }}"
                                class="px-3 py-2 rounded-lg text-sm font-medium {{ $activeCategory===$key ? 'text-white' : 'text-gray-700 hover:bg-gray-50' }} transition flex items-center gap-2"
-                               style="{{ $activeCategory===$key ? 'background:#1A73E8;' : '' }}">
+                               style="{{ $activeCategory===$key ? 'background:#2D6CDF;' : '' }}">
                                 <span>{{ $cat['icon'] }}</span>
                                 {{ $cat['label'] }}
                             </a>
@@ -104,12 +104,12 @@ $activeCategory = request('category','');
                 </div>
 
                 {{-- Post your project CTA --}}
-                <div class="rounded-2xl p-5 text-white text-center" style="background:linear-gradient(135deg,#1dbf73,#0a9e5c);">
+                <div class="rounded-2xl p-5 text-white text-center" style="background:#1E8E3E;">
                     <div class="text-3xl mb-2">📋</div>
                     <p class="font-bold text-sm mb-1">Need a custom project?</p>
                     <p class="text-green-100 text-xs mb-3">Post a project and get proposals from students.</p>
                     <a href="{{ route('marketplace.employer.create-project') }}"
-                       class="block py-2 rounded-xl text-xs font-bold bg-white" style="color:#0a9e5c;">
+                       class="block py-2 rounded-xl text-xs font-bold bg-white" style="color:#1E8E3E;">
                         Post a Project
                     </a>
                 </div>
@@ -127,7 +127,7 @@ $activeCategory = request('category','');
                     <div class="flex items-center gap-2 text-sm">
                         @auth
                             <a href="{{ route('marketplace.freelancer.gigs') }}"
-                               class="px-4 py-2 rounded-xl font-semibold text-white text-xs" style="background:#1A73E8;">
+                               class="px-4 py-2 rounded-xl font-semibold text-white text-xs" style="background:#2D6CDF;">
                                 + Offer a Service
                             </a>
                         @endauth
@@ -139,7 +139,7 @@ $activeCategory = request('category','');
                         <div class="text-6xl mb-4">🔍</div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">No services found</h3>
                         <p class="text-gray-500 mb-5">Try a different category or search term.</p>
-                        <a href="{{ route('marketplace.gigs') }}" class="px-5 py-2.5 rounded-xl text-white font-semibold text-sm" style="background:#1A73E8;">
+                        <a href="{{ route('marketplace.gigs') }}" class="px-5 py-2.5 rounded-xl text-white font-semibold text-sm" style="background:#2D6CDF;">
                             Clear Filters
                         </a>
                     </div>
@@ -147,7 +147,7 @@ $activeCategory = request('category','');
                     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 mb-8">
                         @foreach($gigs as $gig)
                             @php
-                                $cs = $catStyles[$gig->category] ?? ['bg'=>'linear-gradient(135deg,#3b82f6,#4f46e5)','icon'=>'💼','label'=>'Service'];
+                                $cs = $catStyles[$gig->category] ?? ['bg'=>'#2D6CDF','icon'=>'💼','label'=>'Service'];
                                 $startPrice = $gig->starting_price;
                             @endphp
                             <a href="{{ route('marketplace.gig.show', $gig) }}"
@@ -157,7 +157,7 @@ $activeCategory = request('category','');
                                 <div class="h-36 flex items-center justify-center relative" style="background:{{ $cs['bg'] }};">
                                     <span class="text-5xl drop-shadow-md">{{ $cs['icon'] }}</span>
                                     @if($gig->is_featured)
-                                        <span class="absolute top-2 right-2 text-xs font-bold px-2 py-0.5 rounded-full" style="background:#fbbf24;color:#78350f;">⭐ TOP RATED</span>
+                                        <span class="absolute top-2 right-2 text-xs font-bold px-2 py-0.5 rounded-full" style="background:#FFF8EC;color:#E37400;">⭐ TOP RATED</span>
                                     @endif
                                     <span class="absolute bottom-2 left-2 text-xs font-semibold px-2 py-0.5 rounded-full" style="background:rgba(0,0,0,.35);color:#fff;">
                                         {{ $cs['label'] }}
@@ -172,7 +172,7 @@ $activeCategory = request('category','');
                                              class="rounded-full" style="width:26px;height:26px;" alt="">
                                         <span class="text-xs font-medium text-gray-700 truncate">{{ $gig->freelancerProfile?->user?->name }}</span>
                                         @if($gig->freelancerProfile?->is_verified)
-                                            <svg class="w-3.5 h-3.5 ml-auto shrink-0" fill="#1A73E8" viewBox="0 0 20 20">
+                                            <svg class="w-3.5 h-3.5 ml-auto shrink-0" fill="#2D6CDF" viewBox="0 0 20 20">
                                                 <path d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
                                             </svg>
                                         @endif
@@ -186,14 +186,14 @@ $activeCategory = request('category','');
                                     @if(count($gig->tags))
                                         <div class="flex flex-wrap gap-1 mb-2">
                                             @foreach(array_slice($gig->tags, 0, 2) as $tag)
-                                                <span class="px-2 py-0.5 text-xs rounded-full" style="background:#eff6ff;color:#1d4ed8;">{{ $tag }}</span>
+                                                <span class="px-2 py-0.5 text-xs rounded-full" style="background:#EBF2FF;color:#1B57C4;">{{ $tag }}</span>
                                             @endforeach
                                         </div>
                                     @endif
 
                                     {{-- Rating + orders --}}
                                     <div class="flex items-center gap-2 mb-3">
-                                        <span style="color:#ffb33e;">★</span>
+                                        <span style="color:#E37400;">★</span>
                                         <span class="text-xs font-bold text-gray-800">{{ number_format($gig->average_rating, 1) }}</span>
                                         <span class="text-xs text-gray-400">({{ $gig->total_reviews }})</span>
                                         @if($gig->orders_count > 0)

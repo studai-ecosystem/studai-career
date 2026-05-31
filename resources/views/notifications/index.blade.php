@@ -5,19 +5,19 @@
 
 @push('styles')
 <style>
-.notif-page { background:linear-gradient(135deg,#f0f4ff 0%,#f5f3ff 50%,#fdf4ff 100%); min-height:100%; padding:1.5rem; }
-.notif-card { background:#fff; border-radius:1.25rem; border:1px solid rgba(99,102,241,.1); box-shadow:0 2px 12px rgba(99,102,241,.07); overflow:hidden; }
+.notif-page { background:#EBF2FF; min-height:100%; padding:1.5rem; }
+.notif-card { background:#fff; border-radius:1.25rem; border:1px solid rgba(20, 71, 186,.1); box-shadow: none; overflow:hidden; }
 .notif-item {
     display:flex; align-items:flex-start; gap:1rem;
     padding:1rem 1.25rem;
-    border-bottom:1px solid #f8f9fb;
+    border-bottom:1px solid #EBF2FF;
     transition:background .15s;
     position:relative;
     text-decoration:none; color:inherit;
 }
 .notif-item:last-child { border-bottom:none; }
-.notif-item:hover { background:#fafbff; }
-.notif-item.unread { background:#fafbff; }
+.notif-item:hover { background:#EBF2FF; }
+.notif-item.unread { background:#EBF2FF; }
 .notif-dot {
     position:absolute; left:.5rem; top:50%; transform:translateY(-50%);
     width:.5rem; height:.5rem; border-radius:50%;
@@ -26,17 +26,17 @@
     width:2.5rem; height:2.5rem; border-radius:.75rem; flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
 }
-.notif-title { font-size:.875rem; font-weight:600; color:#1a1a2e; line-height:1.4; }
-.notif-title.read { font-weight:500; color:#4b5563; }
-.notif-time { font-size:.72rem; color:#9ca3af; margin-top:.2rem; }
+.notif-title { font-size:.875rem; font-weight:600; color:#0C0C0C; line-height:1.4; }
+.notif-title.read { font-weight:500; color:#3D3D3D; }
+.notif-time { font-size:.72rem; color:#A8A8A8; margin-top:.2rem; }
 .notif-mark-btn {
-    font-size:.7rem; font-weight:600; color:#6366f1;
-    background:none; border:1px solid rgba(99,102,241,.25);
+    font-size:.7rem; font-weight:600; color:#2D6CDF;
+    background:none; border:1px solid rgba(20, 71, 186,.25);
     border-radius:9999px; padding:.2rem .65rem;
     cursor:pointer; white-space:nowrap; flex-shrink:0;
     transition:background .15s;
 }
-.notif-mark-btn:hover { background:#f0f0ff; }
+.notif-mark-btn:hover { background:#EBF2FF; }
 </style>
 @endpush
 
@@ -52,7 +52,7 @@
                 @csrf
                 <button type="submit"
                     class="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:-translate-y-0.5"
-                    style="background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 2px 10px rgba(99,102,241,.3);">
+                    style="background:#2D6CDF;box-shadow: none;">
                     Mark all as read
                 </button>
             </form>
@@ -69,14 +69,14 @@
                 $type     = strtolower(class_basename($notif->type));
 
                 $styles = [
-                    'interview' => ['bg'=>'#fff7ed','color'=>'#f97316'],
-                    'shortlisted'=> ['bg'=>'#f0fdf4','color'=>'#16a34a'],
-                    'hired'      => ['bg'=>'#f0fdf4','color'=>'#16a34a'],
-                    'rejected'   => ['bg'=>'#fef2f2','color'=>'#ef4444'],
-                    'scout'      => ['bg'=>'#fdf4ff','color'=>'#a855f7'],
-                    'job'        => ['bg'=>'#eff6ff','color'=>'#3b82f6'],
-                    'application'=> ['bg'=>'#f0f0ff','color'=>'#6366f1'],
-                    'default'    => ['bg'=>'#f9fafb','color'=>'#6b7280'],
+                    'interview' => ['bg'=>'#FFF8EC','color'=>'#E37400'],
+                    'shortlisted'=> ['bg'=>'#EDFAF2','color'=>'#1E8E3E'],
+                    'hired'      => ['bg'=>'#EDFAF2','color'=>'#1E8E3E'],
+                    'rejected'   => ['bg'=>'#fef2f2','color'=>'#2D6CDF'],
+                    'scout'      => ['bg'=>'#EBF2FF','color'=>'#2D6CDF'],
+                    'job'        => ['bg'=>'#EBF2FF','color'=>'#2D6CDF'],
+                    'application'=> ['bg'=>'#EBF2FF','color'=>'#2D6CDF'],
+                    'default'    => ['bg'=>'#F7F7F5','color'=>'#737373'],
                 ];
                 $typeKey = 'default';
                 foreach (array_keys($styles) as $k) {
@@ -119,7 +119,7 @@
             </div>
             @empty
             <div class="py-16 text-center">
-                <svg class="w-12 h-12 mx-auto mb-4" style="color:#d1d5db" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <svg class="w-12 h-12 mx-auto mb-4" style="color:#C8C8C5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                 </svg>
                 <h3 class="text-base font-semibold text-gray-900">No notifications yet</h3>

@@ -11,12 +11,12 @@
 @keyframes agent-orb2    { 0%,100%{transform:translate(0,0) scale(1)}   50%{transform:translate(-18px,22px) scale(.92)} }
 @keyframes agent-orb3    { 0%,100%{transform:translate(0,0)}            33%{transform:translate(15px,8px)}  66%{transform:translate(-8px,-15px)} }
 @keyframes agent-float   { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-10px) rotate(6deg)} }
-@keyframes agent-pulse   { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,.55)} 70%{box-shadow:0 0 0 18px rgba(139,92,246,0)} }
+@keyframes agent-pulse   { 0%,100%{box-shadow: none} 70%{box-shadow: none} }
 @keyframes agent-shimmer { to{background-position:-200% center} }
 @keyframes agent-grad    { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
 @keyframes agent-ring    { 0%{transform:scale(.8);opacity:.8} 100%{transform:scale(2.2);opacity:0} }
 @keyframes agent-fadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-@keyframes agent-glow    { 0%,100%{filter:drop-shadow(0 0 8px rgba(139,92,246,.6))} 50%{filter:drop-shadow(0 0 22px rgba(99,102,241,.9))} }
+@keyframes agent-glow    { 0%,100%{filter:drop-shadow(0 0 8px rgba(20, 71, 186,.6))} 50%{filter:drop-shadow(0 0 22px rgba(20, 71, 186,.9))} }
 @keyframes agent-spin    { to{transform:rotate(360deg)} }
 @keyframes card-enter    { from{opacity:0;transform:scale(.92) translateY(24px)} to{opacity:1;transform:scale(1) translateY(0)} }
 
@@ -30,18 +30,17 @@
     position: relative;
     border-radius: 2rem;
     padding: 2px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899, #3b82f6, #6366f1);
+    background: #2D6CDF;
     background-size: 300% 300%;
     animation: agent-grad 4s ease infinite;
-    box-shadow:
-        0 0 0 1px rgba(139,92,246,.3),
-        0 8px 32px rgba(99,102,241,.25),
-        0 32px 80px rgba(139,92,246,.2),
-        0 0 120px rgba(99,102,241,.1);
+    box-shadow: none
+        0 8px 32px rgba(20, 71, 186,.25),
+        0 32px 80px rgba(20, 71, 186,.2),
+        0 0 120px rgba(20, 71, 186,.1);
 }
 .agent-card-inner {
     border-radius: calc(2rem - 2px);
-    background: linear-gradient(160deg, #0f0c29, #302b63, #24243e);
+    background: #0C2E72;
     position: relative;
     overflow: hidden;
     padding: 3.5rem 3rem;
@@ -49,9 +48,9 @@
 
 /* ── Background orbs ───────────────────────────────── */
 .agent-orb { position:absolute; border-radius:50%; filter:blur(64px); pointer-events:none; }
-.agent-orb-1 { width:320px;height:320px; background:radial-gradient(circle,rgba(99,102,241,.45),transparent 70%); top:-80px; left:-60px; animation:agent-orb1 10s ease-in-out infinite; }
-.agent-orb-2 { width:260px;height:260px; background:radial-gradient(circle,rgba(168,85,247,.4),transparent 70%);  bottom:-60px;right:-40px; animation:agent-orb2 12s ease-in-out infinite; }
-.agent-orb-3 { width:180px;height:180px; background:radial-gradient(circle,rgba(236,72,153,.3),transparent 70%);  top:40%;left:55%;  animation:agent-orb3 8s ease-in-out infinite; }
+.agent-orb-1 { width:320px;height:320px; background:rgba(20, 71, 186,.45); top:-80px; left:-60px; animation:agent-orb1 10s ease-in-out infinite; }
+.agent-orb-2 { width:260px;height:260px; background:rgba(20, 71, 186,.4);  bottom:-60px;right:-40px; animation:agent-orb2 12s ease-in-out infinite; }
+.agent-orb-3 { width:180px;height:180px; background:rgba(20, 71, 186,.3);  top:40%;left:55%;  animation:agent-orb3 8s ease-in-out infinite; }
 
 /* ── Central icon ──────────────────────────────────── */
 .agent-icon-wrap {
@@ -62,30 +61,30 @@
 .agent-icon-ring {
     position: absolute; inset: -8px;
     border-radius: 50%;
-    border: 2px solid rgba(139,92,246,.6);
+    border: 2px solid rgba(20, 71, 186,.6);
     animation: agent-ring 2s ease-out infinite;
 }
 .agent-icon-ring-2 {
     position: absolute; inset: -8px;
     border-radius: 50%;
-    border: 2px solid rgba(99,102,241,.5);
+    border: 2px solid rgba(20, 71, 186,.5);
     animation: agent-ring 2s ease-out .7s infinite;
 }
 .agent-icon-btn {
     width: 96px; height: 96px;
     border-radius: 28px;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed, #a855f7);
+    background: #1B57C4;
     background-size: 200%;
     animation: agent-grad 3s ease infinite, agent-pulse 2.5s ease-in-out infinite, agent-float 4s ease-in-out infinite;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 8px 32px rgba(99,102,241,.5), 0 0 0 0 rgba(139,92,246,.4);
+    box-shadow: none;
     position: relative; z-index: 1;
 }
 .agent-icon-btn svg { animation: agent-glow 3s ease-in-out infinite; }
 
 /* ── Text ──────────────────────────────────────────── */
 .agent-title {
-    background: linear-gradient(135deg, #e0e7ff, #c4b5fd, #f9a8d4, #93c5fd);
+    background: #EBF2FF;
     background-size: 300%;
     -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -106,8 +105,8 @@
 .agent-feat:hover {
     transform: translateY(-6px) scale(1.03);
     background: rgba(255,255,255,.12);
-    border-color: rgba(139,92,246,.5);
-    box-shadow: 0 12px 40px rgba(139,92,246,.25), 0 0 24px rgba(99,102,241,.15);
+    border-color: rgba(20, 71, 186,.5);
+    box-shadow: none;
 }
 .agent-feat:nth-child(1) { animation-delay: .25s; }
 .agent-feat:nth-child(2) { animation-delay: .38s; }
@@ -122,7 +121,7 @@
 }
 .agent-feat:hover .agent-feat-icon {
     transform: scale(1.15) rotate(-5deg);
-    box-shadow: 0 0 20px rgba(139,92,246,.5);
+    box-shadow: none;
 }
 
 /* ── CTA button ────────────────────────────────────── */
@@ -132,17 +131,17 @@
     border-radius: 999px;
     font-weight: 700; font-size: .95rem;
     color: #fff;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed, #a855f7, #4f46e5);
+    background: #1B57C4;
     background-size: 300% auto;
     animation: agent-shimmer 2.5s linear infinite;
-    box-shadow: 0 4px 20px rgba(99,102,241,.5), 0 0 40px rgba(139,92,246,.2);
+    box-shadow: none;
     transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s;
     text-decoration: none;
     border: none;
 }
 .agent-cta:hover {
     transform: translateY(-3px) scale(1.04);
-    box-shadow: 0 12px 40px rgba(99,102,241,.65), 0 0 60px rgba(139,92,246,.35);
+    box-shadow: none;
 }
 .agent-cta svg { animation: agent-spin 4s linear infinite; }
 
@@ -166,11 +165,11 @@
                         <div class="agent-orb agent-orb-3"></div>
 
                         {{-- Floating particles --}}
-                        <div class="agent-particle" style="width:5px;height:5px;background:#818cf8;top:15%;left:10%;--tx:-30px;--ty:-50px;--dur:5s;--del:0s"></div>
-                        <div class="agent-particle" style="width:4px;height:4px;background:#c084fc;top:70%;left:15%;--tx:20px;--ty:-60px;--dur:6s;--del:1s"></div>
-                        <div class="agent-particle" style="width:6px;height:6px;background:#f472b6;top:20%;right:12%;--tx:30px;--ty:40px;--dur:4.5s;--del:.5s"></div>
-                        <div class="agent-particle" style="width:4px;height:4px;background:#60a5fa;bottom:20%;right:10%;--tx:-25px;--ty:-45px;--dur:5.5s;--del:2s"></div>
-                        <div class="agent-particle" style="width:3px;height:3px;background:#34d399;top:50%;left:8%;--tx:40px;--ty:30px;--dur:7s;--del:1.5s"></div>
+                        <div class="agent-particle" style="width:5px;height:5px;background:#2D6CDF;top:15%;left:10%;--tx:-30px;--ty:-50px;--dur:5s;--del:0s"></div>
+                        <div class="agent-particle" style="width:4px;height:4px;background:#2D6CDF;top:70%;left:15%;--tx:20px;--ty:-60px;--dur:6s;--del:1s"></div>
+                        <div class="agent-particle" style="width:6px;height:6px;background:#2D6CDF;top:20%;right:12%;--tx:30px;--ty:40px;--dur:4.5s;--del:.5s"></div>
+                        <div class="agent-particle" style="width:4px;height:4px;background:#2D6CDF;bottom:20%;right:10%;--tx:-25px;--ty:-45px;--dur:5.5s;--del:2s"></div>
+                        <div class="agent-particle" style="width:3px;height:3px;background:#1E8E3E;top:50%;left:8%;--tx:40px;--ty:30px;--dur:7s;--del:1.5s"></div>
 
                         {{-- Central icon --}}
                         <div class="agent-icon-wrap" style="animation:agent-fadeUp .5s ease both">
@@ -187,37 +186,37 @@
                         <div class="text-center mb-3 relative z-10" style="animation:agent-fadeUp .55s ease .1s both">
                             <h2 class="agent-title text-3xl font-extrabold mb-3 leading-tight">Configure Your AI Agent</h2>
                             <p class="text-base max-w-md mx-auto leading-relaxed" style="color:rgba(199,210,254,.75)">
-                                Set up your autonomous assistant to discover, analyze, and apply to<br>jobs that match your preferences — <span style="color:#c4b5fd;font-weight:600">24/7.</span>
+                                Set up your autonomous assistant to discover, analyze, and apply to<br>jobs that match your preferences — <span style="color:#BFCFEE;font-weight:600">24/7.</span>
                             </p>
                         </div>
 
                         {{-- Feature cards --}}
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 relative z-10 mt-8">
                             <div class="agent-feat text-center">
-                                <div class="agent-feat-icon" style="background:linear-gradient(135deg,rgba(99,102,241,.3),rgba(79,70,229,.5));border:1px solid rgba(99,102,241,.4)">
-                                    <svg class="w-5 h-5" style="color:#a5b4fc" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="agent-feat-icon" style="background:rgba(20, 71, 186,.3);border:1px solid rgba(20, 71, 186,.4)">
+                                    <svg class="w-5 h-5" style="color:#BFCFEE" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                     </svg>
                                 </div>
-                                <h4 class="font-bold text-sm mb-1.5" style="color:#e0e7ff">Auto Discovery</h4>
+                                <h4 class="font-bold text-sm mb-1.5" style="color:#EBF2FF">Auto Discovery</h4>
                                 <p class="text-xs leading-relaxed" style="color:rgba(199,210,254,.6)">Scans job boards hourly</p>
                             </div>
-                            <div class="agent-feat text-center" style="border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.08)">
-                                <div class="agent-feat-icon" style="background:linear-gradient(135deg,rgba(168,85,247,.3),rgba(139,92,246,.5));border:1px solid rgba(168,85,247,.4)">
-                                    <svg class="w-5 h-5" style="color:#d8b4fe" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="agent-feat text-center" style="border-color:rgba(20, 71, 186,.3);background:rgba(20, 71, 186,.08)">
+                                <div class="agent-feat-icon" style="background:rgba(20, 71, 186,.3);border:1px solid rgba(20, 71, 186,.4)">
+                                    <svg class="w-5 h-5" style="color:#BFCFEE" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
                                     </svg>
                                 </div>
-                                <h4 class="font-bold text-sm mb-1.5" style="color:#e0e7ff">AI Analysis</h4>
+                                <h4 class="font-bold text-sm mb-1.5" style="color:#EBF2FF">AI Analysis</h4>
                                 <p class="text-xs leading-relaxed" style="color:rgba(199,210,254,.6)">Smart job matching</p>
                             </div>
-                            <div class="agent-feat text-center" style="border-color:rgba(236,72,153,.3);background:rgba(236,72,153,.07)">
-                                <div class="agent-feat-icon" style="background:linear-gradient(135deg,rgba(236,72,153,.3),rgba(219,39,119,.4));border:1px solid rgba(236,72,153,.4)">
-                                    <svg class="w-5 h-5" style="color:#f9a8d4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="agent-feat text-center" style="border-color:rgba(20, 71, 186,.3);background:rgba(20, 71, 186,.07)">
+                                <div class="agent-feat-icon" style="background:rgba(20, 71, 186,.3);border:1px solid rgba(20, 71, 186,.4)">
+                                    <svg class="w-5 h-5" style="color:#FCA5A5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                     </svg>
                                 </div>
-                                <h4 class="font-bold text-sm mb-1.5" style="color:#e0e7ff">Auto Apply</h4>
+                                <h4 class="font-bold text-sm mb-1.5" style="color:#EBF2FF">Auto Apply</h4>
                                 <p class="text-xs leading-relaxed" style="color:rgba(199,210,254,.6)">Submits applications 24/7</p>
                             </div>
                         </div>
@@ -501,8 +500,8 @@
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg" style="background:#e8f0fe;">
-                            <svg class="w-4 h-4" style="color:#1a73e8;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg" style="background:#EBF2FF;">
+                            <svg class="w-4 h-4" style="color:#2D6CDF;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                             </svg>
                         </span>
@@ -513,16 +512,16 @@
                 <div class="flex items-center gap-3">
                     <div class="flex gap-2 text-xs">
                         @if($internalStats['pending'] > 0)
-                        <span class="px-2 py-1 rounded-full font-medium" style="background:#fff8e1;color:#f57f17;">{{ $internalStats['pending'] }} pending</span>
+                        <span class="px-2 py-1 rounded-full font-medium" style="background:#FFF8EC;color:#E37400;">{{ $internalStats['pending'] }} pending</span>
                         @endif
                         @if($internalStats['applied'] > 0)
-                        <span class="px-2 py-1 rounded-full font-medium" style="background:#e8f5e9;color:#2e7d32;">{{ $internalStats['applied'] }} applied</span>
+                        <span class="px-2 py-1 rounded-full font-medium" style="background:#EDFAF2;color:#1E8E3E;">{{ $internalStats['applied'] }} applied</span>
                         @endif
                     </div>
                     <div class="flex items-center gap-2">
                         <form method="POST" action="{{ route('agent.internal.rescore') }}">
                             @csrf
-                            <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors" style="background:#f1f3f4;color:#3c4043;border:1px solid #dadce0;" title="Recalculate match scores for all existing matches">
+                            <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors" style="background:#F0F0EE;color:#3D3D3D;border:1px solid #E2E2E0;" title="Recalculate match scores for all existing matches">
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                 </svg>
@@ -531,7 +530,7 @@
                         </form>
                         <form method="POST" action="{{ route('agent.internal.scan') }}">
                             @csrf
-                            <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors" style="background:#1a73e8;color:#fff;" title="Scan platform jobs now">
+                            <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors" style="background:#2D6CDF;color:#fff;" title="Scan platform jobs now">
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                 </svg>
@@ -544,8 +543,8 @@
 
             @if($internalMatches->isEmpty())
                 <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-10 text-center">
-                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:#e8f0fe;">
-                        <svg class="w-7 h-7" style="color:#1a73e8;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:#EBF2FF;">
+                        <svg class="w-7 h-7" style="color:#2D6CDF;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </div>
@@ -557,15 +556,15 @@
                     @foreach($internalMatches as $match)
                     @php
                         $scoreColor = match(true) {
-                            $match->match_score >= 80 => ['bg'=>'#e8f5e9','text'=>'#2e7d32'],
-                            $match->match_score >= 60 => ['bg'=>'#e8f0fe','text'=>'#1a73e8'],
-                            $match->match_score >= 40 => ['bg'=>'#fff8e1','text'=>'#f57f17'],
-                            default                   => ['bg'=>'#fce4ec','text'=>'#c62828'],
+                            $match->match_score >= 80 => ['bg'=>'#EDFAF2','text'=>'#1E8E3E'],
+                            $match->match_score >= 60 => ['bg'=>'#EBF2FF','text'=>'#2D6CDF'],
+                            $match->match_score >= 40 => ['bg'=>'#FFF8EC','text'=>'#E37400'],
+                            default                   => ['bg'=>'#FEF2F2','text'=>'#2D6CDF'],
                         };
                         $statusBg = match($match->status) {
-                            'applied'  => 'background:#e8f5e9;color:#2e7d32;',
-                            'skipped'  => 'background:#f5f5f5;color:#757575;',
-                            default    => 'background:#fff8e1;color:#f57f17;',
+                            'applied'  => 'background:#EDFAF2;color:#1E8E3E;',
+                            'skipped'  => 'background:#F0F0EE;color:#737373;',
+                            default    => 'background:#FFF8EC;color:#E37400;',
                         };
                     @endphp
                     <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 flex flex-col gap-3">
@@ -583,12 +582,12 @@
                         {{-- Tags --}}
                         <div class="flex flex-wrap gap-1.5">
                             @if($match->job->location)
-                            <span class="text-xs px-2 py-0.5 rounded-full" style="background:#f5f5f5;color:#424242;">
+                            <span class="text-xs px-2 py-0.5 rounded-full" style="background:#F0F0EE;color:#3D3D3D;">
                                 📍 {{ Str::limit($match->job->location, 20) }}
                             </span>
                             @endif
                             @if($match->job->salary_min || $match->job->salary_max)
-                            <span class="text-xs px-2 py-0.5 rounded-full" style="background:#f5f5f5;color:#424242;">
+                            <span class="text-xs px-2 py-0.5 rounded-full" style="background:#F0F0EE;color:#3D3D3D;">
                                 💰 {{ $match->job->salary_currency ?? '₹' }}{{ number_format((float)($match->job->salary_min ?? 0) / 1000) }}k–{{ number_format((float)($match->job->salary_max ?? 0) / 1000) }}k
                             </span>
                             @endif
@@ -613,8 +612,8 @@
                             @endphp
                             <div class="flex items-center gap-2">
                                 <span class="text-xs text-gray-400 w-12 flex-shrink-0">{{ $label }}</span>
-                                <div class="flex-1 h-1.5 rounded-full" style="background:#f0f0f0;">
-                                    <div class="h-full rounded-full" style="width:{{ $pct }}%;background:#1a73e8;"></div>
+                                <div class="flex-1 h-1.5 rounded-full" style="background:#F0F0EE;">
+                                    <div class="h-full rounded-full" style="width:{{ $pct }}%;background:#2D6CDF;"></div>
                                 </div>
                                 <span class="text-xs text-gray-400 w-6 text-right">{{ $pct }}%</span>
                             </div>
@@ -628,26 +627,26 @@
                         <div class="flex gap-2 mt-auto pt-1">
                             <form method="POST" action="{{ route('agent.internal.approve', $match) }}" class="flex-1">
                                 @csrf
-                                <button type="submit" class="w-full py-2 text-xs font-semibold rounded-xl transition-colors" style="background:#1a73e8;color:#fff;">
+                                <button type="submit" class="w-full py-2 text-xs font-semibold rounded-xl transition-colors" style="background:#2D6CDF;color:#fff;">
                                     ✓ Apply Now
                                 </button>
                             </form>
                             <form method="POST" action="{{ route('agent.internal.skip', $match) }}">
                                 @csrf
-                                <button type="submit" class="px-3 py-2 text-xs font-semibold rounded-xl transition-colors" style="background:#f5f5f5;color:#424242;">
+                                <button type="submit" class="px-3 py-2 text-xs font-semibold rounded-xl transition-colors" style="background:#F0F0EE;color:#3D3D3D;">
                                     Skip
                                 </button>
                             </form>
                         </div>
                         @elseif($match->status === 'applied')
                         <div class="mt-auto pt-1">
-                            <a href="{{ route('jobs.show', $match->job_id) }}" class="block text-center py-2 text-xs font-semibold rounded-xl" style="background:#e8f5e9;color:#2e7d32;">
+                            <a href="{{ route('jobs.show', $match->job_id) }}" class="block text-center py-2 text-xs font-semibold rounded-xl" style="background:#EDFAF2;color:#1E8E3E;">
                                 ✓ Applied — View Job
                             </a>
                         </div>
                         @else
                         <div class="mt-auto pt-1">
-                            <span class="block text-center py-2 text-xs font-medium rounded-xl" style="background:#f5f5f5;color:#9e9e9e;">Skipped</span>
+                            <span class="block text-center py-2 text-xs font-medium rounded-xl" style="background:#F0F0EE;color:#A8A8A8;">Skipped</span>
                         </div>
                         @endif
                     </div>

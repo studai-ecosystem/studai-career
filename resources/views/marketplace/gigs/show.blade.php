@@ -4,36 +4,36 @@
 @push('styles')
 <style>
 .pkg-tab { padding:12px 20px; font-weight:600; font-size:.875rem; cursor:pointer; border-bottom:3px solid transparent; transition:all .15s; }
-.pkg-tab.active { border-color:#1A73E8; color:#1A73E8; }
-.pkg-tab:not(.active) { color:#62626a; }
-.check-row { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid #f0f0f0; font-size:.875rem; color:#404145; }
+.pkg-tab.active { border-color:#2D6CDF; color:#2D6CDF; }
+.pkg-tab:not(.active) { color:#737373; }
+.check-row { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid #F0F0EE; font-size:.875rem; color:#3D3D3D; }
 .check-row:last-child { border:none; }
-.check-icon { color:#1dbf73; font-weight:bold; flex-shrink:0; }
-.gig-tab { border-bottom:2px solid transparent; padding-bottom:12px; color:#62626a; font-weight:500; transition:all .15s; }
-.gig-tab.active { border-color:#1A73E8; color:#1A73E8; }
+.check-icon { color:#1E8E3E; font-weight:bold; flex-shrink:0; }
+.gig-tab { border-bottom:2px solid transparent; padding-bottom:12px; color:#737373; font-weight:500; transition:all .15s; }
+.gig-tab.active { border-color:#2D6CDF; color:#2D6CDF; }
 </style>
 @endpush
 
 @section('content')
 @php
 $catStyles = [
-    'web_development'    => ['bg'=>'linear-gradient(135deg,#3b82f6,#4f46e5)','icon'=>'💻','label'=>'Web Development'],
-    'mobile_development' => ['bg'=>'linear-gradient(135deg,#a855f7,#ec4899)','icon'=>'📱','label'=>'Mobile Apps'],
-    'design'             => ['bg'=>'linear-gradient(135deg,#ec4899,#f43f5e)','icon'=>'🎨','label'=>'Design & Creative'],
-    'writing'            => ['bg'=>'linear-gradient(135deg,#f59e0b,#f97316)','icon'=>'✍️','label'=>'Writing & Content'],
-    'marketing'          => ['bg'=>'linear-gradient(135deg,#22c55e,#14b8a6)','icon'=>'📣','label'=>'Digital Marketing'],
-    'data_science'       => ['bg'=>'linear-gradient(135deg,#06b6d4,#3b82f6)','icon'=>'📊','label'=>'Data & Analytics'],
-    'ai_ml'              => ['bg'=>'linear-gradient(135deg,#7c3aed,#9333ea)','icon'=>'🤖','label'=>'AI & ML'],
-    'devops'             => ['bg'=>'linear-gradient(135deg,#64748b,#374151)','icon'=>'⚙️','label'=>'DevOps & Cloud'],
-    'video_production'   => ['bg'=>'linear-gradient(135deg,#ef4444,#ec4899)','icon'=>'🎬','label'=>'Video & Animation'],
-    'consulting'         => ['bg'=>'linear-gradient(135deg,#14b8a6,#06b6d4)','icon'=>'💼','label'=>'Consulting'],
+    'web_development'    => ['bg'=>'#2D6CDF','icon'=>'💻','label'=>'Web Development'],
+    'mobile_development' => ['bg'=>'#2D6CDF','icon'=>'📱','label'=>'Mobile Apps'],
+    'design'             => ['bg'=>'#2D6CDF','icon'=>'🎨','label'=>'Design & Creative'],
+    'writing'            => ['bg'=>'#E37400','icon'=>'✍️','label'=>'Writing & Content'],
+    'marketing'          => ['bg'=>'#1E8E3E','icon'=>'📣','label'=>'Digital Marketing'],
+    'data_science'       => ['bg'=>'#2D6CDF','icon'=>'📊','label'=>'Data & Analytics'],
+    'ai_ml'              => ['bg'=>'#2D6CDF','icon'=>'🤖','label'=>'AI & ML'],
+    'devops'             => ['bg'=>'#737373','icon'=>'⚙️','label'=>'DevOps & Cloud'],
+    'video_production'   => ['bg'=>'#2D6CDF','icon'=>'🎬','label'=>'Video & Animation'],
+    'consulting'         => ['bg'=>'#2D6CDF','icon'=>'💼','label'=>'Consulting'],
 ];
-$cs       = $catStyles[$gig->category] ?? ['bg'=>'linear-gradient(135deg,#3b82f6,#4f46e5)','icon'=>'💼','label'=>'Service'];
+$cs       = $catStyles[$gig->category] ?? ['bg'=>'#2D6CDF','icon'=>'💼','label'=>'Service'];
 $profile  = $gig->freelancerProfile;
 $packages = $gig->packages;
 @endphp
 
-<div class="min-h-screen" style="background:#f9f9f9;">
+<div class="min-h-screen" style="background:#F0F0EE;">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
     {{-- Breadcrumb --}}
@@ -54,9 +54,9 @@ $packages = $gig->packages;
 
             {{-- Title --}}
             <div class="flex flex-wrap gap-2 mb-3">
-                <span class="px-2.5 py-1 text-xs font-semibold rounded-full" style="background:#eff6ff;color:#1d4ed8;">{{ $cs['label'] }}</span>
+                <span class="px-2.5 py-1 text-xs font-semibold rounded-full" style="background:#EBF2FF;color:#1B57C4;">{{ $cs['label'] }}</span>
                 @if($gig->is_featured)
-                    <span class="px-2.5 py-1 text-xs font-bold rounded-full" style="background:#fefce8;color:#92400e;">⭐ Top Rated</span>
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-full" style="background:#FFF8EC;color:#E37400;">⭐ Top Rated</span>
                 @endif
             </div>
             <h1 class="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-5">{{ $gig->title }}</h1>
@@ -66,19 +66,19 @@ $packages = $gig->packages;
                 <div class="relative">
                     <img src="https://ui-avatars.com/api/?name={{ urlencode($profile?->user?->name ?? 'Student') }}&size=48&background=1A73E8&color=fff&rounded=true"
                          class="rounded-full" style="width:48px;height:48px;" alt="">
-                    <span class="absolute bottom-0 right-0" style="width:11px;height:11px;background:#1dbf73;border-radius:50%;border:2px solid #fff;display:block;"></span>
+                    <span class="absolute bottom-0 right-0" style="width:11px;height:11px;background:#1E8E3E;border-radius:50%;border:2px solid #fff;display:block;"></span>
                 </div>
                 <div>
                     <p class="font-semibold text-gray-900 text-sm">{{ $profile?->user?->name }}</p>
-                    <p class="text-xs" style="color:#1A73E8;">{{ Str::limit($profile?->professional_title ?? '', 40) }}</p>
+                    <p class="text-xs" style="color:#2D6CDF;">{{ Str::limit($profile?->professional_title ?? '', 40) }}</p>
                 </div>
                 <div class="flex items-center gap-1 ml-2">
-                    <span style="color:#ffb33e;">★</span>
+                    <span style="color:#E37400;">★</span>
                     <span class="text-xs font-bold text-gray-800">{{ number_format($gig->average_rating, 1) }}</span>
                     <span class="text-xs text-gray-400">({{ $gig->total_reviews }} reviews)</span>
                 </div>
                 <div class="ml-auto flex items-center gap-2">
-                    <span class="px-2 py-0.5 text-xs font-bold rounded" style="background:#1dbf73;color:#fff;">VERIFIED</span>
+                    <span class="px-2 py-0.5 text-xs font-bold rounded" style="background:#1E8E3E;color:#fff;">VERIFIED</span>
                     <span class="text-xs text-gray-400">{{ $gig->orders_count }} orders completed</span>
                 </div>
             </div>
@@ -87,7 +87,7 @@ $packages = $gig->packages;
             <div class="rounded-2xl overflow-hidden mb-6 shadow-sm flex items-center justify-center relative"
                  style="height:280px;background:{{ $cs['bg'] }};">
                 <span style="font-size:80px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.2));">{{ $cs['icon'] }}</span>
-                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.4),transparent 55%);"></div>
+                <div style="position:absolute;inset:0;background:rgba(0,0,0,.4);"></div>
                 <div style="position:absolute;bottom:20px;left:24px;right:24px;" class="flex flex-wrap gap-2">
                     @foreach($gig->tags as $tag)
                         <span style="background:rgba(255,255,255,.25);color:#fff;padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:600;">{{ $tag }}</span>
@@ -111,22 +111,22 @@ $packages = $gig->packages;
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
                     <h2 class="font-bold text-gray-900 text-lg mb-4">Service Highlights</h2>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="text-center p-4 rounded-xl" style="background:#f0f4ff;">
+                        <div class="text-center p-4 rounded-xl" style="background:#EBF2FF;">
                             <div class="text-2xl mb-1">⚡</div>
                             <div class="font-bold text-gray-900 text-sm">{{ $packages[0]['delivery_days'] ?? '—' }} Days</div>
                             <div class="text-xs text-gray-500">Fastest Delivery</div>
                         </div>
-                        <div class="text-center p-4 rounded-xl" style="background:#f0fdf4;">
+                        <div class="text-center p-4 rounded-xl" style="background:#EDFAF2;">
                             <div class="text-2xl mb-1">✅</div>
                             <div class="font-bold text-gray-900 text-sm">{{ $gig->orders_count }}</div>
                             <div class="text-xs text-gray-500">Completed Orders</div>
                         </div>
-                        <div class="text-center p-4 rounded-xl" style="background:#fdf4ff;">
+                        <div class="text-center p-4 rounded-xl" style="background:#EBF2FF;">
                             <div class="text-2xl mb-1">⭐</div>
                             <div class="font-bold text-gray-900 text-sm">{{ number_format($gig->average_rating, 1) }}/5</div>
                             <div class="text-xs text-gray-500">Average Rating</div>
                         </div>
-                        <div class="text-center p-4 rounded-xl" style="background:#fff7ed;">
+                        <div class="text-center p-4 rounded-xl" style="background:#FFF8EC;">
                             <div class="text-2xl mb-1">👁️</div>
                             <div class="font-bold text-gray-900 text-sm">{{ number_format($gig->views_count) }}</div>
                             <div class="text-xs text-gray-500">Profile Views</div>
@@ -164,14 +164,14 @@ $packages = $gig->packages;
                                 <a href="{{ route('marketplace.gig.show', $rg) }}"
                                    class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition group">
                                     <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl shrink-0"
-                                         style="background:{{ ($catStyles[$rg->category]['bg'] ?? 'linear-gradient(135deg,#3b82f6,#4f46e5)') }};">
+                                         style="background:{{ ($catStyles[$rg->category]['bg'] ?? '#2D6CDF') }};">
                                         {{ $catStyles[$rg->category]['icon'] ?? '💼' }}
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-semibold text-gray-900 group-hover:text-blue-600 truncate">{{ $rg->title }}</p>
                                         <p class="text-xs text-gray-400">From ₹{{ number_format($rg->starting_price) }}</p>
                                     </div>
-                                    <span style="color:#ffb33e;">★</span>
+                                    <span style="color:#E37400;">★</span>
                                     <span class="text-xs font-bold text-gray-700">{{ number_format($rg->average_rating,1) }}</span>
                                 </a>
                             @endforeach
@@ -196,9 +196,9 @@ $packages = $gig->packages;
                              class="rounded-full" style="width:72px;height:72px;" alt="">
                         <div>
                             <h2 class="font-bold text-gray-900 text-lg">{{ $profile?->user?->name }}</h2>
-                            <p class="text-sm" style="color:#1A73E8;">{{ $profile?->professional_title }}</p>
+                            <p class="text-sm" style="color:#2D6CDF;">{{ $profile?->professional_title }}</p>
                             <div class="flex items-center gap-1 mt-1">
-                                <span style="color:#ffb33e;">★</span>
+                                <span style="color:#E37400;">★</span>
                                 <span class="text-sm font-bold text-gray-800">{{ number_format($gig->average_rating,1) }}</span>
                                 <span class="text-xs text-gray-400">({{ $gig->total_reviews }} reviews)</span>
                             </div>
@@ -206,7 +206,7 @@ $packages = $gig->packages;
                         <div class="ml-auto">
                             <a href="{{ route('marketplace.message', $profile) }}"
                                class="px-4 py-2 rounded-xl border-2 text-sm font-semibold transition hover:bg-blue-50"
-                               style="border-color:#1A73E8;color:#1A73E8;">
+                               style="border-color:#2D6CDF;color:#2D6CDF;">
                                 Contact Me
                             </a>
                         </div>
@@ -239,7 +239,7 @@ $packages = $gig->packages;
                         <div class="text-center">
                             <div class="text-5xl font-extrabold text-gray-900">{{ number_format($gig->average_rating,1) }}</div>
                             <div class="flex justify-center gap-0.5 my-1">
-                                @for($i=0;$i<5;$i++)<span style="color:#ffb33e;font-size:1.1rem;">★</span>@endfor
+                                @for($i=0;$i<5;$i++)<span style="color:#E37400;font-size:1.1rem;">★</span>@endfor
                             </div>
                             <div class="text-xs text-gray-500">{{ $gig->total_reviews }} reviews</div>
                         </div>
@@ -247,8 +247,8 @@ $packages = $gig->packages;
                             @foreach([5,4,3,2,1] as $star)
                                 <div class="flex items-center gap-2 mb-1">
                                     <span class="text-xs text-gray-500 w-4">{{ $star }}</span>
-                                    <div class="flex-1 rounded-full" style="background:#f0f0f0;height:6px;">
-                                        <div class="rounded-full" style="background:#ffb33e;height:6px;width:{{ $star===5?'88%':($star===4?'9%':'1%') }};"></div>
+                                    <div class="flex-1 rounded-full" style="background:#F0F0EE;height:6px;">
+                                        <div class="rounded-full" style="background:#E37400;height:6px;width:{{ $star===5?'88%':($star===4?'9%':'1%') }};"></div>
                                     </div>
                                 </div>
                             @endforeach
@@ -302,24 +302,24 @@ $packages = $gig->packages;
                             @if(auth()->id() !== ($profile?->user_id ?? null))
                                 <button onclick="openOrderModal('{{ $pkg['type'] ?? 'basic' }}', {{ $pkg['price'] ?? 0 }}, {{ $pkg['delivery_days'] ?? 7 }})"
                                         class="block w-full py-3 rounded-xl text-white font-bold text-base hover:opacity-90 transition mb-2"
-                                        style="background:#1dbf73;">
+                                        style="background:#1E8E3E;">
                                     Order Now — ₹{{ number_format($pkg['price'] ?? 0) }}
                                 </button>
                                 <a href="{{ route('marketplace.message', $profile) }}"
                                    class="block w-full text-center py-2.5 rounded-xl font-semibold text-sm border-2 hover:bg-blue-50 transition"
-                                   style="border-color:#1A73E8;color:#1A73E8;">
+                                   style="border-color:#2D6CDF;color:#2D6CDF;">
                                     Contact Seller
                                 </a>
                             @else
                                 <a href="{{ route('marketplace.freelancer.edit-gig', $gig) }}"
-                                   class="block w-full text-center py-3 rounded-xl text-white font-bold text-sm" style="background:#1A73E8;">
+                                   class="block w-full text-center py-3 rounded-xl text-white font-bold text-sm" style="background:#2D6CDF;">
                                     Edit My Gig
                                 </a>
                             @endif
                         @else
                             <a href="{{ route('login') }}"
                                class="block w-full text-center py-3 rounded-xl text-white font-bold text-base hover:opacity-90 transition"
-                               style="background:#1dbf73;">
+                               style="background:#1E8E3E;">
                                 Login to Order
                             </a>
                         @endauth
@@ -335,7 +335,7 @@ $packages = $gig->packages;
                          style="width:52px;height:52px;" class="rounded-full" alt="">
                     <div>
                         <p class="font-semibold text-gray-900 text-sm">{{ $profile?->user?->name }}</p>
-                        <p class="text-xs flex items-center gap-1 mt-0.5" style="color:#1A73E8;">
+                        <p class="text-xs flex items-center gap-1 mt-0.5" style="color:#2D6CDF;">
                             {{ Str::limit($profile?->professional_title ?? '', 30) }}
                         </p>
                     </div>
@@ -375,7 +375,7 @@ $packages = $gig->packages;
             <form action="{{ route('marketplace.gig.order', $gig) }}" method="POST" class="p-5 space-y-4">
                 @csrf
                 <input type="hidden" name="package_type" id="orderPackageType" value="standard">
-                <div class="rounded-xl p-4 border border-gray-200 flex items-center justify-between" style="background:#f9f9f9;">
+                <div class="rounded-xl p-4 border border-gray-200 flex items-center justify-between" style="background:#F0F0EE;">
                     <div>
                         <p class="font-semibold text-gray-900 text-sm" id="orderPkgTitle">Standard Package</p>
                         <p class="text-xs text-gray-500 mt-0.5" id="orderDelivery">7-day delivery</p>
@@ -388,11 +388,11 @@ $packages = $gig->packages;
                               class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 resize-none"
                               placeholder="Describe what you need: project goals, reference links, brand colors, tech stack preferences, deadline, etc. The more detail, the better!"></textarea>
                 </div>
-                <div class="rounded-xl p-3 text-sm" style="background:#f0fdf4;color:#14532d;">
+                <div class="rounded-xl p-3 text-sm" style="background:#EDFAF2;color:#1E8E3E;">
                     🔒 Payment is held in escrow and released to the freelancer only when you approve the work.
                 </div>
                 <div class="flex gap-3 pt-1">
-                    <button type="submit" class="flex-1 py-3 text-white font-bold rounded-xl hover:opacity-90 transition" style="background:#1dbf73;">
+                    <button type="submit" class="flex-1 py-3 text-white font-bold rounded-xl hover:opacity-90 transition" style="background:#1E8E3E;">
                         Confirm Order
                     </button>
                     <button type="button" onclick="closeOrderModal()" class="px-5 py-3 border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition">

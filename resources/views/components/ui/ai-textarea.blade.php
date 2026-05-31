@@ -171,7 +171,7 @@
         <button type="button"
                 @click="generateWithAI()"
                 :disabled="aiLoading"
-                style="width:100%;padding:10px 16px;background:linear-gradient(135deg,#6366f1,#a855f7);color:white;font-size:13px;font-weight:600;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(99,102,241,.3);transition:all .2s;"
+                style="width:100%;padding:10px 16px;background:#2D6CDF;color:white;font-size:13px;font-weight:600;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow: none;transition:all .2s;"
                 :style="aiLoading ? 'opacity:0.6;cursor:not-allowed' : ''">
             <template x-if="aiLoading">
                 <svg style="width:16px;height:16px" class="animate-spin" fill="none" viewBox="0 0 24 24">

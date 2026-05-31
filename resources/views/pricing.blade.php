@@ -17,7 +17,7 @@
                         <div class="flex flex-col rounded-lg shadow-lg overflow-hidden">
                             <div class="px-6 py-8 bg-white sm:p-10 sm:pb-6">
                                 <div>
-                                    <h3 class="inline-flex px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase bg-blue-100 text-[#1A73E8]" id="tier-standard">
+                                    <h3 class="inline-flex px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase bg-blue-100 text-[#2D6CDF]" id="tier-standard">
                                         Free
                                     </h3>
                                 </div>
@@ -67,7 +67,7 @@
                         <div class="flex flex-col rounded-lg shadow-lg overflow-hidden">
                             <div class="px-6 py-8 bg-white sm:p-10 sm:pb-6">
                                 <div>
-                                    <h3 class="inline-flex px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase bg-blue-100 text-[#1A73E8]" id="tier-premium">
+                                    <h3 class="inline-flex px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase bg-blue-100 text-[#2D6CDF]" id="tier-premium">
                                         Pro
                                     </h3>
                                 </div>
@@ -115,7 +115,7 @@
                                     </li>
                                 </ul>
                                 <div class="rounded-md shadow">
-                                    <a href="{{ route('register') }}" class="flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#1A73E8] hover:bg-[#1557b0]" aria-describedby="tier-premium">
+                                    <a href="{{ route('register') }}" class="flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#2D6CDF] hover:bg-[#1B57C4]" aria-describedby="tier-premium">
                                         Get started
                                     </a>
                                 </div>

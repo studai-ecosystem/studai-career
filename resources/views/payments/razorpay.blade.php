@@ -101,7 +101,7 @@
                     "contact": "{{ auth()->user()->phone ?? '' }}"
                 },
                 "theme": {
-                    "color": "#4F46E5"
+                    "color": "#1B57C4"
                 },
                 "modal": {
                     "ondismiss": function() {

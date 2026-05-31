@@ -1,4 +1,4 @@
-Ôªø@extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Daily Challenges')
 
@@ -12,7 +12,7 @@
                 <p class="text-gray-600 mt-1">Complete challenges to earn bonus points and XP</p>
             </div>
             <a href="{{ route('gamification.dashboard') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">
-                √¢‚Ä†¬ê Back to Dashboard
+                ‚Üê Back to Dashboard
             </a>
         </div>
 
@@ -20,7 +20,7 @@
         <div class="bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 rounded-2xl shadow-lg p-6 mb-8 text-white">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
-                    <div class="text-5xl">ù¬•</div>
+                    <div class="text-5xl">?•</div>
                     <div>
                         <div class="text-4xl font-bold">{{ $streak }} Day Streak</div>
                         <div class="text-white/80">Keep it going for bonus rewards!</div>
@@ -43,7 +43,7 @@
                     <div class="text-xs text-white/60 mb-1">{{ $date->format('D') }}</div>
                     <div class="w-10 h-10 rounded-full flex items-center justify-center {{ $isActive ? 'bg-white/30' : 'bg-white/10' }}">
                         @if($isActive)
-                            ù¬•
+                            ?•
                         @else
                             <span class="text-white/40">{{ $date->format('d') }}</span>
                         @endif
@@ -75,12 +75,12 @@
                             <div class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl flex-shrink-0"
                                  style="background: {{ $diffData['color'] }}20">
                                 @if($userChallenge->is_completed)
-                                    ¶
+                                    ?
                                 @else
                                     @switch($challenge->difficulty)
-                                        @case('easy') ¬Ø @break
-                                        @case('medium') √¢≈°¬° @break
-                                        @case('hard') ù¬• @break
+                                        @case('easy') Ø @break
+                                        @case('medium') ‚ö° @break
+                                        @case('hard') ?• @break
                                     @endswitch
                                 @endif
                             </div>
@@ -103,13 +103,13 @@
                                         <span class="font-semibold {{ $userChallenge->is_completed ? 'text-green-600' : 'text-gray-900' }}">
                                             {{ $userChallenge->progress }} / {{ $userChallenge->target }}
                                             @if($userChallenge->is_completed)
-                                                ú Complete
+                                                ? Complete
                                             @endif
                                         </span>
                                     </div>
                                     <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
                                         <div class="h-full rounded-full transition-all duration-500"
-                                             style="width: {{ $userChallenge->progress_percentage }}%; background: {{ $userChallenge->is_completed ? '#22C55E' : $diffData['color'] }}">
+                                             style="width: {{ $userChallenge->progress_percentage }}%; background: {{ $userChallenge->is_completed ? '#1E8E3E' : $diffData['color'] }}">
                                         </div>
                                     </div>
                                 </div>
@@ -136,7 +136,7 @@
                                 </button>
                                 @elseif($userChallenge->is_claimed)
                                 <div class="mt-3 px-4 py-2 bg-gray-100 text-gray-500 font-medium rounded-xl">
-                                    Claimed ú
+                                    Claimed ?
                                 </div>
                                 @endif
                             </div>
@@ -145,7 +145,7 @@
                 </div>
                 @empty
                 <div class="text-center py-12">
-                    <div class="text-6xl mb-4">¬Ø</div>
+                    <div class="text-6xl mb-4">Ø</div>
                     <h3 class="text-xl font-bold text-gray-900 mb-2">No challenges today</h3>
                     <p class="text-gray-500">Check back tomorrow for new challenges!</p>
                 </div>
@@ -155,31 +155,31 @@
 
         <!-- Tips -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h3 class="text-lg font-bold text-gray-900 mb-4">ô¬° Tips to Complete Challenges</h3>
+            <h3 class="text-lg font-bold text-gray-900 mb-4">?° Tips to Complete Challenges</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex items-start gap-3">
-                    <span class="text-2xl">ú¬ù</span>
+                    <span class="text-2xl">?ù</span>
                     <div>
                         <h4 class="font-semibold text-gray-900">Keep Your Profile Updated</h4>
                         <p class="text-sm text-gray-500">Updating your profile counts towards daily challenges</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-3">
-                    <span class="text-2xl">ù¬ç</span>
+                    <span class="text-2xl">?ç</span>
                     <div>
                         <h4 class="font-semibold text-gray-900">Apply to Jobs Daily</h4>
                         <p class="text-sm text-gray-500">Each application earns points and completes challenges</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-3">
-                    <span class="text-2xl">‚Äú</span>
+                    <span class="text-2xl">ì</span>
                     <div>
                         <h4 class="font-semibold text-gray-900">Take Skill Tests</h4>
                         <p class="text-sm text-gray-500">Prove your skills and earn extra XP</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-3">
-                    <span class="text-2xl">ù¬•</span>
+                    <span class="text-2xl">?•</span>
                     <div>
                         <h4 class="font-semibold text-gray-900">Maintain Your Streak</h4>
                         <p class="text-sm text-gray-500">Longer streaks mean bigger bonuses!</p>
@@ -203,7 +203,7 @@ function claimChallenge(challengeId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(`‚Ä∞ Claimed! +${data.points} points, +${data.xp} XP`);
+            alert(`â Claimed! +${data.points} points, +${data.xp} XP`);
             window.location.reload();
         } else {
             alert(data.message || 'Failed to claim reward');

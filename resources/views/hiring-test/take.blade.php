@@ -6,39 +6,39 @@
 <title>{{ $test->title }} — StudAI Hire</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:#f4f6fb;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;}
-  .topbar{background:linear-gradient(135deg,#1A73E8,#6366f1);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
+  body{background:#EBF2FF;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;}
+  .topbar{background:#2D6CDF;color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
   .topbar-title{font-size:16px;font-weight:700;}
   .topbar-timer{background:rgba(255,255,255,.2);border-radius:50px;padding:6px 16px;font-size:14px;font-weight:700;font-family:monospace;}
-  .topbar-timer.warn{background:rgba(239,68,68,.8);}
+  .topbar-timer.warn{background:rgba(185, 28, 28,.8);}
   .container{max-width:820px;margin:32px auto;padding:0 16px;}
-  .card{background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.08);overflow:hidden;margin-bottom:24px;}
-  .card-header{padding:20px 28px;border-bottom:1px solid #f3f4f6;}
+  .card{background:#fff;border-radius:16px;box-shadow: none;overflow:hidden;margin-bottom:24px;}
+  .card-header{padding:20px 28px;border-bottom:1px solid #F0F0EE;}
   .card-body{padding:24px 28px;}
-  .job-info{font-size:13px;color:#6b7280;margin-bottom:2px;}
-  .test-title{font-size:20px;font-weight:800;color:#1a1a2e;}
-  .instructions{background:#eff6ff;border-left:4px solid #3b82f6;border-radius:8px;padding:14px 16px;font-size:13px;color:#1e40af;margin-bottom:24px;}
+  .job-info{font-size:13px;color:#737373;margin-bottom:2px;}
+  .test-title{font-size:20px;font-weight:800;color:#0C0C0C;}
+  .instructions{background:#EBF2FF;border-left:4px solid #2D6CDF;border-radius:8px;padding:14px 16px;font-size:13px;color:#1B57C4;margin-bottom:24px;}
   .meta-row{display:flex;gap:24px;margin-bottom:24px;flex-wrap:wrap;}
-  .meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:#6b7280;}
-  .meta-item strong{color:#1a1a2e;}
-  .q-card{border:2px solid #e5e7eb;border-radius:12px;padding:20px;margin-bottom:16px;transition:border-color .2s;}
-  .q-card.answered{border-color:#6366f1;}
-  .q-num{font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
-  .q-text{font-size:15px;font-weight:600;color:#1a1a2e;margin-bottom:14px;line-height:1.5;}
-  .option{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:10px;cursor:pointer;margin-bottom:8px;transition:all .15s;}
-  .option:hover{background:#f5f3ff;border-color:#8b5cf6;}
+  .meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:#737373;}
+  .meta-item strong{color:#0C0C0C;}
+  .q-card{border:2px solid #E2E2E0;border-radius:12px;padding:20px;margin-bottom:16px;transition:border-color .2s;}
+  .q-card.answered{border-color:#2D6CDF;}
+  .q-num{font-size:11px;font-weight:700;color:#A8A8A8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+  .q-text{font-size:15px;font-weight:600;color:#0C0C0C;margin-bottom:14px;line-height:1.5;}
+  .option{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid #E2E2E0;border-radius:10px;cursor:pointer;margin-bottom:8px;transition:all .15s;}
+  .option:hover{background:#EBF2FF;border-color:#2D6CDF;}
   .option input[type=radio]{display:none;}
-  .option input[type=radio]:checked + .opt-label{color:#6d28d9;font-weight:600;}
-  .option:has(input:checked){background:#ede9fe;border-color:#7c3aed;}
-  .opt-dot{width:18px;height:18px;border-radius:50%;border:2px solid #d1d5db;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-  .option:has(input:checked) .opt-dot{background:#7c3aed;border-color:#7c3aed;}
-  .opt-label{font-size:14px;color:#374151;}
-  .progress-bar{height:6px;background:#e5e7eb;border-radius:6px;overflow:hidden;margin-bottom:24px;}
-  .progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);transition:width .3s;}
-  .submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#1A73E8,#6366f1);color:#fff;font-size:16px;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:opacity .2s;}
+  .option input[type=radio]:checked + .opt-label{color:#1B57C4;font-weight:600;}
+  .option:has(input:checked){background:#EBF2FF;border-color:#2D6CDF;}
+  .opt-dot{width:18px;height:18px;border-radius:50%;border:2px solid #C8C8C5;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+  .option:has(input:checked) .opt-dot{background:#2D6CDF;border-color:#2D6CDF;}
+  .opt-label{font-size:14px;color:#3D3D3D;}
+  .progress-bar{height:6px;background:#E2E2E0;border-radius:6px;overflow:hidden;margin-bottom:24px;}
+  .progress-fill{height:100%;background:#2D6CDF;transition:width .3s;}
+  .submit-btn{width:100%;padding:14px;background:#2D6CDF;color:#fff;font-size:16px;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:opacity .2s;}
   .submit-btn:hover{opacity:.9;}
   .submit-btn:disabled{opacity:.5;cursor:not-allowed;}
-  .answered-count{text-align:center;font-size:13px;color:#6b7280;margin-bottom:16px;}
+  .answered-count{text-align:center;font-size:13px;color:#737373;margin-bottom:16px;}
 </style>
 </head>
 <body>
@@ -87,7 +87,7 @@
         </div>
         @endforeach
 
-        <p id="warn-unanswered" class="hidden" style="color:#ef4444;font-size:13px;text-align:center;margin-bottom:12px;">⚠️ Please answer all questions before submitting.</p>
+        <p id="warn-unanswered" class="hidden" style="color:#2D6CDF;font-size:13px;text-align:center;margin-bottom:12px;">⚠️ Please answer all questions before submitting.</p>
         <button type="button" class="submit-btn" onclick="confirmSubmit()">Submit Test →</button>
       </form>
     </div>

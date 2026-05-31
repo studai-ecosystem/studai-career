@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CareerProfileController;
 use App\Http\Controllers\MarketingController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PaymentController;
@@ -32,6 +33,9 @@ use Illuminate\Support\Facades\Route;
 
 // Marketing Pages
 Route::get('/', [MarketingController::class, 'home'])->name('home');
+
+// ── UI Preview (standalone dashboard mock for design approval) ──────────────
+Route::view('/preview/dashboard', 'pages.preview.dashboard')->name('preview.dashboard');
 
 // ── Temporary Auth Diagnostic (remove after login is confirmed working) ─────
 Route::get('/auth-diag', function (\Illuminate\Http\Request $request) {
@@ -442,16 +446,34 @@ Route::get('/features', [MarketingController::class, 'features'])->name('feature
 Route::get('/pricing', [MarketingController::class, 'pricing'])->name('pricing');
 Route::get('/about', [MarketingController::class, 'about'])->name('about');
 Route::get('/how-it-works', [MarketingController::class, 'howItWorks'])->name('how-it-works');
-Route::get('/blog', [MarketingController::class, 'blog'])->name('blog');
 Route::get('/contact', [MarketingController::class, 'contact'])->name('contact');
 Route::get('/for-employers', [MarketingController::class, 'forEmployers'])->name('employers');
+Route::get('/faq', [MarketingController::class, 'faq'])->name('faq');
+Route::get('/careers', [MarketingController::class, 'careers'])->name('careers');
+
+// Product pages
+Route::get('/product/{slug}', [MarketingController::class, 'product'])->name('product');
+
+// Use cases
+Route::get('/use-cases', [MarketingController::class, 'useCases'])->name('use-cases');
+Route::get('/use-cases/{slug}', [MarketingController::class, 'useCase'])->name('use-case');
+
+// Blog
+Route::get('/blog', [MarketingController::class, 'blog'])->name('blog');
+Route::get('/blog/{slug}', [MarketingController::class, 'blogShow'])->name('blog.show');
 
 // Legal Pages
+Route::get('/legal/{slug}', [MarketingController::class, 'legal'])->name('legal');
 Route::get('/privacy-policy', [MarketingController::class, 'privacy'])->name('privacy');
 Route::get('/terms-and-conditions', [MarketingController::class, 'terms'])->name('terms');
 Route::get('/refund-policy', [MarketingController::class, 'refundPolicy'])->name('refund-policy');
 Route::get('/cookie-policy', [MarketingController::class, 'cookiePolicy'])->name('cookie-policy');
 Route::get('/security', [MarketingController::class, 'security'])->name('security');
+
+// SEO & AI discovery
+Route::get('/robots.txt', [SeoController::class, 'robots'])->name('seo.robots');
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('seo.sitemap');
+Route::get('/llms.txt', [SeoController::class, 'llms'])->name('seo.llms');
 
 // Newsletter
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
