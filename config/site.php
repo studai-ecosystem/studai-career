@@ -14,12 +14,12 @@ declare(strict_types=1);
 return [
 
     'brand' => [
-        'name'      => 'StudAI Hire',
+        'name'      => 'StudAI One',
         'company'   => 'StudAI One',
         'legal'     => 'StudAI Edutech Pvt. Ltd.',
         'ecosystem' => 'A product of the StudAI One ecosystem.',
         'logo'      => '/assets/logo/icon.png?v=3',
-        'wordmark'  => ['Stud', 'AI', ' Hire'],
+        'wordmark'  => ['Stud', 'AI', ' One'],
         'tagline'   => 'The Autonomous Career OS',
         'pitch'     => "India's first complete autonomous AI hiring platform — it finds the roles, tailors every application, preps your interviews and wins the negotiation, while you stay in control.",
         'email'     => 'hello@studai.one',

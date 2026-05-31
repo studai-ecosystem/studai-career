@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Traits\RedirectsAuthenticatedUsers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,7 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
+    use RedirectsAuthenticatedUsers;
     /**
      * Display the login view.
      */
@@ -108,16 +110,8 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
-        // Role-based redirect
-        if ($user && $user->isAdmin()) {
-            if (\Illuminate\Support\Facades\Route::has('filament.studai.pages.dashboard')) {
-                return redirect()->intended(route('filament.studai.pages.dashboard'));
-            }
-            return redirect()->intended(route('dashboard'));
-        }
-
-        if ($user && $user->isEmployer()) {
-            return redirect()->intended(route('employer.home'));
+        if ($user) {
+            return $this->redirectForUser($user);
         }
 
         return redirect()->intended(route('dashboard'));

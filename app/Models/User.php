@@ -34,6 +34,8 @@ class User extends Authenticatable implements FilamentUser
         'company_id',
         'avatar',
         'is_active',
+        'force_password_reset',
+        'password_changed_at',
         'preferences',
         'last_login_at',
         'timezone',
@@ -65,6 +67,8 @@ class User extends Authenticatable implements FilamentUser
             'preferences' => 'array',
             'last_login_at' => 'datetime',
             'is_active' => 'boolean',
+            'force_password_reset' => 'boolean',
+            'password_changed_at' => 'datetime',
         ];
     }
 

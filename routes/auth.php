@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\ForcePasswordController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -39,6 +41,14 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->middleware('throttle:5,60') // Max 5 password reset submissions per hour
         ->name('password.store');
+
+    // Hidden administrator login (not linked from any public navigation).
+    Route::get('admin/login', [AdminLoginController::class, 'create'])
+        ->name('admin.login');
+
+    Route::post('admin/login', [AdminLoginController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('admin.login.store');
 });
 
 Route::middleware('auth')->group(function () {
@@ -56,6 +66,14 @@ Route::middleware('auth')->group(function () {
     // password.confirm routes are handled by Fortify (user/confirm-password)
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+    // Forced password change on first login (temporary password rotation).
+    Route::get('password/force', [ForcePasswordController::class, 'edit'])
+        ->name('password.force');
+
+    Route::post('password/force', [ForcePasswordController::class, 'update'])
+        ->middleware('throttle:5,1')
+        ->name('password.force.update');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');

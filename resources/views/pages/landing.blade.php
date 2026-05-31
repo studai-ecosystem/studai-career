@@ -41,7 +41,9 @@
         *{box-sizing:border-box;}
         html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
         body{margin:0;font-family:var(--font);color:var(--ink);background:var(--paper);
-            font-size:17px;line-height:1.6;letter-spacing:-.011em;overflow-x:hidden;}
+            font-size:17px;line-height:1.6;letter-spacing:-.011em;overflow-x:hidden;padding-top:64px;}
+        /* Shared marketing header (partials.marketing-header) scrolled state */
+        .nav-scrolled{background:#fff !important;box-shadow:0 1px 0 rgba(0,0,0,.04) !important;border-bottom:1px solid var(--line) !important;}
         a{color:inherit;text-decoration:none;}
         img{max-width:100%;display:block;}
         ::selection{background:#E9DEFF;color:var(--violet);}
@@ -375,34 +377,8 @@
 </head>
 <body x-data="{ mobile:false }">
 
-    {{-- ════ NAV ═══════════════════════════════════════════════════════ --}}
-    <header class="nav" id="nav">
-        <div class="wrap nav__in">
-            <a href="{{ route('home') }}" class="brand">
-                <img src="{{ $p['brand']['logo'] }}" alt="{{ $p['brand']['name'] }}">
-                <span>{{ $p['brand']['wordmark'][0] }}<b>{{ $p['brand']['wordmark'][1] }}</b>{{ $p['brand']['wordmark'][2] }}</span>
-            </a>
-            <nav class="nav__links">
-                @foreach($p['nav']['links'] as $l)
-                    <a href="{{ route($l['route']) }}">{{ $l['label'] }}</a>
-                @endforeach
-            </nav>
-            <div class="nav__cta">
-                <a href="{{ route($p['nav']['sign_in']['route']) }}" class="nav__signin">{{ $p['nav']['sign_in']['label'] }}</a>
-                <a href="{{ route($p['nav']['sign_up']['route']) }}" class="btn btn-primary">{{ $p['nav']['sign_up']['label'] }}</a>
-            </div>
-            <button class="burger" @click="mobile=!mobile" aria-label="Menu">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-            </button>
-        </div>
-        <div class="mobile" x-show="mobile" x-cloak>
-            @foreach($p['nav']['links'] as $l)
-                <a href="{{ route($l['route']) }}">{{ $l['label'] }}</a>
-            @endforeach
-            <a href="{{ route($p['nav']['sign_in']['route']) }}">{{ $p['nav']['sign_in']['label'] }}</a>
-            <a href="{{ route($p['nav']['sign_up']['route']) }}" class="btn btn-primary">{{ $p['nav']['sign_up']['label'] }}</a>
-        </div>
-    </header>
+    {{-- ════ NAV (shared marketing header) ═════════════════════════════ --}}
+    @include('partials.marketing-header')
 
     {{-- ════ HERO ══════════════════════════════════════════════════════ --}}
     <section class="hero">

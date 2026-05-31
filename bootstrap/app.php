@@ -48,6 +48,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Apply activity tracking to web routes
         $middleware->web(append: [
             \App\Http\Middleware\TrackUserActivity::class,
+            \App\Http\Middleware\EnsurePasswordChanged::class,
         ]);
 
     })

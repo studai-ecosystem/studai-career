@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Responses;
 
+use App\Traits\RedirectsAuthenticatedUsers;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class LoginResponse implements LoginResponseContract
 {
+    use RedirectsAuthenticatedUsers;
+
     /**
      * Create an HTTP response after successful login.
      */
@@ -24,17 +27,6 @@ class LoginResponse implements LoginResponseContract
             return redirect()->route('login');
         }
 
-        if ($user->isAdmin()) {
-            if (\Route::has('filament.studai.pages.dashboard')) {
-                return redirect()->intended(route('filament.studai.pages.dashboard'));
-            }
-            return redirect()->intended(route('dashboard'));
-        }
-
-        if ($user->isEmployer()) {
-            return redirect()->intended(route('employer.home'));
-        }
-
-        return redirect()->intended(route('dashboard'));
+        return $this->redirectForUser($user);
     }
 }

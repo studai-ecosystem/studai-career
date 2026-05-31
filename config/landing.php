@@ -14,9 +14,9 @@ declare(strict_types=1);
 return [
 
     'brand' => [
-        'name'      => 'StudAI Hire',
+        'name'      => 'StudAI One',
         'logo'      => '/assets/logo/icon.png?v=3',
-        'wordmark'  => ['Stud', 'AI', ' Hire'],
+        'wordmark'  => ['Stud', 'AI', ' One'],
         'tagline'   => 'The Autonomous Career OS',
     ],
 

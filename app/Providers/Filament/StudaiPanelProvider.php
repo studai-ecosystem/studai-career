@@ -30,7 +30,7 @@ class StudaiPanelProvider extends PanelProvider
             ->id('studai')
             ->path('studai')
             ->login()
-            ->brandName('StudAI Hire')
+            ->brandName('StudAI One')
             ->brandLogo(asset('images/logo.svg'))
             ->brandLogoHeight('3rem')
             ->favicon(asset('images/favicon.png'))
