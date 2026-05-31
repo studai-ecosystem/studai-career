@@ -12,32 +12,28 @@
         <p class="text-sm mt-1" style="color:#737373">For your security, please replace your temporary password before continuing.</p>
     </div>
 
-    <form method="POST" action="{{ route('password.force.update') }}" class="space-y-5">
+    <form method="POST" action="{{ route('password.force.update') }}" class="space-y-4">
         @csrf
 
         {{-- New Password --}}
         <div>
-            <label for="password" class="block text-sm font-semibold mb-1.5" style="color:#0C0C0C">New password</label>
+            <label for="password" class="block text-xs font-semibold mb-1.5 uppercase tracking-wider" style="color:#737373">New password</label>
             <input id="password" name="password" type="password" required autofocus autocomplete="new-password"
-                class="w-full rounded-xl border px-4 py-3 text-sm transition focus:outline-none focus:ring-2"
-                style="border-color:#E5E7EB" placeholder="At least 8 characters" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                class="auth-input" placeholder="At least 8 characters" />
+            <x-input-error :messages="$errors->get('password')" class="mt-1.5 text-xs" />
             <p class="mt-1.5 text-[11px]" style="color:#A8A8A8">Use upper &amp; lower case letters and at least one number.</p>
         </div>
 
         {{-- Confirm Password --}}
         <div>
-            <label for="password_confirmation" class="block text-sm font-semibold mb-1.5" style="color:#0C0C0C">Confirm new password</label>
+            <label for="password_confirmation" class="block text-xs font-semibold mb-1.5 uppercase tracking-wider" style="color:#737373">Confirm new password</label>
             <input id="password_confirmation" name="password_confirmation" type="password" required autocomplete="new-password"
-                class="w-full rounded-xl border px-4 py-3 text-sm transition focus:outline-none focus:ring-2"
-                style="border-color:#E5E7EB" placeholder="Re-enter new password" />
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                class="auth-input" placeholder="Re-enter new password" />
+            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1.5 text-xs" />
         </div>
 
-        <button type="submit"
-            class="w-full rounded-xl px-4 py-3 text-sm font-bold text-white transition hover:opacity-90"
-            style="background:#2D6CDF">
-            Update password &amp; continue
+        <button type="submit" class="btn-auth">
+            <span>Update password &amp; continue</span>
         </button>
     </form>
 </x-guest-layout>
