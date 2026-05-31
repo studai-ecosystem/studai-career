@@ -184,6 +184,19 @@ if [ "$APP_ENV" = "production" ]; then
     echo "Test accounts already seeded (lock exists), skipping."
   fi
 
+  # ---- One-shot admin account provisioning ----
+  # Controlled via App Settings ADMIN_SEED_EMAIL / ADMIN_SEED_PASSWORD so the
+  # password is never stored in git. Runs once (lock file), then is skipped.
+  # To re-run later: delete /home/site/admin-provisioned.lock and restart.
+  ADMIN_LOCK="/home/site/admin-provisioned.lock"
+  if [ -n "$ADMIN_SEED_EMAIL" ] && [ -n "$ADMIN_SEED_PASSWORD" ] && [ ! -f "$ADMIN_LOCK" ]; then
+    echo "Provisioning admin account for $ADMIN_SEED_EMAIL..."
+    timeout 30 php artisan studai:admin-account "$ADMIN_SEED_EMAIL" --super --password="$ADMIN_SEED_PASSWORD" \
+      && touch "$ADMIN_LOCK" \
+      && echo "Admin account provisioned." \
+      || echo "WARNING: admin provisioning failed (will retry on next restart)"
+  fi
+
 else
   echo "Development mode - clearing caches..."
   php artisan optimize:clear 2>/dev/null || true
