@@ -91,16 +91,17 @@ class Resume extends Model
     ];
 
     /**
-     * Resilient attribute access: resumes created under a previous APP_KEY
+     * Resilient attribute casting: resumes created under a previous APP_KEY
      * cannot have their encrypted fields (email/phone/location/*_url)
      * decrypted with the current key. Rather than throwing an uncaught
-     * DecryptException (which 500s the whole page), degrade gracefully to
-     * null for the affected field.
+     * DecryptException (which 500s the whole page, JSON serialization and
+     * exports), degrade gracefully to null for the affected field. This guards
+     * both single-attribute access and array/JSON serialization paths.
      */
-    public function getAttribute($key)
+    protected function castAttribute($key, $value)
     {
         try {
-            return parent::getAttribute($key);
+            return parent::castAttribute($key, $value);
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
             return null;
         }

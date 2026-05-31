@@ -172,12 +172,15 @@ class DashboardController extends Controller
             ->latest()
             ->paginate(20);
 
-        // Single aggregated query instead of two separate SUM calls
+        // Single aggregated query instead of two separate SUM calls.
+        // Use a date-range comparison (portable across MySQL & SQLite) rather
+        // than MONTH()/YEAR() which are unavailable on SQLite.
+        $monthStart = now()->startOfMonth()->toDateTimeString();
         $aggRow = \App\Models\AICreditLog::where('user_id', $user->id)
             ->selectRaw("
                 SUM(credits_used) as total_used,
-                SUM(CASE WHEN MONTH(created_at) = ? AND YEAR(created_at) = ? THEN credits_used ELSE 0 END) as this_month
-            ", [now()->month, now()->year])
+                SUM(CASE WHEN created_at >= ? THEN credits_used ELSE 0 END) as this_month
+            ", [$monthStart])
             ->first();
 
         $totalUsed = (int) ($aggRow->total_used ?? 0);
