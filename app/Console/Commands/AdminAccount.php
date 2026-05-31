@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class AdminAccount extends Command
 {
@@ -50,6 +51,7 @@ class AdminAccount extends Command
 
         // Ensure the spatie role exists and is assigned (guard: web).
         if (method_exists($user, 'syncRoles')) {
+            Role::findOrCreate($role, 'web');
             $user->syncRoles([$role]);
         }
 
