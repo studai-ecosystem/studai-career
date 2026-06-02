@@ -40,6 +40,12 @@ return [
         'secret' => env('RAZORPAY_SECRET'),
     ],
 
+    'ffmpeg' => [
+        // Path to the ffmpeg binary used for chunking large audio files before
+        // Whisper transcription. Defaults to 'ffmpeg' (expects it on PATH).
+        'path' => env('FFMPEG_PATH', 'ffmpeg'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Social OAuth Providers

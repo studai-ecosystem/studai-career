@@ -5,7 +5,7 @@ namespace App\Services\Interview;
 use App\Models\InterviewQuestion;
 use App\Models\InterviewResponse;
 use App\Models\InterviewFeedback;
-use App\Services\AI\OpenAIService;
+use App\Services\AI\AIService;
 use Illuminate\Support\Facades\Log;
 
 class AnswerAnalysisService
@@ -18,7 +18,7 @@ class AnswerAnalysisService
     ];
 
     public function __construct(
-        protected OpenAIService $openAIService
+        protected AIService $aiService
     ) {}
 
     /**
@@ -66,10 +66,10 @@ class AnswerAnalysisService
         $prompt = $this->buildContentAnalysisPrompt($response, $question);
 
         try {
-            $aiResponse = $this->openAIService->generateCompletion($prompt, [
-                'max_completion_tokens' => 300,
-                'temperature' => 0.3,
-            ]);
+            $aiResponse = $this->aiService->callWithMessages(
+                [['role' => 'user', 'content' => $prompt]],
+                ['max_completion_tokens' => 300, 'temperature' => 0.3]
+            );
 
             $analysis = json_decode($aiResponse, true);
 

@@ -2,7 +2,9 @@
 
 namespace App\Observers;
 
+use App\Events\HireOutcomeRecorded;
 use App\Models\Application;
+use App\Models\HireOutcome;
 use App\Services\CacheService;
 use App\Services\WebhookService;
 
@@ -63,6 +65,12 @@ class ApplicationObserver
 
         try {
             if ($application->isDirty('status')) {
+                // C4: capture terminal outcomes (hired / rejected) with a
+                // snapshot of the composite scores that informed ranking.
+                if (in_array($application->status, ['hired', 'rejected'], true)) {
+                    $this->recordHireOutcome($application);
+                }
+
                 $this->webhookService->trigger(
                     'application.status_changed',
                     [
@@ -96,6 +104,40 @@ class ApplicationObserver
             }
         } catch (\Exception $e) {
             \Log::warning('ApplicationObserver update webhook failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Persist a ground-truth HireOutcome record (idempotent per application)
+     * and fire the decoupled HireOutcomeRecorded event. Failures here must
+     * never break the status-change flow.
+     */
+    private function recordHireOutcome(Application $application): void
+    {
+        try {
+            $companyId = $application->company_id
+                ?? $application->job?->company_id
+                ?? $application->job()->value('company_id');
+
+            $outcome = HireOutcome::updateOrCreate(
+                ['application_id' => $application->id],
+                [
+                    'user_id'               => $application->user_id,
+                    'job_id'                => $application->job_id,
+                    'company_id'            => $companyId,
+                    'outcome'               => $application->status,
+                    'evaluation_score'      => $application->evaluation_score,
+                    'skill_match_score'     => $application->skill_match_score,
+                    'resume_quality_score'  => $application->resume_quality_score,
+                    'behavioural_fit_score' => $application->behavioural_fit_score,
+                    'final_rank_score'      => $application->final_rank_score,
+                    'decided_at'            => now(),
+                ]
+            );
+
+            HireOutcomeRecorded::dispatch($outcome);
+        } catch (\Throwable $e) {
+            \Log::warning('ApplicationObserver: failed to record hire outcome: ' . $e->getMessage());
         }
     }
 }

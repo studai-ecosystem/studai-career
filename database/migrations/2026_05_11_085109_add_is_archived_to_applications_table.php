@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasColumn('applications', 'is_archived')) {
+            return;
+        }
+
         Schema::table('applications', function (Blueprint $table) {
             $table->boolean('is_archived')->default(false)->after('status');
         });
@@ -21,6 +25,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasColumn('applications', 'is_archived')) {
+            return;
+        }
+
         Schema::table('applications', function (Blueprint $table) {
             $table->dropColumn('is_archived');
         });

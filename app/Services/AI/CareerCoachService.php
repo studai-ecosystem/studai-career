@@ -92,12 +92,15 @@ class CareerCoachService extends AIService
     {
         $systemPrompt = $this->buildSystemPrompt($session->session_type);
 
+        // Compact long histories with a sliding-window summary to control token cost.
+        $compactedHistory = $this->compactConversation($history);
+
         // Build messages array for API
         $messages = [
             ['role' => 'system', 'content' => $systemPrompt],
         ];
 
-        foreach ($history as $msg) {
+        foreach ($compactedHistory as $msg) {
             $messages[] = [
                 'role' => $msg['role'],
                 'content' => $msg['content'],
@@ -107,9 +110,11 @@ class CareerCoachService extends AIService
         $messages[] = ['role' => 'user', 'content' => $userMessage];
 
         try {
-            $content = $this->callAzureOpenAI($messages, [
+            // Route through the centralized gateway (circuit breaker + Anthropic fallback).
+            $content = $this->callWithMessages($messages, [
                 'temperature' => 0.7,
                 'max_completion_tokens' => 450,
+                'skip_cache' => true,
             ]);
 
             return [

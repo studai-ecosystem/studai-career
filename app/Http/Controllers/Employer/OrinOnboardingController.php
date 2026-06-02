@@ -54,26 +54,50 @@ class OrinOnboardingController extends Controller
         }
 
         $history = $request->input('history');
-        $lastUserMsg = collect($history)->last()['content'] ?? '';
 
-        // Check if user signalled completion
-        if (strtoupper(trim($lastUserMsg)) === 'DONE' || str_contains(strtolower($lastUserMsg), 'done')) {
-            $profile = $this->orin->extractProfile($history, $company);
-            return response()->json([
-                'message'  => "✅ Your Company Intelligence Profile has been saved! (Completeness: {$profile->completeness_score}%). You can now create job listings. Orin™ will use this profile to generate smarter JDs and candidate evaluations.",
-                'complete' => true,
-                'profile'  => [
-                    'completeness_score' => $profile->completeness_score,
-                    'industry'           => $profile->industry,
-                ],
-            ]);
-        }
-
+        // F5: completion is no longer driven by a brittle "DONE" keyword. Orin
+        // emits a [[READY]] sentinel once enough topics are collected, which we
+        // strip and surface to the UI so it can reveal a "Finish Setup" button.
         $reply = $this->orin->nextMessage($history, $company);
 
+        $canFinalize = str_contains($reply, OrinOnboardingService::READY_TOKEN);
+        $reply = trim(str_replace(OrinOnboardingService::READY_TOKEN, '', $reply));
+
         return response()->json([
-            'message'  => $reply,
-            'complete' => false,
+            'message'      => $reply,
+            'complete'     => false,
+            'can_finalize' => $canFinalize,
+        ]);
+    }
+
+    /**
+     * F5: Finalize onboarding when the employer clicks the UI completion button.
+     * Extracts and persists the Company Intelligence Profile from the transcript.
+     */
+    public function finalize(Request $request): JsonResponse
+    {
+        $request->validate([
+            'history' => ['required', 'array'],
+            'history.*.role' => ['required', 'in:user,assistant'],
+            'history.*.content' => ['required', 'string', 'max:2000'],
+        ]);
+
+        $company = auth()->user()->company;
+        if (! $company) {
+            return response()->json(['error' => 'Company not found.'], 404);
+        }
+
+        $profile = $this->orin->extractProfile($request->input('history'), $company);
+        $completeness = $profile->completeness_score;
+
+        return response()->json([
+            'message'  => "✅ Your Company Intelligence Profile has been saved! (Completeness: {$completeness}%). You can now create job listings. Orin™ will use this profile to generate smarter JDs and candidate evaluations.",
+            'complete' => true,
+            'redirect' => route('employer.home'),
+            'profile'  => [
+                'completeness_score' => $profile->completeness_score,
+                'industry'           => $profile->industry,
+            ],
         ]);
     }
 

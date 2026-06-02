@@ -83,7 +83,7 @@ class SendShortlistNotifications implements ShouldQueue
                     Mail::send([], [], fn($m) => $m
                         ->to($email, $name)
                         ->subject("Update on your application for {$job->title}")
-                        ->html($this->buildRejectionEmail($name, $job))
+                        ->html($this->buildRejectionEmail($name, $job, $application))
                     );
                     $application->update([
                         'status'           => 'rejected',
@@ -147,21 +147,112 @@ class SendShortlistNotifications implements ShouldQueue
 HTML;
     }
 
-    private function buildRejectionEmail(string $name, Job $job): string
+    private function buildRejectionEmail(string $name, Job $job, Application $application): string
     {
         $company = $job->company?->name ?? 'the company';
+        $scoreBreakdown = $this->buildScoreBreakdown($application);
         return <<<HTML
 <!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333">
 <h1 style="color:#1A73E8">StudAI Hire</h1>
 <h2>Update on your application, {$name}</h2>
 <p>Thank you for applying for <strong>{$job->title}</strong> at <strong>{$company}</strong> and for taking the time to complete our evaluation.</p>
 <p>After careful review, we are unable to progress your application to the next stage at this time. This is not a reflection of your abilities — competition was strong.</p>
+{$scoreBreakdown}
 <p>Your performance report and personalised feedback from Orin™ will be available in your StudAI dashboard.</p>
 <p>We encourage you to keep building your skills and apply for future opportunities.</p>
 <hr style="border:none;border-top:1px solid #eee;margin:30px 0">
 <p style="color:#999;font-size:12px;text-align:center">StudAI Edutech Pvt. Ltd. | Powered by Orin™</p>
 </body></html>
 HTML;
+    }
+
+    /**
+     * F15: Build a transparent score breakdown (S.C.O.U.T. rounds + composite)
+     * for inclusion in the rejection email. Pulls per-round scores from the
+     * candidate's most recent AIDecisionLog when available, and always shows
+     * the Orin™ component scores plus the final composite rank score.
+     */
+    private function buildScoreBreakdown(Application $application): string
+    {
+        $rows = [];
+
+        $roundRows = $this->extractRoundScores($application);
+        foreach ($roundRows as $label => $value) {
+            $rows[] = "<tr><td style='padding:6px 8px;border-bottom:1px solid #eee'>{$label}</td>"
+                . "<td style='padding:6px 8px;border-bottom:1px solid #eee;text-align:right'>{$value}</td></tr>";
+        }
+
+        $components = [
+            'Evaluation score'    => $application->evaluation_score,
+            'Skill match score'   => $application->skill_match_score,
+            'Resume quality score' => $application->resume_quality_score,
+        ];
+        foreach ($components as $label => $value) {
+            if ($value === null) {
+                continue;
+            }
+            $formatted = number_format((float) $value, 1) . '/100';
+            $rows[] = "<tr><td style='padding:6px 8px;border-bottom:1px solid #eee'>{$label}</td>"
+                . "<td style='padding:6px 8px;border-bottom:1px solid #eee;text-align:right'>{$formatted}</td></tr>";
+        }
+
+        if ($application->final_rank_score !== null) {
+            $composite = number_format((float) $application->final_rank_score, 1) . '/100';
+            $rows[] = "<tr><td style='padding:8px;font-weight:bold'>Composite rank score</td>"
+                . "<td style='padding:8px;text-align:right;font-weight:bold;color:#1A73E8'>{$composite}</td></tr>";
+        }
+
+        if ($rows === []) {
+            return '';
+        }
+
+        $rowsHtml = implode('', $rows);
+
+        return <<<HTML
+<div style="margin:24px 0">
+  <h3 style="margin:0 0 8px;font-size:15px;color:#333">Your evaluation results</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:14px;border:1px solid #eee">
+    <tbody>{$rowsHtml}</tbody>
+  </table>
+</div>
+HTML;
+    }
+
+    /**
+     * Extract Round 1–4 S.C.O.U.T. scores from the candidate's latest decision log.
+     *
+     * @return array<string, string>
+     */
+    private function extractRoundScores(Application $application): array
+    {
+        $log = \App\Models\AIDecisionLog::query()
+            ->where('subject_type', 'App\\Models\\Application')
+            ->where('subject_id', $application->id)
+            ->whereNotNull('score_factors')
+            ->latest('id')
+            ->first();
+
+        if ($log === null || empty($log->score_factors)) {
+            return [];
+        }
+
+        $rounds = [];
+        foreach ($log->score_factors as $factor) {
+            $name = $factor['factor'] ?? $factor['name'] ?? null;
+            $value = $factor['value'] ?? $factor['contribution'] ?? null;
+            if ($name === null || $value === null) {
+                continue;
+            }
+            if (! preg_match('/round\s*[1-4]/i', (string) $name)) {
+                continue;
+            }
+            $numeric = (float) $value;
+            // Factors may be stored as 0–1 fractions or 0–100 scores.
+            $display = $numeric <= 1 ? number_format($numeric * 100, 1) : number_format($numeric, 1);
+            $rounds[(string) $name] = $display . '/100';
+        }
+
+        return $rounds;
     }
 
     private function buildEmployerEmail(Job $job, $shortlisted, int $targetCount): string

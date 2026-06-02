@@ -16,7 +16,7 @@ class AIDecisionLog extends Model
     protected $fillable = [
         'subject_type', 'subject_id',
         'actor_id', 'actor_type',
-        'decision_type', 'model_used',
+        'decision_type', 'model_used', 'prompt_version',
         'ai_score', 'ai_recommendation', 'confidence',
         'score_factors', 'evidence', 'natural_language_explanation',
         'bias_flagged', 'bias_indicators',

@@ -26,7 +26,12 @@ class SkillAssessmentGeneratorService
         try {
             // Generate questions using AI
             $questions = $this->generateQuestions($userSkill->skill_name, $assessmentType, $difficulty, $questionCount);
-            
+
+            // E10: AI-generated assessments are flagged for human review before
+            // they are used for any consequential decision. This applies to all
+            // generated assessments, including AI fallbacks.
+            $requiresReview = true;
+
             // Create assessment record
             $assessment = SkillAssessment::create([
                 'user_id' => $userSkill->user_id,
@@ -39,8 +44,9 @@ class SkillAssessmentGeneratorService
                 'time_limit_minutes' => $this->calculateTimeLimit($questionCount, $assessmentType),
                 'questions' => $questions,
                 'status' => 'draft',
+                'requires_human_review' => $requiresReview,
             ]);
-            
+
             return $assessment;
             
         } catch (\Exception $e) {

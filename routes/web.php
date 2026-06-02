@@ -21,6 +21,7 @@ use App\Http\Controllers\Employer\InterviewManagementController;
 use App\Http\Controllers\Employer\HiringTestManagerController;
 use App\Http\Controllers\HiringTestController;
 use App\Http\Controllers\Admin\ApplicationMonitorController;
+use App\Http\Controllers\Candidate\DecisionExplanationController;
 use App\Http\Controllers\SkillAnalyzerWebController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\EnhancedAnalyticsController;
@@ -529,6 +530,10 @@ Route::middleware('auth')->group(function () {
     // Applications Tracking
     Route::get('/applications', [DashboardController::class, 'applications'])->name('dashboard.applications');
 
+    // F14: Candidate AI decision explanation (DPDP Act / GDPR right to explanation)
+    Route::get('/applications/{application}/decision-explanation', [DecisionExplanationController::class, 'show'])
+        ->name('candidate.decision-explanation');
+
     // AI Credits History
     Route::get('/ai-credits', [DashboardController::class, 'aiCredits'])->name('dashboard.ai-credits');
 
@@ -818,11 +823,21 @@ Route::prefix('apply')->name('apply.')->middleware('throttle:60,1')->group(funct
     // Evaluation interface
     Route::get('/{token}/evaluation', [PublicApplyController::class, 'evaluation'])->name('evaluation');
 
+    // F4: anti-cheat monitoring consent gate (must precede session creation)
+    Route::post('/{token}/evaluation/consent', [PublicApplyController::class, 'acknowledgeMonitoring'])
+        ->middleware('throttle:20,1')
+        ->name('evaluation.consent');
+
     // Evaluation API endpoints
     Route::post('/{token}/evaluation/question', [PublicApplyController::class, 'getQuestion'])->name('evaluation.question');
     Route::post('/{token}/evaluation/answer', [PublicApplyController::class, 'submitAnswer'])
         ->middleware('throttle:120,1')
         ->name('evaluation.answer');
+
+    // B4/F5: explicit candidate-driven completion (gated by min completeness)
+    Route::post('/{token}/evaluation/complete', [PublicApplyController::class, 'completeEvaluation'])
+        ->middleware('throttle:30,1')
+        ->name('evaluation.complete');
 
     // Anti-cheat event recorder
     Route::post('/{token}/evaluation/anticheat', function (\Illuminate\Http\Request $req, string $token) {
@@ -1395,6 +1410,7 @@ Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->
     // ── Orin™ Conversational Employer Onboarding ──────────────────────────
     Route::get('/orin-onboarding', [\App\Http\Controllers\Employer\OrinOnboardingController::class, 'show'])->name('orin-onboarding');
     Route::post('/orin-onboarding/chat', [\App\Http\Controllers\Employer\OrinOnboardingController::class, 'chat'])->name('orin-onboarding.chat');
+    Route::post('/orin-onboarding/finalize', [\App\Http\Controllers\Employer\OrinOnboardingController::class, 'finalize'])->name('orin-onboarding.finalize');
     Route::post('/orin-onboarding/skip', [\App\Http\Controllers\Employer\OrinOnboardingController::class, 'skip'])->name('orin-onboarding.skip');
 
     // ── Orin™ AI Job Creator ──────────────────────────────────────────────

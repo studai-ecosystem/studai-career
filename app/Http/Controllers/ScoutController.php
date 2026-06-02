@@ -1996,6 +1996,12 @@ class ScoutController extends Controller
                 $request->decision_type
             );
 
+            // A1/F16: Employers receive an explainable, compliance-grade summary
+            // but must NOT see raw internal bias-detection internals (which can
+            // expose protected-attribute inferences and create legal liability).
+            // We surface only the boolean review signal, not the detector detail.
+            $result = $this->redactDecisionExplanationForEmployer($result);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Decision explanation generated',
@@ -2013,6 +2019,28 @@ class ScoutController extends Controller
                 'message' => 'Failed to generate explanation: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * A1/F16: Strip sensitive internal bias-detection detail from a decision
+     * explanation before returning it to an employer. The full detector output
+     * (which may contain protected-attribute correlation internals) is replaced
+     * with a single, non-identifying human-review recommendation flag.
+     *
+     * @param array<string, mixed> $result
+     * @return array<string, mixed>
+     */
+    private function redactDecisionExplanationForEmployer(array $result): array
+    {
+        $requiresReview = (bool) (
+            $result['human_review_recommended']
+            ?? ($result['bias_indicators']['requires_review'] ?? false)
+        );
+
+        unset($result['bias_indicators']);
+        $result['human_review_recommended'] = $requiresReview;
+
+        return $result;
     }
 
     /**

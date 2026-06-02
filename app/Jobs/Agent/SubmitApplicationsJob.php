@@ -96,6 +96,29 @@ class SubmitApplicationsJob implements ShouldQueue
             return;
         }
 
+        // A5: The user must have explicitly consented to the agent submitting
+        // applications on their behalf. Without per-category submit consent the
+        // agent may discover and prepare, but must never auto-submit. We block
+        // and record the block in the audit log for compliance traceability.
+        if (! (bool) ($config->consent_submit ?? false)) {
+            Log::warning('Agent submit consent not granted, blocking auto-submission', [
+                'config_id' => $config->id,
+                'user_id' => $config->user_id,
+            ]);
+
+            \App\Models\AgentAuditLog::create([
+                'user_id' => $config->user_id,
+                'agent_configuration_id' => $config->id,
+                'action' => \App\Models\AgentAuditLog::ACTION_APPLICATION_FAILED,
+                'action_type' => \App\Models\AgentAuditLog::TYPE_SAFETY,
+                'status' => \App\Models\AgentAuditLog::STATUS_BLOCKED,
+                'error_message' => 'Auto-submission blocked: per-category submit consent not granted.',
+                'metadata' => ['consent_category' => 'submit'],
+            ]);
+
+            return;
+        }
+
         // Check daily limit
         $todayCount = AutoApplication::where('agent_configuration_id', $config->id)
             ->whereDate('created_at', today())
@@ -228,6 +251,9 @@ class SubmitApplicationsJob implements ShouldQueue
 
     /**
      * Handle a job failure.
+     *
+     * D13: After exhausting retries, record a durable audit-log entry and notify
+     * the user so a silent permanent failure never leaves the agent stuck.
      */
     public function failed(\Throwable $exception): void
     {
@@ -236,5 +262,46 @@ class SubmitApplicationsJob implements ShouldQueue
             'error' => $exception->getMessage(),
             'trace' => $exception->getTraceAsString(),
         ]);
+
+        if ($this->config === null) {
+            return;
+        }
+
+        try {
+            \App\Models\AgentAuditLog::create([
+                'user_id' => $this->config->user_id,
+                'agent_configuration_id' => $this->config->id,
+                'action' => \App\Models\AgentAuditLog::ACTION_APPLICATION_FAILED,
+                'action_type' => \App\Models\AgentAuditLog::TYPE_APPLICATION,
+                'status' => \App\Models\AgentAuditLog::STATUS_FAILED,
+                'error_message' => 'Application submission job failed after ' . $this->tries . ' attempts: ' . $exception->getMessage(),
+                'metadata' => [
+                    'exception' => get_class($exception),
+                    'tries' => $this->tries,
+                ],
+            ]);
+        } catch (\Throwable $logError) {
+            Log::error('Failed to record SubmitApplicationsJob failure audit log', [
+                'config_id' => $this->config->id,
+                'error' => $logError->getMessage(),
+            ]);
+        }
+
+        try {
+            $user = $this->config->user;
+
+            if ($user !== null) {
+                $user->notify(new \App\Notifications\Agent\AgentPausedNotification(
+                    $this->config,
+                    'Application submission failure',
+                    $exception->getMessage()
+                ));
+            }
+        } catch (\Throwable $notifyError) {
+            Log::error('Failed to notify user of SubmitApplicationsJob failure', [
+                'config_id' => $this->config->id,
+                'error' => $notifyError->getMessage(),
+            ]);
+        }
     }
 }

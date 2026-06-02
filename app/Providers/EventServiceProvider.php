@@ -13,6 +13,7 @@ use App\Events\ApplicationStatusChanged;
 use App\Events\ApplicationSubmitted;
 use App\Events\BiasAuditCompleted;
 use App\Events\CandidateShortlisted;
+use App\Events\HireOutcomeRecorded;
 use App\Events\InterviewCompleted;
 use App\Events\InterviewStarted;
 use App\Events\JobApplied;
@@ -44,6 +45,7 @@ use App\Listeners\LogScoutActivity;
 use App\Listeners\NotifyOnCareerMilestone;
 use App\Listeners\NotifyOnMessagingAndReferral;
 use App\Listeners\NotifyOnSubscriptionChange;
+use App\Listeners\RecordCandidateLearningSignal;
 use App\Listeners\SendApplicationStatusChangedNotification;
 use App\Listeners\SendApplicationSubmittedNotification;
 use App\Listeners\SendLoginNotification;
@@ -135,6 +137,11 @@ class EventServiceProvider extends ServiceProvider
         // Listeners: NotifyOnMessagingAndReferral (subscriber)
         MessageSent::class      => [], // → NotifyOnMessagingAndReferral::handleMessageSent
         ReferralReviewed::class => [], // → NotifyOnMessagingAndReferral::handleReferralReviewed
+
+        // C4: Hire outcome → candidate learning signal
+        HireOutcomeRecorded::class => [
+            RecordCandidateLearningSignal::class,
+        ],
     ];
 
     /**

@@ -38,7 +38,7 @@ class CoverLetterGeneratorService
             'cover_letter_%d_%d_%s',
             $user->id,
             $job->id,
-            md5(json_encode($options))
+            $this->buildOptionsFingerprint($user, $job, $options)
         );
 
         if (!$options['force_refresh'] && Cache::has($cacheKey)) {
@@ -233,6 +233,27 @@ PROMPT;
         $company = $job['company'] ?? 'Your Team';
 
         return sprintf('%s Application – %s', $title, $company);
+    }
+
+    /**
+     * E9: Build a cache fingerprint that incorporates the request options *and*
+     * the content-version of the user and job. This guarantees a freshly
+     * edited profile or an updated job posting busts the cached cover letter
+     * instead of serving a stale one for up to the cache TTL.
+     */
+    protected function buildOptionsFingerprint(User $user, DiscoveredJob $job, array $options): string
+    {
+        $encodedOptions = json_encode($options);
+
+        if ($encodedOptions === false) {
+            $encodedOptions = serialize($options);
+        }
+
+        $userVersion = optional($user->updated_at)->timestamp ?? 0;
+        $profileVersion = optional($user->profile?->updated_at)->timestamp ?? 0;
+        $jobVersion = optional($job->updated_at)->timestamp ?? 0;
+
+        return md5($encodedOptions . '|' . $userVersion . '|' . $profileVersion . '|' . $jobVersion);
     }
 
     protected function buildUserContext(User $user): array

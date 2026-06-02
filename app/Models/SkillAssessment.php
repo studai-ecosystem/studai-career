@@ -19,13 +19,16 @@ class SkillAssessment extends Model
         'proficiency_awarded', 'detailed_results', 'strengths', 'weaknesses',
         'recommendations', 'started_at', 'submitted_at', 'expires_at',
         'is_shareable', 'certificate_url', 'certificate_hash', 'status',
+        'requires_human_review', 'reviewed_at', 'reviewed_by',
     ];
 
     protected $casts = [
         'questions' => 'array', 'answers' => 'array', 'detailed_results' => 'array',
         'strengths' => 'array', 'weaknesses' => 'array', 'recommendations' => 'array',
         'passed' => 'boolean', 'is_shareable' => 'boolean',
+        'requires_human_review' => 'boolean',
         'started_at' => 'datetime', 'submitted_at' => 'datetime', 'expires_at' => 'datetime',
+        'reviewed_at' => 'datetime',
     ];
 
     public function user(): BelongsTo { return $this->belongsTo(User::class); }

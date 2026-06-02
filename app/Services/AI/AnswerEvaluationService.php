@@ -36,21 +36,21 @@ class AnswerEvaluationService
         try {
             $startTime = microtime(true);
 
-            // Perform all evaluations in parallel-like structure
+            // B7: A single consolidated AI call returns content, STAR, clarity,
+            // confidence and narrative feedback together. Filler-word detection
+            // stays local (regex) and the confidence score is blended with the
+            // rule-based heuristic below — no extra network round-trips.
+            $ai = $this->evaluateComprehensively($response->response_text, $question);
+
             $evaluations = [
-                'content' => $this->evaluateContent($response->response_text, $question),
-                'star' => $this->analyzeSTAR($response->response_text),
-                'clarity' => $this->evaluateClarity($response->response_text),
-                'confidence' => $this->evaluateConfidence($response->response_text),
+                'content' => $ai['content'],
+                'star' => $ai['star'],
+                'clarity' => $ai['clarity'],
+                'confidence' => $this->blendConfidence($response->response_text, $ai['confidence']),
                 'filler_words' => $this->detectFillerWords($response->response_text),
             ];
 
-            // Generate comprehensive feedback
-            $feedback = $this->generateComprehensiveFeedback(
-                $response->response_text,
-                $question,
-                $evaluations
-            );
+            $feedback = $ai['feedback'];
 
             $processingTime = (microtime(true) - $startTime) * 1000;
 
@@ -110,6 +110,136 @@ class AnswerEvaluationService
 
             return $this->getFallbackEvaluation();
         }
+    }
+
+    /**
+     * B7: Consolidated single-call evaluation.
+     *
+     * Replaces five separate AI round-trips (content, STAR, clarity,
+     * confidence, comprehensive feedback) with one structured JSON request.
+     * Returns the same nested shape the rest of the pipeline already expects:
+     *   ['content' => [...], 'star' => ['analysis' => [...], 'score' => n],
+     *    'clarity' => [...], 'confidence' => [...], 'feedback' => [...]]
+     */
+    protected function evaluateComprehensively(string $answerText, InterviewQuestion $question): array
+    {
+        $keyPoints = $question->key_points_to_cover ?? [];
+        $keyPointsStr = ! empty($keyPoints) ? implode(', ', $keyPoints) : 'general relevance and completeness';
+        $questionText = $question->question_text;
+
+        try {
+            $prompt = <<<EOT
+Evaluate this interview answer across five dimensions in a single pass.
+
+Question: {$questionText}
+Answer: {$answerText}
+Key points to assess: {$keyPointsStr}
+
+Return ONLY a JSON object with exactly this structure:
+{
+    "content": {
+        "score": 0-100,
+        "points_covered": ["point1"],
+        "missing_elements": ["element1"],
+        "relevance": "high|medium|low",
+        "depth": "deep|moderate|shallow",
+        "reasoning": "Brief explanation"
+    },
+    "star": {
+        "situation": {"present": true, "text": "or null", "quality": "poor|fair|good|excellent"},
+        "task": {"present": true, "text": "or null", "quality": "poor|fair|good|excellent"},
+        "action": {"present": true, "text": "or null", "quality": "poor|fair|good|excellent"},
+        "result": {"present": true, "text": "or null", "quality": "poor|fair|good|excellent"},
+        "score": 0-100,
+        "completeness": "complete|partial|missing"
+    },
+    "clarity": {
+        "score": 0-100,
+        "grammar_quality": "excellent|good|fair|poor",
+        "organization": "well_structured|somewhat_structured|unstructured",
+        "specificity": "very_specific|somewhat_specific|vague",
+        "conciseness": "concise|balanced|verbose",
+        "issues": ["issue1"]
+    },
+    "confidence": {
+        "score": 0-100,
+        "level": "very_confident|confident|moderate|hesitant|uncertain",
+        "indicators": ["indicator1"]
+    },
+    "feedback": {
+        "overall": "2-3 sentence assessment",
+        "strengths": ["s1", "s2", "s3"],
+        "weaknesses": ["w1", "w2", "w3"],
+        "improvements": ["i1", "i2", "i3", "i4", "i5"]
+    }
+}
+EOT;
+
+            $rawContent = app(\App\Services\AI\AIService::class)->callWithMessages([
+                ['role' => 'system', 'content' => 'You are an expert interview evaluator. Assess content, STAR structure, clarity, confidence and provide coaching feedback. Respond with valid JSON only.'],
+                ['role' => 'user', 'content' => $prompt],
+            ], ['temperature' => 0.3, 'max_tokens' => 1600, 'skip_cache' => true]);
+
+            $decoded = json_decode($rawContent, true);
+            if (! is_array($decoded)) {
+                throw new \RuntimeException('Consolidated evaluation returned non-JSON payload.');
+            }
+
+            $starAnalysis = is_array($decoded['star'] ?? null) ? $decoded['star'] : $this->getDefaultSTARAnalysis();
+
+            return [
+                'content' => is_array($decoded['content'] ?? null) ? $decoded['content'] : $this->getDefaultContentEvaluation(),
+                'star' => [
+                    'analysis' => $starAnalysis,
+                    'score' => $starAnalysis['score'] ?? 50,
+                ],
+                'clarity' => is_array($decoded['clarity'] ?? null) ? $decoded['clarity'] : ['score' => 70],
+                'confidence' => is_array($decoded['confidence'] ?? null) ? $decoded['confidence'] : ['score' => 70, 'level' => 'moderate', 'indicators' => []],
+                'feedback' => is_array($decoded['feedback'] ?? null) ? $decoded['feedback'] : $this->getDefaultFeedback(),
+            ];
+        } catch (\Exception $e) {
+            Log::error('Consolidated answer evaluation failed', ['error' => $e->getMessage()]);
+
+            return [
+                'content' => $this->getDefaultContentEvaluation(),
+                'star' => ['analysis' => $this->getDefaultSTARAnalysis(), 'score' => 50],
+                'clarity' => ['score' => 70],
+                'confidence' => ['score' => 70, 'level' => 'moderate', 'indicators' => []],
+                'feedback' => $this->getDefaultFeedback(),
+            ];
+        }
+    }
+
+    /**
+     * Blend the AI confidence score with a local lexical heuristic so a single
+     * outlier model response cannot dominate the confidence dimension.
+     *
+     * @param array<string, mixed> $aiConfidence
+     * @return array<string, mixed>
+     */
+    protected function blendConfidence(string $answerText, array $aiConfidence): array
+    {
+        $text = strtolower($answerText);
+        $positive = ['definitely', 'clearly', 'successfully', 'achieved', 'led', 'implemented', 'ensured'];
+        $negative = ['maybe', 'probably', 'i think', 'i guess', 'sort of', 'kind of', 'might'];
+
+        $positiveCount = 0;
+        $negativeCount = 0;
+        foreach ($positive as $indicator) {
+            $positiveCount += substr_count($text, $indicator);
+        }
+        foreach ($negative as $indicator) {
+            $negativeCount += substr_count($text, $indicator);
+        }
+
+        $heuristicScore = max(0, min(100, 70 + ($positiveCount * 3) - ($negativeCount * 5)));
+        $aiScore = (float) ($aiConfidence['score'] ?? $heuristicScore);
+
+        return [
+            'score' => round(($aiScore * 0.7) + ($heuristicScore * 0.3), 2),
+            'level' => $aiConfidence['level'] ?? 'moderate',
+            'indicators' => $aiConfidence['indicators'] ?? [],
+        ];
     }
 
     /**

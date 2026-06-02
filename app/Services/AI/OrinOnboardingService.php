@@ -38,9 +38,15 @@ Rules:
 - Ask only 1-2 topics per message. Never dump all questions at once.
 - If the employer gives a vague answer, probe with a follow-up.
 - Be warm, professional, and encouraging.
-- When you have collected enough (at least 7 of the 11 topics), conclude by saying: "Thank you! I have everything I need to build your Intelligence Profile. Type DONE to complete setup."
+- When you have collected enough (at least 7 of the 11 topics), conclude warmly by telling the employer they can now click the "Finish Setup" button below to save their profile. Then, on its own line at the very end of that message, append the exact token [[READY]].
+- Only ever output the [[READY]] token once you genuinely have at least 7 topics.
 - Never ask for information already provided in this conversation.
 PROMPT;
+
+    /**
+     * Sentinel token Orin appends when the profile has enough data to finalize.
+     */
+    public const READY_TOKEN = '[[READY]]';
 
     /**
      * Drive the next turn in the onboarding conversation.
@@ -52,7 +58,10 @@ PROMPT;
             ['role' => 'system', 'content' => "Company account details: Name={$company->name}, Email domain registered."],
         ];
 
-        foreach ($history as $msg) {
+        // F7: compact long dialogues to cap token growth / cost.
+        $windowed = $this->compactConversation($history, keepRecent: 6, triggerAfter: 6);
+
+        foreach ($windowed as $msg) {
             $messages[] = ['role' => $msg['role'], 'content' => $msg['content']];
         }
 
@@ -85,7 +94,7 @@ PROMPT;
 
         $json = null;
         try {
-            $raw = $this->callAzureOpenAI($extractionMessages, ['temperature' => 0.1, 'max_completion_tokens' => 1000]);
+            $raw = $this->callAzureOpenAI($extractionMessages, ['temperature' => 0.1, 'max_completion_tokens' => 1000, 'json_mode' => true]);
             $raw = preg_replace('/```json|```/', '', $raw);
             $json = json_decode(trim($raw), true);
         } catch (\Exception $e) {

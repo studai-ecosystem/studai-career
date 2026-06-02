@@ -103,14 +103,20 @@
             {{-- Submit button --}}
             <div class="mt-4 flex items-center justify-between">
                 <p class="text-xs text-gray-400">All answers are final once submitted.</p>
-                <button id="submit-answer-btn"
-                    class="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors flex items-center gap-2">
-                    <span id="submit-btn-text">Next Question →</span>
-                    <svg id="submit-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                    </svg>
-                </button>
+                <div class="flex items-center gap-3">
+                    <button id="finish-eval-btn"
+                        class="px-5 py-2.5 border border-gray-300 hover:border-primary text-gray-600 hover:text-primary font-semibold rounded-xl transition-colors">
+                        Finish &amp; Submit
+                    </button>
+                    <button id="submit-answer-btn"
+                        class="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors flex items-center gap-2">
+                        <span id="submit-btn-text">Next Question →</span>
+                        <svg id="submit-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -296,7 +302,38 @@ function showComplete() {
     document.getElementById('progress-bar').style.width = '100%';
 }
 
+async function finishEvaluation() {
+    const btn = document.getElementById('finish-eval-btn');
+    btn.disabled = true;
+
+    try {
+        const resp = await fetch('{{ route("apply.evaluation.complete", $token) }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
+            body: JSON.stringify({ session_token: SESSION_TOKEN }),
+        });
+        const data = await resp.json();
+
+        if (data.is_complete) {
+            showComplete();
+            return;
+        }
+
+        if (data.error === 'incomplete') {
+            alert(data.message);
+        } else if (data.error) {
+            alert(data.error);
+        }
+    } catch (e) {
+        console.error('Finish failed', e);
+    } finally {
+        btn.disabled = false;
+    }
+}
+
 document.getElementById('submit-answer-btn').addEventListener('click', submitAnswer);
+document.getElementById('finish-eval-btn').addEventListener('click', finishEvaluation);
+
 
 // Anti-cheat: tab visibility detection
 document.addEventListener('visibilitychange', () => {

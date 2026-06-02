@@ -7,11 +7,13 @@ namespace App\Jobs;
 use App\Models\Application;
 use App\Models\BulkEmailLog;
 use App\Models\Job;
+use App\Services\Monitoring\OpsAlertService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -38,6 +40,42 @@ class ScoreAndRankCandidates implements ShouldQueue
             return;
         }
 
+        // F11: Idempotency — never re-rank a job that is already ranked/complete.
+        if (in_array($job->application_phase, ['ranked', 'complete'], true)) {
+            Log::info('ScoreAndRankCandidates: Already processed, skipping', [
+                'job_id' => $job->id,
+                'phase'  => $job->application_phase,
+            ]);
+            return;
+        }
+
+        // F11: Guard against concurrent double-dispatch with an atomic lock.
+        $lock = Cache::lock("rank_job_{$job->id}", 300);
+        if (! $lock->get()) {
+            Log::info('ScoreAndRankCandidates: Lock held by another worker, skipping', [
+                'job_id' => $job->id,
+            ]);
+            return;
+        }
+
+        try {
+            $this->rank($job);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    private function rank(Job $job): void
+    {
+        // Re-check phase inside the lock (another worker may have just finished).
+        $job->refresh();
+        if (in_array($job->application_phase, ['ranked', 'complete'], true)) {
+            Log::info('ScoreAndRankCandidates: Ranked while awaiting lock, skipping', [
+                'job_id' => $job->id,
+            ]);
+            return;
+        }
+
         // Get all completed evaluations
         $applications = Application::where('job_id', $job->id)
             ->where('evaluation_status', 'completed')
@@ -49,17 +87,56 @@ class ScoreAndRankCandidates implements ShouldQueue
             return;
         }
 
-        // Compute composite score for each application (bias-corrected)
-        $ranked = $applications->map(function (Application $app) {
-            $evalScore    = (float) ($app->evaluation_score ?? 0);
-            $skillMatch   = (float) ($app->skill_match_score ?? 0);
-            $resumeScore  = (float) ($app->resume_quality_score ?? 0);
-            $behavScore   = (float) ($app->behavioural_fit_score ?? 0);
+        // F2: Validate composite ranking inputs. Halt + alert if any required
+        // input is null — never silently default to 0 (would skew fairness).
+        $requiredInputs = config('ai.ranking.required_inputs', [
+            'evaluation_score',
+            'skill_match_score',
+            'resume_quality_score',
+        ]);
+        $missing = [];
+        foreach ($applications as $app) {
+            foreach ($requiredInputs as $field) {
+                if ($app->{$field} === null) {
+                    $missing[] = ['application_id' => $app->id, 'field' => $field];
+                }
+            }
+        }
 
-            // Anti-cheat penalty
-            $session = $app->evaluationSession;
+        if ($missing !== []) {
+            $job->update(['application_phase' => 'ranking_blocked']);
+            OpsAlertService::alert(
+                'ranking.blocked_missing_inputs',
+                "Ranking halted for job {$job->id}: required composite inputs are missing.",
+                [
+                    'job_id'        => $job->id,
+                    'missing_count' => count($missing),
+                    'missing'       => array_slice($missing, 0, 25),
+                ]
+            );
+            return;
+        }
+
+        $weights = config('ai.ranking.weights', [
+            'evaluation_score'      => 0.45,
+            'skill_match_score'     => 0.25,
+            'resume_quality_score'  => 0.15,
+            'behavioural_fit_score' => 0.15,
+        ]);
+        $applyCheatPenalty = (bool) config('ai.ranking.apply_cheat_penalty', false);
+
+        // Compute composite score for each application.
+        $ranked = $applications->map(function (Application $app) use ($weights, $applyCheatPenalty) {
+            $evalScore   = (float) ($app->evaluation_score ?? 0);
+            $skillMatch  = (float) ($app->skill_match_score ?? 0);
+            $resumeScore = (float) ($app->resume_quality_score ?? 0);
+            $behavScore  = (float) ($app->behavioural_fit_score ?? 0);
+
+            // F3: Anti-cheat is flag-for-human-review only. No automatic score
+            // penalty unless explicitly enabled via config (default: off).
             $cheatPenalty = 0.0;
-            if ($session) {
+            $session = $app->evaluationSession;
+            if ($applyCheatPenalty && $session) {
                 $cheatPenalty = min(20.0, ($session->tab_switch_count ?? 0) * 2.0);
                 if ($session->flagged_for_review) {
                     $cheatPenalty += 10.0;
@@ -68,15 +145,16 @@ class ScoreAndRankCandidates implements ShouldQueue
 
             // Weighted composite score
             $composite = (
-                ($evalScore   * 0.45) +  // Evaluation performance (heaviest weight)
-                ($skillMatch  * 0.25) +  // Skill match vs JD
-                ($resumeScore * 0.15) +  // Resume quality
-                ($behavScore  * 0.15)    // Culture fit
+                ($evalScore   * $weights['evaluation_score']) +
+                ($skillMatch  * $weights['skill_match_score']) +
+                ($resumeScore * $weights['resume_quality_score']) +
+                ($behavScore  * $weights['behavioural_fit_score'])
             ) - $cheatPenalty;
 
             return [
                 'application'     => $app,
                 'composite_score' => max(0.0, round($composite, 2)),
+                'flagged'         => (bool) ($session->flagged_for_review ?? false),
             ];
         })->sortByDesc('composite_score')->values();
 
@@ -86,6 +164,19 @@ class ScoreAndRankCandidates implements ShouldQueue
                 'final_rank_score' => $item['composite_score'],
                 'rank_position'    => $index + 1,
             ]);
+        }
+
+        // F3: Surface flagged sessions to recruiters for human review.
+        $flaggedIds = $ranked->where('flagged', true)
+            ->map(fn ($item) => $item['application']->id)
+            ->values()
+            ->all();
+        if ($flaggedIds !== []) {
+            OpsAlertService::alert(
+                'ranking.flagged_for_review',
+                "Job {$job->id}: " . count($flaggedIds) . ' candidate(s) flagged for human review (anti-cheat).',
+                ['job_id' => $job->id, 'application_ids' => $flaggedIds]
+            );
         }
 
         // Update job phase

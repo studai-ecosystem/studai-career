@@ -17,6 +17,9 @@ class LearningResource extends Model
         'title',
         'description',
         'url',
+        'link_status',
+        'link_http_status',
+        'link_checked_at',
         'resource_type',
         'provider',
         'provider_name',
@@ -48,6 +51,8 @@ class LearningResource extends Model
         'has_certificate' => 'boolean',
         'is_hands_on' => 'boolean',
         'last_updated' => 'date',
+        'link_http_status' => 'integer',
+        'link_checked_at' => 'datetime',
     ];
 
     /**

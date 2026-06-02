@@ -46,6 +46,16 @@ class FollowUpJob implements ShouldQueue
             return;
         }
 
+        // A5: Sending follow-ups on the user's behalf is a distinct autonomous
+        // action and requires explicit per-category consent.
+        if (! (bool) ($this->config->consent_follow_up ?? false)) {
+            Log::warning('Agent follow-up consent not granted, skipping follow-ups', [
+                'config_id' => $this->config->id,
+                'user_id' => $this->config->user_id,
+            ]);
+            return;
+        }
+
         $followUpDays = $this->config->follow_up_days ?? 7;
         $followUpDate = now()->subDays($followUpDays);
 

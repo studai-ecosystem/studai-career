@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Log;
 
 class CandidateScreeningService
 {
+    /** F10: prompt revision recorded with every XAI audit entry. */
+    private const PROMPT_VERSION = 'candidate_screening@v1';
+
     protected AIService $aiService;
     
     public function __construct(AIService $aiService)
@@ -62,6 +65,7 @@ class CandidateScreeningService
                     'score'          => $score,
                     'recommendation' => $xaiRec,
                     'confidence'     => 0.75,
+                    'prompt_version' => self::PROMPT_VERSION,
                     'factors'        => $factors,
                     'explanation'    => $xaiService->generateNaturalLanguageExplanation(
                         $score,
@@ -185,6 +189,7 @@ Format as JSON: {\"score\": 0-100, \"alignment_points\": [], \"mismatches\": [],
             $response = $this->aiService->generateText($prompt, null, [
                 'model' => config('ai.azure.models.chat'),
                 'temperature' => 0.3,
+                'json_mode' => true,
             ]);
             $analysis = json_decode($response, true);
             

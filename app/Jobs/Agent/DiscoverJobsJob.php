@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Queue;
 
 /**
  * Discover Jobs Job
@@ -67,6 +68,17 @@ class DiscoverJobsJob implements ShouldQueue
 
                 // Queue analysis and submission jobs if matches found
                 if ($jobMatches->isNotEmpty()) {
+                    // D14: Respect the queue-depth cap so a slow worker or a large
+                    // number of active agents can never flood the queue. Skipped
+                    // configs are retried on the next scheduled discovery cycle.
+                    if ($this->isQueueOverCapacity()) {
+                        Log::warning('Agent queue depth cap reached, deferring submission dispatch', [
+                            'config_id' => $config->id,
+                            'max_queue_depth' => (int) config('agent.max_queue_depth', 250),
+                        ]);
+                        continue;
+                    }
+
                     SubmitApplicationsJob::dispatch($config)->delay(now()->addMinutes(5));
                 }
 
@@ -81,6 +93,32 @@ class DiscoverJobsJob implements ShouldQueue
         }
 
         Log::info('Job discovery completed for all agents');
+    }
+
+    /**
+     * D14: Determine whether the agent queue has reached its configured depth
+     * cap. When the underlying driver does not support size introspection we
+     * fail open (return false) so discovery is never silently blocked.
+     */
+    protected function isQueueOverCapacity(): bool
+    {
+        $cap = (int) config('agent.max_queue_depth', 250);
+
+        if ($cap <= 0) {
+            return false;
+        }
+
+        try {
+            $depth = Queue::size((string) config('agent.queue', 'default'));
+        } catch (\Throwable $e) {
+            Log::debug('Unable to read agent queue depth, allowing dispatch', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
+
+        return $depth >= $cap;
     }
 
     /**

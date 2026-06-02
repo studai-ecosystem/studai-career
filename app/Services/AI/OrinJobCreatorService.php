@@ -40,7 +40,7 @@ PROMPT;
             ['role' => 'system', 'content' => "You need to collect: salary range, work mode, experience level, must-have vs nice-to-have skills, application open/close dates, evaluation start date, finalisation date, target hire count, portfolio/GitHub requirements, and any mandatory screening questions. Ask naturally one or two topics at a time."],
         ];
 
-        foreach ($conversationHistory as $msg) {
+        foreach ($this->compactConversation($conversationHistory, keepRecent: 6, triggerAfter: 6) as $msg) {
             $messages[] = ['role' => $msg['role'], 'content' => $msg['content']];
         }
 
@@ -92,7 +92,7 @@ PROMPT;
             $response = $this->callAzureOpenAI([
                 ['role' => 'system', 'content' => 'You are a JSON extractor. Return only valid JSON, no markdown.'],
                 ['role' => 'user', 'content' => $extractionPrompt],
-            ], ['temperature' => 0.1, 'max_completion_tokens' => 1000]);
+            ], ['temperature' => 0.1, 'max_completion_tokens' => 1000, 'json_mode' => true]);
 
             $json = trim(preg_replace('/^```json\s*|\s*```$/m', '', $response));
             return json_decode($json, true) ?? [];
@@ -162,7 +162,7 @@ You are Orin™. Generate a dynamic application form for a {$roleName} role.
 Required skills: {$skills}
 Work mode: {$locationTypeValue}
 
-Return a JSON array of form fields. Each field has:
+Return a JSON object with a single key "fields" whose value is an array of form fields. Each field has:
 - name (snake_case string)
 - label (human readable)
 - type (text|textarea|select|checkbox|url|file)
@@ -171,17 +171,20 @@ Return a JSON array of form fields. Each field has:
 - placeholder (string or null)
 
 Include: standard fields (name, email, phone, LinkedIn) + 3-5 role-specific fields.
-Return ONLY valid JSON array, no markdown.
+Return ONLY valid JSON, no markdown.
 PROMPT;
 
         try {
             $response = $this->callAzureOpenAI([
                 ['role' => 'system', 'content' => 'Return only valid JSON, no markdown.'],
                 ['role' => 'user', 'content' => $prompt],
-            ], ['temperature' => 0.3, 'max_completion_tokens' => 1000]);
+            ], ['temperature' => 0.3, 'max_completion_tokens' => 1000, 'json_mode' => true]);
 
             $json = trim(preg_replace('/^```json\s*|\s*```$/m', '', $response));
-            return json_decode($json, true) ?? $this->defaultFormFields();
+            $decoded = json_decode($json, true);
+            $fields = $decoded['fields'] ?? $decoded ?? null;
+
+            return is_array($fields) && $fields !== [] ? $fields : $this->defaultFormFields();
         } catch (\Exception $e) {
             Log::error('OrinJobCreator::generateApplicationFormFields failed', ['error' => $e->getMessage()]);
             return $this->defaultFormFields();

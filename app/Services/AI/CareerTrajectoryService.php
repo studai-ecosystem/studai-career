@@ -17,6 +17,15 @@ class CareerTrajectoryService
     protected const MODEL = 'gpt-5.4'; // Azure OpenAI deployment // Azure OpenAI GPT-5.1
     protected const CACHE_TTL = 86400; // 24 hours
     protected const MAX_PATHS = 5;
+
+    /**
+     * A7: Standardized disclaimer attached to every predicted career path.
+     *
+     * `success_probability` is an AI-generated heuristic estimate, NOT a
+     * statistically validated prediction. EU AI Act transparency obligations
+     * require this to be surfaced to the user wherever the figure is shown.
+     */
+    public const SUCCESS_PROBABILITY_DISCLAIMER = 'This is an AI-generated estimate for guidance only, not a statistical prediction or guarantee of outcome. Use it as one input among many when planning your career.';
     
     /**
      * Generate complete career trajectory prediction for user
@@ -99,7 +108,7 @@ class CareerTrajectoryService
                 'milestones' => $prediction['milestones'],
                 'intermediate_roles' => $prediction['intermediate_roles'] ?? null,
                 'salary_projections' => $prediction['salary_projections'],
-                'ai_insights' => $prediction['insights'],
+                'ai_insights' => $this->attachProbabilityDisclaimer($prediction['insights'] ?? []),
                 'risk_factors' => $prediction['risks'],
                 'market_trends' => $prediction['trends'],
                 'confidence_score' => $prediction['confidence'],
@@ -117,19 +126,43 @@ class CareerTrajectoryService
         
         return $paths;
     }
-    
+
+    /**
+     * A7: Ensure the standardized estimate disclaimer travels with every
+     * predicted path's insights so any consumer (UI, API, export) surfaces it
+     * alongside the success probability.
+     *
+     * @param  mixed  $insights
+     * @return array<int|string, mixed>
+     */
+    protected function attachProbabilityDisclaimer($insights): array
+    {
+        $normalized = [];
+
+        if (is_array($insights)) {
+            $normalized = $insights;
+        } elseif (is_string($insights) && $insights !== '') {
+            $normalized = [$insights];
+        }
+
+        $normalized['disclaimer'] = self::SUCCESS_PROBABILITY_DISCLAIMER;
+
+        return $normalized;
+    }
+
     /**
      * Get AI predictions for career paths
      */
     protected function getAIPredictions(array $userData, array $templatePaths): array
     {
         $prompt = $this->buildTrajectoryPrompt($userData, $templatePaths);
+
         
         try {
             $content = app(\App\Services\AI\AIService::class)->callWithMessages([
                 [
                     'role' => 'system',
-                    'content' => 'You are an expert career counselor with access to millions of career progression data points. Analyze career trajectories and provide accurate predictions based on real market data, skill requirements, and success probabilities.'
+                    'content' => 'You are an expert career counselor with access to millions of career progression data points. Analyze career trajectories and provide guidance-oriented estimates based on real market data, skill requirements, and observed success rates. Frame every success probability as an estimate for guidance, never as a guarantee or statistically validated prediction.'
                 ],
                 [
                     'role' => 'user',

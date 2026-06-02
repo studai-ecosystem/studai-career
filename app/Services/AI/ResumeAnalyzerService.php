@@ -232,6 +232,17 @@ PROMPT;
     /**
      * Extract skills from resume with categorization
      */
+    /**
+     * Detailed skill extraction from raw resume text.
+     *
+     * B9: Skill extraction is a factual, deterministic task. We pin the
+     * temperature low (0.3) to match the canonical lightweight extractor in
+     * {@see \App\Services\AI\ResumeAIService::extractSkills()} so the two
+     * extraction paths cannot diverge in randomness. Use this method when you
+     * have raw resume text and need the rich schema (frameworks, languages,
+     * certifications, trending skills, gaps); use ResumeAIService when you
+     * already have a structured Resume model and only need technical/soft/tools.
+     */
     public function extractSkills(string $resumeText): array
     {
         $systemPrompt = "You are a skills extraction and categorization expert.";
@@ -259,7 +270,7 @@ Resume:
 $resumeText
 PROMPT;
 
-        return $this->callAIForJSON($prompt, $systemPrompt);
+        return $this->callAIForJSON($prompt, $systemPrompt, ['temperature' => 0.3]);
     }
 
     /**

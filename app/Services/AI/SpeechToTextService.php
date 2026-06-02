@@ -309,21 +309,85 @@ class SpeechToTextService
     }
 
     /**
-     * Split audio into chunks using ffmpeg
+     * Split audio into chunks using ffmpeg.
      *
-     * @param string $filePath Path to audio file
-     * @return array Array of chunk file paths
+     * D15: Previously this was a placeholder that silently returned the whole
+     * file as a single "chunk", which would then fail at the Whisper API for
+     * anything over the 25MB limit. We now perform real ffmpeg segmentation and,
+     * if ffmpeg is unavailable, fail loudly instead of pretending to chunk.
+     *
+     * @param string $filePath Path to audio file (storage-relative)
+     * @return array Array of chunk file paths (storage-relative)
+     * @throws \RuntimeException If ffmpeg is unavailable or segmentation fails
      */
     protected function splitAudioIntoChunks(string $filePath): array
     {
-        // This is a placeholder - actual implementation would use ffmpeg
-        // For now, return single chunk
-        Log::warning("SpeechToText: Audio chunking not fully implemented, processing as single file");
-        
-        // In production, use something like:
-        // exec("ffmpeg -i {$filePath} -f segment -segment_time {$this->chunkDuration} output%03d.mp3");
-        
-        return [$filePath];
+        if (!function_exists('exec')) {
+            throw new \RuntimeException(
+                'Cannot transcribe large audio: PHP exec() is disabled, so ffmpeg chunking is unavailable.'
+            );
+        }
+
+        $ffmpegBinary = config('services.ffmpeg.path', 'ffmpeg');
+
+        // Verify ffmpeg is actually callable before relying on it.
+        $versionOutput = [];
+        $versionStatus = 1;
+        exec(escapeshellarg($ffmpegBinary) . ' -version 2>&1', $versionOutput, $versionStatus);
+
+        if ($versionStatus !== 0) {
+            throw new \RuntimeException(
+                'Cannot transcribe large audio: ffmpeg is not installed or not on PATH. '
+                . 'Install ffmpeg or set services.ffmpeg.path to enable chunked transcription.'
+            );
+        }
+
+        $absoluteInput = Storage::path($filePath);
+        $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION)) ?: 'mp3';
+
+        $relativeDir = 'speech-chunks/' . uniqid('chunk_', true);
+        Storage::makeDirectory($relativeDir);
+        $absoluteDir = Storage::path($relativeDir);
+        $outputPattern = $absoluteDir . DIRECTORY_SEPARATOR . 'part%03d.' . $extension;
+
+        $command = sprintf(
+            '%s -i %s -f segment -segment_time %d -c copy %s 2>&1',
+            escapeshellarg($ffmpegBinary),
+            escapeshellarg($absoluteInput),
+            $this->chunkDuration,
+            escapeshellarg($outputPattern)
+        );
+
+        $output = [];
+        $status = 1;
+        exec($command, $output, $status);
+
+        if ($status !== 0) {
+            Storage::deleteDirectory($relativeDir);
+
+            throw new \RuntimeException(
+                'ffmpeg failed to segment audio file: ' . implode(' ', array_slice($output, -3))
+            );
+        }
+
+        $chunkFiles = collect(Storage::files($relativeDir))
+            ->filter(fn (string $path): bool => str_starts_with(basename($path), 'part'))
+            ->sort()
+            ->values()
+            ->all();
+
+        if (empty($chunkFiles)) {
+            Storage::deleteDirectory($relativeDir);
+
+            throw new \RuntimeException('ffmpeg produced no audio chunks for transcription.');
+        }
+
+        Log::info('SpeechToText: Audio split into chunks via ffmpeg', [
+            'chunks' => count($chunkFiles),
+            'segment_seconds' => $this->chunkDuration,
+        ]);
+
+        return $chunkFiles;
     }
 
     /**

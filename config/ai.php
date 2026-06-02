@@ -366,4 +366,121 @@ return [
 
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Candidate Ranking (ScoreAndRankCandidates)
+    |--------------------------------------------------------------------------
+    |
+    | Composite ranking inputs and weights. `required_inputs` lists the
+    | Application columns that MUST be non-null before ranking runs. If any
+    | are missing, ranking halts and an ops alert is raised instead of
+    | silently defaulting the value to 0 (which would skew fairness).
+    |
+    */
+
+    'ranking' => [
+        'required_inputs' => [
+            'evaluation_score',
+            'skill_match_score',
+            'resume_quality_score',
+        ],
+        'weights' => [
+            'evaluation_score'      => 0.45,
+            'skill_match_score'     => 0.25,
+            'resume_quality_score'  => 0.15,
+            'behavioural_fit_score' => 0.15,
+        ],
+        // Anti-cheat: flag-for-human-review only. No automatic score penalty.
+        'apply_cheat_penalty' => env('AI_RANKING_CHEAT_PENALTY', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | S.C.O.U.T. Shortlisting Thresholds
+    |--------------------------------------------------------------------------
+    |
+    | Pass thresholds for each gated round of AutomatedShortlistingService.
+    | Treated as calibratable placeholders — tune against outcome data
+    | (target: 200 hires, logistic regression) rather than hardcoding.
+    |
+    */
+
+    'scout' => [
+        'thresholds' => [
+            'basic_qualification' => env('SCOUT_THRESHOLD_R1', 60),
+            'skills_competency'   => env('SCOUT_THRESHOLD_R2', 50),
+            'cultural_fit'        => env('SCOUT_THRESHOLD_R3', 60),
+            'potential_growth'    => env('SCOUT_THRESHOLD_R4', 45),
+        ],
+        'round_weights' => [
+            'basic_qualification' => 0.15,
+            'skills_competency'   => 0.35,
+            'cultural_fit'        => 0.30,
+            'potential_growth'    => 0.20,
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Evaluation Retake Policy (F13)
+    |--------------------------------------------------------------------------
+    |
+    | Governs what happens when a candidate starts a second (or later) Orin™
+    | evaluation session for the same application.
+    |
+    |   max_attempts : total number of evaluation sessions permitted per
+    |                  application (1 = no retakes by default).
+    |   policy       : 'new_bank'  -> generate a fresh question bank on retake
+    |                                 (preserves assessment integrity; costs
+    |                                 more, bounded by the per-job ceiling).
+    |                  'same_bank' -> reuse the previous attempt's questions.
+    |
+    */
+
+    'evaluation' => [
+        'retake' => [
+            'max_attempts' => env('AI_EVAL_MAX_ATTEMPTS', 1),
+            'policy'       => env('AI_EVAL_RETAKE_POLICY', 'new_bank'),
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Per-Hire Unit Economics / Cost Ceiling
+    |--------------------------------------------------------------------------
+    |
+    | Soft ceiling for AI spend per job during Stage 4 evaluation generation.
+    | When exceeded, the pipeline logs/alerts and prefers cache reuse.
+    |
+    */
+
+    'cost' => [
+        'per_job_ceiling_usd' => env('AI_PER_JOB_COST_CEILING', 50.0),
+        'alert_at_pct'        => env('AI_COST_ALERT_PCT', 80),
+        // I3: estimated spend for generating one candidate question bank
+        // (Stage 4). Used by AICostMeter to enforce the per-job soft ceiling.
+        'per_question_bank_usd' => env('AI_QUESTION_BANK_COST', 0.45),
+        // E11: per-session soft budget (USD) for mock interview AI usage and the
+        // estimated cost of a single answer evaluation. Enforced by AICostMeter.
+        'per_mock_session_ceiling_usd' => env('AI_MOCK_SESSION_CEILING', 1.50),
+        'per_answer_eval_usd' => env('AI_ANSWER_EVAL_COST', 0.05),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ops Alerting
+    |--------------------------------------------------------------------------
+    |
+    | Channel + webhook for operational alerts (AI fallback triggered,
+    | ranking blocked, cost ceiling breached). Logs always; Slack optional.
+    |
+    */
+
+    'ops_alerts' => [
+        'enabled'      => env('AI_OPS_ALERTS_ENABLED', true),
+        'log_channel'  => env('AI_OPS_ALERTS_CHANNEL', 'stack'),
+        'slack_webhook' => env('AI_OPS_ALERTS_SLACK_WEBHOOK'),
+    ],
+
 ];
+

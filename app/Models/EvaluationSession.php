@@ -17,6 +17,7 @@ class EvaluationSession extends Model
         'consecutive_incorrect', 'tab_switch_count', 'focus_loss_count',
         'time_anomalies', 'flagged_for_review', 'started_at', 'completed_at',
         'expires_at', 'total_time_seconds', 'raw_score', 'weighted_score', 'section_scores',
+        'monitoring_consent_at', 'monitoring_consent_ip', 'attempt_number',
     ];
 
     protected $casts = [
@@ -27,6 +28,7 @@ class EvaluationSession extends Model
         'started_at'            => 'datetime',
         'completed_at'          => 'datetime',
         'expires_at'            => 'datetime',
+        'monitoring_consent_at' => 'datetime',
         'raw_score'             => 'decimal:2',
         'weighted_score'        => 'decimal:2',
     ];

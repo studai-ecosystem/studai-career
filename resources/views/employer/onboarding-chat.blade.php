@@ -71,6 +71,15 @@
         </div>
     </div>
 
+    {{-- F5: completion button, revealed when Orin signals the profile is ready --}}
+    <div id="finalize-bar" class="hidden mt-4 bg-green-50 border border-green-100 rounded-xl p-4 text-center">
+        <p class="text-sm text-green-700 mb-3">Orin™ has gathered enough to build your Intelligence Profile.</p>
+        <button id="finalize-btn"
+            class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl text-sm transition-colors">
+            Finish Setup &amp; Save Profile
+        </button>
+    </div>
+
     {{-- Skip link --}}
     <div class="text-center mt-4">
         <button id="skip-btn" class="text-sm text-gray-400 hover:text-gray-600 underline">
@@ -131,6 +140,11 @@ async function sendMessage(text) {
         addMessage('assistant', data.message);
         conversationHistory.push({ role: 'assistant', content: data.message });
 
+        // F5: reveal the completion button when Orin signals readiness
+        if (data.can_finalize) {
+            document.getElementById('finalize-bar').classList.remove('hidden');
+        }
+
         if (data.complete) {
             complete = true;
             document.getElementById('chat-input').disabled = true;
@@ -154,6 +168,31 @@ document.getElementById('chat-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         sendMessage(document.getElementById('chat-input').value.trim());
+    }
+});
+
+// F5 finalize button handler
+document.getElementById('finalize-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('finalize-btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving your profile…';
+    try {
+        const resp = await fetch('{{ route("employer.orin-onboarding.finalize") }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
+            body: JSON.stringify({ history: conversationHistory }),
+        });
+        const data = await resp.json();
+        addMessage('assistant', data.message);
+        complete = true;
+        document.getElementById('chat-input').disabled = true;
+        document.getElementById('send-btn').disabled = true;
+        document.getElementById('finalize-bar').classList.add('hidden');
+        setTimeout(() => { window.location.href = data.redirect || '{{ route("employer.home") }}'; }, 2500);
+    } catch (e) {
+        btn.disabled = false;
+        btn.textContent = 'Finish Setup & Save Profile';
+        addMessage('assistant', "I couldn't save just now — please try again.");
     }
 });
 

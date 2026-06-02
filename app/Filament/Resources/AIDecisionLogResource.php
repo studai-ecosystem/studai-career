@@ -44,6 +44,24 @@ class AIDecisionLogResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'decision_type';
 
+    /**
+     * F16: AI decision logs (per-round reasoning, raw responses, bias
+     * indicators) are platform-internal audit data. Restrict this resource to
+     * platform staff only — employers must never reach it. Authorization is
+     * also enforced at the model layer via AIDecisionLogPolicy.
+     */
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user !== null && $user->isAdmin();
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
+    }
+
     public static function getNavigationBadge(): ?string
     {
         try {

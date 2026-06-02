@@ -16,6 +16,15 @@ class CorporateDNADecoderService extends AIService
     private const CACHE_TTL = 86400; // 24 hours
     private const MODEL = 'gpt-5.4'; // Azure OpenAI deployment // Azure OpenAI GPT-5.1
 
+    /**
+     * F8: Invalidate the cached DNA analysis for a company. Call whenever the
+     * underlying CompanyIntelligenceProfile / organizational data changes.
+     */
+    public static function forgetCache(int $companyId): void
+    {
+        Cache::forget("company_dna_analysis_{$companyId}");
+    }
+
     public function analyzeCompanyDNA(int $companyId): array
     {
         $cacheKey = "company_dna_analysis_{$companyId}";
@@ -27,10 +36,11 @@ class CorporateDNADecoderService extends AIService
             $organizationalData = $this->gatherOrganizationalData($company);
             
             try {
-                // Analyze with GPT-4
-                $dnaAnalysis = $this->performDNAAnalysis($organizationalData);
-                $culturalDNA = $this->extractCulturalDNA($organizationalData);
-                $successTraits = $this->identifySuccessTraits($organizationalData);
+                // Single unified JSON-mode call (replaces 3 sequential calls).
+                $unified = $this->performUnifiedDNAAnalysis($organizationalData);
+                $dnaAnalysis   = $unified['dna'];
+                $culturalDNA   = $unified['cultural_dna'];
+                $successTraits = $unified['success_traits'];
                 
                 // Calculate scores
                 $completionScore = $this->calculateCompletionScore($organizationalData);
@@ -89,26 +99,58 @@ class CorporateDNADecoderService extends AIService
         ];
     }
 
-    private function performDNAAnalysis(array $orgData): array
+    /**
+     * Unified DNA analysis: one JSON-mode call returns work-style insights,
+     * cultural DNA traits, and success traits together. Replaces the prior
+     * three sequential calls (performDNAAnalysis + extractCulturalDNA +
+     * identifySuccessTraits) for ~⅔ cost and latency reduction.
+     *
+     * @return array{dna: array, cultural_dna: array, success_traits: array}
+     */
+    private function performUnifiedDNAAnalysis(array $orgData): array
     {
-        $prompt = $this->buildDNAAnalysisPrompt($orgData);
-        $system = 'You are an expert organizational psychologist and HR analytics specialist. Analyze company data to decode organizational DNA, cultural patterns, and success factors. Return only valid JSON.';
+        $hasEnoughPerformers = ($orgData['top_performer_count'] ?? 0) >= 3;
+        $prompt = $this->buildUnifiedDNAPrompt($orgData, $hasEnoughPerformers);
+        $system = 'You are an expert organizational psychologist and HR analytics specialist. Decode organizational DNA, cultural patterns, and success factors. Return only a single valid JSON object.';
 
-        $raw = $this->generateText($prompt, $system, ['max_tokens' => 2000, 'temperature' => 0.3]);
+        $raw = $this->generateText($prompt, $system, [
+            'max_tokens'  => 3000,
+            'temperature' => 0.3,
+            'json_mode'   => true,
+        ]);
         $analysis = json_decode($raw, true) ?? [];
 
+        $successTraits = $analysis['success_traits'] ?? [];
+        if (! $hasEnoughPerformers) {
+            $successTraits = [
+                ['trait' => 'Insufficient Data', 'score' => 0, 'prevalence' => '0%'],
+            ];
+        }
+
         return [
-            'work_style_preferences' => $analysis['work_style_preferences'] ?? [],
-            'communication_patterns' => $analysis['communication_patterns'] ?? [],
-            'decision_making_style' => $analysis['decision_making_style'] ?? 'Unknown',
-            'summary' => $analysis['summary'] ?? 'Analysis completed',
+            'dna' => [
+                'work_style_preferences' => $analysis['work_style_preferences'] ?? [],
+                'communication_patterns' => $analysis['communication_patterns'] ?? [],
+                'decision_making_style'  => $analysis['decision_making_style'] ?? 'Unknown',
+                'summary'                => $analysis['summary'] ?? 'Analysis completed',
+            ],
+            'cultural_dna'   => $analysis['cultural_dna'] ?? [],
+            'success_traits' => $successTraits,
         ];
     }
 
-    private function buildDNAAnalysisPrompt(array $orgData): string
+    private function buildUnifiedDNAPrompt(array $orgData, bool $hasEnoughPerformers): string
     {
+        $coreValues      = $this->formatArray($orgData['core_values']);
+        $skillPatterns   = $this->formatSkillPatterns($orgData['skill_patterns']);
+        $workStyleData   = $this->formatWorkStyleData($orgData['work_style_data']);
+        $promotionData   = $this->formatPromotionData($orgData['promotion_data']);
+        $successSection  = $hasEnoughPerformers
+            ? 'Identify 5-10 success traits ranked by importance.'
+            : 'There is insufficient top-performer data; return an empty "success_traits" array.';
+
         return <<<PROMPT
-Analyze this organization's DNA and provide structured insights in JSON format.
+Analyze this organization's DNA and return a SINGLE JSON object combining three analyses.
 
 **Organization Profile:**
 - Company: {$orgData['company_name']}
@@ -116,7 +158,7 @@ Analyze this organization's DNA and provide structured insights in JSON format.
 - Size: {$orgData['company_size']} ({$orgData['employee_count']} employees analyzed)
 - Mission: {$orgData['mission_statement']}
 - Vision: {$orgData['vision_statement']}
-- Core Values: {$this->formatArray($orgData['core_values'])}
+- Core Values: {$coreValues}
 
 **Performance Metrics:**
 - Top Performers: {$orgData['top_performer_count']}
@@ -124,74 +166,30 @@ Analyze this organization's DNA and provide structured insights in JSON format.
 - Retention Rate: {$orgData['retention_rate']}%
 
 **Skill Patterns in Top Performers:**
-{$this->formatSkillPatterns($orgData['skill_patterns'])}
+{$skillPatterns}
 
 **Work Style Observations:**
-{$this->formatWorkStyleData($orgData['work_style_data'])}
+{$workStyleData}
 
-Return JSON with:
+**Promotion Data:**
+{$promotionData}
+
+{$successSection}
+
+Return ONLY a JSON object with this exact shape:
 {
-  "work_style_preferences": ["autonomous", "collaborative", "structured", etc.],
-  "communication_patterns": ["async-first", "meeting-heavy", "documentation-focused", etc.],
+  "work_style_preferences": ["autonomous", "collaborative", ...],
+  "communication_patterns": ["async-first", "documentation-focused", ...],
   "decision_making_style": "consensus-driven" | "data-driven" | "hierarchical" | "agile",
-  "summary": "2-3 sentence organizational DNA summary"
+  "summary": "2-3 sentence organizational DNA summary",
+  "cultural_dna": [
+    {"trait": "Innovation-Driven", "score": 85, "evidence": "..."}
+  ],
+  "success_traits": [
+    {"trait": "Technical Excellence", "score": 95, "prevalence": "90% of top performers"}
+  ]
 }
 PROMPT;
-    }
-
-    private function extractCulturalDNA(array $orgData): array
-    {
-        $prompt = <<<PROMPT
-Based on this organizational data, identify 5-8 core cultural DNA traits that define this company's identity.
-
-**Data:**
-- Mission: {$orgData['mission_statement']}
-- Values: {$this->formatArray($orgData['core_values'])}
-- Top Performer Count: {$orgData['top_performer_count']}
-- Retention Rate: {$orgData['retention_rate']}%
-- Work Styles: {$this->formatWorkStyleData($orgData['work_style_data'])}
-
-Return JSON array of cultural DNA traits with scores 0-100:
-[
-  {"trait": "Innovation-Driven", "score": 85, "evidence": "High experimentation in top performers"},
-  {"trait": "People-First", "score": 92, "evidence": "95% retention, strong collaboration"},
-  ...
-]
-PROMPT;
-
-        $raw = $this->generateText($prompt, 'You are a cultural anthropologist specializing in organizational culture. Return only valid JSON arrays.', ['max_tokens' => 800, 'temperature' => 0.4]);
-
-        return json_decode($raw, true) ?? [];
-    }
-
-    private function identifySuccessTraits(array $orgData): array
-    {
-        if ($orgData['top_performer_count'] < 3) {
-            return [
-                ['trait' => 'Insufficient Data', 'score' => 0, 'prevalence' => '0%'],
-            ];
-        }
-
-        $prompt = <<<PROMPT
-Analyze top performer data to identify key success traits for this organization.
-
-**Top Performer Data:**
-- Count: {$orgData['top_performer_count']}
-- Skills: {$this->formatSkillPatterns($orgData['skill_patterns'])}
-- Work Styles: {$this->formatWorkStyleData($orgData['work_style_data'])}
-- Promotion Data: {$this->formatPromotionData($orgData['promotion_data'])}
-
-Return JSON array of 5-10 success traits ranked by importance:
-[
-  {"trait": "Technical Excellence", "score": 95, "prevalence": "90% of top performers"},
-  {"trait": "Cross-Functional Collaboration", "score": 88, "prevalence": "80% of top performers"},
-  ...
-]
-PROMPT;
-
-        $raw = $this->generateText($prompt, 'You are a talent analytics expert specializing in success pattern identification. Return only valid JSON arrays.', ['max_tokens' => 1000, 'temperature' => 0.3]);
-
-        return json_decode($raw, true) ?? [];
     }
 
     private function calculateCompletionScore(array $orgData): int

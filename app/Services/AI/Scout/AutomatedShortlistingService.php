@@ -12,6 +12,40 @@ use Exception;
 
 class AutomatedShortlistingService
 {
+    /** F10: prompt revision recorded with every S.C.O.U.T. XAI audit entry. */
+    private const PROMPT_VERSION = 'scout_shortlisting@v1';
+
+    /**
+     * I5: Resolve a config-driven S.C.O.U.T. round pass threshold.
+     * Falls back to the historical defaults if config is missing.
+     */
+    private function threshold(string $round): float
+    {
+        $defaults = [
+            'basic_qualification' => 60,
+            'skills_competency'   => 50,
+            'cultural_fit'        => 60,
+            'potential_growth'    => 45,
+        ];
+
+        return (float) config("ai.scout.thresholds.{$round}", $defaults[$round] ?? 50);
+    }
+
+    /**
+     * I5: Resolve a config-driven S.C.O.U.T. round weight for the composite score.
+     */
+    private function roundWeight(string $round): float
+    {
+        $defaults = [
+            'basic_qualification' => 0.15,
+            'skills_competency'   => 0.35,
+            'cultural_fit'        => 0.30,
+            'potential_growth'    => 0.20,
+        ];
+
+        return (float) config("ai.scout.round_weights.{$round}", $defaults[$round] ?? 0.25);
+    }
+
     /**
      * Execute multi-stage shortlisting pipeline for applicants.
      *
@@ -83,6 +117,7 @@ class AutomatedShortlistingService
                             'score'          => $xaiScore,
                             'recommendation' => $xaiRec,
                             'confidence'     => min(0.95, $xaiScore + 0.1),
+                            'prompt_version' => self::PROMPT_VERSION,
                             'factors'        => $xaiFactors,
                             'explanation'    => $xaiService->generateNaturalLanguageExplanation(
                                 $xaiScore,
@@ -242,10 +277,10 @@ class AutomatedShortlistingService
         $round4 = $this->executeRound4PotentialGrowth($candidateProfile, $job);
 
         $overallScore = (
-            $round1['score'] * 0.15 +  // 15% weight
-            $round2['score'] * 0.35 +  // 35% weight
-            $round3['score'] * 0.30 +  // 30% weight
-            $round4['score'] * 0.20    // 20% weight
+            $round1['score'] * $this->roundWeight('basic_qualification') +
+            $round2['score'] * $this->roundWeight('skills_competency') +
+            $round3['score'] * $this->roundWeight('cultural_fit') +
+            $round4['score'] * $this->roundWeight('potential_growth')
         );
 
         $recommendation = $this->determineRecommendation($overallScore, [
@@ -380,8 +415,8 @@ class AutomatedShortlistingService
         // Ensure score doesn't go below 0
         $score = max(0, $score);
 
-        // Pass threshold: 60 points
-        if ($score < 60) {
+        // Pass threshold (I5: config-driven via ai.scout.thresholds.basic_qualification)
+        if ($score < $this->threshold('basic_qualification')) {
             $passed = false;
         }
 
@@ -482,7 +517,7 @@ class AutomatedShortlistingService
         $score = ($competencyScore * 0.70) + ($softSkillsScore * 0.30);
 
         // Pass threshold: 50 points (lenient when profile data is sparse)
-        $passed = $score >= 50;
+        $passed = $score >= $this->threshold('skills_competency');
 
         if (!$passed) {
             $concerns[] = "Overall skills competency below threshold";
@@ -581,7 +616,7 @@ class AutomatedShortlistingService
         );
 
         // Pass threshold: 60 points (cultural fit is important but flexible)
-        $passed = $culturalScore >= 60;
+        $passed = $culturalScore >= $this->threshold('cultural_fit');
 
         if (!$passed) {
             $concerns[] = "Cultural fit below acceptable threshold";
@@ -651,7 +686,7 @@ class AutomatedShortlistingService
         );
 
         // Pass threshold: 45 points (growth is bonus, sparse profiles should not be auto-rejected)
-        $passed = $growthScore >= 45;
+        $passed = $growthScore >= $this->threshold('potential_growth');
 
         if (!$passed) {
             $concerns[] = "Limited growth potential for long-term value";

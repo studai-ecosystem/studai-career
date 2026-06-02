@@ -6,14 +6,14 @@ use App\Models\InterviewSession;
 use App\Models\InterviewPerformanceReport;
 use App\Models\InterviewCoachingTip;
 use App\Models\CompanyInterviewData;
-use App\Services\AI\OpenAIService;
+use App\Services\AI\AIService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PerformanceReportingService
 {
     public function __construct(
-        protected OpenAIService $openAIService
+        protected AIService $aiService
     ) {}
 
     /**
@@ -682,10 +682,10 @@ class PerformanceReportingService
         try {
             $prompt = $this->buildAIInsightsPrompt($report, $session);
             
-            $aiResponse = $this->openAIService->generateCompletion($prompt, [
-                'max_completion_tokens' => 500,
-                'temperature' => 0.7,
-            ]);
+            $aiResponse = $this->aiService->callWithMessages(
+                [['role' => 'user', 'content' => $prompt]],
+                ['max_completion_tokens' => 500, 'temperature' => 0.7]
+            );
 
             $insights = json_decode($aiResponse, true);
 

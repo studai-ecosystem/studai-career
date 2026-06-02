@@ -16,6 +16,17 @@ class SkillValidatorService
     private const CACHE_TTL_VALIDATION = 2592000; // 30 days
     
     /**
+     * M-C4/D11: Invalidate the cached skill validations for a user. Called by
+     * the Profile observer whenever a user's experience/education/projects/
+     * achievements change, so the 30-day cache cannot serve stale validations
+     * against an updated work history.
+     */
+    public static function forgetCache(int $userId): void
+    {
+        Cache::forget("skill_validations_{$userId}");
+    }
+
+    /**
      * Validate user's skills by analyzing work history, projects, and achievements
      */
     public function validateUserSkills(User $user, bool $forceRefresh = false): Collection

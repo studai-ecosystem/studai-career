@@ -6,14 +6,14 @@ use App\Models\CompanyInterviewData;
 use App\Models\InterviewSession;
 use App\Models\InterviewQuestion;
 use App\Models\InterviewCoachingTip;
-use App\Services\AI\OpenAIService;
+use App\Services\AI\AIService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class InterviewGenerationService
 {
     public function __construct(
-        protected OpenAIService $openAIService
+        protected AIService $aiService
     ) {}
 
     /**
@@ -152,10 +152,10 @@ class InterviewGenerationService
     ): InterviewQuestion {
         $prompt = $this->buildBehavioralQuestionPrompt($session, $companyData);
 
-        $aiResponse = $this->openAIService->generateCompletion($prompt, [
-            'max_completion_tokens' => 500,
-            'temperature' => 0.7,
-        ]);
+        $aiResponse = $this->aiService->callWithMessages(
+            [['role' => 'user', 'content' => $prompt]],
+            ['max_completion_tokens' => 500, 'temperature' => 0.7]
+        );
 
         $questionData = $this->parseQuestionResponse($aiResponse);
 
@@ -191,10 +191,10 @@ class InterviewGenerationService
     ): InterviewQuestion {
         $prompt = $this->buildTechnicalQuestionPrompt($session, $companyData);
 
-        $aiResponse = $this->openAIService->generateCompletion($prompt, [
-            'max_completion_tokens' => 500,
-            'temperature' => 0.6,
-        ]);
+        $aiResponse = $this->aiService->callWithMessages(
+            [['role' => 'user', 'content' => $prompt]],
+            ['max_completion_tokens' => 500, 'temperature' => 0.6]
+        );
 
         $questionData = $this->parseQuestionResponse($aiResponse);
 
@@ -224,10 +224,10 @@ class InterviewGenerationService
     ): InterviewQuestion {
         $prompt = $this->buildSituationalQuestionPrompt($session, $companyData);
 
-        $aiResponse = $this->openAIService->generateCompletion($prompt, [
-            'max_completion_tokens' => 500,
-            'temperature' => 0.7,
-        ]);
+        $aiResponse = $this->aiService->callWithMessages(
+            [['role' => 'user', 'content' => $prompt]],
+            ['max_completion_tokens' => 500, 'temperature' => 0.7]
+        );
 
         $questionData = $this->parseQuestionResponse($aiResponse);
 

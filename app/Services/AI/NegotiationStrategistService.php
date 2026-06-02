@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Log;
 class NegotiationStrategistService
 {
     use InteractsWithAI;
+
+    /**
+     * D16: User-facing warning surfaced when salary figures come from the
+     * heuristic calibrated fallback instead of live AI market intelligence.
+     */
+    public const UNRELIABLE_ESTIMATE_LABEL = 'Estimate only — based on general heuristics, not live market data. Treat these numbers as a rough guide and verify against current salary sources before negotiating.';
     /**
      * Generate comprehensive negotiation strategy
      */
@@ -78,6 +84,10 @@ class NegotiationStrategistService
                 'demand'         => $marketData['demand'] ?? 'medium',
                 'ai_rationale'   => $marketData['ai_rationale'] ?? '',
                 'source'         => $marketData['source'] ?? 'estimate',
+                'reliability'        => $marketData['reliability'] ?? 'low',
+                'reliability_label'  => array_key_exists('reliability_label', $marketData)
+                    ? $marketData['reliability_label']
+                    : self::UNRELIABLE_ESTIMATE_LABEL,
                 // 3-tier ranges with probabilities
                 'conservative'      => $negotiationRange['conservative'],
                 'competitive'       => $negotiationRange['competitive'],
@@ -163,6 +173,8 @@ class NegotiationStrategistService
                     'demand'            => $data['demand'] ?? 'medium',
                     'ai_rationale'      => $data['rationale'] ?? '',
                     'source'            => 'ai_intelligence',
+                    'reliability'       => 'high',
+                    'reliability_label' => null,
                 ];
             } catch (\Exception $e) {
                 Log::warning('AI market research failed, using calibrated fallback', ['error' => $e->getMessage()]);
@@ -210,6 +222,8 @@ class NegotiationStrategistService
             'demand'            => 'medium',
             'ai_rationale'      => '',
             'source'            => 'calibrated_estimate',
+            'reliability'       => 'low',
+            'reliability_label' => self::UNRELIABLE_ESTIMATE_LABEL,
         ];
     }
 

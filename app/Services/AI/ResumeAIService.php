@@ -17,6 +17,14 @@ class ResumeAIService
     private const CACHE_TTL = 3600; // 1 hour
 
     /**
+     * A6: Standardized verification notice for AI-quantified achievement
+     * bullets. Any number the model adds is a suggestion the candidate MUST
+     * confirm against their real results before submitting (EU AI Act
+     * transparency + anti-fabrication safeguard).
+     */
+    public const QUANTIFY_VERIFICATION_NOTICE = 'AI-suggested metrics. Verify every number against your real results before using this bullet — do not submit unverified figures.';
+
+    /**
      * Set the user context for AI credit tracking.
      */
     public function forUser(User $user): self
@@ -222,12 +230,32 @@ class ResumeAIService
         try {
             return trim($this->ai(
                 $prompt,
-                'You are an expert at transforming job responsibilities into measurable achievements with specific metrics.',
-                ['temperature' => 0.8]
+                'You are an expert at transforming job responsibilities into measurable achievements with specific metrics. Only use metrics that can be inferred from the provided responsibility and context; never fabricate specific numbers.',
+                ['temperature' => 0.35]
             ));
         } catch (\Exception $e) {
             return $description;
         }
+    }
+
+    /**
+     * A6: Quantify an achievement and return it wrapped with the AI-generation
+     * disclosure so the UI can flag the bullet and force candidate verification
+     * before submission. Additive companion to quantifyAchievement(); use this
+     * whenever the result is surfaced to or stored for the candidate.
+     *
+     * @return array{text: string, ai_generated: bool, requires_verification: bool, verification_notice: string}
+     */
+    public function quantifyAchievementWithDisclosure(string $description, string $context = ''): array
+    {
+        $text = $this->quantifyAchievement($description, $context);
+
+        return [
+            'text' => $text,
+            'ai_generated' => $text !== $description,
+            'requires_verification' => $text !== $description,
+            'verification_notice' => self::QUANTIFY_VERIFICATION_NOTICE,
+        ];
     }
 
     /**

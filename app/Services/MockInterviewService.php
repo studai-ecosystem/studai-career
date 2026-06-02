@@ -139,15 +139,36 @@ PROMPT;
 }";
         
         $systemPrompt = "You are an experienced interview coach. Evaluate answers constructively. Keep overall_feedback to 2 sentences maximum — one sentence on what was good, one on the key improvement needed. Be direct and specific.";
-        
+
+        // E11: enforce a per-session AI cost budget. When the session has spent
+        // its soft budget we stop making new AI calls and fall back to the
+        // heuristic evaluation so a single session cannot run up unbounded cost.
+        $sessionId = isset($context['session_id']) ? (int) $context['session_id'] : null;
+
+        if ($sessionId !== null && \App\Services\AI\AICostMeter::sessionBudgetExceeded($sessionId)) {
+            Log::warning('MockInterview session AI budget exceeded, using heuristic evaluation', [
+                'session_id' => $sessionId,
+            ]);
+
+            return $this->getBasicEvaluation($answer);
+        }
+
         try {
             $response = $this->aiService->generateText($prompt, $systemPrompt);
+
+            if ($sessionId !== null) {
+                \App\Services\AI\AICostMeter::recordSession(
+                    $sessionId,
+                    (float) config('ai.cost.per_answer_eval_usd', 0.05)
+                );
+            }
+
             $evaluation = json_decode($response, true);
-            
+
             if (!$evaluation) {
                 return $this->getBasicEvaluation($answer);
             }
-            
+
             return $evaluation;
         } catch (\Exception $e) {
             Log::error('Failed to evaluate answer: ' . $e->getMessage());

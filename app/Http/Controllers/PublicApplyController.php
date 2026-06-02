@@ -197,7 +197,50 @@ class PublicApplyController extends Controller
             ->first();
 
         if (! $session) {
-            $session = $this->evaluationService->startSession($application);
+            // F4: candidate must acknowledge anti-cheat monitoring before the
+            // evaluation session is created. Show the consent gate first.
+            return view('apply.evaluation-consent', compact('job', 'application', 'token'));
+        }
+
+        return view('apply.evaluation', compact('job', 'application', 'session', 'token'));
+    }
+
+    /**
+     * F4: Record the candidate's affirmative anti-cheat monitoring consent and
+     * begin the evaluation session.
+     */
+    public function acknowledgeMonitoring(Request $request, string $token): View|JsonResponse|\Illuminate\Http\RedirectResponse
+    {
+        $request->validate([
+            'monitoring_consent' => ['accepted'],
+        ]);
+
+        $job = Job::where('application_link_token', $token)->with('company')->firstOrFail();
+
+        if (! in_array($job->application_phase, ['evaluating'], true)) {
+            return redirect()->route('apply.show', $token);
+        }
+
+        $application = $this->resolveApplication($request, $job);
+
+        if (! $application) {
+            return view('apply.no-application', compact('job', 'token'));
+        }
+
+        if ($application->evaluation_status === 'completed') {
+            return view('apply.evaluation-complete', compact('job', 'application', 'token'));
+        }
+
+        $session = EvaluationSession::where('application_id', $application->id)
+            ->where('status', 'in_progress')
+            ->first();
+
+        if (! $session) {
+            $session = $this->evaluationService->startSession(
+                $application,
+                monitoringConsent: true,
+                consentIp: $request->ip()
+            );
         }
 
         return view('apply.evaluation', compact('job', 'application', 'session', 'token'));
@@ -246,6 +289,25 @@ class PublicApplyController extends Controller
         );
 
         return response()->json($result);
+    }
+
+    /**
+     * API: B4/F5 — explicitly finalise an evaluation from the UI "Finish"
+     * button. Gated server-side by the minimum completeness threshold.
+     */
+    public function completeEvaluation(Request $request, string $token): JsonResponse
+    {
+        $request->validate([
+            'session_token' => ['required', 'string'],
+        ]);
+
+        $result = $this->evaluationService->completeEvaluation(
+            $request->input('session_token')
+        );
+
+        $status = isset($result['error']) ? 422 : 200;
+
+        return response()->json($result, $status);
     }
 
     /**

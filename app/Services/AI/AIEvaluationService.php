@@ -261,14 +261,14 @@ class AIEvaluationService
      */
     protected function evaluateJsonSchema(AIGoldenTest $test, string $actualOutput): array
     {
-        try {
-            $json = json_decode($actualOutput, true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
+        $json = $this->decodeJsonOutput($actualOutput);
+
+        if ($json === null) {
             return [
                 'passed' => false,
                 'details' => [
                     'method' => 'json_schema',
-                    'error' => 'Invalid JSON: ' . $e->getMessage(),
+                    'error' => 'Invalid JSON: output could not be parsed as a JSON object',
                 ],
             ];
         }
@@ -283,6 +283,39 @@ class AIEvaluationService
                 'errors' => $errors,
             ],
         ];
+    }
+
+    /**
+     * F12: Tolerantly decode JSON produced by either the primary model
+     * (raw JSON) or the fallback model (Claude Sonnet), which frequently wraps
+     * JSON in ```json fences or surrounds it with brief prose. Returns the
+     * decoded associative array, or null when no JSON object/array is found.
+     *
+     * @return array<mixed>|null
+     */
+    protected function decodeJsonOutput(string $output): ?array
+    {
+        $candidate = trim($output);
+
+        // Strip markdown code fences (```json ... ``` or ``` ... ```).
+        $candidate = preg_replace('/```(?:json)?\s*/i', '', $candidate) ?? $candidate;
+        $candidate = str_replace('```', '', $candidate);
+        $candidate = trim($candidate);
+
+        $decoded = json_decode($candidate, true);
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+
+        // Fall back to extracting the first balanced JSON object/array.
+        if (preg_match('/(\{.*\}|\[.*\])/s', $candidate, $matches) === 1) {
+            $decoded = json_decode($matches[1], true);
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+        }
+
+        return null;
     }
 
     /**

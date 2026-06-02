@@ -56,16 +56,26 @@ class AIService
 
         $url = rtrim($endpoint, '/') . "/openai/deployments/{$deploymentId}/chat/completions?api-version={$apiVersion}";
 
+        $payload = [
+            'messages' => $messages,
+            'max_completion_tokens' => $options['max_tokens'] ?? $this->maxTokens,
+            'temperature' => $options['temperature'] ?? $this->temperature,
+        ];
+
+        // JSON mode: force the model to emit a syntactically valid JSON object.
+        // Pass ['json_mode' => true] (object) or ['response_format' => [...]] for raw control.
+        if (! empty($options['response_format'])) {
+            $payload['response_format'] = $options['response_format'];
+        } elseif (! empty($options['json_mode'])) {
+            $payload['response_format'] = ['type' => 'json_object'];
+        }
+
         $response = Http::timeout($options['timeout'] ?? $this->timeout)
             ->withHeaders([
                 'api-key' => $apiKey,
                 'Content-Type' => 'application/json',
             ])
-            ->post($url, [
-                'messages' => $messages,
-                'max_completion_tokens' => $options['max_tokens'] ?? $this->maxTokens,
-                'temperature' => $options['temperature'] ?? $this->temperature,
-            ]);
+            ->post($url, $payload);
 
         if (!$response->successful()) {
             Log::error('Azure OpenAI API Error', [
@@ -99,6 +109,15 @@ class AIService
         // Convert OpenAI message format to Anthropic format
         $anthropicMessages = $this->convertToAnthropicFormat($messages);
 
+        // JSON-mode parity: Claude has no native response_format, so reinforce via
+        // a system instruction. Keeps fallback output schema-compatible with GPT-5.4.
+        $system = $anthropicMessages['system'] ?? '';
+        $wantsJson = ! empty($options['json_mode'])
+            || (($options['response_format']['type'] ?? null) === 'json_object');
+        if ($wantsJson) {
+            $system = trim($system . "\n\nIMPORTANT: Respond with a single valid JSON value only. No markdown, no code fences, no commentary.");
+        }
+
         $url = rtrim($endpoint, '/') . "/v1/messages";
 
         $response = Http::timeout($options['timeout'] ?? $this->timeout)
@@ -110,7 +129,7 @@ class AIService
             ->post($url, [
                 'model' => $model,
                 'messages' => $anthropicMessages['messages'],
-                'system' => $anthropicMessages['system'] ?? '',
+                'system' => $system,
                 'max_completion_tokens' => $options['max_tokens'] ?? config('ai.anthropic.max_tokens', 4096),
             ]);
 
@@ -128,6 +147,85 @@ class AIService
         $this->trackAnthropicUsage($data, $messages);
         
         return $data['content'][0]['text'] ?? '';
+    }
+
+    /**
+     * F7: Sliding-window context compaction for long multi-turn conversations.
+     *
+     * Once a dialogue grows beyond a threshold, replay only the most recent
+     * turns verbatim and collapse the earlier turns into a single AI-generated
+     * summary. This caps token growth (and cost) on Stage 1 onboarding and
+     * Stage 3 job-creation conversations while preserving context.
+     *
+     * @param array<int, array{role: string, content: string}> $history Ordered user/assistant turns (no system messages).
+     * @return array<int, array{role: string, content: string}> Compacted history (a summary system note + recent turns).
+     */
+    protected function compactConversation(array $history, int $keepRecent = 6, int $triggerAfter = 6): array
+    {
+        $count = count($history);
+        if ($count <= $triggerAfter) {
+            return $history;
+        }
+
+        $recent = array_slice($history, -$keepRecent);
+        $older = array_slice($history, 0, $count - $keepRecent);
+
+        if ($older === []) {
+            return $recent;
+        }
+
+        $summary = $this->summariseTurns($older);
+
+        $compacted = [[
+            'role'    => 'system',
+            'content' => "Summary of earlier conversation (for context):\n{$summary}",
+        ]];
+
+        foreach ($recent as $turn) {
+            $compacted[] = $turn;
+        }
+
+        return $compacted;
+    }
+
+    /**
+     * F7: Summarise a block of earlier conversation turns. Best-effort — on any
+     * failure it falls back to a plain transcript truncation so the caller can
+     * always proceed.
+     *
+     * @param array<int, array{role: string, content: string}> $turns
+     */
+    protected function summariseTurns(array $turns): string
+    {
+        $transcript = collect($turns)
+            ->map(fn ($t) => strtoupper($t['role'] ?? 'user') . ': ' . ($t['content'] ?? ''))
+            ->implode("\n");
+
+        $cacheKey = 'conv_summary_' . md5($transcript);
+        $cached = Cache::get($cacheKey);
+        if (is_string($cached) && $cached !== '') {
+            return $cached;
+        }
+
+        try {
+            $messages = [
+                ['role' => 'system', 'content' => 'Summarise the following conversation concisely (max 150 words), preserving all concrete facts, decisions, names, numbers and preferences stated. Output prose only.'],
+                ['role' => 'user', 'content' => $transcript],
+            ];
+            $summary = trim($this->callAzureOpenAI($messages, ['temperature' => 0.2, 'max_completion_tokens' => 300]));
+
+            if ($summary !== '') {
+                Cache::put($cacheKey, $summary, now()->addHours(6));
+                return $summary;
+            }
+        } catch (\Throwable $e) {
+            Log::warning('compactConversation summary failed, falling back to truncation', [
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        // Fallback: truncated transcript.
+        return mb_substr($transcript, 0, 1500);
     }
 
     /**
@@ -226,6 +324,17 @@ class AIService
 
         // Fallback: Azure Anthropic (Claude Sonnet 4.6) with Circuit Breaker
         if (config('ai.fallback.use_anthropic_if_azure_fails', true)) {
+            // I4: surface that we degraded to the fallback provider.
+            \App\Services\Monitoring\OpsAlertService::alert(
+                'ai.fallback.anthropic',
+                'Azure OpenAI unavailable — falling back to Azure Anthropic (Claude).',
+                [
+                    'user_id'       => $this->user?->id,
+                    'primary_error' => $primaryError?->getMessage() ?? 'circuit_open',
+                    'circuit_state' => $openAICircuit->getState(),
+                ]
+            );
+
             try {
                 Log::info('Calling Azure Anthropic API (fallback)', [
                     'circuit_state' => $anthropicCircuit->getState(),
@@ -336,17 +445,20 @@ class AIService
     protected function generateEmbedding(string $text): array
     {
         $cacheKey = 'embedding_' . md5($text);
-        
+
         return Cache::remember($cacheKey, now()->addDays(7), function() use ($text) {
             try {
                 $timeout = config('ai.timeout.embeddings', 15);
+                // I2: use the configured embedding model (defaults to text-embedding-3-large)
+                // for higher-fidelity semantic skill matching instead of legacy ada-002.
+                $model = config('ai.azure.models.embeddings', 'text-embedding-3-large');
                 $response = OpenAI::timeout($timeout)->embeddings()->create([
-                    'model' => 'text-embedding-ada-002',
+                    'model' => $model,
                     'input' => $text,
                 ]);
-                
+
                 return $response->embeddings[0]->embedding;
-                
+
             } catch (\Exception $e) {
                 Log::error('Embedding generation failed', ['error' => $e->getMessage()]);
                 return [];
@@ -778,6 +890,14 @@ class AIService
                     'primary_error'  => $firstException->getMessage(),
                     'fallback_error' => $e2->getMessage(),
                 ]);
+                \App\Services\Monitoring\OpsAlertService::alert(
+                    'ai.providers.all_failed',
+                    'Both Azure OpenAI and Anthropic failed for callWithMessages.',
+                    [
+                        'primary_error'  => $firstException->getMessage(),
+                        'fallback_error' => $e2->getMessage(),
+                    ]
+                );
                 throw new \Exception('AI service unavailable: ' . $e2->getMessage(), 0, $e2);
             }
         }

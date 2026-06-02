@@ -11,6 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // NOTE: These talent-pipeline tables are also created by the canonical
+        // 2026_05_28_000007_create_missing_scout_dna_and_skill_tables migration,
+        // which always runs first. If they already exist, skip to keep the
+        // migration set idempotent (otherwise migrate:fresh fails with a
+        // "table already exists" error on a clean database).
+        if (Schema::hasTable('talent_pipelines')) {
+            return;
+        }
+
         // Talent Pipelines - Pre-qualified candidate pools for recurring roles
         Schema::create('talent_pipelines', function (Blueprint $table) {
             $table->id();

@@ -9,6 +9,7 @@ use App\Jobs\Agent\SendDigestJob;
 use App\Jobs\RetryFailedPaymentJob;
 use App\Jobs\AnalyzeSkillGapsJob;
 use App\Jobs\CurateLearningResourcesJob;
+use App\Jobs\CheckLearningResourceLinksJob;
 use App\Jobs\SendDailyLearningRecommendationJob;
 use App\Jobs\ValidateUserSkillsJob;
 use App\Jobs\UpdatePredictionsJob;
@@ -121,6 +122,24 @@ Schedule::job(new CurateLearningResourcesJob())
     ->onOneServer()
     ->withoutOverlapping()
     ->emailOutputOnFailure(config('mail.admin_email'));
+
+// D12: Verify learning resource links are still reachable (weekly, Sundays 4 AM)
+Schedule::job(new CheckLearningResourceLinksJob())
+    ->weekly()
+    ->sundays()
+    ->at('04:00')
+    ->name('Learning: Weekly Link-Health Check')
+    ->onOneServer()
+    ->withoutOverlapping();
+
+// C4: Offline S.C.O.U.T. threshold calibration report (read-only, Mondays 5 AM)
+Schedule::command('scout:calibrate-thresholds')
+    ->weekly()
+    ->mondays()
+    ->at('05:00')
+    ->name('S.C.O.U.T.: Weekly Threshold Calibration Report')
+    ->onOneServer()
+    ->withoutOverlapping();
 
 // Send daily learning recommendations (runs daily at 8 AM)
 Schedule::call(function () {

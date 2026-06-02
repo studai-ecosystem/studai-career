@@ -14,6 +14,8 @@
     $marketTrend  = ucfirst($csd['trend'] ?? 'stable');
     $yoyChange    = (float) ($csd['yoy_change'] ?? 0);
     $aiRationale  = $csd['ai_rationale'] ?? '';
+    $reliability       = $csd['reliability'] ?? null;
+    $reliabilityLabel  = $csd['reliability_label'] ?? null;
 
     $offered    = (float) $strategy->offered_salary;
     $percentile = (float) $strategy->offered_salary_percentile;
@@ -164,6 +166,12 @@
             @endif
         </div>
         <p class="text-xs text-gray-400 mb-5">{{ $strategy->role }} ? {{ $strategy->location }} ? {{ $strategy->years_experience }}yr exp</p>
+        @if($reliability === 'low' && $reliabilityLabel)
+        <div class="mb-4 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2">
+            <span class="text-amber-500 text-sm leading-5">&#9888;</span>
+            <p class="text-xs text-amber-700 leading-5">{{ $reliabilityLabel }}</p>
+        </div>
+        @endif
         <div style="height:140px;"><canvas id="marketChart"></canvas></div>
         <div class="grid grid-cols-5 gap-1 text-center mt-4">
             @php
